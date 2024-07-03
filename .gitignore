@@ -1,0 +1,9 @@
+node_modules
+dist
+___*
+src/.vitepress/cache
+.DS_Store
+
+local
+.vscode
+.mypy_cache

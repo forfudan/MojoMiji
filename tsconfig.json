@@ -1,0 +1,28 @@
+{
+    "include": [
+        "./src/**/*",
+        "./components/**/*"
+    ],
+    "exclude": [
+        "dist",
+        "src/.vitepress/cache",
+        "node_modules"
+    ],
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "allowJs": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "compilerOptions": {
+        "target": "ESNext",
+        "moduleResolution": "node",
+        "module": "ESNext",
+        "baseUrl": ".",
+        "paths": {
+            "@/*": [
+                "./components/*"
+            ]
+        }
+    }
+}

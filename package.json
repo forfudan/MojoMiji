@@ -1,0 +1,32 @@
+{
+  "name": "mojomiji-website",
+  "version": "0.0.1",
+  "private": true,
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^20.11.24",
+    "autoprefixer": "^10.4.18",
+    "daisyui": "^4.7.2",
+    "markdown-it-footnote": "^4.0.0",
+    "markdown-it-mathjax3": "^4.3.2",
+    "medium-zoom": "^1.1.0",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.1",
+    "vitepress": "1.0.0-rc.44",
+    "vue": "^3.4.21"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/forFudan/MojoMiji"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev src",
+    "build": "vitepress build src",
+    "build2": "vitepress build src --base /mojomiji/",
+    "preview": "vitepress preview src "
+  },
+  "dependencies": {
+    "@vueuse/core": "^10.9.0"
+  }
+}
