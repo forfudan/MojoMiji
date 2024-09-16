@@ -1,38 +1,37 @@
-# 所有权
+# Ownership
 
-## 目的
+## Purpose
 
-Mojo 引入了 Rust 的所有权检查特性，以及所谓的**值语义**(value semantic)，用来更好管理内存，防止诸如释放指针后使用、二次释放指针、内存泄漏等一系列问题。虽然对于所有权的学习需要一定时间，但一旦学会后，会在编程时有效减少心智负担。
+Mojo introduces Rust's ownership checking feature and the so-called **value semantics** to better manage memory and prevent issues such as use-after-free, double-free, and memory leaks. Although learning ownership takes some time, once mastered, it effectively reduces mental burden during programming.
 
-所有权的核心，就是任何值（一段内存空间）都具有一个**主人**(owner，拥有者)。比如，变量名就是一个值的拥有者，一旦变量名走完了它的生命周期 (lifetime)，则被摧毁，且它的值也被摧毁。引入所有权的目的，就是通过一系列规则，保证**值**在其拥有者的生命周期中有效，并且一切对于值的引用和更改，都不会超过这个生命周期。
+The core of ownership is that any value (a piece of memory) has an **owner**. For example, a variable name is the owner of a value. Once the variable name's lifetime ends, it is destroyed, and its value is also destroyed. The purpose of introducing ownership is to ensure that the **value** is valid during its owner's lifetime and that all references and modifications to the value do not exceed this lifetime.
 
-## 立刻销毁机制
+## ASAP Destruction Policy
 
-相对于 Rust，Mojo 对于变量的摧毁更加激进。Rust 的变量会在代码块结束后结束生命周期 (ASAP rule)，但 Mojo 会在变量最后一次使用后立刻摧毁它。
+Compared to Rust, Mojo is more aggressive in destroying variables. Rust variables end their lifetime at the end of a code block, but Mojo destroys a variable immediately after its last use ([ASAP destruction](https://docs.modular.com/mojo/manual/lifecycle/death)).
 
 ::: warning
-立刻销毁规则带来一个问题：例如 `B` 是指向结构体 `A` 中数据的不安全指针，但 Mojo 编译器无法推断出这一点。在 `A` 最后一次使用后便销毁了 `A`，导致了 `B` 是个悬垂指针，指向已经被释放的内存。
+The immediate destruction rule brings a problem: for example, `B` is an unsafe pointer to data in the structure `A`, but the Mojo compiler cannot infer this. `A` is destroyed immediately after its last use, resulting in `B` being a dangling pointer pointing to already freed memory.
 
 ```mojo
 fn main():
     ...
     var A = SomeType()
-    var B = UnsafePointer(A.buffer)  # A 最后一次出现，立刻销毁
+    var B = UnsafePointer(A.buffer)  # A's last appearance, immediately destroyed
     
-    print(B)  # B 指向已经释放的内存
-```
+    print(B)  # B points to already freed memory
 
-目前，Mojo 推荐的做法是通过使用一次 `A` 来强制拓展其生命周期：
+Currently, the recommended approach in Mojo is to use A once more to forcibly extend its lifetime:
 
 ```mojo
-# 伪代码
+# Pseudo code
 fn main():
     ...
     var A = SomeType()
-    var B = UnsafePointer(A.buffer)  # A 不是最后一次出现，不会被销毁
+    var B = UnsafePointer(A.buffer)  # A is not used for the last time, will not be destroyed
     
-    print(B)  # B 指向 A 的数据，没有问题
-    _ = A^  # A 在这里出现，手动延长生命周期至此
+    print(B)  # B points to A's data, no problem
+    _ = A^  # A appears here, manually extending its lifetime to this point
 ```
 
 :::

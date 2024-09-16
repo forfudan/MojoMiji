@@ -6,9 +6,9 @@ import autoprefixer from "autoprefixer"
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "Mojo秘籍",
-  description: "从Python出发",
-  lang: "zh-Hans-CN",
+  title: "Mojo Miji",
+  description: "From Pythonic to Magician",
+  lang: "en",
   outDir: "../dist",
   markdown: {
     math: true,
@@ -39,49 +39,49 @@ export default defineConfig({
     logo: '/logo.jpg',
     nav: [
       {
-        text: '开启攻略', link: '/docs/introduction'
+        text: 'Open Miji', link: '/docs/introduction'
       },
-      { text: 'Mojo官网', link: 'https://www.modular.com/max/mojo/' }
+      { text: 'Mojo official', link: 'https://www.modular.com/max/mojo/' },
+      { text: 'Repo', link: 'https://github.com/forFudan/MojoMiji'}
     ],
     sidebar: {
       '/docs': [
         {
-          items: [{ text: '简介', link: '/docs/introduction' },]
+          items: [{ text: 'Introduction', link: '/docs/introduction' },]
         },
         {
-          items: [{ text: '变量', link: '/docs/variables' },]
+          items: [{ text: 'variables', link: '/docs/variables' },]
         },
         {
-          items: [{ text: '类型', link: '/docs/types' },]
+          items: [{ text: 'types', link: '/docs/types' },]
         },
         {
-          items: [{ text: '所有权', link: '/docs/ownership' },]
+          items: [{ text: 'ownership', link: '/docs/ownership' },]
         },
         // {
         //   items: [{ text: '', link: '/docs/' },]
         // },
       ],
-
     },
     footer: {
-      message: "Mojo秘籍",
+      message: "Mojo Miji",
       copyright: "Yuhao Zhu 朱宇浩 © 2024 Under CC BY-NC-ND 4.0 license",
     },
-    darkModeSwitchLabel: "黑暗模式",
-    langMenuLabel: "选择语言",
-    returnToTopLabel: "回到顶部",
-    sidebarMenuLabel: "目录",
+    darkModeSwitchLabel: "Dark mode",
+    langMenuLabel: "Select Language",
+    returnToTopLabel: "Back to top",
+    sidebarMenuLabel: "Table of content",
     outline: {
       level: "deep",
-      label: "本页大纲"
+      label: "Headings"
     },
     search: {
       provider: "local",
       options: {
         translations: {
           button: {
-            buttonAriaLabel: "搜索",
-            buttonText: "搜索",
+            buttonAriaLabel: "Search",
+            buttonText: "Search",
           },
           modal: {
             displayDetails: "展示详细内容",
@@ -104,10 +104,38 @@ export default defineConfig({
       { icon: 'github', link: 'https://github.com/forFudan/' },
     ]
   },
+
+
   locales: {
     root: {
-      label: '简化汉字',
-      lang: 'zh-Hans-CN'
+      label: 'English',
+      lang: 'en'
+    },
+    zhs: {
+      label: "简化汉字",
+      lang: "zh-Hans-CN",
+      title: "Mojo入门指南",
+      description: "从Python出发",
+      themeConfig: {
+        logo: '/logo.jpg',
+        nav: [
+          { text: '开启攻略', link: '/zhs/docs/introduction' },
+          { text: 'Mojo官网', link: 'https://www.modular.com/max/mojo/' }
+        ],
+        sidebar: {
+          '/zhs/docs': [
+            {
+              items: [{ text: '简介', link: '/zhs/docs/introduction' },]
+            },
+            {
+              items: [{ text: '变量', link: '/zhs/docs/variables' },]
+            },
+            {
+              items: [{ text: '類型', link: '/zhs/docs/types' },]
+            },
+          ],
+        },
+      }
     },
     zht: {
       label: "傳統漢字",
@@ -118,15 +146,15 @@ export default defineConfig({
         logo: '/logo.jpg',
         nav: [
           { text: '開啓攻略', link: '/zht/docs/introduction' },
-          { text: 'Mojo官网', link: 'https://www.modular.com/max/mojo/' }
+          { text: 'Mojo官網', link: 'https://www.modular.com/max/mojo/' }
         ],
         sidebar: {
           '/zht/docs': [
             {
-              items: [{ text: '简介', link: '/zht/docs/introduction' },]
+              items: [{ text: '簡介', link: '/zht/docs/introduction' },]
             },
             {
-              items: [{ text: '变量', link: '/zht/docs/variables' },]
+              items: [{ text: '變量', link: '/zht/docs/variables' },]
             },
             {
               items: [{ text: '類型', link: '/zht/docs/types' },]

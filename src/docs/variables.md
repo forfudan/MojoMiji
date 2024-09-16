@@ -1,38 +1,38 @@
-# 变量
+# Variables
 
-在 Python 中, 变量 (variable) 可以看作一个标签, 指向一个对象 (object). 比如, 以下代码中, `a` 这个变量指向一个值为 `1` 的整数对象. 你可以通过赋值语句, 将 `a` 这个变量重新关联到 `"Hello world"` 这个字符串对象.
+In Python, a variable can be seen as a label pointing to an object. For example, in the following code, the variable `a` points to an integer object with the value `1`. You can reassign the variable `a` to a string object "Hello world" using an assignment statement.
 
 ```python
 a = 1
 a = "Hello world!"
 ```
 
-在 Mojo 中, 变量可以抽象地看作一个容器, 它拥有一个**变量名**和一个**值 (value)**. 语义上讲, **变量名**即**值**的标识符 (identifier),同**值**相绑定. 从内存角度说, 变量拥有一段内存空间, 且拥有一个地址, 数据以比特的形式储存在这段空间中.
+In Mojo, a variable can be abstractly viewed as a container that has a **variable name** and a **value**. Semantically, the **variable** name is the identifier of the **value** and is bound to it. From a memory perspective, a variable has a memory space and an address, with data stored in this space in the form of bits.
 
-## 声明
+## Declaration
 
-在 Python 中,变量的初始化是非常简单的.不仅不需要声明,且变量类型也并非必要：
+In Python, initializing a variable is very simple. It does not require a declaration, and the variable type is not necessary:
 
 ```python
 a = 1
-b: int = 1  # 使用类型提示
-# 也可以这样做,但不是必须
+b: int = 1  # We opt-in using type hint
+# You can also do as follows, but not necessary
 c: int
 c = 2
 ```
 
-相比之下,Mojo 的变量必须使用 var 关键词来进行声明(或称定义),且大部分情况下必须标注变量类型.比如：
+In contrast, Mojo variables must be declared (or defined) using the `var` keyword, and in most cases, the variable type must be specified. For example:
 
 ```mojo
 fn main():
     var a: Int
 ```
 
-以上代码^[请注意, Mojo 的代码须放在 `main()` 函数中,除了某些特殊情况.这里统一放在`main()` 函数中.],首先声明了一个名称为 `a` 的变量.即在内存上分配一段空间,其大小刚好可以储存一个整数类型的值.
+The above code^[Note that Mojo code must be placed within the `main()` function, except in certain special cases. Here, it is uniformly placed in the `main()` function.] first declares a variable named `a`, allocating a memory space just large enough to store an integer value.
 
-## 初始化
+## Initialization
 
-一旦变量声明完毕后,就可以使用赋值语句对它进行初始化. Mojo 的赋值语句同 Python 相似,都使用等号`=`将右侧的值赋给左侧变量名.比如以下例中,就将 `1` 赋值给了 `a`.从内存的角度讲,`1` 这个数字被存入了刚刚分配的内存空间中.从值的角度说,`1` 被绑定到了 `a` 这个变量名上.
+Once a variable is declared, it can be initialized using an assignment statement. Mojo’s assignment statements are similar to Python’s, using the equals sign `=` to assign the value on the right to the variable name on the left. For example, in the following example, `1` is assigned to `a`. From a memory perspective, the number `1` is stored in the newly allocated memory space. From a value perspective, `1` is bound to the variable name `a`.
 
 ```mojo
 fn main():
@@ -40,16 +40,16 @@ fn main():
     a = 1
 ```
 
-变量的声明和赋值可以是分开进行,也可以同时进行.以下代码和以下代码等价.
+Variable declaration and assignment can be done separately or simultaneously. The following code is equivalent to the previous example.
 
 ```mojo
 fn main():
     var a: Int = 1
 ```
 
-## 改变值
+## Changing Values
 
-一旦变量被赋值,我们可以继续通过赋值语句改变变量的值：
+Once a variable is assigned a value, we can continue to change its value using assignment statements:
 
 ```mojo
 fn main():
@@ -57,7 +57,7 @@ fn main():
     a = 10
 ```
 
-注意,以下代码是错误的.因为 `a` 的类型是 `Int`,不能将字符串赋值给它.
+Note that the following code is incorrect because `a` is of type `Int` and cannot be assigned a `String`.
 
 ```mojo
 fn main():
@@ -65,9 +65,9 @@ fn main():
     a = "Hello!"
 ```
 
-## 变量重载
+## Variable Overloading
 
-在 Python 中,变量是可以重载,且改变类型的.因为 Python 的变量只是一个标签,可以随时指向其他的对象.以下代码是合法的^[mypy 并不推荐这样做].
+In Python, variables can be overloaded and their types changed because Python variables are just labels that can point to different objects at any time. The following code is legal^[mypy does not recommend doing this].
 
 ```python
 # python
@@ -75,7 +75,7 @@ a: int = 1
 a: str = "Hello!"
 ```
 
-在 Rust 中,变量也是可以重载的,只要使用 `let` 再次声明.以下代码是合法的：
+In Rust, variables can also be overloaded by using `let` to declare them again. The following code is legal:
 
 ```rust
 fn main() {
@@ -84,7 +84,7 @@ fn main() {
 }
 ```
 
-在 Mojo 中,变量重载不被允许.以下代码会报错：
+In Mojo, variable overloading is not allowed. The following code will result in an error:
 
 ```mojo
 fn main():
@@ -97,9 +97,9 @@ error: invalid redefinition of 'a'
     var a: String = "Hello!"
 ```
 
-## 变量间传递值
+## Transferring Values Between Variables
 
-同 Python 一样,我们也可以在变量间传递值：
+Like in Python, we can also transfer values between variables:
 
 ```mojo
 fn main():
@@ -109,14 +109,14 @@ fn main():
     print(b)
 ```
 
-以上代码,首先将 1 赋值给 `a`,然后将 `a` 的值赋予 `b`.结果如下:
+In the above code, `1` is first assigned to `a`, and then the value of `a` is assigned to `b`. The result is as follows:
 
 ```console
 1
 1
 ```
 
-再比如,首先将 `"Hello"` 字符串 赋值给 `a`,然后将 `a` 的值赋予 `b`.结果如下:
+For example, first assigning the string `"Hello"` to `a`, and then assigning the value of `a` to `b`. The result is as follows:
 
 ```mojo
 fn main():
@@ -131,7 +131,7 @@ Hello
 Hello
 ```
 
-注意,这和 Rust 不同.见下例:
+Note that this is different from Rust. See the following example:
 
 ```rust
 fn main() {
@@ -151,11 +151,11 @@ fn main() {
   |               ^^^ value borrowed here after move
 ```
 
-编译时报错.原因是,在 Rust 中,对于堆上的数据结构,赋值默认进行所有权转移.也就是标识符 `a` 将其对于字符串值的所有权,转交给了标识符 `b`.`a`于是不能被使用.
+The compilation error occurs because, in Rust, for heap-based data structures, assignment defaults to ownership transfer. This means that the identifier `a` transfers its ownership of the string value to the identifier `b`, making a unusable.
 
-而在 mojo 中,赋值时默认进行拷贝.也就是说,`a` 的值先被拷贝了一份,然后`b`获得了这份拷贝值的所有权.`a`对于原始值的所有权没有丧失,还可以继续使用.
+In Mojo, assignment defaults to copying. This means that the value of `a` is first copied, and then `b` gains ownership of this copied value. `a` retains ownership of the original value and can continue to be used.
 
-如果要在 Mojo 中强制转移所有权,则可以使用转移符号(transfer operator):`^`. 代码如下:
+To enforce ownership transfer in Mojo, you can use the transfer operator `^`. The code is as follows:
 
 ```mojo
 fn main():
@@ -170,12 +170,12 @@ error: use of uninitialized value 'a'
 print(a)
 ```
 
-这里,我们通过转移符号,告知编译器,将 `a` 对于字符串值的所有权转移给 `b`.此后,`a`便回到未初始化状态, 无法使用.
+Here, we use the transfer operator to inform the compiler to transfer the ownership of the string value from `a` to `b`. After this, a returns to an uninitialized state and cannot be used.
 
 ::: info
-相比 Rust, Mojo 这样处理的好处是减少编程时的心智负担, 尤其在传参时不用过分考虑函数是否获取所有权导致原变量名失效. 缺点是默认拷贝的行为(`__copyinit__`)会导致对于内存的额外消耗. 这一点, 编译器会进行一些优化,比如赋值后, 原变量名不再使用, 会自动改用`__moveinit__`转移所有权.
+Compared to Rust, this approach in Mojo reduces the mental burden during programming, especially when passing parameters, as you don’t have to worry about functions acquiring ownership and invalidating the original variable name. The downside is that the default copying behavior (`__copyinit__`) can lead to additional memory consumption. The compiler optimizes this by using `__moveinit__` to transfer ownership if the original variable name is no longer used after assignment.
 
-当然, 某些较小的, 栈上的数据类型在 Mojo 中永远都是拷贝赋值, 包括 SIMD 类型. 这也使得 Mojo 在计算时的速度有时快于 Rust (传址消耗大于直接读取, 详见此文:[Should Small Rust Structs be Passed by-copy or by-borrow?](https://www.forrestthewoods.com/blog/should-small-rust-structs-be-passed-by-copy-or-by-borrow/)).
+Of course, certain small, stack-based data types in Mojo are always copied, including SIMD types. This can make Mojo faster than Rust in some computations (Pass-by-ref consumes more than direct copying, as detailed in this article: [Should Small Rust Structs be Passed by-copy or by-borrow?](https://www.forrestthewoods.com/blog/should-small-rust-structs-be-passed-by-copy-or-by-borrow/)).
 
-关于所有权的问题, 这里不多做介绍, 后面的教程会进行进一步讲解.
+The topic of ownership will be further explained in later tutorials.
 :::

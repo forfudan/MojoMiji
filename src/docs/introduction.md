@@ -1,8 +1,8 @@
-# 简介
+# Introduction
 
-Mojo 是由 Modular 研发的新一代编程语言, 于 2023 年公开, 并于 2024 年对标准库进行开源. Mojo 的研发初衷是为了成为 Python 语言的超集, 并引入静态编译、所有权、元编程等一系列特征, 旨在保障安全性的基础上增加运行速度, 方便 Python 用户迁移.
+Mojo is a new programming language developed by Modular. Announced in 2023, it open-sourced its standard library in early 2024. Mojo is designed to be a superset of the Python programming language, incorporating modern features such as static typing, ownership, traits, and meta-programming. These enhancements allow Python users to transition easily while benefiting from increased execution speed and enhanced safety.
 
-Mojo 在语法上借鉴了 Python 风格, 同加了类型标注的 Python 代码极为相近. Mojo 在使用上, 可以方便导入 Python 的函数和包. 以下分别为 Python 和 Mojo 代码. 可见, 两者的风格极为相似.
+Mojo borrows Python’s syntax style, making it very similar to Python code with type annotations. In terms of usage, Mojo allows for easy importation of Python functions and packages. Below are examples of Python and Mojo code, demonstrating their similar styles.
 
 ```python
 a: str = "Hello, world!"
@@ -24,10 +24,10 @@ for i in range(10):
 print(b)
 ```
 
-Mojo 的长期目标是成为 Python 的超集, 完全兼容 Python 语法^[笔者认为这一点有难度, 比较合理的预期是用户只需要对 Python 代码做少量改动即可在 Mojo 中编译.].
+Mojo’s long-term goal is to become a superset of Python, fully compatible with Python syntax and ecosystem^[I think this is challenging; a more reasonable expectation is that users will only need to make minor modifications to their Python code to compile it in Mojo.].
 
-本网站介绍 Mojo 的基本特征、语法、功能, 方便使用者了解本语言. 由于 Mojo 自身定位就是基于 Python 的生态圈, 我在讲解过程中将会以 Python 代码对举, 提示相似或不同之处, 说明 Mojo 设置某些特性的原因. 同时, 考虑到 Mojo 语言大量借鉴了 Rust 的特性, 我也会进行提示.
+This website introduces the basic features, syntax, and functions of Mojo, making it easier for users to understand the language. Since Mojo is positioned within the Python ecosystem, I will compare Python code throughout the explanation, highlighting similarities and differences, and explaining the reasons behind certain Mojo features. Additionally, considering that Mojo borrows many features from Rust, I will also provide relevant notes.
 
-本攻略将会挑选重点主题陆续写成. 注意到, Mojo 尚在开发初期, 语法变化极大, 很多关键字也有可能发生改变. Mojo 的编译器是由 C++ 写成, 目前尚未开源, 也未形成自举(用 Mojo 编译自身代码). 官方也对此亦尚未计划. 因此, 本攻略预计将在一个较长的时间段(五年左右)内不断更新.
+This guide will be written in stages, focusing on key topics. Note that Mojo is still in the early stages of development, with significant syntax changes and potential keyword alterations. The Mojo compiler is written in C++, is not yet open-sourced, and has not achieved self-hosting (compiling its own code)^[https://github.com/modularml/mojo/discussions/3049]. The official team has no immediate plans for this. Therefore, this guide is expected to be updated continuously over a long period (around five years).
 
-感谢大家的阅读. 作者能力有限, 内容中可能有不少不精确之处, 还望大家不吝赐教.
+Thank you for reading. Due to limited capabilities, and there may be many inaccuracies in the content. Your feedback is greatly appreciated.

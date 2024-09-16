@@ -14,11 +14,11 @@ hero:
       text: 開啓攻略
       link: /zht/docs/introduction
     - theme: alt
-      text: Mojo官網
-      link: https://www.modular.com/max/mojo
+      text: English
+      link: /index
     - theme: alt
       text: 繁簡切换
-      link: index
+      link: /zhs/index
 
 features:
   - title: 快速

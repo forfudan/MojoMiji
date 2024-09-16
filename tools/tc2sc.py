@@ -31,9 +31,9 @@ for path_of_doc in paths_of_docs:
     else:
         output = doc
         print(path_of_doc, "not translated.")
-    output = output.replace("/zht/", "/")
-    output = output.replace("link: index", "link: /zht/index")
-    with open("../src" + path_of_doc, mode="w", encoding="utf8") as temp:
+    output = output.replace("/zht/", "/zhs/")
+    output = output.replace("link: /zhs/index", "link: /zht/index")
+    with open("../src/zhs" + path_of_doc, mode="w", encoding="utf8") as temp:
         temp.write(output)
 
 # %%
