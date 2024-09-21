@@ -53,14 +53,21 @@ export default defineConfig({
           items: [{ text: 'variables', link: '/docs/variables' },]
         },
         {
-          items: [{ text: 'types', link: '/docs/types' },]
+          text: 'TYPES',
+          items: [
+            {
+              text: 'Built-in types',
+              link: '/docs/types'
+            },
+            {
+              text: 'String',
+              link: '/docs/string'
+            },
+          ]
         },
         {
           items: [{ text: 'ownership', link: '/docs/ownership' },]
         },
-        // {
-        //   items: [{ text: '', link: '/docs/' },]
-        // },
       ],
     },
     footer: {
@@ -84,17 +91,17 @@ export default defineConfig({
             buttonText: "Search",
           },
           modal: {
-            displayDetails: "展示详细内容",
-            resetButtonTitle: "清空关键词",
-            noResultsText: "搜索不到，请换个关键词",
-            backButtonTitle: "返回",
+            displayDetails: "Display details",
+            resetButtonTitle: "Rest keywords",
+            noResultsText: "Found nothing, please use other keywords",
+            backButtonTitle: "Back",
             footer: {
-              selectText: "进入网页",
-              navigateText: "浏览",
-              navigateDownKeyAriaLabel: "下键",
-              navigateUpKeyAriaLabel: "上键",
-              closeKeyAriaLabel: "关闭",
-              closeText: "取消搜索",
+              selectText: "Go to the page",
+              navigateText: "browse",
+              navigateDownKeyAriaLabel: "Down",
+              navigateUpKeyAriaLabel: "Up",
+              closeKeyAriaLabel: "Close",
+              closeText: "Quit search",
             },
           },
         },
