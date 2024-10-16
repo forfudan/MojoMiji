@@ -6,8 +6,8 @@ hero:
   text: "從實例出發"
   tagline: 快速, 安全, 親和
   image:
-    dark: /logo.jpg
-    light: /logo.jpg
+    dark: /logo.png
+    light: /logo.png
     alt: logo
   actions:
     - theme: brand

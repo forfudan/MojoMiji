@@ -21,7 +21,7 @@ export default defineConfig({
     }
   },
   head: [
-    ['link', { rel: 'icon', href: '/logo.jpg', type: 'image/png' }]
+    ['link', { rel: 'icon', href: '/logo.png', type: 'image/png' }]
   ],
   vite: {
     css: {
@@ -36,13 +36,13 @@ export default defineConfig({
     }
   },
   themeConfig: {
-    logo: '/logo.jpg',
+    logo: '/logo.png',
     nav: [
       {
         text: 'Open Miji', link: '/docs/introduction'
       },
       { text: 'Mojo official', link: 'https://www.modular.com/max/mojo/' },
-      { text: 'Repo', link: 'https://github.com/forFudan/MojoMiji'}
+      { text: 'Repo', link: 'https://github.com/forFudan/MojoMiji' }
     ],
     sidebar: {
       '/docs': [
@@ -124,7 +124,7 @@ export default defineConfig({
       title: "Mojo入门指南",
       description: "从Python出发",
       themeConfig: {
-        logo: '/logo.jpg',
+        logo: '/logo.png',
         nav: [
           { text: '开启攻略', link: '/zhs/docs/introduction' },
           { text: 'Mojo官网', link: 'https://www.modular.com/max/mojo/' }
@@ -150,7 +150,7 @@ export default defineConfig({
       title: "Mojo入門指南",
       description: "從Python出發",
       themeConfig: {
-        logo: '/logo.jpg',
+        logo: '/logo.png',
         nav: [
           { text: '開啓攻略', link: '/zht/docs/introduction' },
           { text: 'Mojo官網', link: 'https://www.modular.com/max/mojo/' }

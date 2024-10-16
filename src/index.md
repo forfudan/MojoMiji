@@ -2,12 +2,12 @@
 layout: home
 
 hero:
-  name: "Mojo Miji"
-  text: "From Pythonic to Magician"
+  name: "MOJO MIJI"
+  text: "A Guide to Mojo Programming language"
   tagline: Fast, Safe, Pythonic
   image:
-    dark: /logo.jpg
-    light: /logo.jpg
+    dark: /logo.png
+    light: /logo.png
     alt: logo
   actions:
     - theme: brand
