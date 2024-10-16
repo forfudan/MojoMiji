@@ -16,9 +16,6 @@ hero:
     - theme: alt
       text: NuMojo
       link: https://github.com/Mojo-Numerics-and-Algorithms-group/NuMojo
-    - theme: alt
-      text: 中文(CN)
-      link: /zhs/index
 
 features:
   - title: Fast
