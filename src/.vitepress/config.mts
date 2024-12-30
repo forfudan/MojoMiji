@@ -39,7 +39,7 @@ export default defineConfig({
     logo: '/logo.png',
     nav: [
       {
-        text: 'Open Miji', link: '/docs/introduction'
+        text: 'Open Miji', link: '/docs/intro'
       },
       { text: 'Mojo official', link: 'https://www.modular.com/max/mojo/' },
       { text: 'Repo', link: 'https://github.com/forFudan/MojoMiji' }
@@ -47,10 +47,10 @@ export default defineConfig({
     sidebar: {
       '/docs': [
         {
-          items: [{ text: 'Introduction', link: '/docs/introduction' },]
+          items: [{ text: 'Introduction', link: '/docs/intro' },]
         },
         {
-          items: [{ text: 'variables', link: '/docs/variables' },]
+          items: [{ text: 'Variables', link: '/docs/variables' },]
         },
         {
           text: 'TYPES',
@@ -66,9 +66,25 @@ export default defineConfig({
           ]
         },
         {
-          items: [{ text: 'ownership', link: '/docs/ownership' },]
+          items: [{ text: 'Ownership', link: '/docs/ownership' },]
         },
       ],
+      '/numojo': [
+        { items: [{ text: 'Introduction', link: '/numojo/intro' }] },
+        {
+          text: 'TYPES',
+          items: [
+            {
+              text: 'NDArray',
+              link: '/numojo/ndarray'
+            },
+            {
+              text: 'Matrix',
+              link: '/numojo/matrix'
+            },
+          ]
+        },
+      ]
     },
     footer: {
       message: "Mojo Miji",
@@ -126,13 +142,13 @@ export default defineConfig({
       themeConfig: {
         logo: '/logo.png',
         nav: [
-          { text: '开启攻略', link: '/zhs/docs/introduction' },
+          { text: '开启攻略', link: '/zhs/docs/intro' },
           { text: 'Mojo官网', link: 'https://www.modular.com/max/mojo/' }
         ],
         sidebar: {
           '/zhs/docs': [
             {
-              items: [{ text: '简介', link: '/zhs/docs/introduction' },]
+              items: [{ text: '简介', link: '/zhs/docs/intro' },]
             },
             {
               items: [{ text: '变量', link: '/zhs/docs/variables' },]
@@ -152,13 +168,13 @@ export default defineConfig({
       themeConfig: {
         logo: '/logo.png',
         nav: [
-          { text: '開啓攻略', link: '/zht/docs/introduction' },
+          { text: '開啓攻略', link: '/zht/docs/intro' },
           { text: 'Mojo官網', link: 'https://www.modular.com/max/mojo/' }
         ],
         sidebar: {
           '/zht/docs': [
             {
-              items: [{ text: '簡介', link: '/zht/docs/introduction' },]
+              items: [{ text: '簡介', link: '/zht/docs/intro' },]
             },
             {
               items: [{ text: '變量', link: '/zht/docs/variables' },]

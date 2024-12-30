@@ -12,10 +12,10 @@ hero:
   actions:
     - theme: brand
       text: Open Miji
-      link: docs/introduction
+      link: docs/intro
     - theme: alt
       text: NuMojo
-      link: https://github.com/Mojo-Numerics-and-Algorithms-group/NuMojo
+      link: numojo/intro
 
 features:
   - title: Fast
