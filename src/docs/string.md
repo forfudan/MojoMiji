@@ -1,6 +1,6 @@
 # String
 
-[Source code of String type](https://github.com/modularml/mojo/blob/main/stdlib/src/collections/string.mojo)
+[Source code of `String` type](https://github.com/modularml/mojo/blob/main/stdlib/src/collections/string.mojo)
 
 String is an important type of Mojo and Python, which represents a sequence of UTF-8 encoded characters. String is usually displayed in paired quotation marks, e.g., `'a'`, `"abc"`.
 

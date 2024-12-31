@@ -6,6 +6,8 @@ Array view is a special kind of array who does not own the underlying data but u
 
 The array view is particularly helpful if you want to obtain the sliced array without copying the underlying data. The time consumed in creating slices is constant.
 
+(Note: This feature is not yet implement but a proposal.)
+
 ## Data structure
 
 Recall that `NDArray` is defined as
