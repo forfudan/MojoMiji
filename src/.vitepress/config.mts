@@ -79,8 +79,8 @@ export default defineConfig({
               link: '/numojo/ndarray'
             },
             {
-              text: 'Matrix',
-              link: '/numojo/matrix'
+              text: 'View of array',
+              link: '/numojo/view'
             },
           ]
         },
