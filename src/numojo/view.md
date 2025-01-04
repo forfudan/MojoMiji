@@ -54,6 +54,7 @@ The shape and strides of the view can be determined based on:
 
 Here is an example, an 6x8 array with 48 items. The values in the box can be seen as both the addresses of vitual memory and the values stored there.
 ```console
+a 
 ┌──┬──┬──┬──┬──┬──┬──┬──┐
 │ 0│ 1│ 2│ 3│ 4│ 5│ 6│ 7│
 ├──┼──┼──┼──┼──┼──┼──┼──┤
@@ -74,6 +75,7 @@ This array `a` has `shape=(6,8)` and `strides=(8,1)`.
 Now we want to obtain a slice of the array `a` as a view. Let's say `b = a[1:6:2, 2:8:2]`. By taking out all the values needed, the array view `b` should look like as follows.
 
 ```console
+b = a[1:6:2, 2:8:2]
 ┌──┬──┬──┐
 │10│12│14│
 ├──┼──┼──┤
@@ -109,6 +111,60 @@ $$
 $$
 
 So, item `(1, 1)` of array view `b` has the adress `10 + 1*16 + 1*2 = 28`. item `(2, 0)` of array view `b` has the adress `10 + 2*16 + 0*2 = 42`. This is exactly as displayed in the figure above.
+
+## Slice of whole axis
+
+Sometimes we want to retrieve a whole axis of an array (row of matrix, plain of ndarray, etc). For example, `a[1]` or `a[1, :]` returns the second row of the matrix `a` above, which would be:
+```console
+a[1]:
+┌──┬──┬──┬──┬──┬──┬──┬──┐
+│ 8│ 9│10│11│12│13│14│15│
+└──┴──┴──┴──┴──┴──┴──┴──┘
+```
+
+In this sense, the original strides information will not be useful (no matter the ndim decreases by 1 or not) because you never travel to the next row.
+
+In `numpy`, the strides can be arbitary when the `shape[i] == 1`, which means that F-continous being true does not necessarily mean that `strides[0] == itemsize`, and that C-continous being true does not necessarily mean that `strides[-1] == itemsize`.
+
+```python
+>>> a = np.arange(9).reshape((3,3))
+>>> b = a[::100, :]
+>>> print(a.flags)
+(24, 8)
+>>> print(b.flags)
+C_CONTIGUOUS : True
+F_CONTIGUOUS : True
+OWNDATA : False
+WRITEABLE : True
+ALIGNED : True
+WRITEBACKIFCOPY : False
+>>> print(b.strides)
+(2400, 8)
+```
+
+**In Numojo, the slices shall be first normalized so that the flag will reflect the true memory layout.**
+
+## Decrease of ndim
+
+Sometimes, slice results in decrease of dimensions, e.g., `a[1]`. The new shape and the new strides can be determined by dropping the corresponding axis. The offset can be calcuated using:
+
+$$
+offset_b = \overrightarrow{start} \cdot \overrightarrow{strides_a}
+$$
+
+For instance, `a` has shape `(6, 8)` and strides `(8, 1)`. 
+
+Then, `b = a[1]` has shape `(8)`, strides `(1)`, and offset `8`.
+$$
+offset_b = (1, 0) \cdot (8, 1) = 8
+$$
+
+```console
+b = a[1]:
+┌──┬──┬──┬──┬──┬──┬──┬──┐
+│ 8│ 9│10│11│12│13│14│15│
+└──┴──┴──┴──┴──┴──┴──┴──┘
+```
 
 ## SIMD operations
 
