@@ -79,7 +79,17 @@ export default defineConfig({
           ]
         },
         {
-          items: [{ text: 'Ownership', link: '/docs/ownership' },]
+          text: 'OWNERSHIP',
+          items: [
+            {
+              text: 'Ownership',
+              link: '/docs/ownership'
+            },
+            {
+              text: 'Reference',
+              link: '/docs/reference'
+            },
+          ]
         },
       ],
       '/numojo': [

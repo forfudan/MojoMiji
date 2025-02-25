@@ -129,4 +129,57 @@ def main():
 
 ```
 
-## Mutability of arguments
+## Keywords for arguments
+
+To determine whether a passed-in value can be modified by the function, Mojo uses several keywords to define the behavior of the arguments.
+
+Although Mojo has ownership system, it is different from Rust's. In Rust, if you pass a value into function, the function will take over the ownership of the value. The value is inaccessible after using the function. In order to use the value in a function without transferring the ownership to it, one could pass a reference or mutable reference of the value into the function, e.g., `&a` or `&mut a`.
+
+In Mojo, you can directly pass the value into the function. The function will take a reference (alias) of the value. This reference (alias) will behave the same as the value you passed in. The mutability of the arguments is defined by several keywords, namely, `read`, `mut`, `owned` and `out`.
+
+::: warning Reference
+
+The term "reference" means differently in Mojo compared to Rust. Moreover, the ownership model of Mojo is significantly different from that of Rust's. For more information on "reference", please refer to the page [reference](reference)).
+:::
+
+### Keyword `read`
+
+If an argument is declared with the keyword `read`, then a read-only reference of the value is passed into the function. The function can access the value stored at certain address in the memory without a copy [^copy], but it will not modify the value at the address.
+
+The read-only reference behaves the same as the value it refers to. An example goes as follows.
+
+```mojo
+fn copyit(read some: List[Int]) -> List[Int]:
+    b = some.copy()
+    return b
+
+def main():
+    var lst = List[Int](1, 2, 3, 4)
+    var new_lst = copyit(lst)
+    for i in new_lst:
+        print(i[])
+```
+
+When you pass the list `lst` into the function `copyit()`, Mojo creates read-only, immutable reference (alias) of `lst`. This variable `some` points to the same address of `lst` and behave exactly as `lst`.
+
+The line `b = some.copy()` then calls the `copy()` method of `some`. This generates a deep copy of the list and bind it to the variable `b`.
+
+The variable `b` is then returned by `copyit()` into `main()` and is assigned to the variable `new_lst`.
+
+::: tip `read` as default keyword
+
+In the Mojo programming language, when declaring a function, if no keyword is indicated in front of an argument, then it is defaulted to `read`. So the following two functions are equivalent.
+
+```mojo
+fn copyit(read some: List[Int]) -> List[Int]:
+    b = some.copy()
+    return b
+
+fn copyit(some: List[Int]) -> List[Int]:
+    b = some.copy()
+    return b
+```
+
+:::
+
+[^copy]: For some small structs, a copy is made.
