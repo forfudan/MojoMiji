@@ -47,10 +47,23 @@ export default defineConfig({
     sidebar: {
       '/docs': [
         {
-          items: [{ text: 'Introduction', link: '/docs/intro' },]
+          text: 'GET START',
+          items: [
+            {
+              text: 'Introduction', link: '/docs/intro',
+            },
+          ],
         },
         {
-          items: [{ text: 'Variables', link: '/docs/variables' },]
+          text: 'BASICS',
+          items: [
+            {
+              text: 'Variables', link: '/docs/variables',
+            },
+            {
+              text: 'Functions', link: '/docs/functions',
+            },
+          ],
         },
         {
           text: 'TYPES',
