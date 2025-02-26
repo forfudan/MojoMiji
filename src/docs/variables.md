@@ -47,6 +47,13 @@ fn main():
     var a: Int = 1
 ```
 
+::: info `let` and `var`
+
+In early versions of Mojo, the `let` keyword is used to declare immutable variables (just like Rust) and the `var` keyword is used to declare mutable variables. From v24.4 (2024-06-07), the `let` keyword has been completely removed from the language. From v24.5 (2024-09-13), the `var` keyword has become optional (like Python).
+
+Yuhao highly recommends you to continue using the `var` keyword though it is optional. Using `var` can effectively differentiate the cases when you want to declare a variable and when you want to change the value.
+:::
+
 ## Changing Values
 
 Once a variable is assigned a value, we can continue to change its value using assignment statements:

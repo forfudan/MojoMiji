@@ -10,6 +10,12 @@ The descriptions above sounds ver difficult to understand. Thus, we need some ex
 
 In the following sections, I will introduce a conceputual social model. Later, I will demonstrate how this model can be linked with programming.
 
+::: info
+
+Please note that the ownership model and semantics implemented by Mojo are (significantly) different from Rust's references and lifetimes (See [this article](https://gist.github.com/lattner/da647146ea573902782525f3446829ff) by Chris Lattner).
+
+:::
+
 ## A conceptual social model
 
 There is an island surrouned by water. It is completed owned by a governer. The governer is very wise and want to build a big encyclopedia in one year, from 1 January to 31 December. For this purpose, he need some resources.
