@@ -182,4 +182,92 @@ fn copyit(some: List[Int]) -> List[Int]:
 
 :::
 
+Since the `read` argument convention is immutable, attempting to change the value of the argument will cause an error at compile time. See the following example:
+
+```mojo
+fn changeit(read some: List[Int]) -> List[Int]:
+    some[0] = 100
+    return b
+```
+
+```console
+error: expression must be mutable in assignment
+    some[0] = 100
+    ~~~~^~~
+```
+
+### keyword `mut`
+
+The keyword `read` allows you to pass a mutable reference of the value into the function. The function can then modify the value at its original address. It is similar to the Rust `fn foo(a: &mut i32)`, but keep in mind that the reference in Mojo is more like an alias than a safe pointer, which means a de-referencing is not needed. See the following example:
+
+```mojo
+from memory import Pointer
+
+fn changeit(mut a: Int8):
+    a = 10
+    print("Address of the argument `a`: ", String(Pointer[Int8].address_of(a)))
+
+def main():
+    var x: Int8 = 5
+    print("Value of the variable before change: ", x)
+    print("Address of the variable `x`: ", String(Pointer[Int8].address_of(x)))
+    changeit(x)
+    print("Value of the variable after change: ", x)
+    print("Address of the variable `x`: ", String(Pointer[Int8].address_of(x)))
+```
+
+```console
+Value of the variable before change:  5
+Address of the variable `x`:  0x16bd78fb0
+Address of the argument `a`:  0x16bd78fb0
+Value of the variable after change:  10
+Address of the variable `x`:  0x16bd78fb0
+```
+
+Let's look into the code and see what has happened:
+
+First, you create variable with the name `x` and type `Int8` and assign value `5` to it. Mojo assigns a space in the memory, which is of 1-byte (8-bit) length at the address `16b6a8fb0`. The value is `5`, so it is stored as `00000100` (binary representation of an integer 5) at the address `16b6a8fb0`. See the following illustration.
+
+```console
+        ┌─────────┬─────────┬─────────┬─────────┬─────────┬─────────┐
+Value   │         │         │ 00000100│         │         │         │
+        ├─────────┼─────────┼─────────┼─────────┼─────────┼─────────┤
+Address │16b6a8fae│16b6a8faf│16b6a8fb0│16b6a8fb1│16b6a8fb2│16b6a8fb3│
+        └─────────┴─────────┴─────────┴─────────┴─────────┴─────────┘
+                               ↑
+                             x (Int8)
+```
+
+Next, you pass this value into the function `changeit` with the `mut` keyword. Mojo will then create a mutable reference of `x`, which is named as `a` . This reference `a` is an alias of `x`, pointing to the same address `16b6a8fb0`. See the following illustration.
+
+```console
+                             a (Int8): Mutable reference of x
+                               ↓
+        ┌─────────┬─────────┬─────────┬─────────┬─────────┬─────────┐
+Value   │         │         │ 00000100│         │         │         │
+        ├─────────┼─────────┼─────────┼─────────┼─────────┼─────────┤
+Address │16b6a8fae│16b6a8faf│16b6a8fb0│16b6a8fb1│16b6a8fb2│16b6a8fb3│
+        └─────────┴─────────┴─────────┴─────────┴─────────┴─────────┘
+                               ↑
+                             x (Int8)
+```
+
+Then, you assign a value `10` to the `a`. Since `a` is a mutable reference of `x`, this re-assignment is allowed. The line of code is equivalent to re-assigning the value `10` to `x`. The new value `00001010` (binary representation of the integer 10) is then stored into the memory location of `x` at address `16b6a8fb0`. Now the updated illustration of the memory goes as follows.
+
+```console
+        ┌─────────┬─────────┬─────────┬─────────┬─────────┬─────────┐
+Value   │         │         │ 00001010│         │         │         │
+        ├─────────┼─────────┼─────────┼─────────┼─────────┼─────────┤
+Address │16b6a8fae│16b6a8faf│16b6a8fb0│16b6a8fb1│16b6a8fb2│16b6a8fb3│
+        └─────────┴─────────┴─────────┴─────────┴─────────┴─────────┘
+                              ↑
+                             x (Int8)
+```
+
+::: info
+
+The keyword `read` was named as `borrowed` before v24.6. The keyword `mut` was named as `inout` before v24.6.
+
+:::
+
 [^copy]: For some small structs, a copy is made.
