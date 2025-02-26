@@ -142,6 +142,12 @@ In Mojo, you can directly pass the value into the function. The function will ta
 The term "reference" means differently in Mojo compared to Rust. Moreover, the ownership model of Mojo is significantly different from that of Rust's. For more information on "reference", please refer to the page [reference](reference)).
 :::
 
+::: info
+
+The keyword `read` was named as `borrowed` before v24.6. The keyword `mut` was named as `inout` before v24.6.
+
+:::
+
 ### Keyword `read`
 
 If an argument is declared with the keyword `read`, then a read-only reference of the value is passed into the function. The function can access the value stored at certain address in the memory without a copy [^copy], but it will not modify the value at the address.
@@ -294,10 +300,8 @@ fn main():
 
 :::
 
-::: info
+### keyword `mut` and `out`
 
-The keyword `read` was named as `borrowed` before v24.6. The keyword `mut` was named as `inout` before v24.6.
-
-:::
+Yuhao will explain this part later.
 
 [^copy]: For some small structs, a copy is made.
