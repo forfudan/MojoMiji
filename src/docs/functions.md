@@ -205,23 +205,23 @@ from memory import Pointer
 
 fn changeit(mut a: Int8):
     a = 10
-    print("Address of the argument `a`: ", String(Pointer[Int8].address_of(a)))
+    print("Address of the argument `a`: ", String(Pointer.address_of(a)))
 
-def main():
+fn main():
     var x: Int8 = 5
-    print("Value of the variable before change: ", x)
-    print("Address of the variable `x`: ", String(Pointer[Int8].address_of(x)))
+    print("Value of the variable `x` before change: ", x)
+    print("Address of the variable `x`: ", String(Pointer.address_of(x)))
     changeit(x)
-    print("Value of the variable after change: ", x)
-    print("Address of the variable `x`: ", String(Pointer[Int8].address_of(x)))
+    print("Value of the variable `x` after change: ", x)
+    print("Address of the variable `x`: ", String(Pointer.address_of(x)))
 ```
 
 ```console
-Value of the variable before change:  5
-Address of the variable `x`:  0x16bd78fb0
-Address of the argument `a`:  0x16bd78fb0
-Value of the variable after change:  10
-Address of the variable `x`:  0x16bd78fb0
+Value of the variable `x` before change:  5
+Address of the variable `x`:  0x16b6a8fb0
+Address of the argument `a`:  0x16b6a8fb0
+Value of the variable `x` after change:  10
+Address of the variable `x`:  0x16b6a8fb0
 ```
 
 Let's look into the code and see what has happened:
@@ -263,6 +263,36 @@ Address │16b6a8fae│16b6a8faf│16b6a8fb0│16b6a8fb1│16b6a8fb2│16b6a8fb3
                               ↑
                              x (Int8)
 ```
+
+::: tip Equivalent code in Rust
+
+The code above, if written in Rust, looks like:
+
+```rust
+fn changeit(a: &mut i8) {
+    *a = 10;
+}
+
+fn main() {
+    let mut x: i8 = 5;
+    changeit(&mut x);
+    println!("x = {}", x);
+}
+```
+
+Let's compare it again with Mojo.
+
+```mojo
+fn changeit(mut a: Int8):
+    a = 10
+
+fn main():
+    var x: Int8 = 5
+    changeit(x)
+    print("x =", x)
+```
+
+:::
 
 ::: info
 
