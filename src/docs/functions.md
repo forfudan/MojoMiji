@@ -129,7 +129,7 @@ def main():
 
 ```
 
-## Keywords for arguments
+## Mutability of arguments
 
 To determine whether a passed-in value can be modified by the function, Mojo uses several keywords to define the behavior of the arguments.
 
@@ -204,7 +204,7 @@ error: expression must be mutable in assignment
 
 ### keyword `mut`
 
-The keyword `read` allows you to pass a mutable reference of the value into the function. The function can then modify the value at its original address. It is similar to the Rust `fn foo(a: &mut i32)`, but keep in mind that the reference in Mojo is more like an alias than a safe pointer, which means a de-referencing is not needed. See the following example:
+The keyword `mut` allows you to pass a mutable reference of the value into the function. The function can then modify the value at its original address. It is similar to the Rust `fn foo(a: &mut i8)`, but keep in mind that the reference in Mojo is more like an alias than a safe pointer, which means a de-referencing is not needed. See the following example:
 
 ```mojo
 from memory import Pointer
