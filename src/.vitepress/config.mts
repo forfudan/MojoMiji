@@ -47,47 +47,62 @@ export default defineConfig({
     sidebar: {
       '/docs': [
         {
-          text: 'GET START',
+          text: 'Introduction',
+          link: '/docs/intro'
+        },
+        {
+          text: 'Table of Content',
+          link: '/docs/toc'
+        },
+        {
+          text: 'PART I: START',
+          link: '/docs/start/start',
           items: [
             {
-              text: 'Introduction', link: '/docs/intro',
+              text: 'Install Magic', link: '/docs/start/install'
             },
+            {
+              text: 'Initiate Mojo project', link: '/docs/start/initiate'
+            },
+            {
+              text: 'My first Mojo program', link: '/docs/start/hello'
+            }
           ],
         },
         {
-          text: 'BASICS',
+          text: 'PART III: BASICS',
+          link: '/docs/basic/basic',
           items: [
             {
-              text: 'Variables', link: '/docs/variables',
+              text: 'Variables', link: '/docs/basic/variables',
             },
             {
-              text: 'Functions', link: '/docs/functions',
+              text: 'Functions', link: '/docs/basic/functions',
             },
-          ],
-        },
-        {
-          text: 'TYPES',
-          items: [
             {
-              text: 'Built-in types',
-              link: '/docs/types'
+              text: 'Built-in types', link: '/docs/basic/types'
             },
             {
               text: 'String',
-              link: '/docs/string'
+              link: '/docs/basic/string'
+            },
+          ],
+        },
+        {
+          text: 'PART IV: ADVANCED', link: '/docs/advanced/advanced',
+          items: [
+            {
+              text: 'Ownership',
+              link: '/docs/advanced/ownership'
             },
           ]
         },
         {
-          text: 'OWNERSHIP',
+          text: 'PART VI: MISCELLANEOUS',
           items: [
             {
-              text: 'Ownership',
-              link: '/docs/ownership'
-            },
-            {
               text: 'Reference',
-              link: '/docs/reference'
+              link: '/docs/misc/reference'
             },
           ]
         },
@@ -165,7 +180,7 @@ export default defineConfig({
       themeConfig: {
         logo: '/logo.png',
         nav: [
-          { text: '开启攻略', link: '/zhs/docs/intro' },
+          { text: '开启攻略', link: '/zhs/docs/starts/introduction' },
           { text: 'Mojo官网', link: 'https://www.modular.com/max/mojo/' }
         ],
         sidebar: {
