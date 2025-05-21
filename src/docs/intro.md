@@ -31,3 +31,5 @@ This website introduces the basic features, syntax, and functions of Mojo, makin
 This guide will be written in stages, focusing on key topics. Note that Mojo is still in the early stages of development, with significant syntax changes and potential keyword alterations. The Mojo compiler is written in C++, is not yet open-sourced, and has not achieved self-hosting (compiling its own code)^[https://github.com/modularml/mojo/discussions/3049]. The official team has no immediate plans for this. Therefore, this guide is expected to be updated continuously over a long period (around five years).
 
 Thank you for reading. Due to limited capabilities, and there may be many inaccuracies in the content. Your feedback is greatly appreciated.
+
+Yuhao Zhu 朱宇浩

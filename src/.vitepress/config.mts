@@ -125,7 +125,7 @@ export default defineConfig({
       ]
     },
     footer: {
-      message: "Mojo Miji",
+      message: "Mojo Miji · Mojo 秘籍",
       copyright: "Yuhao Zhu 朱宇浩 © 2024 Under CC BY-NC-ND 4.0 license",
     },
     darkModeSwitchLabel: "Dark mode",
