@@ -139,7 +139,7 @@ In Mojo, you can directly pass the value into the function. The function will ta
 
 ::: warning Reference
 
-The term "reference" means differently in Mojo compared to Rust. Moreover, the ownership model of Mojo is significantly different from that of Rust's. For more information on "reference", please refer to the page [reference](reference)).
+The term "reference" means differently in Mojo compared to Rust. Moreover, the ownership model of Mojo is significantly different from that of Rust's. For more information on "reference", please refer to the page [reference](../misc/reference).
 :::
 
 ::: info

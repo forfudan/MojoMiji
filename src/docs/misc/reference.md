@@ -15,7 +15,7 @@ def main():
 
 ## Illustrations
 
-Here is the same example we used in introducing the keyword `mut` for arguments of [functions](functions). It demonstrate how Mojo's "reference" works.
+Here is the same example we used in introducing the keyword `mut` for arguments of [functions](../basic/functions). It demonstrate how Mojo's "reference" works.
 
 ```mojo
 from memory import Pointer
