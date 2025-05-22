@@ -40,7 +40,7 @@ features:
 
 I am Yuhao Zhu (朱宇浩), a senior credit risk model validator at ABN AMRO Bank and visiting fellow at Erasmus University Rotterdam.
 
-[Personal website](https://zhuyuhao.com)
+[Personal website](https://zhuyuhao.com)  
 [GitHub page](https://github.com/forFudan)
 
 :::

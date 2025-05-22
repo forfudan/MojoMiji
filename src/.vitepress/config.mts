@@ -70,6 +70,15 @@ export default defineConfig({
           ],
         },
         {
+          text: 'PART II: MOVE',
+          link: '/docs/move/move',
+          items: [
+            {
+              text: 'From Python to Mojo', link: '/docs/move/examples'
+            },
+          ],
+        },
+        {
           text: 'PART III: BASICS',
           link: '/docs/basic/basic',
           items: [
@@ -166,63 +175,36 @@ export default defineConfig({
     ]
   },
 
-
-  locales: {
-    root: {
-      label: 'English',
-      lang: 'en'
-    },
-    zhs: {
-      label: "简化汉字",
-      lang: "zh-Hans-CN",
-      title: "Mojo入门指南",
-      description: "从Python出发",
-      themeConfig: {
-        logo: '/logo.png',
-        nav: [
-          { text: '开启攻略', link: '/zhs/docs/starts/introduction' },
-          { text: 'Mojo官网', link: 'https://www.modular.com/max/mojo/' }
-        ],
-        sidebar: {
-          '/zhs/docs': [
-            {
-              items: [{ text: '简介', link: '/zhs/docs/intro' },]
-            },
-            {
-              items: [{ text: '变量', link: '/zhs/docs/variables' },]
-            },
-            {
-              items: [{ text: '類型', link: '/zhs/docs/types' },]
-            },
-          ],
-        },
-      }
-    },
-    zht: {
-      label: "傳統漢字",
-      lang: "zh-Hans-CN",
-      title: "Mojo入門指南",
-      description: "從Python出發",
-      themeConfig: {
-        logo: '/logo.png',
-        nav: [
-          { text: '開啓攻略', link: '/zht/docs/intro' },
-          { text: 'Mojo官網', link: 'https://www.modular.com/max/mojo/' }
-        ],
-        sidebar: {
-          '/zht/docs': [
-            {
-              items: [{ text: '簡介', link: '/zht/docs/intro' },]
-            },
-            {
-              items: [{ text: '變量', link: '/zht/docs/variables' },]
-            },
-            {
-              items: [{ text: '類型', link: '/zht/docs/types' },]
-            },
-          ],
-        },
-      }
-    },
-  },
+  // locales: {
+  //   root: {
+  //     label: 'English',
+  //     lang: 'en'
+  //   },
+  //   zht: {
+  //     label: "傳統漢字",
+  //     lang: "zh-Hans-CN",
+  //     title: "Mojo入門指南",
+  //     description: "從Python出發",
+  //     themeConfig: {
+  //       logo: '/logo.png',
+  //       nav: [
+  //         { text: '開啓攻略', link: '/zht/docs/intro' },
+  //         { text: 'Mojo官網', link: 'https://www.modular.com/max/mojo/' }
+  //       ],
+  //       sidebar: {
+  //         '/zht/docs': [
+  //           {
+  //             items: [{ text: '簡介', link: '/zht/docs/intro' },]
+  //           },
+  //           {
+  //             items: [{ text: '變量', link: '/zht/docs/variables' },]
+  //           },
+  //           {
+  //             items: [{ text: '類型', link: '/zht/docs/types' },]
+  //           },
+  //         ],
+  //       },
+  //     }
+  //   },
+  // },
 })

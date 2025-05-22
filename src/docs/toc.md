@@ -5,11 +5,11 @@
   - [Install Magic](./start/install)
   - [Initiate Mojo project](./start/initiate)
   - [My first Mojo program](./start/hello)
-<!-- - [Part II: Migrate (Yuhao is working on this)](./migrate/migrate)
-  - [Similarities](./migrate/similarities)
-  - [Differences](./migrate/differences)
-  - [New features](./migrate/new)
-  - [Call Python in Mojo](./migrate/python) -->
+- [Part II: Move](./move/move)
+  - [From Python to Mojo](./move/examples)
+  - [What are similar](./move/similar)
+  - [What are different](./move/different)
+  - [What are new](./move/new)
 - [Part III: Basic](./basic/basic)
   - [Variables](./basic/variables)
   - [Data types](./basic/types)
@@ -22,6 +22,7 @@
   <!-- - [Parameterization (Yuhao is working on this)](./advanced/parameterization) -->
   <!-- - [Traits (Yuhao is working on this)](./advanced/traits) -->
   - [Ownership](./advanced/ownership)
+  <!-- - [Call Python in Mojo](./advanced/python) -->
 <!-- - [Part V: Extensions (Yuhao is working on this)](./extensions/extensions) -->
   <!-- - [NuMojo](./extensions/numojo) -->
   <!-- - [DeciMojo](./extensions/decimojo) -->
