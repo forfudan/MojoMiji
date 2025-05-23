@@ -1,5 +1,9 @@
 # Initiate Mojo project
 
+Now we have installed the magic CLI. In this chapter, we will cover how to create a Mojo project and install the Mojo compiler.
+
+[[toc]]
+
 ## Virtual environment
 
 As a Python user, you may or may not be familiar with the concept of virtual environments. Many people install a certain version of Python and packages globally. No matter where your Python code is, you can always run it using the Python interpreter with the command `python file.py`.

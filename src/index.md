@@ -4,7 +4,7 @@ layout: home
 hero:
   name: "MOJO MIJI"
   text: "A Guide to Mojo Programming language"
-  tagline: Fast, Safe, Pythonic
+  tagline: From Python to Mojo
   image:
     dark: /logo.png
     light: /logo.png

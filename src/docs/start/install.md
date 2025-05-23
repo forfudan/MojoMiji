@@ -7,6 +7,8 @@ Before programming in Mojo, you need to first set up two things:
 1. Install `magic`, a command line (CLI) tool and package manager.
 1. Install `mojo` extension in your IDE (I would say VS Code is the best choice for now).
 
+[[toc]]
+
 ## Install Magic CLI
 
 Magic is a package manager and virtual environment manager for Mojo (as well as other languages). It is based on pixi, so a lot of the commands are similar to pixi.

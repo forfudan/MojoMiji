@@ -1,8 +1,10 @@
-# First Mojo program
+# My first Mojo program
+
+Now we have set up everything (finally). In this chapter, let's write our first Mojo program and run it.
+
+[[toc]]
 
 ## Hello, world
-
-Now we have set up everything (finally). Let's write our first Mojo program!
 
 Let's create a folder in our project directory called `src`. Then we create a file called `hello.mojo` in this folder. Your project directory should look like this:
 
