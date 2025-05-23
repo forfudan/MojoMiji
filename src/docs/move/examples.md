@@ -1,4 +1,4 @@
-# From Python to Mojo
+# Convert Python code into Mojo
 
 In this chapter, we will look at some simple examples of Python and Mojo code. The goal is to help you have a image of how Mojo looks like and how it is similar to or different from Python.
 
@@ -6,7 +6,7 @@ In this chapter, we will look at some simple examples of Python and Mojo code. T
 
 ## Multiplication table
 
-The first example is about multiplication table ([Wiki page](https://en.wikipedia.org/wiki/Multiplication_table)). The multiplication table is a table of numbers that shows the result of multiplying two integral numbers together. When I am kid, before going to the elementary school, I was already able to memorize the Chinese multiplication table (九九乘法表 / Nine-nine song). It is a powerful tool for learning multiplication and finding the product of two numbers quickly.
+The first example is about multiplication table ([Wiki page](https://en.wikipedia.org/wiki/Multiplication_table)). The multiplication table is a table of numbers that shows the result of multiplying two integral numbers together. When I am kid, before going to the elementary school, I was already able to memorize the Chinese multiplication table (<ruby>九<rt>jǐu</rt>九<rt>jǐu</rt>乘<rt>chéng</rt>法<rt>fǎ</rt>表<rt>biǎo</rt></ruby> / Nine-nine song). It is a powerful tool for learning multiplication and finding the product of two numbers quickly.
 
 So the first example is to print a multiplication table from 1 to 9. Each element would be of the form `i * j = k`. All the elements in the same row are separated by a tab character. Since the multiplication is symmetric, we do not need to repeat the calculation. For example, we skip `3 * 1 = 1` and `3 * 2 = 6` but continue with `3 * 3 = 9`.
 
@@ -93,7 +93,7 @@ On my machine (Apple M4 Pro), it takes about ***24 seconds*** to run the code. T
 
 Just like what we did in the previous example, we copy the above Python file and change the file extension to `.mojo`. Then we remove the last line `main()`.
 
-Now you will see that your IDE is complaining about the first line of the code. It highlights the type hints `int` and tells you "use of unknown declaration 'int'". Running the code will also give your the same error. This is because Mojo's built-in integral type is called `Int` (with capital "I") which is different from Python. So we need to change the type hints from `int` to `Int`.
+Now you will see that your IDE is complaining about the first line of the code. It highlights the type hints `int` and tells you `use of unknown declaration 'int'`. Running the code will also give your the same error. This is because Mojo's built-in integral type is called `Int` (with capital "I") which is different from Python. So we need to change the type hints from `int` to `Int`.
 
 ```mojo
 def fib(n: Int) -> Int:
@@ -106,7 +106,7 @@ def main():
         print(fib(i), end=", ")
 ```
 
-Let's run the code again with `magic run mojo src/fibonacci.mojo`. On my machine, it takes around ***0.35*** seconds.
+Let's run the code again with `magic run mojo src/fibonacci.mojo`. On my machine, it takes around ***0.35*** seconds only.
 
 See, a huge performance gain! The Mojo code is more than ***50 times*** faster than the Python code. What we did is just copying-pasting from the Python code and making small modifications, but we gained a performance comparable to C.
 
@@ -206,7 +206,7 @@ In the next example, we will look into more more complex data structure: lists. 
 
 This example is to sort an array of numbers in ascending order in-place. There are many sorting algorithms. We will use the bubble sort algorithm because it is relatively simple and won't take too many lines of code.
 
-The bubble sort algorithm repeatedly scan through the array, compares each pair of adjacent elements and swaps them if they are in the wrong order. For example, the array `5, 2, 9, 1` will be sequentially sorted to `2, 5, 1, 9` - `2, 1, 5, 9` - `1, 2, 5, 9` after iterations.
+The bubble sort algorithm repeatedly scan through the array, compares each pair of adjacent elements and swaps them if they are in the wrong order. For example, the array `5, 2, 9, 1` will be sequentially sorted to `2, 5, 1, 9` -> `2, 1, 5, 9` -> `1, 2, 5, 9` after iterations.
 
 Let's do this first in Python. We create a file in the `src` directory called `sort.py` and write the following code in it:
 
@@ -236,7 +236,7 @@ After sorting: [-12.3, -11.5, 22.0, 25.1, 34.523, 64.1, 90.49]
 
 We can visually verify that the array is correctly sorted in ascending order. Now we try to migrate the code to Mojo. Just like what we did in the previous examples, we copy the above Python file and change the file extension to `.mojo`. Then we remove the last line `main()`.
 
-Now you immediately see that you IDE is complaining more errors than before:
+Now you immediately see that you IDE is complaining more errors than before. The first error message is:
 
 ```console
 error: argument type must be specified
@@ -276,14 +276,14 @@ error: expression must be mutable in assignment
                 ~~~~~~~~^~~~~~~~~~~~
 ```
 
-This is another important and new feature of Mojo: the arguments cannot be modified at will in functions. This is to avoid unintentional changes to the arguments outside the function. If you want to modify the argument in the function, you have to explicitly declare the argument as mutable. This is done via some special keywords in the function signature. We will discuss this more in [the chapter about functions](../basic/functions). For now, we just add the keyword `mutable` in front of the argument `array`. By doing this, we tell Mojo that we want to modify the variable `array` by using this function. No new object will be created.
+This is another important and new feature of Mojo: the arguments cannot be modified at will within the body of a function. This is to avoid unintentional changes to the original variable that is passed into the function. If you intend to change the value of the argument within the function, you have to explicitly declare the argument as ***mutable***. This is done via several special keywords in the function signature. We will discuss this more in [the chapter about functions](../basic/functions). For now, we just add the keyword `mutable` in front of the argument `array`. By doing this, we tell Mojo that we want to modify the variable `array` by using this function.
 
 ```mojo
 def bubble_sort(mut array: List[Float64]):
     ...
 ```
 
-Now you will see that the errors on the function `bubble_sort()` are gone. We now deal with the last error message:
+Now you will see that the errors on the function `bubble_sort()` are gone. We can move forward to deal with the very last error message:
 
 ```console
 error: invalid call to 'print': could not deduce parameter 'Ts' of callee 'print'
@@ -327,7 +327,14 @@ After sorting: [-12.3, -11.5, 22.0, 25.1, 34.523, 64.1, 90.49]
 
 Finally successful!
 
-For this example, we have to change more lines to adapt our Python code to Mojo. If you already use the type-hint system in Python, you will find that it is just about changing the names of the types. If you do not use the type-hint system in Python, you may find it a bit annoying and frustrated. But believe me, it is a good practice to declare the types of variables and arguments of functions, in both Mojo and Python. It makes our code more readable and maintainable, and it enables the linter to do static checks and find out potential bugs before you run the code.
+For this example, we have to change more lines to adapt our Python code to Mojo, including:
+
+- Explicitly specify the type of the arguments of the function.
+- Use the list constructor to create a list and specify the type of the elements.
+- Use the keyword `mutable` before arguments in function signature if you want to modify their values.
+- Printing lists is currently not supported in Mojo. You have to define a helper function to print the list.
+
+If you already use the type-hint system a lot in Python, you will not find these changes too difficult. If you do not use the type-hint system in Python, you may find it a bit annoying and frustrated. But believe me, it is a good practice to declare the types of variables and arguments of functions, in both Mojo and Python. It makes our code more readable and maintainable, and it enables the linter to do static checks and find out potential bugs before you run the code.
 
 ## Next step
 

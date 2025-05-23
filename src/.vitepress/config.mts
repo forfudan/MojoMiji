@@ -55,7 +55,7 @@ export default defineConfig({
           link: '/docs/toc'
         },
         {
-          text: 'PART I: START',
+          text: 'PART I: START WITH MOJO',
           link: '/docs/start/start',
           items: [
             {
@@ -70,16 +70,22 @@ export default defineConfig({
           ],
         },
         {
-          text: 'PART II: MOVE',
+          text: 'PART II: MOVE INTO MOJO',
           link: '/docs/move/move',
           items: [
             {
               text: 'From Python to Mojo', link: '/docs/move/examples'
             },
+            {
+              text: 'What are in common', link: '/docs/move/common'
+            },
+            {
+              text: 'What are different', link: '/docs/move/different'
+            },
           ],
         },
         {
-          text: 'PART III: BASICS',
+          text: 'PART III: BASIC MOJO',
           link: '/docs/basic/basic',
           items: [
             {
@@ -98,7 +104,7 @@ export default defineConfig({
           ],
         },
         {
-          text: 'PART IV: ADVANCED', link: '/docs/advanced/advanced',
+          text: 'PART IV: ADVANCED MOJO', link: '/docs/advanced/advanced',
           items: [
             {
               text: 'Ownership',
@@ -107,7 +113,16 @@ export default defineConfig({
           ]
         },
         {
-          text: 'PART VI: MISCELLANEOUS',
+          text: 'PART VI: EXTENDED MOJO', link: '/docs/extensions/extensions',
+          items: [
+            {
+              text: 'Packages',
+              link: '/docs/extensions/extensions'
+            },
+          ]
+        },
+        {
+          text: 'PART VI: MISCELLANEOUS MOJO',
           items: [
             {
               text: 'Reference',
