@@ -47,12 +47,12 @@ export default defineConfig({
     sidebar: {
       '/docs': [
         {
-          text: 'Introduction',
-          link: '/docs/intro'
+          text: 'Table of Content',
+          link: '/docs/index'
         },
         {
-          text: 'Table of Content',
-          link: '/docs/toc'
+          text: 'Introduction',
+          link: '/docs/intro'
         },
         {
           text: 'PART I: START WITH MOJO',
@@ -74,7 +74,7 @@ export default defineConfig({
           link: '/docs/move/move',
           items: [
             {
-              text: 'From Python to Mojo', link: '/docs/move/examples'
+              text: 'Convert Python code into Mojo', link: '/docs/move/examples'
             },
             {
               text: 'What are in common', link: '/docs/move/common'
@@ -95,11 +95,7 @@ export default defineConfig({
               text: 'Functions', link: '/docs/basic/functions',
             },
             {
-              text: 'Built-in types', link: '/docs/basic/types'
-            },
-            {
-              text: 'String',
-              link: '/docs/basic/string'
+              text: 'Data types', link: '/docs/basic/types'
             },
           ],
         },
@@ -116,8 +112,12 @@ export default defineConfig({
           text: 'PART VI: EXTENDED MOJO', link: '/docs/extensions/extensions',
           items: [
             {
-              text: 'Packages',
-              link: '/docs/extensions/extensions'
+              text: 'DeciMojo',
+              link: '/docs/extensions/decimojo'
+            },
+            {
+              text: 'NuMojo',
+              link: '/docs/extensions/numojo'
             },
           ]
         },
@@ -125,7 +125,7 @@ export default defineConfig({
           text: 'PART VI: MISCELLANEOUS MOJO',
           items: [
             {
-              text: 'Reference',
+              text: 'Reference system',
               link: '/docs/misc/reference'
             },
           ]

@@ -3,8 +3,8 @@ layout: home
 
 hero:
   name: "MOJO MIJI"
-  text: "A Guide to Mojo Programming language"
-  tagline: From Python to Mojo
+  text: "A Guide to Mojo Programming Language"
+  tagline: From A Pythonista's Perspective
   image:
     dark: /logo.png
     light: /logo.png
@@ -12,7 +12,7 @@ hero:
   actions:
     - theme: brand
       text: Open Miji
-      link: docs/intro
+      link: docs/index
     - theme: alt
       text: NuMojo
       link: numojo/intro

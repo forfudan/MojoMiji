@@ -89,7 +89,7 @@ Some people use it as a block comment.
 
 But it is ***not recommended***. In fact, you will receive an warning if you do this Mojo. The compiler will tell that this is a multi-line string literal is unused.
 
-## Documentation string
+### Documentation string
 
 In Python, documentation string ("docstring") is multi-line string literal that is used to document a function, class, or module. Usually, it is placed at the beginning of the function, class, or module. For example:
 
@@ -318,9 +318,9 @@ It is mostly similar to the Python code. The main difference is that we have to 
 
 ## Data types
 
-### Basic types
+### Basic data types
 
-Basic data types are the most common data types in programming languages. They are usually small in size, simple memory layout, and intuitive in meaning. For example, integers, floating-point numbers, strings, and booleans are the most common basic data types in almost all programming languages. In Python, these are `int`, `float`, `str`, and `bool`.
+Basic data types are the most common data types in programming languages, they can be numeric. They are usually small in size, simple memory layout, and intuitive in meaning. For example, integers, floating-point numbers, strings, and booleans are the most common basic data types in almost all programming languages. In Python, these are `int`, `float`, `str`, and `bool`.
 
 Mojo provides the corresponding basic data types as well. They behave almost the same as in Python. In most cases, you can use the these types without any issues. The following tables lists the basic data types in Python and their corresponding types in Mojo. Note that they are not exactly the same. We will discuss the differences in detail later ([Things that are different](./different.md)).
 
@@ -331,9 +331,9 @@ Mojo provides the corresponding basic data types as well. They behave almost the
 | `str`       | `String`  | String                | Mostly same                              |
 | `bool`      | `Bool`    | Boolean               | Mostly same                              |
 
-### Advanced types
+### Composite data types
 
-Advanced data types are more complex data structures and may contain multiple basic types. They are usually larger in size, more complex memory layout, and more abstract in meaning. For example, lists, tuples, sets, and dictionaries are the most common advanced data types in Python. Mojo provides the corresponding advanced data types as well. The following table summarize these data structures. Unfortunately, you will see more difference in behavior and functionality between Mojo and Python. We will discuss the advanced data types in detail in the later chapters ([Things that are different](./different.md)).
+Composite data types are more complex data structures and may contain multiple basic types. They are usually larger in size, more complex memory layout, and more abstract in meaning. For example, lists, tuples, sets, and dictionaries are the most common advanced data types in Python. Mojo provides the corresponding advanced data types as well. The following table summarize these data structures. Unfortunately, you will see more difference in behavior and functionality between Mojo and Python. We will discuss the advanced data types in detail in the later chapters ([Things that are different](./different.md)).
 
 | Python type | Mojo type          | Description                        | Behavior          |
 | ----------- | ------------------ | ---------------------------------- | ----------------- |
@@ -354,6 +354,10 @@ def main():
     print(f"It is {year} now!")  # This will not work
     print(String("It is {} now!").format(year))  # This will work
 ```
+
+## Operators
+
+(Yuhao is working on this.)
 
 ## Modules, packages, and imports
 
