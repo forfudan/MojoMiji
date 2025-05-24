@@ -8,8 +8,7 @@ Throughout this Miji Book, I will focus on providing concrete examples in both P
 
 Please be fully aware that Mojo is still in the early stages of development, with significant syntax changes and potential keyword alterations. The Mojo compiler is written in C++, is not yet open-sourced, and has not achieved self-hosting (compiling its own code)^[https://github.com/modularml/mojo/discussions/3049]. The official team has no immediate plans for this. 
 
-Therefore, this Miji Book is expected to be updated continuously over a long period (around five years). Many of the examples and explanations in this Miji may become outdated as Mojo evolves. Thank you in advance for your understanding and patience! 
-If you see any errors or inaccuracies in this Miji, please feel free to open an issue on the [GitHub repository](https://github.com/forfudan/MojoMiji). Your feedback is greatly appreciated.
+Therefore, this Miji Book is expected to be updated continuously over a long period (around five years). Many of the examples and explanations in this Miji may become outdated as Mojo evolves. Thank you in advance for your understanding and patience! If you see any errors or inaccuracies in this Miji, please feel free to open an issue on the [GitHub repository](https://github.com/forfudan/MojoMiji). Your feedback is greatly appreciated.
 
 Yuhao Zhu 朱宇浩  
 May 2025  

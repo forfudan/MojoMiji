@@ -39,7 +39,7 @@ export default defineConfig({
     logo: '/logo.png',
     nav: [
       {
-        text: 'Open Miji', link: '/docs/intro'
+        text: 'Open Miji', link: '/docs/'
       },
       { text: 'Mojo official', link: 'https://www.modular.com/max/mojo/' },
       { text: 'Repo', link: 'https://github.com/forFudan/MojoMiji' }
@@ -48,7 +48,7 @@ export default defineConfig({
       '/docs': [
         {
           text: 'Table of Content',
-          link: '/docs/index'
+          link: '/docs/'
         },
         {
           text: 'Introduction',

@@ -12,10 +12,10 @@ hero:
   actions:
     - theme: brand
       text: Open Miji
-      link: docs/index
-    - theme: alt
-      text: NuMojo
-      link: numojo/intro
+      link: docs/
+    # - theme: alt
+    #   text: NuMojo
+    #   link: numojo/intro
 
 features:
   - title: Fast
