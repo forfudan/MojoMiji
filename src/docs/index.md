@@ -25,7 +25,7 @@ by ***Yuhao Zhu 朱宇浩***
   <!-- - [Traits (Yuhao is working on this)](./advanced/traits) -->
   - [Ownership](./advanced/ownership) (A fairy tale about ownership in Mojo)
   <!-- - [Call Python in Mojo](./advanced/python) -->
-  - [Exercise: A matrix type](./advanced/matrix) (Let's implement a Matrix type in Mojo)
+  <!-- - [Exercise: A matrix type](./advanced/matrix) (Let's implement a Matrix type in Mojo) -->
 - [Part V: Extended Mojo (Yuhao is working on this)](./extensions/extensions)
   - [NuMojo](./extensions/numojo) (A library for numerical computing and NDArray)
   - [DeciMojo](./extensions/decimojo) (A library for arbitrary-precision integers and decimals)
