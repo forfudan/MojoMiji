@@ -115,90 +115,266 @@ Now the result will be `286718338524635465625`, which is the correct answer.
 
 :::
 
-### Floating-point numbers
+### Floating-point number
 
-Compared to integer types, floating-point numbers in Mojo share more similarities with Python.
+Compared to integer types, floating-point numbers in Mojo share more similarities with Python. The table below summarizes the floating-point types in Mojo and corresponding types in Python:
 
-## String
+| Mojo Type | Python Type     | Description                                                                     |
+| --------- | --------------- | ------------------------------------------------------------------------------- |
+| `Float64` | `float`         | 64-bit double-precision floating-point number. Default type for floats in Mojo. |
+| `Float32` | `numpy.float32` | 32-bit single-precision floating-point number.                                  |
+| `Float16` | `numpy.float16` | 16-bit half-precision floating-point number.                                    |
 
-::: warning Version 24.5
+To construct a floating-point number in Mojo, you can do that in three ways:
 
-This section is based on Mojo version 24.5. The behavior of `String` has been changing rapidly since then. Some of the features described here may not be applicable to the latest versions of Mojo, and some of the features may still be changing in future versions.
+1. Simply assign a floating-point literal to a variable without type annotations. A floating-point literal is a number with a decimal point or in scientific notation, e.g, `3.14` or `1e-10`. Mojo will automatically use `Float64` as the default type.
+1. Use type annotations to specify the type of the floating-point number, e.g., `var a: Float32 = 3.14`.
+1. Use the corresponding constructor, e.g., `Float64(3.14)`, `Float32(2.718)`, or `Float16(1.414)`.
+
+See the following examples.
+
+```mojo
+def main():
+    var a = 3.14                # Float64 by default
+    var b: Float32 = 2.718      # Float32 with type annotation
+    var c = Float16(1.414)      # Float16 with constructor
+    print(a, b, c)
+# Output: 3.14 2.718 1.4140625
+```
+
+::: warning Floating-point values are inexact
+
+You may find that the output of `Float16(1.414)` is `1.4140625`, which is not exactly `1.414`. This is because floating-point numbers are inexact representations of real numbers. This is because floating-point numbers are internally represented in binary format, while it is printed in decimal format. Not all decimal numbers can be represented exactly in binary format, and vice versa. Thus, when you create a floating-point number, e.g., `Float16(1.414)`, it may be stored as the closest representable value in binary format, which is `1.4140625` in this case.
+
+This is a common issue in many programming languages, including Python. You can have two methods to avoid or mitigate this issue:
+
+1. Use higher precision floating-point types, such as `Float64` or `Float32`, which can represent more decimal places and reduce the error. Note that the values are still inexact, but the error can be negligible.
+1. Use the `Decimal` type, which is internally presented in base 10. It can represent decimal numbers exactly, but it is slower than floating-point types. You can find more information about `Decimal` type in the [decimojo package](../extensions/decimojo.md).
 
 :::
 
-String is an important type of Mojo and Python, which represents a sequence of UTF-8 encoded characters. String is usually displayed in paired quotation marks, e.g., `'a'`, `"abc"`.
+## String
 
-`String` is stored on heap as a sequence of unsigned integers (`UInt8`), and with an `0` at the end. Because UTF-8 encoding is not fixed in bytes, each character may take space from 1 byte to 4 bytes.
+::: warning Version 25.3
 
-The following example shows how `"abc"` is stored in the memory.
+This section is based on Mojo version 25.3. The behavior of `String` has been changing rapidly since then. Some of the features described here may not be applicable to the latest versions of Mojo, and some of the features may still be changing in future versions.
+
+There are many ongoing discussions about the design of `String` in Mojo. The official team is still working on it. Here are some nice references that we can refer to:
+
+- [Proposal on String Design](https://github.com/modular/modular/blob/main/mojo/proposals/string-design.md
+) in the Mojo official repo for more up-to-date information.
+- [PR #3984: Un-deprecate `String.__iter__()`](https://github.com/modular/modular/pull/3984).
+- [PR #3988: String, ASCII, Unicode, UTF, Graphemes](https://github.com/modular/modular/pull/3988).
+
+:::
+
+::: tip Quick comparison between Mojo and Python
+
+| Functionality                     | Python `str`                           | Mojo `String`                                       |
+| --------------------------------- | -------------------------------------- | --------------------------------------------------- |
+| Constructed from string literals  | Use of`str()` constructor is optional. | You have to use `String()` constructor.             |
+| Print string with `print()`       | Yes.                                   | Yes.                                                |
+| Format string with `format()`     | Yes, use `{}`.                         | Yes, but you cannot specify formatting, e.g, `.2f`. |
+| f-strings                         | Yes.                                   | Not supported.                                      |
+| Iteration over UTF-8 code points  | Yes, use `for i in s:` directly.       | Yes, but more complicated.                          |
+| UTF8-assured indexing and slicing | Yes, use `s[i]` or `s[i:j]` directly.  | Not supported.                                      |
+
+This table is referred in Chapter [Differences between Python and Mojo](../move/different#string).
+
+:::
+
+### Internal representation of `String`
+
+String is an important type of Mojo and Python, which represents a sequence of UTF-8 encoded code points (characters). The internal representation of a `String` is actually list of 8-bit unsigned integers (`List[UInt8]`).
+
+::: info UTF-8 encoding
+
+UTF-8 is a variable-length character encoding for Unicode. It can represent every code point in the Unicode character set, which include characters and symbols from many different (existing or dead) languages and scripts. UTF-8 is designed to be backward-compatible with ASCII, meaning that any valid ASCII text is also valid UTF-8 text. UTF-8 uses ***one to four bytes*** to represent each character. For common characters (like those in the ASCII range), only one byte is needed. For less common characters, it uses two, three, or four bytes. For example, most Chinese characters require three bytes, while some rare characters may require four bytes.
+
+A valid UTF-8 character must starts with `0` (1-byte character), `110` (2-byte character), `1110` (3-byte character), `11110` (4-byte character). The non-first bytes of a string must be `10`. This also means that not all slices of 1 bytes to 4 bytes are valid UTF-8 characters.
+
+Since the bytes are continuously stored in the memory, programming languages need some special algorithm to determine where a character starts and ends. If you try to access a character than takes 3 bytes with a slice of 2 bytes, you will get an invalid character.
+
+:::
+
+The following example shows how `"abc"` is stored in the memory as a Mojo's `String` type. Note that "a", "b", and "c" are all ASCII characters, which are represented by one byte each in UTF-8 encoding.
 
 ```console
-Each cell represent a byte (UInt).
-┌──┬──┬──┬─┐
-│97│98│99│0│
-└──┴──┴──┴─┘
-Or in raw binary form.
-┌────────┬────────┬────────┬────────┐
-│00111101│00111101│00111101│00000000│
-└────────┴────────┴────────┴────────┘
+Each cell represent a byte (UInt8).
+┌──┬──┬──┐
+│97│98│99│
+└──┴──┴──┘
+Or in raw binary form:
+┌────────┬────────┬────────┐
+│00111101│00111101│00111101│
+└────────┴────────┴────────┘
 ```
 
-A valid UTF-8 character must starts with `0` (1-byte character), `110` (2-byte character), `1110` (3-byte character), `11110` (4-byte character). The non-first bytes of a string must be `10`.
+While ASCII codes are always stored as one-byte with UTF-8 encoding, other Characters usually takes more than 2 bytes. For example, common Chinese characters are usually stored as 3 bytes in the memory, even though it is displayed as a single character when it is printed or displayed in a user interface.
 
-This also means that not all slices of 1 bytes to 4 bytes are valid UTF-8 characters.
+For example, "<ruby>你<rt>nǐ</rt>好<rt>hǎo</rt></ruby>", which means "hello" in Chinese, are display as two characters, but it is stored by 6 bytes in the memory. The following figure illustrates how these two Chinese characters are stored in the memory as a Mojo's `String` type. We can see that each character taking 3 bytes (starting with `111`).
 
-::: info Example
+```console
+Each cell represent a byte (UInt8).
+┌───┬───┬───┬───┬───┬───┐
+│228│189│160│229│165│189│
+└───┴───┴───┴───┴───┴───┘
+Or in raw binary form:
+┌────────┬────────┬────────┬────────┬────────┬────────┐
+│11100100│10111101│10100000│11100101│10100101│10111101│
+└────────┴────────┴────────┴────────┴────────┴────────┘
+```
 
-ASCII codes are always stored as one-byte with UTF-8 encoding. Chinese characters usually takes more than 2 bytes. 
-
-For example, "你好", which means "hello", are display as two characters. But it is stored by more than 2 bytes. We can examine its exact `UInt` sequence in the memory with the following code:
+We can examine its exact `UInt8` sequence in the memory with the following code:
 
 ```mojo
-fn main():
-    var a: String = "你好"
+def main():
+    var a = String("你好")    
     for i in a.as_bytes():
         print(i[], end=" ")
     # It prints: 228 189 160 229 165 189
 ```
 
-It means that the two characters are actually stored in memory as follows, each character taking 3 bytes (starting with `111`).
+### `String` construction
+
+In Mojo, you can create a `String` by wrapping a string literal with the `String()` constructor. Analogically, in Python, you can create a `str` by wrapping a string literal with the `str()` constructor. For example:
+
+```mojo
+def main():
+    var s = String("Hello, world!")
+    print(s)
+```
+
+```python
+def main():
+    s = str("Hello, world!")
+    print(s)
+```
+
+### `String` printing and formatting
+
+In Mojo, you can print a `String` using the `print()` function.
+
+String formatting is partially supported in Mojo. You can use curly brackets `{}` within a `String` object to indicate where to insert values, and then call the `format` methods to replace those placeholders with actual values. You can optionally put numbering in the placeholders to specify the order of the values to be inserted. For example:
+
+```mojo
+def main():
+    var a = String("Today is {} {} {}").format(1, "Janurary", 2023)
+    var b = String("{0} plus {1} equals {2}").format(1.1, 2.34, 3.45)
+    print(a)
+    print(b)
+# Today is 1 Janurary 2023
+# 1.1 plus 2.34 equals 3.45
+```
+
+However, the following features are not supported in Mojo:
+
+- **f-strings**: Mojo does not support f-strings like Python does. You cannot use the `f` prefix to format strings.
+- **Formatting styles**: You cannot put variables names in curly brackets `{}` and use the `format()` method to format strings.
+- **Formatting styles**: You cannot specify formatting styles in curly brackets, e.g., `.2f` for floating-point numbers or `.3%` for percentages.
+
+For example, the following code will not work in Mojo:
+
+```mojo
+def main():
+    var a = String("Today is {day} {month} {year}").format(day=1, month="Janurary", year=2023)
+    var b = String("{0:.2f} plus {1:.2%} equals {2:.3g}").format(1.1, 2.34, 3.45)
+print(a)  # Not working in Mojo
+print(b)  # Not working in Mojo
+```
+
+::: tip Formatting in Python
+
+The above code will work in Python.
+
+```python
+def main():
+    a = "Today is {day} {month} {year}".format(day=1, month="Janurary", year=2023)
+    b = "{0:.2f} plus {1:.2%} equals {2:.3g}".format(1.1, 2.34, 3.45)
+    print(a)
+    print(b)
+main()
+```
+
+It will print:
 
 ```console
-Each cell represent a byte (UInt).
-┌───┬───┬───┬───┬───┬───┐
-│228│189│160│229│165│189│
-└───┴───┴───┴───┴───┴───┘
-Or in raw binary form.
-┌────────┬────────┬────────┬────────┬────────┬────────┐
-│11100100│10111101│10100000│11100101│10100101│10111101│
-└────────┴────────┴────────┴────────┴────────┴────────┘
-Note that the null value at the end is not displayed.
+Today is 1 Janurary 2023
+1.10 plus 234.00% equals 3.45
 ```
 
 :::
 
-::: warning UTF-8 assurance
+### `String` iteration
 
-Python adopts an algorithm to assure that indexing and iterator of a String returns a valid character.
+In Mojo, you can iterate over the valid characters (code points) of a `String` using the `codepoints()` method. This method returns an iterable object that contains the UTF-8 code points of the string. You can use a `for` loop to iterate over the code points and print them one by one. Note that it is more complicated than that in Python, where you can directly iterate over a `str` object to print each character.
 
-This is not yet completely implemented in Mojo (as of version 24.5). The iterator returns correct characters while indexing does not.
+The following examples compares the iteration of strings in Python and Mojo:
 
-```mojo
-fn main():
-    var a: String = "你好"
-    print(a[0])
-    # This prints "�", invalid character. We expect "大".
+```python
+def main():
+    my_string: str = "Hello, world! 你好，世界！"
+    for char in my_string:
+        print(char, end="")
+main()
 ```
 
 ```mojo
-fn main():
-    var a: String = "你好"
-    for i in a:
-        print(i)
-    # This prints "你" and "好", correct!
+def main():
+    my_string = String("Hello, world! 你好，世界！")
+    for char in my_string.codepoints():
+        print(String(char), end="")
 ```
 
-In future, Mojo will also guarantee that String slicing returns valid UTF-8 characters.
+Let me explain the Mojo code in detail. The `codepoints()` methods construct a iterator object over the UTF-8 code points of the string (`CodepointsIter` type).
+
+When you use `for char in my_string.codepoints():`, we iterate over the `CodepointsIter` object, and sequentially get each code point as an `CodePoint` object. Each `CodePoint` object represents a single Unicode code point.
+
+Finally, we use `String(char)` to convert the `CodePoint` object back to a `String` object, which can then be printed with the `print()` function.
+
+Note that you cannot directly print a `CodePoint` object, as it does not implement the `Writable` trait at the moment.
+
+::: info characters vs code points
+
+Do you know that in early versions of Mojo, we use "characters" (`Char` type) to stand for a meaningful unit of text corresponding to a single Unicode code point? However, in the latest versions of Mojo, it is changed to "code points" (`CodePoint` type) to refer to the same concept. This change is made to align with the Unicode terminology because a character can also be composed of multiple code points, such as "grapheme clusters".
+
+You can read more about this change in the article [Unicode Text Segmentation](https://www.unicode.org/reports/tr29/) and [PR #3988: String, ASCII, Unicode, UTF, Graphemes](https://github.com/modular/modular/pull/3988).
+
+:::
+
+### `String` indexing and slicing
+
+In Mojo, you cannot directly index or slice a `String` object to access its code points. This feature is still under development.
+
+## Boolean
+
+The boolean type is a simple data type that can only have two possible values: true and false (or, yes and no, 1 and 0...).
+
+In Python, the boolean type is represented by the `bool` type and there are two possible values: `true` and `false`.
+
+The mojo's boolean type is similar to Python's boolean type. There are two nuances that you should be aware of:
+
+1. In Mojo, the boolean type is renamed as `Bool` with the first letter is capitalized.
+1. In Mojo, the values of the boolean type are `True` and `False`, with the first letter capitalized.
+
+::: tip Bool and Int
+
+Just like Python, Boolean values can be implicitly converted to integers. `True` is equivalent to `1` and `False` is equivalent to `0`. Thus, the following code will work in Mojo:
+
+```mojo
+def main():
+    print(True + False)  
+# Output: 1
+```
+
+:::
+
+## Composite types
+
+### List
+
+::: tip Memory layout of a list in Python and Mojo
+
+If you are interested in the memory layout of a list in Python and Mojo, you can refer to Chapter [Memory Layout of Mojo objects](../misc/layout.md) for more details.
 
 :::

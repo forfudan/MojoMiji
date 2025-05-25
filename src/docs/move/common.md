@@ -328,7 +328,7 @@ Mojo provides the corresponding basic data types as well. They behave almost the
 | ----------- | --------- | --------------------- | ---------------------------------------- |
 | `int`       | `Int`     | Integer               | Mostly same when number is not too large |
 | `float`     | `Float64` | Floating-point number | Mostly same                              |
-| `str`       | `String`  | String                | Mostly same                              |
+| `str`       | `String`  | String                | Partially similar                        |
 | `bool`      | `Bool`    | Boolean               | Mostly same                              |
 
 ### Composite data types
@@ -341,6 +341,20 @@ Composite data types are more complex data structures and may contain multiple b
 | `tuple`     | `Tuple`            | Immutable array of objects         | Mostly similar    |
 | `set`       | `collections.Set`  | Unordered collection of objects    | Partially similar |
 | `dict`      | `collections.Dict` | Key-value pairs                    | Partially similar |
+
+## Operators
+
+Operators are symbols that perform operations on one or more operands. They are fundamental building blocks of any programming language, including Mojo and Python. Operators allow you to perform calculations, comparisons, logical operations, and more. 
+
+In Python, we have arithmetic operators (`+`, `-`, `*`, `/`, `%`, `**`), comparison operators (`==`, `!=`, `<`, `>`, `<=`, `>=`), logical operators (`and`, `or`, `not`), bitwise operators (`&`, `|`, `^`, `~`), and assignment operators (`=`, `+=`, `-=`, etc.). In Mojo, we have **exactly the same operators** as in Python. They have the same meaning and functionality. Moreover, the **operator precedence and associativity** are also the same in both languages.
+
+Another important feature of operators in Python is the **chained comparison**. This means that you can chain multiple comparison operators together, such as `a < b < c`, which is equivalent to `(a < b) and (b < c)`. This feature is also available in Mojo.
+
+::: info More on operators
+
+We will discuss operators in more detail in Chapter [Operators](../basic/operators.md).
+
+:::
 
 ## Core functions
 
@@ -355,9 +369,15 @@ def main():
     print(String("It is {} now!").format(year))  # This will work
 ```
 
-## Operators
+## Dunder methods
 
-(Yuhao is working on this.)
+***Dunder methods***, which is short for "double underscore" methods, are special methods defined in Python functions that start and end with double underscores. The most popular dunder method, I believe, is `__init__()`, which is used to initialize an object. You should have learnt it in the first lesson on Python class. There are many other dunder methods, such as `__str__()`, `__repr__()`, `__add__()`, `__sub__()`, etc. They are used to implement certain universal behaviors and provide a uniformed interface to interact with objects.
+
+For example, `__str__()` is used to define the string representation of an object. If you define a `__str__()` method in your class, you can use the function `print()` to print the object. Another example is `__add__()`, which is used to define the behavior of the `+` operator. If you define a `__add__()` method in your class, you can use the `+` operator to add two objects of the class. In another words, Python will first translate `a + b` into `a.__add__(b)` and then conduct the operation.
+
+You see, dunder methods allows you to use the same function `print()` to print different objects, as long as these objects have the `__str__()` method defined. If you create a new class `Human`, you do not need to modify the system function `print()` in order to get it printed, but just add a `__str__()` method in the class `Human`.
+
+Mojo also inherit this feature. You can use system functions like `print()`, `len()`, `sum()`, etc, on your own structs by defining the corresponding dunder methods. This is called "trait". A type that conforms to a trait guarantees that it implements all of the features of the trait. We will discuss this in detail in the later chapters.
 
 ## Modules, packages, and imports
 
@@ -376,16 +396,6 @@ Mojo completely inherits the modules, package, an imports system from Python. Ea
 import math
 from collections import Dict as BuiltInDict
 ```
-
-### Dunder methods
-
-***Dunder methods***, which is short for "double underscore" methods, are special methods defined in Python functions that start and end with double underscores. The most popular dunder method, I believe, is `__init__()`, which is used to initialize an object. You should have learnt it in the first lesson on Python class. There are many other dunder methods, such as `__str__()`, `__repr__()`, `__add__()`, `__sub__()`, etc. They are used to implement certain universal behaviors and provide a uniformed interface to interact with objects.
-
-For example, `__str__()` is used to define the string representation of an object. If you define a `__str__()` method in your class, you can use the function `print()` to print the object. Another example is `__add__()`, which is used to define the behavior of the `+` operator. If you define a `__add__()` method in your class, you can use the `+` operator to add two objects of the class. In another words, Python will first translate `a + b` into `a.__add__(b)` and then conduct the operation.
-
-You see, dunder methods allows you to use the same function `print()` to print different objects, as long as these objects have the `__str__()` method defined. If you create a new class `Human`, you do not need to modify the system function `print()` in order to get it printed, but just add a `__str__()` method in the class `Human`.
-
-Mojo also inherit this feature. You can use system functions like `print()`, `len()`, `sum()`, etc, on your own structs by defining the corresponding dunder methods. This is called "trait". A type that conforms to a trait guarantees that it implements all of the features of the trait. We will discuss this in detail in the later chapters.
 
 ## Next step
 

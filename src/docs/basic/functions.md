@@ -28,13 +28,20 @@ def mysum(a: Int, b: Int) -> Int:
 
 The `def` functions in mojo do not always behave in the same manner as those in Python. Finally, these are different programming languages. Nevertheless, declaring functions by `def` is a good starting point if you are familiar with Python and want to try out Mojo.
 
-Yuhao highly recommends you to use `fn` always to declare functions, which gives you more control over the functions you are writing.
-
 ### `fn` keyword
 
-The `fn` keyword is unique to Mojo and is not present in Python. It is one of the features that allow Mojo to accomplish low-level programming objectives.
+The `fn` keyword is unique to Mojo and is not present in Python. It is another way to define a function. The `def` keyword and the `fn` keyword share the most of the functionality, with very small differences. We will discuss the differences in detail [at the end of this chapter](#def-vs-fn), but here is a brief summary:
+
+1. The `fn` keyword requires you to use `raises` keyword to indicate the exceptions that may be raised by the function.
+1. If a function is defined with `fn`, the arguments are immutable by default, and you cannot change the values of the arguments within the function. If a function is defined with `def`, the arguments are immutable by default, but changing the values of the arguments will create a mutable copy of them.
+
+You can choose either way to declare functions in Mojo. But I would recommend you to use `fn` for functions that you want to be more strict about the types and behaviors.
+
+::: info Is `fn` pythonic?
 
 Interestingly, the word `fn` itself does not look Pythonic. Python usually truncates the words from left, e.g., `def`. Maybe `func` is a more Pythonic keyword. Nevertheless, Rust users may find `fn` friendly.
+
+:::
 
 To declare a function by the `fn` keyword, you have to explicitly indicate the types of arguments and returns. Failing to indicate types will cause the compilation to fail. For example,
 
@@ -300,8 +307,69 @@ fn main():
 
 :::
 
-### keyword `mut` and `out`
+## def vs fn
 
-Yuhao will explain this part later.
+Now let's go back to the differences between `fn` and `def`.
+
+If a function is defined with `fn`, the arguments are immutable by default (equals to the `read` modifier), and you cannot change the values of the arguments within the function. The following example will cause a compilation error:
+
+```mojo
+fn change_value_in_fn(x: Int):
+    x = 2
+    print(x)
+
+def main():
+    var a = 1
+    change_value_in_fn(a)
+    print(a)
+```
+
+```console
+error: expression must be mutable in assignment
+    x = 2
+    ^
+```
+
+If a function is defined with `def`, the arguments are immutable by default, but changing the values of the arguments will create a mutable copy of them.
+
+This sounds confusing. Let's try to understand it by looking at the following example:
+
+```mojo
+def change_value_in_def(x: Int):
+    print("===============================")
+    print("Calling `change_value_in_def()`")
+    print("x =", x, "at address", String(Pointer(to=x)))
+    x = 2
+    print("Change x to 2")
+    print("x =", x, "at address", String(Pointer(to=x)))
+    print("===============================")
+
+def main():
+    var a = 1
+    print("Initializing a to 1")
+    print("a =", a, "at address", String(Pointer(to=a)))
+    change_value_in_def(a)
+    print("a =", a, "at address", String(Pointer(to=a)))
+```
+
+This code runs without any error, and the output is as follows:
+
+```console
+Initializing a to 1
+a = 1 at address 0x16d4d0960
+===============================
+Calling `change_value_in_def()`
+x = 1 at address 0x16d4d09c0
+Change x to 2
+x = 2 at address 0x16d4d0998
+===============================
+a = 1 at address 0x16d4d0960
+```
+
+Now we try to understand the words above:
+
+***If a function is defined with `def`, the arguments are immutable by default.*** It means that calling the function will not change the value of the variable you passed in. In the example above, the value `a` is not changed after calling `change_value_in_def()`.
+
+***Changing the values of the arguments will create a mutable copy of them.*** It means that, if you try to change the value of the argument `x` within the function, it is possible. In the backend, Mojo will create a mutable copy of `x` (at a new address) and assign the new value `2` to it. The new `x` is no longer pointing to the same memory address as `a`. In the example above, you see that when you change the value of `x` to `2`, the address of `x` is changed, meaning that a mutable copy of `x` is created.
 
 [^copy]: For some small structs, a copy is made.

@@ -77,10 +77,10 @@ export default defineConfig({
               text: 'Convert Python code into Mojo', link: '/docs/move/examples'
             },
             {
-              text: 'What are in common', link: '/docs/move/common'
+              text: 'Things that are in common', link: '/docs/move/common'
             },
             {
-              text: 'What are different', link: '/docs/move/different'
+              text: 'Things that are different', link: '/docs/move/different'
             },
           ],
         },
@@ -95,7 +95,16 @@ export default defineConfig({
               text: 'Functions', link: '/docs/basic/functions',
             },
             {
-              text: 'Data types', link: '/docs/basic/types'
+              text: 'Data types', link: '/docs/basic/types',
+              items: [
+                { text: "Numeric types", link: '/docs/basic/types#numeric-types' },
+                { text: "String", link: '/docs/basic/types#string' },
+                { text: "Boolean", link: '/docs/basic/types#boolean' },
+                { text: "Composite types", link: '/docs/basic/types#composite-types' },
+              ]
+            },
+            {
+              text: 'Operators', link: '/docs/basic/operators',
             },
           ],
         },
@@ -122,8 +131,12 @@ export default defineConfig({
           ]
         },
         {
-          text: 'PART VI: MISCELLANEOUS MOJO',
+          text: 'PART VI: MISCELLANEOUS',
           items: [
+            {
+              text: 'Memory layout of Mojo objects',
+              link: '/docs/misc/layout'
+            },
             {
               text: 'Reference system',
               link: '/docs/misc/reference'

@@ -10,7 +10,7 @@ In previous chapter, we introduced common data types in Mojo and Python, such as
 
 A table is better than hundreds of words. Let's first summarize the differences in the following table:
 
-| Python type | Main Mojo type     | Be careful that                                                                |
+| Python type | Default Mojo type  | Be careful that                                                                |
 | ----------- | ------------------ | ------------------------------------------------------------------------------ |
 | `int`       | `Int`              | Integers in Mojo has ranges. Be careful of overflow.                           |
 | `float`     | `Float64`          | Almost same behaviors. You can safely use it.                                  |
@@ -23,11 +23,96 @@ A table is better than hundreds of words. Let's first summarize the differences 
 
 ### Integer
 
-In Mojo, the most common integer type is `Int`, which is either a 32-bit or 64-bit signed integer depending on your system. It is ensured to cover the range of addresses on your system. It is similar to the `numpy.intp` type in Python and the `isize` type in Rust. Mojo also has other integer types with different sizes in bits, such as `Int8`, `Int16`, `Int32`, `Int64`, `Int128`, `Int256` and their unsigned counterparts.
+In Mojo, there are multiple types for representing integers, but the most common integer type (or integral type) is `Int`, which is either a 32-bit or 64-bit signed integer depending on your system. It is ensured to cover the range of addresses on your system. It is similar to the `numpy.intp` type in Python and the `isize` type in Rust. Mojo also has other integer types with different sizes in bits, such as `Int8`, `Int16`, `Int32`, `Int64`, `Int128`, `Int256` and their unsigned counterparts.
 
 You may think that this `Int` type is the same as the `int` type in Python, but it is not true. The `int` type in Python is an arbitrary-precision integer type, which means it can grow as large as the memory allows ,e.g., 1 followed by 1000 zeros. In contrast, the `Int` type in Mojo is a fixed-size integer type, which means it has a limited range of values. On a 64-bit system, the range of `Int` of Mojo is from `-2^63` to `2^63 - 1`. If you try to conduct operations that exceed this range, you will encounter an overflow.
 
 Thus, you need to always be careful when you are doing big integer calculations in Mojo. If you really need to work on big integers that are larger than the capacity of `Int`, you can consider using the `BigInt` type in the [decimojo package](../extensions/decimojo.md), which has the similar functionality as the `int` type in Python.
 
-We will cover this in more detail in Section [Integer](../basic/types.md#integer)
- of Chapter [Data Types](../basic/types.md).
+::: info More on integers
+
+We will discuss integral types in more detail in Section [Integer](../basic/types.md#integer) of Chapter [Data Types](../basic/types.md).
+
+:::
+
+### Floating-point number
+
+In Mojo, there are several types for representing floating-point numbers. They differ in the number of bits they use to store the value, such as `Float16`, `Float32`, `Float64`, and `Float128`. The most commonly used type is `Float64`, which is a double-precision floating-point number. It is similar to the `float` type in Python. In you do not specify the type of a floating-point number, Mojo will automatically use `Float64` as the default type.
+
+In short, Mojo's `Float64` type is almost the same as Python's `float` type. You can safely use it without worrying about the differences. Mojo also provides other floating-point types with different sizes. You can wisely choose the appropriate type based on your needs (desired precision and range).
+
+### String
+
+::: warning String is changing rapidly
+
+The behavior of `String` has been changing rapidly since Mojo version 24.5. Some of the features mentioned in this section may be deprecated or removed in future versions.
+
+:::
+
+::: info More on string
+
+We will discuss the string type in more detail in Section [String](../basic/types.md#string) of Chapter [Data Types](../basic/types.md).
+
+:::
+
+Mojo's `String` type is similar to Python's `str` type, representing a sequence of Unicode characters. However, there are some differences that you should be aware of:
+
+| Functionality                     | Python `str`                           | Mojo `String`                                       |
+| --------------------------------- | -------------------------------------- | --------------------------------------------------- |
+| Constructed from string literals  | Use of`str()` constructor is optional. | You have to use `String()` constructor.             |
+| Print string with `print()`       | Yes.                                   | Yes.                                                |
+| Format string with `format()`     | Yes, use `{}`.                         | Yes, but you cannot specify formatting, e.g, `.2f`. |
+| f-strings                         | Yes.                                   | Not supported.                                      |
+| Iteration over UTF-8 code points  | Yes, use `for i in s:` directly.       | Yes, but more complicated.                          |
+| UTF8-assured indexing and slicing | Yes, use `s[i]` or `s[i:j]` directly.  | Not supported.                                      |
+
+If you use only quotation marks to define a string, Mojo will treat it as a string literal type. You format them with `format()`. For example, the following code will raise an error:
+
+```mojo
+def main():
+    var a = 18
+    print("The value of a is {}".format(a))  # This will raise an error
+```
+
+To avoid this error, you need to use `String()` constructor to convert the string literal to a `String` type:
+
+```mojo
+def main():
+    var a = 18
+    print(String("The value of a is {}".format(a)))  # This will work
+```
+
+Currently, you cannot indicate formatting style for `String`, such as `.2f` for floating-point numbers or `.3%` for percentages.
+
+You cannot use f-strings in Mojo at the moment.
+
+To iterate over the UTF-8 code points in a `String`, you can use a `for` loop, but it is more complicated than in Python. You have to iterate over `String.codepoints()` and then wrap the items with `String()` constructor. See the following comparison:
+
+```python
+def main():
+    s: str = "Hello, world!"
+    for c in s:
+        print(c, end="")
+main()
+# Output: Hello, world! 你好，世界！
+```
+
+```mojo
+def main():
+    my_string = String("Hello, world! 你好，世界！")
+    for char in my_string.codepoints():
+        print(String(char), end="")
+# Output: Hello, world! 你好，世界！
+```
+
+To access a code point in a Python `str`, you can just use indexing or slicing, such as `s[i]` or `s[i:j]`. However, in Mojo, you cannot do this directly at the moment. This feature is still under development.
+
+::: info More on integers
+
+We will discuss floating-point types in more detail in Section [Floating-point number](../basic/types.md#floating-point-number) of Chapter [Data Types](../basic/types.md).
+
+:::
+
+## List
+
+In Python, a `list` is a mutable sequence type that can hold Python objects of any type. In Mojo, a `List` is also a mutable sequence type but can only hold objects of the same type.
