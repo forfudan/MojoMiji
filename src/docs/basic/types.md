@@ -83,6 +83,38 @@ Note that there is no error message printed in this case. This is because Mojo d
 
 If you really need to work on big integers that are larger than the capacity of `Int`, you can consider using the `BigInt` type in the [decimojo package](../extensions/decimojo.md), which has the similar functionality as the `int` type in Python.
 
+::: tip Exercise
+
+Now we want to calculate the $12345^5$. Since the result is big (around 20 digits), we use `Int128` to avoid overflow. Try to run the following code in Mojo and see what happens. Explain why the result is unexpected and how to fix it.
+
+```mojo
+def main():
+    var a: Int128 = 12345 ** 5
+    print(a)
+```
+
+:::
+
+::: details Answer
+
+The result is `-8429566654717360231`. It is a negative number, which is unexpected. The correct answer should be `286718338524635465625`. Usually, when we see a negative value, we know that it is probably due to an overflow.
+
+The reason is that, when we write `12345 ** 5` in the right-hand side of the assignment, we did not explicitly specify the type of the values. As mentioned above, if we do not explicitly specify the type of the integer literal, the compiler will infer it as `Int` by default. Thus, `12345` and `5` will be both saved as an `Int` type (64-bit signed integer on a 64-bit system).
+
+Since the result of `12345 ** 5` exceeds the maximum value of `Int` type (`2^63 - 1`), an overflow occurs. And value of `12345 ** 5` becomes `-8429566654717360231`. This wrong value is then assigned to the variable `a` of type `Int128`.
+
+To fix this, we need to explicitly specify the type of the integer literals in the right-hand side of the assignment. We can do this by using the `Int128` constructor, like this:
+
+```mojo
+def main():
+    var a = Int128(12345) ** Int128(5)
+    print(a)
+```
+
+Now the result will be `286718338524635465625`, which is the correct answer.
+
+:::
+
 ### Floating-point numbers
 
 Compared to integer types, floating-point numbers in Mojo share more similarities with Python.
