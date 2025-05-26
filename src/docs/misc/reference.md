@@ -1,4 +1,4 @@
-# Reference
+# Reference system of Mojo
 
 In Rust, "reference" is more like a safe pointer to the value. You need to de-reference it to assess the value, although sometimes the de-referencing is automatically done.
 

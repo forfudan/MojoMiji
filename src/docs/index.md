@@ -21,6 +21,7 @@ by ***Yuhao Zhu 朱宇浩***
     - [String](./basic/types#string)
     - [Boolean](./basic/types#boolean)
     - [Composite types](./basic/types#composite-types) (lists, tuples, sets, dicts, etc.)
+  - [Data type - SIMD](./basic/simd) (The `SIMD` type)
   - [Operators](./basic/operators) (Arithmetic, comparison, logical, and bitwise operators in Mojo)
   <!-- - [Control flows (Yuhao is working on this)](./basic/control_flows) -->
   <!-- - [Structs (Yuhao is working on this)](./basic/structs) -->
@@ -37,3 +38,4 @@ by ***Yuhao Zhu 朱宇浩***
 - [Part VI: Miscellaneous](./misc/misc)
   - [Memory layout of Mojo objects](./misc/layout) (How Mojo objects are stored in memory)
   - [Reference system](./misc/reference) (Reference system of Mojo)
+- [Glossary](./glossary) (Glossary of Mojo terms)

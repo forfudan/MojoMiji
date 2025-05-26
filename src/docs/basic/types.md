@@ -372,7 +372,20 @@ def main():
 
 ### List
 
-In Mojo, a `List` is also a mutable sequence type but can hold objects of the **same type**. This is different from Python, where a `list` can hold objects of **any type**.
+In Mojo, a `List` is also a mutable sequence type but can hold objects of the **same type**. This is different from Python, where a `list` can hold objects of **any type**. Here are some key differences between Python's `list` and Mojo's `List`:
+
+| Functionality      | Mojo `List`                     | Python `list`                               |
+| ------------------ | ------------------------------- | ------------------------------------------- |
+| Type of elements   | Homogeneous type                | Heterogenous types                          |
+| Mutability         | Mutable                         | Mutable                                     |
+| Inialization       | `List[Type]()`                  | `list()` or `[]`                            |
+| Indexing           | Use brackets `[]`               | Use brackets `[]`                           |
+| Slicing            | Use brackets `[a:b:c]`          | Use brackets `[a:b:c]`                      |
+| Extending by items | Use `append()`                  | Use `append()`                              |
+| Concatenation      | Use `+` operator                | Use `+` operator                            |
+| Printing           | Not supported                   | Use `print()`                               |
+| Iterating          | Use `for` loop and de-reference | Use `for` loop                              |
+| Memory layout      | Metadata -> Elements            | Pointer -> metadata -> Pointers -> Elements |
 
 #### Creating a List
 
@@ -398,9 +411,26 @@ def main():
     sliced_list = my_list_of_integers[0:3]  # Slicing the first three elements
 ```
 
-#### Extending a list
+#### Extending and concatenating a list
 
-You can also **append** elements to a `List` in Mojo using the `append()` method, just like in Python. For example, you can add a new element to `my_list_of_integers` with `my_list_of_integers.append(6)`.
+You can **append** elements to the end of a `List` in Mojo using the `append()` method, just like in Python. For example,
+
+```mojo
+def main():
+    my_list_of_integers = List[Int](1, 2, 3, 4, 5)
+    my_list_of_integers.append(6)  # Appending a new element
+# my_list_of_integers = [1, 2, 3, 4, 5, 6]
+```
+
+You can use the `+` operator to concatenate two `List` objects, just like in Python. For example:
+
+```mojo
+def main():
+    first_list = List[Int](1, 2, 3)
+    second_list = List[Int](4, 5, 6)
+    concatenated_list = first_list + second_list  # Concatenating two lists
+# concatenated_list = [1, 2, 3, 4, 5, 6]
+```
 
 #### Printing a list
 
@@ -432,13 +462,46 @@ def main():
 
 ::: info
 
-We have already seen this auxiliary function in Chapter [Convert Python code into Mojo](../examples). We will use this kinds of functions to print lists in the following chapters as well.
+We have already seen this auxiliary function in Chapter [Convert Python code into Mojo](../move/examples.md). We will use this kinds of functions to print lists in the following chapters as well.
 
 :::
 
 #### Iterating over a list
 
-We can iterate over a `List` in Mojo is similar to Python. You can use a `for` loop to iterate over the elements of a list. For example:
+We can iterate over a `List` in Mojo using the `for ... in` keywords. This is similar to how we iterate over a list in Python. But one thing is different:
+
+In Mojo, each item you get from the iteration is **a pointer to the address of the element**. You have to de-reference it to get the actual value of the element. The de-referencing is done by using the `[]` operator. See the following example:
+
+```mojo
+def main():
+    my_list = List[Int](1, 2, 3, 4, 5)
+    for i in my_list:
+        print(i[], end=" ")  # De-referencing the element to get its value
+# Output: 1 2 3 4 5 
+```
+
+If you forget the `[]` operator, you will get an error message because you are trying to print the pointer to the element instead of the element itself.
+
+```console
+error: invalid call to 'print': could not deduce parameter 'Ts' of callee 'print'
+        print(i,  end=" ")
+        ~~~~~^~~~~~~~~~~~~
+```
+
+::: info address vs value
+
+You may find this a bit cumbersome, but it is actually a good design. It makes Mojo's `List` more memory-efficient.
+
+Imagine that you want to read a list of books in a library. You can either:
+
+- Ask the administrator to copy these books and give your the copies.
+- Ask the administrator to give you the locations of these books, and you go to the corresponding shelves to read them.
+
+In the first case, you will have to pay for the cost of copying the books and you have to wait for the copies to be made. In the second case, you can read the books directly without any extra cost.
+
+This is similar to how Mojo's `List` works: The iterator only returns the address of the element. You go to the address and read the value directly. It does not create of a copy of the element, so no extra memory costs.
+
+:::
 
 ::: tip Memory layout of a list in Python and Mojo
 

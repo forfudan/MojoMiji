@@ -117,14 +117,27 @@ We will discuss floating-point types in more detail in Section [Floating-point n
 
 In Python, a `list` is a mutable sequence type that can hold Python objects of **any type**. In Mojo, a `List` is also a mutable sequence type but can only hold objects of the **same type**. Here are some key differences between Python's `list` and Mojo's `List`:
 
-| Functionality    | Python `list`                               | Mojo `List`          |
-| ---------------- | ------------------------------------------- | -------------------- |
-| Type of elements | Heterogenous types                          | Homogeneous type     |
-| Indexing         | Supported                                   | Supported            |
-| Memory layout    | Pointer -> metadata -> Pointers -> Elements | Metadata -> Elements |
+| Functionality      | Mojo `List`                     | Python `list`                               |
+| ------------------ | ------------------------------- | ------------------------------------------- |
+| Type of elements   | Homogeneous type                | Heterogenous types                          |
+| Mutability         | Mutable                         | Mutable                                     |
+| Inialization       | `List[Type]()`                  | `list()` or `[]`                            |
+| Indexing           | Use brackets `[]`               | Use brackets `[]`                           |
+| Slicing            | Use brackets `[a:b:c]`          | Use brackets `[a:b:c]`                      |
+| Extending by items | Use `append()`                  | Use `append()`                              |
+| Concatenation      | Use `+` operator                | Use `+` operator                            |
+| Printing           | Not supported                   | Use `print()`                               |
+| Iterating          | Use `for` loop and de-reference | Use `for` loop                              |
+| Memory layout      | Metadata -> Elements            | Pointer -> metadata -> Pointers -> Elements |
 
+The following things are common between `List` in Mojo and `list` in Python:
 
-#### Creating a List
+- You can retrieve the elements of a `List` in Mojo using **indexing**.
+- You can create another `List` by **slicing** an existing `List`.
+- You can also **append** elements to a `List` in Mojo using the `append()` method.
+- You can use the `+` operator to concatenate two `List` objects.
+
+The other functionalities of `List` in Mojo would be different. Your knowledge of Python's `list` will not help you much in Mojo. Let's look at them one by one.
 
 To construct a `List` in Mojo, you have to use the ***list constructor***. For example, to create a list of `Int` numbers, you can use the following code:
 
@@ -135,19 +148,26 @@ def main():
     my_list_of_strings = List[String]("Mojo", "is", "awesome")
 ```
 
-#### List indexing and slicing
+You cannot print the `List` object directly in Mojo for now. You have to write your own function to iterate over the elements of the `List` and print them one by one.
 
-You can retrieve the elements of a `List` in Mojo using **indexing**, just like in Python. For example, you can access the first element of `my_list_of_integers` with `my_list_of_integers[0]`.
+When you iterate over a `List` in Python, you get the elements directly. However, in Mojo, you get references to these elements (pointers to their address in the memory). so you have to de-reference them first before using them. The dereferencing is done via the `[]` operator. See the following comparison:
 
-You can create another `List` by **slicing** an existing `List`, just like in Python. For example, you can create a new list that contains the first three elements of `my_list_of_integers` with `my_list_of_integers[0:3]`.
+```python
+def main():
+    my_list: list[int] = [1, 2, 3, 4, 5]
+    for i in my_list:
+        print(i, end=" ")  # Directly printing the element
+# Output: 1 2 3 4 5
 
-#### Extending a list
+```
 
-You can also **append** elements to a `List` in Mojo using the `append()` method, just like in Python. For example, you can add a new element to `my_list_of_integers` with `my_list_of_integers.append(6)`.
-
-#### Iterating over a list
-
-
+```mojo
+def main():
+    my_list = List[Int](1, 2, 3, 4, 5)
+    for i in my_list:
+        print(i[], end=" ")  # De-referencing the element to get its value
+# Output: 1 2 3 4 5 
+```
 
 We will discuss the list type in more detail in Section [List](../basic/types.md#list) of Chapter [Data Types](../basic/types.md). Chapter [Memory Layout of Mojo objects](../misc/layout.md) provides some abstract diagrams to illustrate the memory layouts of a list in Python and Mojo.
 

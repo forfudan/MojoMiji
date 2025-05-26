@@ -6,7 +6,7 @@ In Python, objects are not directly stored in the memory. Instead, they are stor
 
 ::: info Python variable assignment
 
-Because the python variable `a` is a reference to a Python object (and its metadata) rather than a direct pointer to the value at a certain memory address, we can say that the assignment `a = 5` is actually to attach the name `a` to the Python object that represents the integer `5`.
+Because the python variable `a` is a pointer to a Python object (and its metadata) rather than a direct pointer to the value at a certain memory address, we can say that the assignment `a = 5` is actually to attach the name `a` to the Python object that represents the integer `5`.
 
 :::
 

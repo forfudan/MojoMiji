@@ -104,6 +104,9 @@ export default defineConfig({
               ]
             },
             {
+              text: 'Data type - SIMD', link: '/docs/basic/simd',
+            },
+            {
               text: 'Operators', link: '/docs/basic/operators',
             },
           ],

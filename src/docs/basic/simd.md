@@ -17,6 +17,3 @@ def add_vectors_traditional(a: List[Float64], b: List[Float64]) -> List[Float64]
         result.append(a[i] + b[i])
     return result
 ```
-def main():
-    add_vectors_traditional()
-```
