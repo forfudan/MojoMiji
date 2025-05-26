@@ -1,13 +1,44 @@
 # Variables
 
-In Python, a variable can be seen as a label pointing to an object. For example, in the following code, the variable `a` points to an integer object with the value `1`. You can reassign the variable `a` to a string object "Hello world" using an assignment statement.
+A variable is a fundamental concept in programming which allows you to store, read, and manipulate data. It can be seen as a container of data, enabling you to refer to the data by a symbolic name rather than the value in the memory directly. This is essential for writing readable and maintainable code.
+
+[[toc]]
+
+## A conceptual model of a Mojo variable
+
+There are various way to define a variable, and the definition varies across programming languages. In this Miji, I would provide the following conceptual model which I found easy to understand and remember when I program in Mojo:
+
+***A variable in Mojo is a quaternary structure consisting a name, a type, an address, and a value***. The name of the variable is the unique identifier that you use to refer to the variable in your code. The type of the variable defines what kind of data it can hold, how much memory space it occupies, how it can be manipulated, and how the value is represented in binary format in memory. The address of the variable defines where the data is stored in memory. The value of the variable is the actual data that is stored in the memory space.
+
+You can always think of or analyze a variable from these four aspects. For example, when you initialize a variable, you are doing the following things: (1) Select an **name** for the variable, (2) Specify the **type** of the variable, (3) Ask for an **address**, a memory space, to store the date, and (4) Store the **value** in the memory space in a binary format.
+
+When you use a variable with its name, you are doing the following four things: (1) Find out the information of the variable, including its type and address in the memory, (2) Go to the memory address to retrieve the value stored there, and (3) Interpret the value according to its type.
+
+::: tip Type is important
+
+The values of variables stored in the computer's memory is not in a human-readable format. For example, the value `12.5` does not appear as "12.5" if you use a microscope to look into your computer's RAM stick. Physically, the memory is a sequence of units with binary, mutually exclusive states, which can be represented as `0` and `1` (or, yes and no, sun and moon, yīn and yáng...), e.g., 00000000 00001100 00000000 00001101... These units are called bits.
+
+How to interpret these bits into a human-readable format? It depends on the type of the variable. There are pre-defined rules for each type to interpret the bits into a human-readable value, or translate a human-readable value into bits. For example, if the value in bit format is `0000000000000010` and the type is `Int8`, then it is interpreted as the integer **2**. For the same value `0000000000000010`, if the type is `Float16`, then it is interpreted as a floating-point number **0.00000011920928955078125**. Certain manipulations can only be performed on certain types of variables. You can not apply a method that is defined for `Int` on a variable of type `String`.
+
+In short, the type of a variable is very important as it defines how the program interprets and manipulates the data.
+
+:::
+
+::: info A variable in Python
+
+In Python, a variable can be regarded as a tertiary structure consisting a name, a type, and a value. Compared to Mojo, you can see that the address is not present in the conceptual model anymore. This is because Python's variables are not directly associated with a memory block. Instead, Python variables are references to Python objects. You can think of a Python variable as a sticker. You can stick it on any object (assignment), you can remove it from the object (deletion), and you can move it from one object onto another object (re-assignment).
+
+For example, in the following code, the variable `a` is firstly sticked onto an object with type `int` and value `1`. Later, it is removed from the first object and sticked onto another object with type `int` and value `2`. Finally, it is removed from the second object and sticked onto a string object with value `"Hello world!"`. All these objects are stored in different locations in the memory. This even applies to the second line (`a = 2`): when the variable `a` is assigned to another integer type, the location of the value in the memory is changed.
 
 ```python
 a = 1
-a = "Hello world!"
+a = 2  # Different object, different memory address
+a = "Hello world!"  # Different object, different memory address
 ```
 
-In Mojo, a variable can be abstractly viewed as a container that has a **variable name** and a **value**. Semantically, the **variable** name is the identifier of the **value** and is bound to it. From a memory perspective, a variable has a memory space and an address, with data stored in this space in the form of bits.
+This does not applies to Mojo. As I said before, a Mojo's variables is associated with an address. When you do `a = 1`, the variable `a` will be associated with a type `Int`, an address in the memory, and a value `1`. When you do `a = 2`, the variable `a` will still be associated with the same address in the memory, but the value will be changed to `2` (physically, the status of the electrons at that location changed). You can never do `a = "Hello world!"` because the type of `a` is `Int`, and you cannot insert a string value into that address.
+
+:::
 
 ## Declaration
 

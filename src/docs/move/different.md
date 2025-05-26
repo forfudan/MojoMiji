@@ -115,7 +115,14 @@ We will discuss floating-point types in more detail in Section [Floating-point n
 
 ### List
 
-In Python, a `list` is a mutable sequence type that can hold Python objects of **any type**. In Mojo, a `List` is also a mutable sequence type but can only hold objects of the **same type**.
+In Python, a `list` is a mutable sequence type that can hold Python objects of **any type**. In Mojo, a `List` is also a mutable sequence type but can only hold objects of the **same type**. Here are some key differences between Python's `list` and Mojo's `List`:
+
+| Functionality    | Python `list`                               | Mojo `List`          |
+| ---------------- | ------------------------------------------- | -------------------- |
+| Type of elements | Heterogenous types                          | Homogeneous type     |
+| Indexing         | Supported                                   | Supported            |
+| Memory layout    | Pointer -> metadata -> Pointers -> Elements | Metadata -> Elements |
+
 
 #### Creating a List
 

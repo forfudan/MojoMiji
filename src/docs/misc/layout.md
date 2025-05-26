@@ -10,23 +10,15 @@ Because the python variable `a` is a reference to a Python object (and its metad
 
 :::
 
-When you want to access the value of an object, for example, `print(a)` where `a` is an integer, Python first dereferences the pointer to the Python object, retrieves the metadata of the object including the pointer to the actual value, and then dereferences that pointer to access the actual data in the memory block.
+When you want to access the value of an object, for example, `print(a)` where `a` is an integer, Python go to the Python object, retrieves the metadata of the object including the pointer to the actual value, and then dereferences that pointer to access the actual data in the memory block.
 
-This means that Python list object has more layers in its memory layout. The first layer is a pointer that points to a list object. This list object is the second layer, which contains a reference counter, a size, a capacity, and another pointer to a continuous memory block on heap. This memory block is the third layer, which contains pointers to the elements (Python objects) of the list. The elements are the final layer (if the elements are composite types like lists, there are more layers).
+This means that Python list object has multiple layers in its memory layout. The first layer is a pointer that points to a list object. This list object is the second layer, which contains a reference counter, a size, a capacity, and another pointer to a continuous memory block on heap. This memory block is the third layer, which contains pointers to the elements (Python objects) of the list. The elements are the final layer (if the elements are composite types like lists, there are more layers).
 
 For example, below is an abstract representation of how the Python list `my_list = [0.125, True, 0.5, "Hello", 42]` is stored in the memory.
 
 ```console
-        local variable `my_list`: list
-                    ↓ 
-        ┌────────────────────────┐
-Item    │Pointer to Python Object│
-        ├────────────────────────┤
-Value   │        26c6a89a        │
-        ├────────────────────────┤
-Address │ 16ba8fae ... 16ba8fb5  │
-        └────────────────────────┘
-            ↓ (points to the Python object - a list - PyListObject) 
+         Variable `my_list`: list
+            ↓ (points to the PyListObject) 
         ┌────────┬────────┬────────┬────────┐
 Item    │Counter │Size    │Pointer │Capacity│
         ├────────┼────────┼────────┼────────┤
@@ -49,13 +41,23 @@ Address │17ca81f8│17ca8200│17ca8208│17ca8210│17ca8218│17ca8220│17c
             │         └──────────────────────────────────────────────────────────────────────────────────┐
             │                                                                                            │  
             ↓  (points to the first element of the list, which is a float of value 0.125)                │
-        ┌────────┬───────────────────────────────────────────────────────────────────────┐               │
-Item    │Counter │              Binary representation of value 0.125                     │               │
-        ├────────┼────────┬────────┬────────┬────────┬────────┬────────┬────────┬────────┤               │
-Value   │00000001│00111111│11000000│00000000│00000000│00000000│00000000│00000000│00000000│               │
-        ├────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤               │
-Address │18c1fc0a│18c1fc12│18c1fc13│18c1fc14│18c1fc15│18c1fc16│18c1fc17│18c1fc18│18c1fc12│               │
-        └────────┴────────┴────────┴────────┴────────┴────────┴────────┴────────┴────────┘               │
+        ┌────────┬────────┐                                                                              │
+Item    │Counter │Pointer │                                                                              │
+        ├────────┼────────┤                                                                              │
+Value   │00000001│18c1fc12│                                                                              │
+        ├────────┼────────┤                                                                              │
+Address │19df23ea│18c1fcf2|                                                                              │
+        └────────┴────────┘                                                                              │
+                     │                                                                                   │
+            ┌────────┘                                                                                   │
+            ↓  (points to the value of the float)                                                        │
+        ┌───────────────────────────────────────────────────────────────────────┐                        │
+Item    │              Binary representation of value 0.125                     │                        │
+        ├────────┬────────┬────────┬────────┬────────┬────────┬────────┬────────┤                        │
+Value   │00111111│11000000│00000000│00000000│00000000│00000000│00000000│00000000│                        │
+        ├────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤                        │
+Address │18c1fc12│18c1fc13│18c1fc14│18c1fc15│18c1fc16│18c1fc17│18c1fc18│18c1fc12│                        │
+        └────────┴────────┴────────┴────────┴────────┴────────┴────────┴────────┘                        │
                                                                                                          │
             ┌────────────────────────────────────────────────────────────────────────────────────────────┘
             ↓ (points to the second element of the list, which is an boolean of value true)         

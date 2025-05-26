@@ -431,7 +431,9 @@ def main():
 ```
 
 ::: info
+
 We have already seen this auxiliary function in Chapter [Convert Python code into Mojo](../examples). We will use this kinds of functions to print lists in the following chapters as well.
+
 :::
 
 #### Iterating over a list
