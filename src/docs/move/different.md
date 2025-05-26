@@ -113,6 +113,34 @@ We will discuss floating-point types in more detail in Section [Floating-point n
 
 :::
 
-## List
+### List
 
-In Python, a `list` is a mutable sequence type that can hold Python objects of any type. In Mojo, a `List` is also a mutable sequence type but can only hold objects of the same type.
+In Python, a `list` is a mutable sequence type that can hold Python objects of **any type**. In Mojo, a `List` is also a mutable sequence type but can only hold objects of the **same type**.
+
+#### Creating a List
+
+To construct a `List` in Mojo, you have to use the ***list constructor***. For example, to create a list of `Int` numbers, you can use the following code:
+
+```mojo
+def main():
+    my_list_of_integers = List[Int](1, 2, 3, 4, 5)
+    my_list_of_floats = List[Float64](0.125, 12.0, 12.625, -2.0, -12.0)
+    my_list_of_strings = List[String]("Mojo", "is", "awesome")
+```
+
+#### List indexing and slicing
+
+You can retrieve the elements of a `List` in Mojo using **indexing**, just like in Python. For example, you can access the first element of `my_list_of_integers` with `my_list_of_integers[0]`.
+
+You can create another `List` by **slicing** an existing `List`, just like in Python. For example, you can create a new list that contains the first three elements of `my_list_of_integers` with `my_list_of_integers[0:3]`.
+
+#### Extending a list
+
+You can also **append** elements to a `List` in Mojo using the `append()` method, just like in Python. For example, you can add a new element to `my_list_of_integers` with `my_list_of_integers.append(6)`.
+
+#### Iterating over a list
+
+
+
+We will discuss the list type in more detail in Section [List](../basic/types.md#list) of Chapter [Data Types](../basic/types.md). Chapter [Memory Layout of Mojo objects](../misc/layout.md) provides some abstract diagrams to illustrate the memory layouts of a list in Python and Mojo.
+

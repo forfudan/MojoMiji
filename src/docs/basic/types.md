@@ -34,7 +34,9 @@ Some IDEs provides inlay hints that show the inferred types of variables. You ca
 
 In Mojo, the most common integer type is `Int`, which is either a 32-bit or 64-bit signed integer depending on your system. It is ensured to cover the range of addresses on your system. It is similar to the `numpy.intp` type in Python and the `isize` type in Rust. Note that it is different from the `int` type in Python, which is an arbitrary-precision integer type.
 
-Mojo also has other integer types with different sizes in bits, such as `Int8`, `Int16`, `Int32`, `Int64`, `Int128`, `Int256` and their unsigned counterparts `UInt8`, `UInt16`, `UInt32`, `UInt64`, `UInt128`, `UInt256`. The table below summarizes the integer types in Mojo and corresponding integer types in Python:
+Mojo also has other integer types with different sizes in bits, such as `Int8`, `Int16`, `Int32`, `Int64`, `Int128`, `Int256` and their unsigned counterparts `UInt8`, `UInt16`, `UInt32`, `UInt64`, `UInt128`, `UInt256`. The instance of each type will be stored on the stack with exactly the bits specified by the name of the type.
+
+The table below summarizes the integer types in Mojo and corresponding integer types in Python:
 
 | Mojo Type              | Python Type        | Description                                               |
 | ---------------------- | ------------------ | --------------------------------------------------------- |
@@ -348,14 +350,11 @@ In Mojo, you cannot directly index or slice a `String` object to access its code
 
 ## Boolean
 
-The boolean type is a simple data type that can only have two possible values: true and false (or, yes and no, 1 and 0...).
+The boolean type is a simple data type that can only have two possible states: true and false (or, yes and no, 1 and 0...). These two states are mutually exclusive and exhaustive, meaning that a boolean value can only be either true or false, and there are no other possible values.
 
-In Python, the boolean type is represented by the `bool` type and there are two possible values: `true` and `false`.
+The mojo's boolean type is renamed as `Bool`. The two states are `True` and `False`. It is comparable to the `bool` type in Python, but with the first letter capitalized.
 
-The mojo's boolean type is similar to Python's boolean type. There are two nuances that you should be aware of:
-
-1. In Mojo, the boolean type is renamed as `Bool` with the first letter is capitalized.
-1. In Mojo, the values of the boolean type are `True` and `False`, with the first letter capitalized.
+The `Bool` type is saved as a single byte in the memory.
 
 ::: tip Bool and Int
 
@@ -373,8 +372,76 @@ def main():
 
 ### List
 
+In Mojo, a `List` is also a mutable sequence type but can hold objects of the **same type**. This is different from Python, where a `list` can hold objects of **any type**.
+
+#### Creating a List
+
+To construct a `List` in Mojo, you have to use the ***list constructor***. For example, to create a list of `Int` numbers, you can use the following code:
+
+```mojo
+def main():
+    my_list_of_integers = List[Int](1, 2, 3, 4, 5)
+    var my_list_of_floats = List[Float64](0.125, 12.0, 12.625, -2.0, -12.0)
+    var my_list_of_strings: List[String] = List[String]("Mojo", "is", "awesome")
+```
+
+#### List indexing and slicing
+
+You can retrieve the elements of a `List` in Mojo using **indexing**, just like in Python. For example, you can access the first element of `my_list_of_integers` with `my_list_of_integers[0]`.
+
+You can create another `List` by **slicing** an existing `List`, just like in Python. For example, you can create a new list that contains the first three elements of `my_list_of_integers` with `my_list_of_integers[0:3]`.
+
+```mojo
+def main():
+    my_list_of_integers = List[Int](1, 2, 3, 4, 5)
+    first_element = my_list_of_integers[0]  # Accessing the first element
+    sliced_list = my_list_of_integers[0:3]  # Slicing the first three elements
+```
+
+#### Extending a list
+
+You can also **append** elements to a `List` in Mojo using the `append()` method, just like in Python. For example, you can add a new element to `my_list_of_integers` with `my_list_of_integers.append(6)`.
+
+#### Printing a list
+
+You cannot print the `List` object directly in Mojo (at least at the moment). This is because the `List` type does not implement the `Writable` trait, which is required for printing. To print a `List`, you have to write your own auxiliary function:
+
+```mojo
+def print_list_of_floats(array: List[Float64]):
+    print("[", end="")
+    for i in range(len(array)):
+        if i < len(array) - 1:
+            print(array[i], end=", ")
+        else:
+            print(array[i], end="]\n")
+
+def print_list_of_strings(array: List[String]):
+    print("[", end="")
+    for i in range(len(array)):
+        if i < len(array) - 1:
+            print(array[i], end=", ")
+        else:
+            print(array[i], end="]\n")
+
+def main():
+    var my_list_of_floats = List[Float64](0.125, 12.0, 12.625, -2.0, -12.0)
+    var my_list_of_strings = List[String]("Mojo", "is", "awesome")
+    print_list_of_floats(my_list_of_floats)
+    print_list_of_strings(my_list_of_strings)
+```
+
+::: info
+We have already seen this auxiliary function in Chapter [Convert Python code into Mojo](../examples). We will use this kinds of functions to print lists in the following chapters as well.
+:::
+
+#### Iterating over a list
+
+We can iterate over a `List` in Mojo is similar to Python. You can use a `for` loop to iterate over the elements of a list. For example:
+
 ::: tip Memory layout of a list in Python and Mojo
 
-If you are interested in the memory layout of a list in Python and Mojo, you can refer to Chapter [Memory Layout of Mojo objects](../misc/layout.md) for more details.
+In Mojo, the values of the elements of a list is stored consecutively on the heap. In Python, the pointers to the elements of a list is stored consecutively on the heap, while the actual values of the elements are stored in separate memory locations. This means that a Mojo's list is more memory-efficient than a Python's list, as it does not require additional dereferencing to access the values of the elements.
+
+If you are interested in the memory layout of a list in Python and Mojo, you can refer to Chapter [Memory Layout of Mojo objects](../misc/layout.md) for more details, where I drew some abstract diagrams to illustrate the memory layouts of a list in Python and Mojo.
 
 :::

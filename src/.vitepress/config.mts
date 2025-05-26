@@ -97,10 +97,10 @@ export default defineConfig({
             {
               text: 'Data types', link: '/docs/basic/types',
               items: [
-                { text: "Numeric types", link: '/docs/basic/types#numeric-types' },
-                { text: "String", link: '/docs/basic/types#string' },
-                { text: "Boolean", link: '/docs/basic/types#boolean' },
-                { text: "Composite types", link: '/docs/basic/types#composite-types' },
+                { text: "Numeric types" },
+                { text: "String" },
+                { text: "Boolean" },
+                { text: "Composite types" },
               ]
             },
             {

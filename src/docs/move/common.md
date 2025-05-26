@@ -333,7 +333,11 @@ Mojo provides the corresponding basic data types as well. They behave almost the
 
 ### Composite data types
 
-Composite data types are more complex data structures and may contain multiple basic types. They are usually larger in size, more complex memory layout, and more abstract in meaning. For example, lists, tuples, sets, and dictionaries are the most common advanced data types in Python. Mojo provides the corresponding advanced data types as well. The following table summarize these data structures. Unfortunately, you will see more difference in behavior and functionality between Mojo and Python. We will discuss the advanced data types in detail in the later chapters ([Things that are different](./different.md)).
+Composite data types are more complex data structures and may contain multiple basic types. They are usually larger in size, more complex memory layout, and more abstract in meaning. For example, lists, tuples, sets, and dictionaries are the most common advanced data types in Python. Mojo provides the corresponding advanced data types as well.
+
+Unfortunately, you will see more difference in behavior and functionality between Mojo and Python. We will compare these composite data types between Mojo and Python in detail in Chapter ([Things that are different](./different.md)).
+
+The following table summarize these data structures.
 
 | Python type | Mojo type          | Description                        | Behavior          |
 | ----------- | ------------------ | ---------------------------------- | ----------------- |
