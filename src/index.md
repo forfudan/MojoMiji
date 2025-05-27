@@ -4,7 +4,7 @@ layout: home
 hero:
   name: "MOJO MIJI"
   text: "A Guide to Mojo Programming Language"
-  tagline: From A Pythonista's Perspective
+  tagline: from A Pythonista's Perspective
   image:
     dark: /logo.png
     light: /logo.png
@@ -28,7 +28,7 @@ features:
 
 ::: info About this Miji
 
-"Miji" is the latinization of the Chinese word <ruby>秘<rt>mì</rt>笈<rt>jí</rt></ruby>, which literally means a "secret book" or "book of tips".
+"Miji" is the latinization of the Chinese word <ruby>秘<rt>mì</rt>籍<rt>jí</rt></ruby>, which literally means a "secret book" or "book of tips".
 
 [Repo of this website and Miji](https://github.com/forFudan/MojoMiji)  
 [Repo of Standard Library of Mojo porgramming language](https://github.com/modularml/mojo)  

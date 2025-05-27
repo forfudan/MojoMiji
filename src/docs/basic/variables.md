@@ -4,15 +4,31 @@ A variable is a fundamental concept in programming which allows you to store, re
 
 [[toc]]
 
-## A conceptual model of a Mojo variable
+## A conceptual model of variables
 
 There are various way to define a variable, and the definition varies across programming languages. In this Miji, I would provide the following conceptual model which I found easy to understand and remember when I program in Mojo:
 
 ***A variable in Mojo is a quaternary structure consisting a name, a type, an address, and a value***. The name of the variable is the unique identifier that you use to refer to the variable in your code. The type of the variable defines what kind of data it can hold, how much memory space it occupies, how it can be manipulated, and how the value is represented in binary format in memory. The address of the variable defines where the data is stored in memory. The value of the variable is the actual data that is stored in the memory space.
 
-You can always think of or analyze a variable from these four aspects. For example, when you initialize a variable, you are doing the following things: (1) Select an **name** for the variable, (2) Specify the **type** of the variable, (3) Ask for an **address**, a memory space, to store the date, and (4) Store the **value** in the memory space in a binary format.
+Below is an abstract, internal representation of a variable in memory. The variable is of name `a`, of type `Int`, of address `0x26c6a89a`, and of value `123456789`. Since the `Int` type is 64-bit (8-byte) long, it actually occupies the space from `0x26c6a89a` to `0x26c6a89a + 7` = `0x26c6a8a1`. The value `123456789` is stored in the memory space in a binary format, which is `00000000 00000000 00000000 00000000 00000000 00000000 00000101 00000101` (in little-endian format).
 
-When you use a variable with its name, you are doing the following four things: (1) Find out the information of the variable, including its type and address in the memory, (2) Go to the memory address to retrieve the value stored there, and (3) Interpret the value according to its type.
+```console
+        local variable `a` (Int type, 64 bits or 8 bytes)
+            ↓  (stored on stack at address 0x26c6a89a in little-endian format)
+        ┌───────────────────────────────────────────────────────────────────────────────────────┐
+Name    │                                           a                                           │
+        ├───────────────────────────────────────────────────────────────────────────────────────┤
+Type    │                                          Int                                          │
+        ├───────────────────────────────────────────────────────────────────────────────────────┤
+Value   │ 00000000 │ 00000000 │ 00000000 │ 00000000 │ 00000111 │ 01011011 │ 11001101 │ 00010101 │
+        ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
+Address │0x26c6a89a│0x26c6a89b│0x26c6a89c│0x26c6a89d│0x26c6a89e│0x26c6a89f│0x26c6a8a0│0x26c6a8a1│
+        └──────────┴──────────┴──────────┴──────────┴──────────┴──────────┴──────────┴──────────┘
+```
+
+When you program in Mojo, you can always think of or analyze a variable from these four aspects and use the figure above. For example, when you initialize a variable, you are doing the following things: (1) Select an **name** for the variable, (2) Specify the **type** of the variable, (3) Ask for an **address**, a memory space, to store the date, and (4) Store the **value** in the memory space in a binary format.
+
+When you use a variable with its name, you are doing the following four things: (1) Find out the information of the variable in the symbol table, which includes its name, type, and address in the memory, (2) Go to the memory address to retrieve the value stored there, and (3) Interpret the value according to its type.
 
 ::: tip Type is important
 

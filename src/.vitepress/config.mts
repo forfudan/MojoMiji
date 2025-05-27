@@ -95,13 +95,15 @@ export default defineConfig({
               text: 'Functions', link: '/docs/basic/functions',
             },
             {
-              text: 'Data types', link: '/docs/basic/types',
-              items: [
-                { text: "Numeric types" },
-                { text: "String" },
-                { text: "Boolean" },
-                { text: "Composite types" },
-              ]
+              text: 'Data types - basic', link: '/docs/basic/types',
+              // items: [
+              //   { text: "Integer" },
+              //   { text: "Float" },
+              //   { text: "String" },
+              //   { text: "Boolean" },
+              //   { text: "List" },
+              //   { text: "Tuple" },
+              // ]
             },
             {
               text: 'Data type - SIMD', link: '/docs/basic/simd',
@@ -165,7 +167,7 @@ export default defineConfig({
       ]
     },
     footer: {
-      message: "Mojo Miji · Mojo 秘籍",
+      message: "Mojo Miji - A Guide to Mojo Programming Language from A Pythonista's Perspective · 魔咒秘籍 - Pythonista 視角下的 Mojo 編程語言指南",
       copyright: "Yuhao Zhu 朱宇浩 © 2024 Under CC BY-NC-ND 4.0 license",
     },
     darkModeSwitchLabel: "Dark mode",

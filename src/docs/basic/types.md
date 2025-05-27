@@ -4,7 +4,18 @@
 
 Types of data are the foundation of programming languages. They define how one and zeros in the memory are interpreted as human-readable values. Mojo's data types are similar to Python's, but with some differences due to Mojo's static compilation nature.
 
-In this chapter, we will discuss the most common data types in Mojo.
+In this chapter, we will discuss the most common data types in Mojo. They can be categorized into several categories: numeric types (integer, floats), composite types (list, tuple), and others types (string, boolean). You can easily find the corresponding types in Python. The following table summarizes these data types:
+
+| Python type | Default Mojo type  | Be careful that                                                                |
+| ----------- | ------------------ | ------------------------------------------------------------------------------ |
+| `int`       | `Int`              | Integers in Mojo has ranges. Be careful of overflow.                           |
+| `float`     | `Float64`          | Almost same behaviors. You can safely use it.                                  |
+| `str`       | `String`           | Similar behaviors. Note that `String` in Mojo is rapidly evolving.             |
+| `bool`      | `Bool`             | Same.                                                                          |
+| `list`      | `List`             | Elements in `List` in Mojo must be of the same data type.                      |
+| `tuple`     | `Tuple`            | Very similar, but you cannot iterate over a `Tuple` in Mojo.                   |
+| `set`       | `collections.Set`  | Elements in `Set` in Mojo must be of the same data type.                       |
+| `dict`      | `collections.Dict` | Keys and values in `Dict` in Mojo must be of the same data type, respectively. |
 
 ## Type annotations
 
@@ -28,9 +39,7 @@ Some IDEs provides inlay hints that show the inferred types of variables. You ca
 
 :::
 
-## Numeric types
-
-### Integer
+## Integer
 
 In Mojo, the most common integer type is `Int`, which is either a 32-bit or 64-bit signed integer depending on your system. It is ensured to cover the range of addresses on your system. It is similar to the `numpy.intp` type in Python and the `isize` type in Rust. Note that it is different from the `int` type in Python, which is an arbitrary-precision integer type.
 
@@ -117,7 +126,7 @@ Now the result will be `286718338524635465625`, which is the correct answer.
 
 :::
 
-### Floating-point number
+## Float
 
 Compared to integer types, floating-point numbers in Mojo share more similarities with Python. The table below summarizes the floating-point types in Mojo and corresponding types in Python:
 
@@ -368,11 +377,9 @@ def main():
 
 :::
 
-## Composite types
+## List
 
-### List
-
-In Mojo, a `List` is also a mutable sequence type but can hold objects of the **same type**. This is different from Python, where a `list` can hold objects of **any type**. Here are some key differences between Python's `list` and Mojo's `List`:
+In Mojo, a `List` is a mutable, variable-length sequence that can hold a collection of elements of the ***same type***. It is similar to Rust's `Vec` type, but it is different from Python's `list` type that can hold objects of **any type**. Here are some key differences between Python's `list` and Mojo's `List`:
 
 | Functionality      | Mojo `List`                     | Python `list`                               |
 | ------------------ | ------------------------------- | ------------------------------------------- |
@@ -387,7 +394,7 @@ In Mojo, a `List` is also a mutable sequence type but can hold objects of the **
 | Iterating          | Use `for` loop and de-reference | Use `for` loop                              |
 | Memory layout      | Metadata -> Elements            | Pointer -> metadata -> Pointers -> Elements |
 
-#### Creating a List
+### List construction
 
 To construct a `List` in Mojo, you have to use the ***list constructor***. For example, to create a list of `Int` numbers, you can use the following code:
 
@@ -398,7 +405,7 @@ def main():
     var my_list_of_strings: List[String] = List[String]("Mojo", "is", "awesome")
 ```
 
-#### List indexing and slicing
+### List indexing and slicing
 
 You can retrieve the elements of a `List` in Mojo using **indexing**, just like in Python. For example, you can access the first element of `my_list_of_integers` with `my_list_of_integers[0]`.
 
@@ -411,7 +418,7 @@ def main():
     sliced_list = my_list_of_integers[0:3]  # Slicing the first three elements
 ```
 
-#### Extending and concatenating a list
+### Extending and concatenating a list
 
 You can **append** elements to the end of a `List` in Mojo using the `append()` method, just like in Python. For example,
 
@@ -432,7 +439,7 @@ def main():
 # concatenated_list = [1, 2, 3, 4, 5, 6]
 ```
 
-#### Printing a list
+### Printing a list
 
 You cannot print the `List` object directly in Mojo (at least at the moment). This is because the `List` type does not implement the `Writable` trait, which is required for printing. To print a `List`, you have to write your own auxiliary function:
 
@@ -466,7 +473,7 @@ We have already seen this auxiliary function in Chapter [Convert Python code int
 
 :::
 
-#### Iterating over a list
+### Iterating over a list
 
 We can iterate over a `List` in Mojo using the `for ... in` keywords. This is similar to how we iterate over a list in Python. But one thing is different:
 
@@ -503,10 +510,70 @@ This is similar to how Mojo's `List` works: The iterator only returns the addres
 
 :::
 
+### `List` in memory
+
+A Mojo `List` is actually a structure that contains three fields:
+
+- A pointer type `data` that points to a continuous block of memory on the heap that stores the elements of the list contiguously.
+- A integer type `_len` which stores the number of elements in the list.
+- A integer type `capacity` which represents the maximum number of elements that can be stored in the list without reallocating memory. When `capacity` is larger than `_len`, it means that the memory space is allocated but is fully used. This enable you to append a few new elements to the list without reallocating memory. If you append more elements than the current capacity, the list will request another block of memory on the heap with a larger capacity, copy the existing elements to the new block, and then append the new elements.
+
+Let's take a closer look at how a Mojo `List` is stored in the memory with a simple example: The code below creates a `List` of `UInt8` numbers representing the ASCII code of 5 letters. We can use the `chr()` function to convert them into characters and print them out to see what they mean.
+
+```mojo
+def main():
+    var me = List[UInt8](89, 117, 104, 97, 111)
+    print(me.capacity)
+    for i in me:
+        print(chr(Int(i[])), end="")
+# Output: Yuhao
+```
+
+When you create a `List` with `List[UInt8](89, 117, 104, 97, 111)`, Mojo will first allocate a continuous block of memory on **stack** to store the three fields (`data: Pointer`, `_len: Int` and `capacity: Int`, each of which is 8 bytes long on a 64-bit system. Because we passed 5 elements to the `List` constructor, the `_len` field will be set to 5, and the `capacity` field will also be set to 5 (default setting, `capacity = _len`).
+
+Then Mojo will allocate a continuous block of memory on **heap** to store the actual values of the elements of the list, which is 1 bytes (8 bits) for each `UInt8` element, equaling to 5 bytes in total for 5 elements. The `data` field will then store the address of the first byte in this block of memory.
+
+The following figure illustrates how the `List` is stored in the memory. You can see that a continuous block of memory on the heap (from the address `17ca81f8` to `17ca81a2`) stores the actual values of the elements of the list. Each element is a `UInt8` value, and thus is of 1 byte long. The data field on the stack store the address of the first byte of the block of memory on the heap, which is `17ca81f8`.
+
+```console
+        local variable `me = List[UInt8](89, 117, 104, 97, 111)`
+            ↓  (meta data on stack)
+        ┌────────────────┬────────────┬────────────┐
+Field   │ data           │ _len       │ capacity   │
+        ├────────────────┼────────────┼────────────┤
+Type    │ Pointer[UInt8] │  Int       │     Int    │
+        ├────────────────┼────────────┼────────────┤
+Value   │   17ca81f8     │     5      │     5      │
+        ├────────────────┼────────────┼────────────┤
+Address │   26c6a89a     │  26c6a8a2  │  26c6a8aa  │
+        └────────────────┴────────────┴────────────┘
+            │
+            ↓ (points to a continuous memory block on heap that stores the list elements)
+        ┌────────┬────────┬────────┬────────┬────────┐
+Element │  89    │  117   │  104   │  97    │  111   │
+        ├────────┼────────┼────────┼────────┼────────┤
+Type    │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │
+        ├────────┼────────┼────────┼────────┼────────┤
+Value   │01011001│01110101│01101000│01100001│01101111│
+        ├────────┼────────┼────────┼────────┼────────┤
+Address │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│
+        └────────┴────────┴────────┴────────┴────────┘
+```
+
+Now we try to see what happens when we use list indexing to get a specific element from the list, for example, `me[0]`. Mojo will first check the `_len` field to see if the index is valid (i.e., `0 <= index < me._len`). If it is valid, Mojo will then calculate the address of the element by adding the index to the address stored in the `data` field. In this case, it will return the address of the first byte of the block of memory on the heap, which is `17ca81f8`. Then Mojo will de-reference this address to get the value of the element, which is `89` in this case.
+
+If we try `me[2]`, Mojo will calculate address by adding `2` to the address stored in the `data` field, which is `17ca81f8 + 2 = 17ca81fa`. Then Mojo will de-reference this address to get the value of the element, which is `104` in this case.
+
+::: info Index or offset?
+
+You may find that the index starting from `0` in Python or Mojo is a little bit strange. But it will be intuitive if you look at the example above: The index of an element in a list is actually the offset from the address of the first element. When you think of the index as an offset, it will make more sense. Thus, in this Miji, I will sometimes use the term "offset" to refer to the index within the brackets `[]`.
+
+:::
+
 ::: tip Memory layout of a list in Python and Mojo
 
 In Mojo, the values of the elements of a list is stored consecutively on the heap. In Python, the pointers to the elements of a list is stored consecutively on the heap, while the actual values of the elements are stored in separate memory locations. This means that a Mojo's list is more memory-efficient than a Python's list, as it does not require additional dereferencing to access the values of the elements.
 
-If you are interested in the memory layout of a list in Python and Mojo, you can refer to Chapter [Memory Layout of Mojo objects](../misc/layout.md) for more details, where I drew some abstract diagrams to illustrate the memory layouts of a list in Python and Mojo.
+If you are interested in the difference between the the memory layout of a list in Python and Mojo, you can refer to Chapter [Memory Layout of Mojo objects](../misc/layout.md) for more details, where I use abstract diagrams to compare the memory layouts of a list in Python and Mojo.
 
 :::

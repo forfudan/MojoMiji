@@ -16,12 +16,8 @@ by ***Yuhao Zhu 朱宇浩***
 - [Part III: Basic Mojo](./basic/basic)
   - [Variables](./basic/variables) (Declare and use variables in Mojo)
   - [Functions](./basic/functions) (Define and use functions in Mojo)
-  - [Data types](./basic/types) (Various data types in Mojo)
-    - [Numeric types](./basic/types#numeric-types) (integers, floats, etc.)
-    - [String](./basic/types#string)
-    - [Boolean](./basic/types#boolean)
-    - [Composite types](./basic/types#composite-types) (lists, tuples, sets, dicts, etc.)
-  - [Data type - SIMD](./basic/simd) (The `SIMD` type)
+  - [Data types - basic](./basic/types) (Basic data types: [Integer](./basic/types#integer), [Float](./basic/types#float), [String](./basic/types#string), [Boolean](./basic/types#boolean), [List](./basic/types#list))
+  - [Data type - SIMD](./basic/simd) (The `SIMD` type in Mojo)
   - [Operators](./basic/operators) (Arithmetic, comparison, logical, and bitwise operators in Mojo)
   <!-- - [Control flows (Yuhao is working on this)](./basic/control_flows) -->
   <!-- - [Structs (Yuhao is working on this)](./basic/structs) -->

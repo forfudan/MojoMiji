@@ -6,7 +6,9 @@ Operators are symbols that perform operations on one or more operands. They are 
 
 ## Overview
 
-In Python, we have arithmetic operators (`+`, `-`, `*`, `/`, `%`, `**`), comparison operators (`==`, `!=`, `<`, `>`, `<=`, `>=`), logical operators (`and`, `or`, `not`), bitwise operators (`&`, `|`, `^`, `~`), and assignment operators (`=`, `+=`, `-=`, etc.). In Mojo, we have **exactly the same operators** as in Python. They have the same meaning and functionality. Moreover, the **operator precedence and associativity** are also the same in both languages.
+In Python, we have arithmetic operators (`+`, `-`, `*`, `/`, `%`, `**`), comparison operators (`==`, `!=`, `<`, `>`, `<=`, `>=`), logical operators (`and`, `or`, `not`), bitwise operators (`&`, `|`, `^`, `~`), and assignment operators (`=`, `+=`, `-=`, etc.).
+
+Mojo borrows, fortunately, **exactly the same operator system** from Python. The operators have the same meaning and functionality. Moreover, the **operator precedence and associativity** are also the same in both languages.
 
 ## Chained comparison
 
