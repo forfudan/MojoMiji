@@ -114,7 +114,7 @@ Mojo has its own [docstring style guide](https://github.com/modular/modular/blob
 
 :::
 
-### Case-sensitive
+### Case-sensitivity
 
 Both Python and Mojo are case-sensitive. This means that `hello`, `Hello`, and `HELLO` are three different identifiers. It also means that you can never run your code successfully if you use `IF` instead of `if` or `FOR` instead of `for`. For example, the following code is not even wrong.
 
@@ -126,6 +126,21 @@ def main():
     ELSE:
         Print("A is not positive")
 ```
+
+## Identifiers
+
+Identifiers are names used to identify variables, functions, structs, classes, etc.
+
+Mojo has the exactly the same rules for identifiers as Python does. You can always use your existing knowledge of Python identifiers in Mojo. To be more specific, Mojo has the following rules on identifiers:
+
+- Identifiers must consist of letters (both uppercase and lowercase), digits, and underscores (`_`), e.g, `my_variable`, `MyVariable`, `my_variable_1`, `_temp_variable`, etc.
+- Identifiers cannot start with a digit, e.g., `1st_variable` is not a valid identifier, but `first_variable` is.
+- Identifiers cannot be a keyword (reserved word), e.g, `if`, `for`, `while`, `def`, etc. are not valid identifiers.
+- Identifiers are case-sensitive.
+
+::: info
+We will discuss the identifiers in more detail in Section [Identifiers](../basic/variables#identifiers) of Chapter [Variables](../basic/variables).
+:::
 
 ## Keywords
 
@@ -215,9 +230,9 @@ We will discuss exception handling in detail in the later chapters.
 
 Definition keywords are used to define variables, functions, structs, classes, etc.
 
-#### Variable definition
+#### Variables
 
-In Python, we do not use any keyword to define variables. We just assign a value to a variable name. For example:
+In Python, we do not use any keyword to define and create variables. We just assign a value to a variable name. For example:
 
 ```python
 def main():
@@ -241,7 +256,7 @@ Do you know that in early Mojo versions, there is also a `let` keyword to define
 
 :::
 
-#### Function definition
+#### Functions
 
 In Python, we use the `def` keyword to define a function. For example:
 
@@ -266,7 +281,7 @@ fn sub(a: Int, b: Int) -> Int:
 
 The `def` keyword and the `fn` keyword share the most of the functionality. The main difference is in the default behavior of the arguments. If a function is defined with `fn`, the arguments are immutable by default, and you cannot change the values of the arguments within the function. If a function is defined with `def`, the arguments are immutable by default, but changing the values of the arguments will create a mutable copy of them. We will discuss this in detail in the later chapters ([functions](../basic/functions.md)).
 
-#### Class definition
+#### Classes vs Structs
 
 In Python, "class" is a core feature that reflect the philosophy of object-oriented programming (OOP), we use the `class` keyword to define a class. For example, we define a class called `Human` with two attributes, `name` and `age`, and a method called `greet()`. Then we construct an object of the class and call the method:
 

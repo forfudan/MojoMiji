@@ -17,28 +17,6 @@ In this chapter, we will discuss the most common data types in Mojo. They can be
 | `set`       | `collections.Set`  | Elements in `Set` in Mojo must be of the same data type.                       |
 | `dict`      | `collections.Dict` | Keys and values in `Dict` in Mojo must be of the same data type, respectively. |
 
-## Type annotations
-
-Python is a dynamic, strongly-typed language. When we say that it is strongly-typed, we mean that Python enforces type checking at runtime and there are less implicit type conversions. When we say that it is dynamic, we mean that Python does not require you to declare the type of a variable before using it. You can assign any value to a variable, and Python will determine its type at runtime. From Python 3.5 onwards, Python also supports type hints, which allows you to annotate the types of variables and function arguments, but these are optional and do not affect the runtime behavior and performance of the code. Giving incorrect type hints will not cause any errors. The Python's type hints are primarily for static analysis tools and IDEs to help you catch potential errors before running the code, and it also helps other developers (or yourself in future) understand your code better.
-
-Python's type hints are primarily for IDE static checks and readability, and are not mandatory, having no impact on performance^[Compilers like Cython and mypyc may use type hints for partial optimization.].
-
-In contrast, Mojo is statically compiled. Therefore, data types of variables must be explicitly declared so that the compiler can allocate appropriate memory space. Sometimes, the type of the variables can be ***inferred*** by the compiler based on the assigned literals, expressions, and the returns of functions. However, it is still recommended to provide type annotations (or use explicit constructors) for clarity and to avoid ambiguity. We will see in later chapters that absence of type annotations can lead to unintended behavior. For example,
-
-```mojo
-fn main():
-    var a: Float64 = 120.0            # Use type annotations for literals
-    var b: Int = 24                   # Use type annotations for literals
-    var c = String("Hello, world!")   # Use explicit constructors
-    var d = Int128(100) ** Int128(2)  # Use explicit constructors
-```
-
-::: tip Inlay hints
-
-Some IDEs provides inlay hints that show the inferred types of variables. You can use it to check whether the compiler has inferred the data type correctly. For example, the Rust and Python extensions of Visual Studio Code provide inlay hints. Mojo does not yet provide this feature. Thus, I recommend you to always provide type annotations, particularly for literals.
-
-:::
-
 ## Integer
 
 In Mojo, the most common integer type is `Int`, which is either a 32-bit or 64-bit signed integer depending on your system. It is ensured to cover the range of addresses on your system. It is similar to the `numpy.intp` type in Python and the `isize` type in Rust. Note that it is different from the `int` type in Python, which is an arbitrary-precision integer type.
