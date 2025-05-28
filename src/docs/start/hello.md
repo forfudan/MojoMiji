@@ -44,7 +44,7 @@ You may ask have many questions in your mind: Why I have to define a function ca
 
 Lets's answer these questions one by one.
 
-### Function `main()`
+### The `main()` function
 
 This might be the first difference you notice between Mojo and Python. In Python, you can run code without defining a main function. However, in Mojo, you have to define a function called `main()` to run your code. By putting the code in the `main()` function, you tell Mojo that this is the entry point of your program.
 
