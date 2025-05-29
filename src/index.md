@@ -23,12 +23,18 @@ features:
   - title: Safe
     details: Mojo supports ownership semantic and increase the safety of memory.
   - title: Pythonic
-    details: The syntax of Mojo is close to Python, which is very friendly for Python users.
+    details: Mojo's coding style and syntax is close to Python, which is very friendly for Python users.
+  - title: Concrete examples
+    details: This Miji Book contains many concrete examples of Mojo code, which can help you learn Mojo quickly and avoid pitfalls that I encountered.
+  - title: Abundant illustrations
+    details: This Miji Book provides a lot of graphs on memory layout of Mojo objects, which can help you to understand how Mojo works.
+  - title: Pythonista's perspective
+    details: This Miji Book stands from a Pythonista's perspective and always compare Mojo with Python, making it easier for you to convert your Python knowledge into Mojo.
 ---
 
-::: info About this Miji
+::: info About this Miji Book
 
-"Miji" is the latinization of the Chinese word <ruby>秘<rt>mì</rt>籍<rt>jí</rt></ruby>, which literally means a "secret book" or "book of tips".
+"Miji" is the latinization of the Chinese word <ruby>秘<rt>mì</rt>籍<rt>jí</rt></ruby>, which literally means a "secret book" or "book of tips". You can call this book "Mojo Miji", "Miji Book", or just "the Miji".
 
 [Repo of this website and Miji](https://github.com/forFudan/MojoMiji)  
 [Repo of Standard Library of Mojo porgramming language](https://github.com/modularml/mojo)  

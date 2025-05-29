@@ -419,7 +419,7 @@ def main():
 
 ### Print a list
 
-You cannot print the `List` object directly in Mojo (at least at the moment). This is because the `List` type does not implement the `Writable` trait, which is required for printing. To print a `List`, you have to write your own auxiliary function:
+You cannot print the `List` object directly in Mojo (at least at the moment). This is because the `List` type does not implement the `Writable` trait, which is required for printing. To print a `List`, you have to write your own auxiliary function.
 
 ```mojo
 def print_list_of_floats(array: List[Float64]):

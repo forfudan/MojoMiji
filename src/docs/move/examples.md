@@ -10,9 +10,10 @@ The first example is about multiplication table ([Wiki page](https://en.wikipedi
 
 So the first example is to print a multiplication table from 1 to 9. Each element would be of the form `i * j = k`. All the elements in the same row are separated by a tab character. Since the multiplication is symmetric, we do not need to repeat the calculation. For example, we skip `3 * 1 = 1` and `3 * 2 = 6` but continue with `3 * 3 = 9`.
 
-We do this first in Python. We create a file in the `src` directory called `multiplication_table.py` and write the following code in it:
+We do this first in Python. We create a file in the `src/move/` directory called `multiplication_table.py` and write the following code in it:
 
 ```python
+# src/move/multiplication_table.py
 def main():
     print("Nine-nine Multiplication Table")
     for i in range(1, 10):
@@ -23,7 +24,7 @@ def main():
 main()
 ```
 
-Then we run the code with `python src/multiplication_table.py`. The output is:
+Then we run the code with `python src/move/multiplication_table.py`. The output is:
 
 ```console
 Nine-nine Multiplication Table
@@ -40,7 +41,7 @@ Nine-nine Multiplication Table
 
 Now we program in Mojo. A clever way is to simply copy the above Python file and change the file extension to `.mojo`. Then we remove the last line `main()` because it is not needed.
 
-Let's compile and run this Mojo code by `magic run mojo src/multiplication_table.mojo`. You may see the following error message:
+Let's compile and run this Mojo code by `magic run mojo src/move/multiplication_table.mojo`. You may see the following error message:
 
 ```console
 error: 'StringLiteral["{} * {} = {}"]' value has no attribute 'format'
@@ -68,9 +69,10 @@ To demonstrate the gain in speed, we use Fibonacci sequence as an example. The F
 
 What we want to do is to calculate the first 40 Fibonacci numbers and print them out. Although there is a more efficient way to implement this, I will use the recursive method so that we can see the performance difference between Python and Mojo.
 
-Let's create a file in the `src` directory called `fibonacci.py` and write the following code in it:
+Let's create a file in the `src/move/` directory called `fibonacci.py` and write the following code in it:
 
 ```python
+# src/move/fibonacci.py
 def fib(n: int) -> int:
     if n <= 1:
         return n
@@ -83,7 +85,7 @@ def main():
 main()
 ```
 
-Let's run the code with the command `python src/fibonacci.py`. The output is:
+Let's run the code with the command `python src/move/fibonacci.py`. The output is:
 
 ```console
 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181, 6765, 10946, 17711, 28657, 46368, 75025, 121393, 196418, 317811, 514229, 832040, 1346269, 2178309, 3524578, 5702887, 9227465, 14930352, 24157817, 39088169, 63245986,
@@ -96,6 +98,7 @@ Just like what we did in the previous example, we copy the above Python file and
 Now you will see that your IDE is complaining about the first line of the code. It highlights the type hints `int` and tells you `use of unknown declaration 'int'`. Running the code will also give your the same error. This is because Mojo's built-in integral type is called `Int` (with capital "I") which is different from Python. So we need to change the type hints from `int` to `Int`.
 
 ```mojo
+# src/move/fibonacci.mojo
 def fib(n: Int) -> Int:
     if n <= 1:
         return n
@@ -106,7 +109,7 @@ def main():
         print(fib(i), end=", ")
 ```
 
-Let's run the code again with `magic run mojo src/fibonacci.mojo`. On my machine, it takes around ***0.35*** seconds only.
+Let's run the code again with `pixi run mojo src/move/fibonacci.mojo`. On my machine, it takes around ***0.35*** seconds only.
 
 See, a huge performance gain! The Mojo code is more than ***50 times*** faster than the Python code. What we did is just copying-pasting from the Python code and making small modifications, but we gained a performance comparable to C.
 
@@ -208,9 +211,10 @@ This example is to sort an array of numbers in ascending order in-place. There a
 
 The bubble sort algorithm repeatedly scan through the array, compares each pair of adjacent elements and swaps them if they are in the wrong order. For example, the array `5, 2, 9, 1` will be sequentially sorted to `2, 5, 1, 9` -> `2, 1, 5, 9` -> `1, 2, 5, 9` after iterations.
 
-Let's do this first in Python. We create a file in the `src` directory called `sort.py` and write the following code in it:
+Let's do this first in Python. We create a file in the `src/move` directory called `sort.py` and write the following code in it:
 
 ```python
+# src/move/sort.py
 def bubble_sort(array):    
     n = len(array)
     for i in range(n):
@@ -227,7 +231,7 @@ def main():
 main()
 ```
 
-Then we run the code with `python src/sort.py`. The output is:
+Then we run the code with `python src/move/sort.py`. The output is:
 
 ```console
 Input array: [64.1, 34.523, 25.1, -12.3, 22.0, -11.5, 90.49]
@@ -294,6 +298,7 @@ error: invalid call to 'print': could not deduce parameter 'Ts' of callee 'print
 Oops! This seems quite annoying! We cannot use the `print()` function to print lists in Mojo, at least not possible at the moment (v25.3). Maybe in future we can do that. For now, we have to work around a little bit. Let's define a helper function to print the list. After all changes, we have our final Mojo code as follows:
 
 ```mojo
+# src/move/sort.mojo
 def bubble_sort(mut array: List[Float64]):
     n = len(array)
     for i in range(n):

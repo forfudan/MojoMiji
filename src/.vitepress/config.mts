@@ -59,10 +59,13 @@ export default defineConfig({
           link: '/docs/start/start',
           items: [
             {
-              text: 'Install Magic', link: '/docs/start/install'
+              text: 'Install magic (being deprecated)', link: '/docs/start/magic'
             },
             {
-              text: 'Initiate Mojo project', link: '/docs/start/initiate'
+              text: 'Install pixi (alternative solution)', link: '/docs/start/pixi'
+            },
+            {
+              text: 'Initiate Mojo project', link: '/docs/start/project'
             },
             {
               text: 'My first Mojo program', link: '/docs/start/hello'

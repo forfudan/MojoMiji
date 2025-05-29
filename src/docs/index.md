@@ -6,8 +6,9 @@ by ***Yuhao Zhu 朱宇浩***
 
 - [Introduction](./intro)
 - [Part I: Start with Mojo](./start/start)
-  - [Install Magic](./start/install) (Install Magic, the package manager for Mojo)
-  - [Initiate Mojo project](./start/initiate) (Initiate a Mojo project and install Mojo compiler)
+  - [Install Magic (being deprecated)](./start/magic) (This will be deprecated in future)
+  - [Install package manager](./start/pixi) (Install pixi, the package manager for Mojo)
+  - [Initiate Mojo project](./start/project) (Initiate a Mojo project and install Mojo compiler)
   - [My first Mojo program](./start/hello) (Hello, world!)
 - [Part II: Move into Mojo](./move/move)
   - [Convert Python code into Mojo](./move/examples) (Three examples, Python becomes Mojo)

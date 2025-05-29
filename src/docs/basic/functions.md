@@ -178,7 +178,13 @@ In Python, the `main()` function is not needed. The interpreter will automatical
 
 Notably, the Python interpreter will set the special variable `__name__` of the file that you are directly executing to `"__main__"`. Recall that we can use the expression `if __name__ == "__main__"` to prevent the code from a module from being executed when it is imported by another Python file.
 
-Nevertheless, some Python users still define a `main()` function in their code, and then call it at the end of the file. They may find Mojo's `main()` function more comfortable.
+Nevertheless, some Python users still define a `main()` function in their code, and then call it at the end of the file. They may find Mojo's `main()` function more comfortable. Here is a Python example with `main()` function:
+
+```python
+def main():
+    print("Hello, world!")
+main()  # Run the main function
+```
 
 :::
 
