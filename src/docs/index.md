@@ -27,11 +27,13 @@ by ***Yuhao Zhu 朱宇浩***
   <!-- - [Traits (Yuhao is working on this)](./advanced/traits) -->
   - [Ownership](./advanced/ownership) (A fairy tale about ownership in Mojo)
   <!-- - [Call Python in Mojo](./advanced/python) -->
-  <!-- - [Exercise: A matrix type](./advanced/matrix) (Let's implement a Matrix type in Mojo) -->
-- [Part V: Extended Mojo (Yuhao is working on this)](./extensions/extensions)
+- [Part V: Extended Mojo](./extensions/extensions)
   - [NuMojo](./extensions/numojo) (A library for numerical computing and NDArray)
   - [DeciMojo](./extensions/decimojo) (A library for arbitrary-precision integers and decimals)
-- [Part VI: Miscellaneous](./misc/misc)
+- [Part VI: A case study - Matrix type] (Let's implement a Matrix type in Mojo)
+- [Part VII: Miscellaneous](./misc/misc)
   - [Memory layout of Mojo objects](./misc/layout) (How Mojo objects are stored in memory)
   - [Reference system](./misc/reference) (Reference system of Mojo)
-- [Glossary](./glossary) (Glossary of Mojo terms)
+  - [Glossary](./misc/glossary) (Glossary of Mojo terms)
+  - [Information, tips, and warnings](./misc/tips) (Information, tips, and warnings about Mojo)
+- [Further readings]

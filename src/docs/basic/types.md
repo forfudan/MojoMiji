@@ -372,7 +372,7 @@ In Mojo, a `List` is a mutable, variable-length sequence that can hold a collect
 | Iterating          | Use `for` loop and de-reference | Use `for` loop                              |
 | Memory layout      | Metadata -> Elements            | Pointer -> metadata -> Pointers -> Elements |
 
-### List construction
+### Construct a list
 
 To construct a `List` in Mojo, you have to use the ***list constructor***. For example, to create a list of `Int` numbers, you can use the following code:
 
@@ -383,7 +383,7 @@ def main():
     var my_list_of_strings: List[String] = List[String]("Mojo", "is", "awesome")
 ```
 
-### List indexing and slicing
+### Index or slice a list
 
 You can retrieve the elements of a `List` in Mojo using **indexing**, just like in Python. For example, you can access the first element of `my_list_of_integers` with `my_list_of_integers[0]`.
 
@@ -396,7 +396,7 @@ def main():
     sliced_list = my_list_of_integers[0:3]  # Slicing the first three elements
 ```
 
-### Extending and concatenating a list
+### Extend or concat a list
 
 You can **append** elements to the end of a `List` in Mojo using the `append()` method, just like in Python. For example,
 
@@ -417,7 +417,7 @@ def main():
 # concatenated_list = [1, 2, 3, 4, 5, 6]
 ```
 
-### Printing a list
+### Print a list
 
 You cannot print the `List` object directly in Mojo (at least at the moment). This is because the `List` type does not implement the `Writable` trait, which is required for printing. To print a `List`, you have to write your own auxiliary function:
 
@@ -445,13 +445,13 @@ def main():
     print_list_of_strings(my_list_of_strings)
 ```
 
-::: info
+::: info `print_lists()` function
 
 We have already seen this auxiliary function in Chapter [Convert Python code into Mojo](../move/examples.md). We will use this kinds of functions to print lists in the following chapters as well.
 
 :::
 
-### Iterating over a list
+### Iterate over a list
 
 We can iterate over a `List` in Mojo using the `for ... in` keywords. This is similar to how we iterate over a list in Python. But one thing is different:
 

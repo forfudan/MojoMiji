@@ -70,7 +70,7 @@ fn function_name[parameter1: Type1, parameter2: Type2, ...](argmuent1, argument2
 
 Note that there is something wrapped within square brackets `[]`. This is something related to meta-programming and is optional. We will not cover it for now, but will discuss in a later chapter.
 
-:::info Python's functions
+::: info Python's functions
 
 In Python, functions are declared using the `def` keyword. For example, the following functions returns the sum of two numbers (with or without type hints.)
 
@@ -172,7 +172,7 @@ Today is 1 - 1 - 2025
 
 See that you also get a list of local variables you have defined.
 
-::: The main function in Python
+::: info The main function in Python
 
 In Python, the `main()` function is not needed. The interpreter will automatically run all the code in the file you run or import.
 
@@ -186,7 +186,7 @@ Nevertheless, some Python users still define a `main()` function in their code, 
 
 Arguments are the values (sometimes also the type and the address) that are passed into a function when the function is being called. Depending on use cases, an arguments can be regarded as an alias to a variable, or a copy of the variable.
 
-:::info Arguments vs Parameters
+::: info Arguments vs Parameters
 
 In Python, some people use the terms "arguments" and "parameters" interchangeably. Some people may distinguish them by saying that "parameters" are the variables that are defined in the function (from the perspective of the inner scope, the callee), while "arguments" are the values that are passed into a function (from the perspective of the outer scope, the caller).
 
@@ -280,7 +280,7 @@ If an argument is mutable, it means that the function can modify the value of th
 
 The mutability of the arguments is defined by several keywords, namely, `read`, `mut`, `owned` and `out`. I will also call them "mutability modifiers" in this Miji. Let's discuss them one by one.
 
-:::warning Arguments in Mojo vs Rust
+::: warning Arguments in Mojo vs Rust
 
 The arguments in Mojo are very different from those in Rust.
 
@@ -312,7 +312,7 @@ If an argument is declared with the keyword `read`, then a read-only reference o
 1. The argument will get the same address as the variable you passed into the function, so it can access the value at that address.
 1. The value at the address is marked as "immutable", meaning that you cannot change the it within the function. The value of the variable outside the function will thus be protected from being modified.
 
-:::info A mutable copy
+::: info A mutable copy
 
 Note that, for Item 2, although the value at the original address cannot be changed, the argument itself can still be modified when the function is declared with the `def` keyword. This is done by implicitly creating a mutable copy of the value at another address. This will be discussed in the section [def vs fn](#def-vs-fn) at the end of this chapter.
 
@@ -369,7 +369,7 @@ error: expression must be mutable in assignment
 
 ### keyword `mut`
 
-:::info `inout` vs `mut`
+::: info `inout` vs `mut`
 
 Do you know that the keyword `mut` was named as `inout` before Mojo version 24.6.
 
