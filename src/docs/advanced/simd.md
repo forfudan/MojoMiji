@@ -1,6 +1,6 @@
 # Data type - SIMD
 
-Although SIMD is considered a "small" struct and are on the stack, I still make a separate chapter for it because there is not a counterpart in Python. It is also not a built-in type in many other programming languages. However, Mojo includes this type as a fundamental numerical type and makes it built-in. This type helps Mojo to achieve high performance in numerical computing, especially in vectorized operations.
+Although SIMD is considered a "small" struct and is, perhaps, the most fundamental data type in Mojo, I still make a separate chapter for it and put it in the "advanced" part. This is because there is not a counterpart of SIMD in Python and it is even not a built-in type for many other programming languages. Luckily, Mojo includes this type as a fundamental numerical type and makes it built-in. This type helps Mojo to achieve high performance in numerical computing, especially in vectorized operations.
 
 [[toc]]
 
@@ -167,7 +167,7 @@ Here is a summary of the `SIMD` type:
 | Iterating          | Use `for` loop and de-reference     |
 | Memory layout      | Contiguous on stack                 |
 
-### Create an SIMD
+## Create an SIMD
 
 To create a `SIMD` object, you can use the general syntax `SIMD[DType, size]()`, where `DType` is the data type of the elements and `size` is the number of elements in the SIMD. For example, in the following code, we create four different `SIMD` objects with different data types and sizes:
 
@@ -388,7 +388,7 @@ def main():
 
 It is just as easy as adding up two numbers. The `+` operator for the `SIMD` type is to perform element-wise addition. You can also use other operators such as `-`, `*`, `/`, etc. to perform element-wise subtraction, multiplication, and division, respectively. Note that these operations are done in parallel for all elements in the SIMD.
 
-We can make a quick comparison between the performance of the two approaches. In the mojo file `src/basic/simd_performance.mojo`, we will implement two approaches to repeatedly add up `[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0]`, element-wise, for 1,000,000 times. The expected result is `[1000000.0, 2000000.0, 3000000.0, 4000000.0, 5000000.0, 6000000.0, 7000000.0, 8000000.0]`.
+We can make a quick comparison between the performance of the two approaches. In the mojo file `src/advanced/simd_performance.mojo`, we will implement two approaches to repeatedly add up `[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0]`, element-wise, for 1,000,000 times. The expected result is `[1000000.0, 2000000.0, 3000000.0, 4000000.0, 5000000.0, 6000000.0, 7000000.0, 8000000.0]`.
 
 - The first approach is to use plain iteration. We simply iterate over each element and add them into the result at the same index. This is similar to the traditional approach we discussed earlier.
 - The second approach is to use the `+` operator on two SIMD objects.
@@ -396,7 +396,7 @@ We can make a quick comparison between the performance of the two approaches. In
 To calculate the time taken for each approach, we need to import the `time` module and use the `perf_counter_ns()` function. The code looks like this:
 
 ```mojo
-# src/basic/simd_performance.mojo
+# src/advanced/simd_performance.mojo
 import time
 
 
@@ -429,7 +429,7 @@ def main():
     print()
 ```
 
-Let's run this code with `pixi run mojo src/basic/simd_performance.mojo` command in the terminal and see the output:
+Let's run this code with `pixi run mojo src/advanced/simd_performance.mojo` command in the terminal and see the output:
 
 ```console
 Use plain iterations over all elements:

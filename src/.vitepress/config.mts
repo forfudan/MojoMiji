@@ -109,9 +109,6 @@ export default defineConfig({
               // ]
             },
             {
-              text: 'Data type - SIMD', link: '/docs/basic/simd',
-            },
-            {
               text: 'Operators', link: '/docs/basic/operators',
             },
           ],
@@ -119,6 +116,9 @@ export default defineConfig({
         {
           text: 'PART IV: ADVANCED MOJO', link: '/docs/advanced/advanced',
           items: [
+            {
+              text: 'Data type - SIMD', link: '/docs/advanced/simd',
+            },
             {
               text: 'Ownership',
               link: '/docs/advanced/ownership'

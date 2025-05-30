@@ -8,7 +8,12 @@ A variable is a fundamental concept in programming which allows you to store, re
 
 There are various way to define the term "variable", and the definition varies across programming languages. In this Miji, I would provide the following conceptual model which I found easy to understand and remember when I program in Mojo:
 
-***A variable in Mojo is a quaternary structure consisting a name, a type, an address, and a value***. The name of the variable is the unique identifier that you use to refer to the variable in your code. The type of the variable defines what kind of data it can hold, how much memory space it occupies, how it can be manipulated, and how the value is represented in binary format in memory. The address of the variable defines where the data is stored in memory. The value of the variable is the actual information we care about.
+***A variable in Mojo is a quaternary system consisting a name, a type, an address, and a value***.
+
+- The name of the variable is the unique identifier that you use to refer to the variable in your code.
+- The type of the variable defines what kind of data it can hold, how much memory space it occupies, how it can be manipulated, and how the value is represented in binary format in memory.
+- The address of the variable defines where the data is stored in memory.
+- The value of the variable is a meaning piece of information that you directly or indirectly create or use. It is usually stored in a binary format in the memory.
 
 Below is an abstract, internal representation of a variable in memory. The variable is of name `a`, of type `Int`, of address `0x26c6a89a`, and of value `123456789`. Since the `Int` type is 64-bit (8-byte) long, it actually occupies the space from `0x26c6a89a` to `0x26c6a89a + 7` = `0x26c6a8a1`. The value `123456789` is stored in the memory space in a binary format, which is `00000000 00000000 00000000 00000000 00000000 00000000 00000101 00000101` (in little-endian format).
 
@@ -185,7 +190,7 @@ def main():
     d = List[Int](1, 2, 3)
 ```
 
-Some Pythonistas will be happy now. But remember, if you omit the `var` keyword, then you have to also omit the type annotation. In another words, if you want to use type annotations, you must use the `var` keyword. Note that the following code won't work:
+Some Pythonistas will be happy now. But remember, if you omit the `var` keyword, then you have to also omit the type annotation. In other words, if you want to use type annotations, you must use the `var` keyword. Note that the following code won't work:
 
 ```mojo
 def main():

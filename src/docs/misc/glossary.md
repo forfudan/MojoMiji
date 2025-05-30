@@ -9,4 +9,7 @@ This glossary provides a list of key terms and concepts related to the Mojo prog
 | identifier             | [Variables](../basic/variables#identifiers) |
 | dunder method          | [Variables](../basic/variables#identifiers) |
 | shadowing              | [Variables](../basic/variables)             |
-| uninitialized          | [SIMD](../basic/simd)                       |
+| uninitialized          | [SIMD](../advanced/simd)                    |
+| compile time           | [ownership](../advanced/ownership)          |
+| run time               | [ownership](../advanced/ownership)          |
+| reference              | [function](../basic/functions.md)           |

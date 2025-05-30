@@ -127,6 +127,17 @@ def main():
         Print("A is not positive")
 ```
 
+### Naming conventions
+
+Naming conventions are the guidelines for naming variables, functions, classes, etc. They are not mandatory for a successful compilation or execution of the code, but are important for code readability and maintainability. Mojo borrows Python's naming conventions, such as:
+
+- Variables and functions: use lowercase letters with words separated by underscores, e.g., `a`, `some_variable`, `this_is_a_long_variable`, `foo()`, `calculate_pi()`.
+- Classes or structs: capitalize the first letter of each word and put them together (CamelCase), e.g., `MyClass`, `Human`, `TableWithFourLegs`.
+- Constants: use uppercase letters with words separated by underscores, e.g., `PI`, `MAX_VALUE`, `MIN_VALUE`.
+- Modules and packages: use lowercase letters with words separated by underscores, e.g., `first_module`, `second_package`, `data_types`.
+
+Note that Python's primitive types are actually not following the naming conventions. For example, `int`, `float`, `str`, and `bool` are all lowercase. Mojo is stricter on this and use instead `Int`, `Float64`, `String`, and `Bool` for the corresponding types. We will discuss this in detail in Chapter ([Things that are different](./different.md)).
+
 ## Identifiers
 
 Identifiers are names used to identify variables, functions, structs, classes, etc.
@@ -392,7 +403,7 @@ def main():
 
 ***Dunder methods***, which is short for "double underscore" methods, are special methods defined in Python functions that start and end with double underscores. The most popular dunder method, I believe, is `__init__()`, which is used to initialize an object. You should have learnt it in the first lesson on Python class. There are many other dunder methods, such as `__str__()`, `__repr__()`, `__add__()`, `__sub__()`, etc. They are used to implement certain universal behaviors and provide a uniformed interface to interact with objects.
 
-For example, `__str__()` is used to define the string representation of an object. If you define a `__str__()` method in your class, you can use the function `print()` to print the object. Another example is `__add__()`, which is used to define the behavior of the `+` operator. If you define a `__add__()` method in your class, you can use the `+` operator to add two objects of the class. In another words, Python will first translate `a + b` into `a.__add__(b)` and then conduct the operation.
+For example, `__str__()` is used to define the string representation of an object. If you define a `__str__()` method in your class, you can use the function `print()` to print the object. Another example is `__add__()`, which is used to define the behavior of the `+` operator. If you define a `__add__()` method in your class, you can use the `+` operator to add two objects of the class. In other words, Python will first translate `a + b` into `a.__add__(b)` and then conduct the operation.
 
 You see, dunder methods allows you to use the same function `print()` to print different objects, as long as these objects have the `__str__()` method defined. If you create a new class `Human`, you do not need to modify the system function `print()` in order to get it printed, but just add a `__str__()` method in the class `Human`.
 

@@ -286,21 +286,27 @@ If an argument is mutable, it means that the function can modify the value of th
 
 The mutability of the arguments is defined by several keywords, namely, `read`, `mut`, `owned` and `out`. I will also call them "mutability modifiers" in this Miji. Let's discuss them one by one.
 
-::: warning Arguments in Mojo vs Rust
+::: warning Arguments and reference - Mojo vs Rust
 
-The arguments in Mojo are very different from those in Rust.
+The arguments in Mojo behaves very differently from those in Rust.
 
-In Rust, if you pass a value (of a variable) into a function, the function will take over the **ownership** of the value. This means that the variable will take over the type, the address, and the value from the variable that you passed in. At the meantime, the variable, though outside the function, will no longer exist (dead). Later, you cannot use the variable anymore.
+In Rust, if you pass a value (of a variable) into a function, the function will take over the **ownership** of the value. This means that the argument in the function will take over the ownership (type, the address, and the value) from the outside variable that you passed in. After that, the variable, though outside the function, will no longer exist (dead). You can no longer use the variable any more.
 
 In order to use the value in a function without transferring the ownership to it, you can pass a reference or mutable reference of the value into the function, e.g., `&a` or `&mut a`. These references can be thought of as safe pointers that point to the address of the value (of the variable you passed into the function). You have to de-reference the reference to get access to the value, e.g., `*a` or `*mut a`, though sometimes the de-referencing is automatically done by the compiler.
 
 This transfer of ownership is a key feature of Rust's value model, which ensures memory safety. But it is also very confusing for new users.
 
-In Mojo, if you pass a value (of a variable) into a function, the function (and the argument) will not take over the ownership of the value. Instead, the argument will act as an alias of the variable you passed in. It has the same type, value, and sometimes the same address. Since the argument is of the type of the variable you passed in, it has the same methods and behaves the same. You can just use the argument as if it is the variable you passed in. No de-referencing is needed. Moreover, the variable you passed in will still exist after the function call.
+In Mojo, if you pass a value (of a variable) into a function, the function (and the argument) will not take over the ownership of the value. Instead, the argument will act as an **alias** of the variable you passed in. It has the same type, value, and sometimes the same address. Since the argument is of the type of the variable you passed in, it has the same methods and behaves the same. You can just use the argument as if it is the variable you passed in. No de-referencing is needed. Moreover, the variable you passed in will still exist after the function call.
 
 From my perspective, this is a more intuitive model for users and leads to less mental burden.
 
-Note that the term "reference" means differently in Mojo compared to Rust. In Mojo, it is an alias, whereas it is a safe pointer in Rust. For more information on this topic, please refer to the page [reference](../misc/reference).
+Note that the term "reference" means differently in Mojo compared to Rust. In Rust, a reference is a safe pointer to a value. In Mojo, however, depending on the context, it can either be:
+
+- An alias of the variable. For example, an argument can be a (immutable or mutable) reference of the variable being passed into the function.
+- A safe pointer type that stores the address of the value of the variable. For example, `Pointer(to=a)` is a reference of the variable `a`.
+
+In case there is no confusion, I will use the term "reference" for convenience for both cases. Otherwise, I  will use the term "alias" to refer to the first case, and "pointer" to refer to the second case.
+
 :::
 
 ### Keyword `read`
@@ -381,7 +387,7 @@ Do you know that the keyword `mut` was named as `inout` before Mojo version 24.6
 
 :::
 
-The keyword `mut` allows you to pass a mutable reference of the value into the function. In another words, the following things will happen:
+The keyword `mut` allows you to pass a mutable reference of the value into the function. In other words, the following things will happen:
 
 1. The argument will get the same address as the variable you passed into the function, so it can access the value at that address.
 1. The argument is marked as "mutable", meaning that you can change the value at the **address** of the argument within the function. Since the address of the argument is the same as that of the variable you passed into the function, this means that the value of the variable outside the function will also be modified.

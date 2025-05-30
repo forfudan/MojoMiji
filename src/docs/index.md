@@ -18,15 +18,16 @@ by ***Yuhao Zhu 朱宇浩***
   - [Variables](./basic/variables) (Declare and use variables in Mojo)
   - [Functions](./basic/functions) (Define and use functions in Mojo)
   - [Data types - basic](./basic/types) (Basic data types: [Integer](./basic/types#integer), [Float](./basic/types#float), [String](./basic/types#string), [Boolean](./basic/types#boolean), [List](./basic/types#list))
-  - [Data type - SIMD](./basic/simd) (The `SIMD` type in Mojo)
   - [Operators](./basic/operators) (Arithmetic, comparison, logical, and bitwise operators in Mojo)
   <!-- - [Control flows (Yuhao is working on this)](./basic/control_flows) -->
   <!-- - [Structs (Yuhao is working on this)](./basic/structs) -->
 - [Part IV: Advanced Mojo](./advanced/advanced)
+  - [Data type - SIMD](./advanced/simd) (The `SIMD` type in Mojo)
   <!-- - [Error handling (Yuhao is working on this)](./advanced/error_handling) -->
   <!-- - [Parameterization (Yuhao is working on this)](./advanced/parameterization) -->
   <!-- - [Traits (Yuhao is working on this)](./advanced/traits) -->
   - [Ownership](./advanced/ownership) (A fairy tale about ownership in Mojo)
+  <!-- - [Lifetime] -->
   <!-- - [Call Python in Mojo](./advanced/python) -->
 - [Part V: Extended Mojo](./extensions/extensions)
   - [NuMojo](./extensions/numojo) (A library for numerical computing and NDArray)
