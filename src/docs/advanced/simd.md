@@ -178,7 +178,7 @@ To create a `SIMD` object, you can use the general syntax `SIMD[DType, size]()`,
 1. An SIMD of `DType.float32` with 1 element. However, we do not explicitly specify the size.
 
 ```mojo
-# src/basic/create_simd.mojo
+# src/advanced/create_simd.mojo
 def main():
     var a = SIMD[DType.float64, 4](1.0, 2.0, 3.0, 4.0)
     var b = SIMD[DType.int64, 8](89, 117, 104, 97, 111, 90, 104, 117)
@@ -331,7 +331,7 @@ Note that the values of the first four addresses are modified according to the v
 Using uninitialized values are dangerous and can lead to unexpected behavior in your program (not only for SIMD, but also for any other data structure). The following code is an example,
 
 ```mojo
-# src/basic/uninitialized_simd.mojo
+# src/advanced/uninitialized_simd.mojo
 def main():
     var result = Float64(0)
     var d = SIMD[DType.float64, 64](1.0, 2.0, 3.0, 4.0)
@@ -377,7 +377,7 @@ You can see that there are more than one way to split the data into smaller SIMD
 Now we finally come to see how SMID can help us to achieve high performance in numerical computing. Let's re-write our previous example of adding two lists element-wise, but this time, using SIMDs.
 
 ```mojo
-# src/basic/add_lists.mojo
+# src/advanced/add_lists.mojo
 def main():
     a = SIMD[DType.float64, 4](1.0, 2.0, 3.0, 4.0)
     b = SIMD[DType.float64, 4](5.0, 6.0, 7.0, 8.0)

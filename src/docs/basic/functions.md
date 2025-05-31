@@ -68,7 +68,18 @@ fn function_name[parameter1: Type1, parameter2: Type2, ...](argmuent1, argument2
     ...
 ```
 
-Note that there is something wrapped within square brackets `[]`. This is something related to meta-programming and is optional. We will not cover it for now, but will discuss in a later chapter.
+Note that there is something wrapped within square brackets `[]`. This is something related to parametrization and does not appear in Python. We will cover it in Chapter [Parametrization](../advanced/parameterization.md) as an advanced topic. For now, we can safely ignore it. So the following is a simplified version of the function declaration syntax:
+
+```mojo
+```mojo
+def function_name(argmuent1, argument2, ...) -> ReturnType:
+    # function declared by `def`
+    ...
+
+fn function_name(argmuent1, argument2, ...) raises -> ReturnType:
+    # function declared by `fn`
+    ...
+```
 
 ::: info Python's functions
 
@@ -84,7 +95,7 @@ def mysum(a: int, b: int) -> int:
 
 :::
 
-Using functions is easy. Just like in Python, you can call a function by its name followed by parentheses containing the arguments (Sometimes you also need to indicate parameters. Will discuss later). For example, to call the abstract `function_name()` defined above, you can write:
+Using functions is easy. Just like in Python, you can call a function by its name followed by parentheses containing the arguments. For example, to call the abstract `function_name()` defined above, you can write:
 
 ```mojo
 def main():
@@ -196,9 +207,9 @@ Arguments are the values (sometimes also the type and the address) that are pass
 
 In Python, some people use the terms "arguments" and "parameters" interchangeably. Some people may distinguish them by saying that "parameters" are the variables that are defined in the function (from the perspective of the inner scope, the callee), while "arguments" are the values that are passed into a function (from the perspective of the outer scope, the caller).
 
-In Mojo, we reserve the term "parameter" for other purposes (e.g., meta-programming). Thus, we use the term "argument" to refer to both the values that are passed into a function and the variables that are defined in the function itself.
+In Mojo, we reserve the term "parameter" for other purposes (we will cover this in Chapter [Parametrization](../advanced/parameterization.md) later) and use the term "argument" to refer to both the values that are passed into a function and the variables that are defined in the function itself.
 
-So, as a new Magician, you should stop using the term "parameter" to refer to the names that appeared between the parentheses after the function name, if you do not want to cause confusion. Just call them "arguments".
+Thus, as a new Magician, you should stop using the term "parameter" to refer to something that you do in Python. Just call the things within parentheses "arguments" no matter they are in a function declaration or a function call. This will help you to avoid confusion in the future.
 
 :::
 

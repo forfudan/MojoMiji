@@ -12,7 +12,7 @@ I have to say that it is difficult. You may find that you are still at a loss af
 
 [[toc]]
 
-## Why it is important?
+## Why it ownership important?
 
 Because we want a better tool to help us ensure memory safety, that values are valid and that the values are not assessed in an unintended way.
 
@@ -38,7 +38,7 @@ The ownership model and semantics implemented by Mojo are (significantly) differ
 
 The key of the "ownership" model is that any value (a meaning piece of information that you directly or indirectly create or use) has an owner. The variable is the owner of the value; the struct is the owner of its fields. The ownership is also hierarchical, meaning that an owner may also have an owner. For example, a integer value is owned by a variable `size` which is further owned by a `List` instance.
 
-A value can have only one **owner** throughout its lifetime, from creation to destruction. The owner has the supermost authority over the value, including the right to read, modify, and destroy the value. If the owner dies, the value will also be destroyed.
+A value can have only one **owner** throughout its lifetime, from creation to destruction. The owner has the supreme authority over the value, including the right to read, modify, and destroy the value. If the owner dies, the value will also be destroyed.
 
 Any other parties, who want to read or modify a value at an address, have to firstly check with the owner of the value. A value with no owner should not be accessed at all. The owner of the value must live at least as long as the life of the third-party which accesses the value.
 
@@ -62,7 +62,7 @@ Here are the most important, but not all, rules of ownership in Mojo. They are e
 1. If the lifetime of the owner ends, the value will be destroyed.
 1. The lifetime of the owner must be at least as long as the lifetime of the third-party that accesses the value.
 
-### A value has only one owner
+## A value has only one owner
 
 For each value, there can only be one owner throughout its lifetime, from creation to destruction.
 
@@ -106,7 +106,7 @@ The one-owner rule is enforced by the Mojo's syntax and semantics, which prohibi
 
 In Mojo, a value can either be **transferred** or **copied** to another variable, but can never be shared.
 
-#### Transfer a value
+### Transfer a value
 
 When you **transfer** a value, you are transferring the ownership of the value from one variable `a` to another variable `b`. The variable `a` will no longer own the value and will be immediately decommissioned. In other words, the quaternary system `a` consisting a name, a type, an address, and a value, does not exist anymore. If you try to use the name `a` later, the Mojo compiler will raise an error.
 
@@ -179,7 +179,7 @@ Whether the values are kept in the same address depends on how compiler optimize
 
 :::
 
-#### Copy a value
+### Copy a value
 
 When you copy a value, you are creating a new value that is equal but independent of the original value, and then let `b` to own this new value. After the copy, `a` will still be valid and can be used as before.If you change the value of `a`, it will not affect the value of `b`, and vice versa.
 
@@ -235,7 +235,7 @@ a at address 0x16b2488e0 with values:
 
 We can see that the variable `b` now owns a new value that is equal to the value owned by `a`, and can access the elements of the value. The variable `a` is still valid and can be used as before. Moreover, the address of `b` is different from the address of `a`, and the address of `a` is unchanged after the copy. If you change the value of `b`, it will not affect the value of `a`, and vice versa.
 
-#### Transfer or copy by default?
+### Transfer or copy by default?
 
 The default behavior of `=` operator in Mojo is to copy the value, not transfer it (and the ownership). This is very different from Rust, where the default behavior of `=` operator is to transfer the ownership of the value. In Mojo, if you want to transfer the ownership of a value, you have to explicitly use the `^` operator (and sometimes it is ignored by the compiler, see below).
 
@@ -286,7 +286,7 @@ This is because the value is small enough to be copied efficiently, and transfer
 
 :::
 
-### A value is destroyed when its owner is dead
+## A value is destroyed when its owner is dead
 
 When the lifetime of the owner of a value ends, the value will also be destroyed. This is to ensure that the memory is freed in time and would not be leaked. You can hand over this task to the Mojo compiler, which will automatically destroy the value when the owner goes out of scope. For example,
 
@@ -414,9 +414,9 @@ There is an island surround by water. It is completed owned by a governor. The g
 
 The first type of resource is **notebook** which can be used for drafting. Luckily, there is a number of notebooks on the island. Each notebook contains a specific type of information, e.g., a number, a character, a poem, or the location of another notebook. The governor knows the exact locations of all notebooks, can change the texts on them, but cannot destroy them.
 
-The second type of resoure is **worker**. The governor needs workers to help him fulfilling this dream. Luckily, the island is not far from a famous university, so there are almost unlimited people who are educated enough to help him.
+The second type of resource is **worker**. The governor needs workers to help him fulfilling this dream. Luckily, the island is not far from a famous university, so there are almost unlimited people who are educated enough to help him.
 
-The governor's power on the island is huge. He can freely bring persons in out out of the island, he can assgin notebooks to workers, he can write something on notebooks himself, and he can ask workers to write something on notebooks.
+The governor's power on the island is huge. He can freely bring persons in out out of the island, he can assign notebooks to workers, he can write something on notebooks himself, and he can ask workers to write something on notebooks.
 
 However, everything to be done within this year should be planned beforehand. After the work starts, the workers, as well as the governor, have to act according to the plan. If something goes wrong in the middle, the projects starts again.
 
@@ -465,7 +465,7 @@ They came to the governor and reported this issue. The governor checked the plan
 
 :::
 
-To avoid this kind of problem, the govener modified the house rules so that workers can only read other notebooks. If they want to modify other notebooks, they need special permission.
+To avoid this kind of problem, the governor modified the house rules so that workers can only read other notebooks. If they want to modify other notebooks, they need special permission.
 
 ::: tip Rules of planning version 3
 
@@ -483,7 +483,7 @@ Workers cannot modify other notebooks without permissions. This is good. But the
 
 **Worker A** is planned to read **Notebook X** on 1 March and come back to the governor with what he sees. **Notebook X** belongs to **Worker B**, and there should be a poem on it.
 
-**Worker A** came back soon, telling the governor that there was a nunmber on **Notebook X**, instead of a poem.
+**Worker A** came back soon, telling the governor that there was a number on **Notebook X**, instead of a poem.
 
 The governor was shocked. He checked all records and found out the reason:
 
@@ -539,24 +539,24 @@ To solve this problem, the governor change the rules of planning so that workers
 
 :::
 
-The governor then, according to the new rules, examineed his plan again. All workers are planned to leave the island as soon as possible.
+The governor then, according to the new rules, examined his plan again. All workers are planned to leave the island as soon as possible.
 
-He restarted the project. This time, everything works well. After 12 months, the enclopedia is finished!
+He restarted the project. This time, everything works well. After 12 months, the enclosed is finished!
 
-## From social model to Mojo's ownership
+## From metaphor to Mojo's ownership
 
-Then we can come back to Mojo and see how the social model applies in Mojo. You can do the following mapping of the terminnologies:
+Then we can come back to Mojo and see how the social model applies in Mojo. You can do the following mapping of the terminologies:
 
 - Worker: a variable (name).
 - Notebook: a block of space on memory, a value.
-- Location of notebook: The address of the corresponding meomeory (byte).
+- Location of notebook: The address of the corresponding memory (byte).
 - Read notebook: Read the data at the address.
 - Write notebook: Change the data at the address.
 - Leave the island: Lifetime ends. Be destroyed.
 - Assign notebook: Allocate memory.
 - Return notebook: Free memory. The value is destroyed.
 
-Then, the rule of planning can be translated into the langauge ownership model in safe Mojo as follows:
+Then, the rule of planning can be translated into the language ownership model in safe Mojo as follows:
 
 ::: tip Rules of ownership
 

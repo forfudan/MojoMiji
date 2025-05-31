@@ -120,6 +120,9 @@ export default defineConfig({
               text: 'Data type - SIMD', link: '/docs/advanced/simd',
             },
             {
+              text: 'Parameterization', link: '/docs/advanced/parameterization',
+            },
+            {
               text: 'Ownership',
               link: '/docs/advanced/ownership'
             },
@@ -145,10 +148,10 @@ export default defineConfig({
               text: 'Memory layout of Mojo objects',
               link: '/docs/misc/layout'
             },
-            {
-              text: 'Reference system',
-              link: '/docs/misc/reference'
-            },
+            // {
+            //   text: 'Reference system',
+            //   link: '/docs/misc/reference'
+            // },
           ]
         },
       ],
