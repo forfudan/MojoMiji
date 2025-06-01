@@ -123,6 +123,9 @@ export default defineConfig({
               text: 'Parameterization', link: '/docs/advanced/parameterization',
             },
             {
+              text: 'Generic and traits', link: '/docs/advanced/generic',
+            },
+            {
               text: 'Ownership',
               link: '/docs/advanced/ownership'
             },

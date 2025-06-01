@@ -24,9 +24,9 @@ by ***Yuhao Zhu 朱宇浩***
 - [Part IV: Advanced Mojo](./advanced/advanced)
   - [Data type - SIMD](./advanced/simd) (The `SIMD` type in Mojo)
   <!-- - [Error handling (Yuhao is working on this)](./advanced/error_handling) -->
-  - [Parameterization](./advanced/parameterization)
-  <!-- - [Traits (Yuhao is working on this)](./advanced/traits) -->
-  - [Ownership](./advanced/ownership) (A fairy tale about ownership in Mojo)
+  - [Parameterization](./advanced/parameterization) (Use parameters in functions and types)
+  - [Generic and traits)](./advanced/generic) (Achieve generic programming with traits)
+  - [Ownership](./advanced/ownership) (The ownership system in Mojo)
   <!-- - [Lifetime] -->
   <!-- - [Call Python in Mojo](./advanced/python) -->
 - [Part V: Extended Mojo](./extensions/extensions)

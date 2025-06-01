@@ -17,7 +17,7 @@ Since do do fewer compilations but more executions, a question arises: **can we 
 
 Parametrization in Mojo is done via the concept "**parameter**". A parameter in Mojo is **a variable at compile time but is a constant at runtime**. How can this be achieved? The answer is that the compiler will replace the parameter with the value you provide at the compile time. When you execute the program, the parameter becomes a fixed value, and you cannot change it or assess it anymore.
 
-## parameterized functions
+## Parameterized functions
 
 To understand how parameters work, let's start with "parameterized function". A parameterized function is a function that takes a parameter and uses it to generate code at compile time.
 
@@ -85,10 +85,10 @@ def print_sentence[times: Int](sentence: String):
 
 def main():
     var first_sentence = String(input("Please enter the first sentence: "))
-    print_sentence[times=2](first_sentence)
+    print_sentence[2](first_sentence)
 
     var second_sentence = String(input("Please enter the second sentence: "))
-    print_sentence[times=4](second_sentence)
+    print_sentence[4](second_sentence)
 
     var third_sentence = String(input("Please enter the third sentence: "))
     print_sentence[times=6](third_sentence)
@@ -98,6 +98,12 @@ That is it! Now, if you run this program, you will see that it works exactly the
 
 - It will replace the `times` parameter everywhere in the body the function `print_sentence()` with the value you provide when you call the function.
 - It will expand the code by doing this replacement for each value of `times` you provide. That is to say, there will be three copies of the function `print_sentence()` in the compiled code, each with a different value of `times`. Your code will be expanded to something similar to `src/advanced/print_sentences.mojo`.
+
+::: tip Keyword parameters and positional parameters
+
+Just like what we learnt in Chapter [Functions](../basic/functions.md) under Sections [Keyword arguments](../basic/functions.md#keyword-arguments) and [Positional arguments](../basic/functions.md#positional-arguments), you can also put the name of the parameter in the square brackets `[]` and make it a **keyword parameter**. This is useful when you have multiple parameters and you want to specify only some of them so that it is more readable. In the previous example, you can see that the last call to `print_sentence` uses a keyword parameter `times=6`.
+
+:::
 
 Below is an intuitive illustration of how the code is expanded at compile time. (Note that the real expansion is more complex, so the following code is just a general idea of how it works.)
 
@@ -135,15 +141,15 @@ You may find that the parameter is pretty similar to the macro in C/C++. In fact
 
 :::
 
-## advantages of parameterization
+## Advantages of parameterization
 
 The main advantage of parameterization is that it allows you to shift some work from runtime to compile time. It make take more time to compile the code, but it will make the runtime faster. Since the final executable is expected to run many times or by many people, the overall social benefit is positive.
 
 Moreover, by moving some work to compile time, you can also take advantage of the compiler's **optimizations**: The Mojo compiler analyzes the code your wrote, and see whether some values can be re-used, some calculations can be simplified, or some code can be removed. It can also do some early calculations and replace the code with the results before the run time.
 
-## Parameters in data structures
+## Parameterized data structures
 
-Some data structures in Mojo can also be parameterized. For example, the `SIMD` type is stored on stack and can not be resized at runtime. This means that when you declare a `SIMD` instance in Mojo, you have to specify the size of it. However, arguments are evaluated at runtime, you can only do that via a parameter.
+Some data structures (defined by the `struct` keyword) in Mojo can also be parameterized. For example, the `SIMD` type is stored on stack and can not be resized at runtime. This means that when you declare a `SIMD` instance in Mojo, you have to specify the size of it. However, arguments are evaluated at runtime, you can only do that via a parameter.
 
 Remember that in the [SIMD chapter](./simd.md), we have seen the following code:
 
@@ -162,15 +168,19 @@ def main():
     print("e =", e)
 ```
 
-Actually the numbers we put in the square brackets `[]` of the `SIMD` constructor are just "parameters". They indicate the sizes of the SIMD instances. The compiler will replace it with the value you provide at compile time, and then generate the code for that specific size. When you run the executable, SIMD instances of fixed sizes are created and stored on the stack.
+Actually the data type and the numbers we put in the square brackets `[]` of the `SIMD` constructor are just "parameters". They indicate the data types and sizes of the SIMD instances. The compiler will replace it with the value you provide at compile time, and then generate the code for that specific size. When you run the executable, SIMD instances of fixed datatype and fixed sizes are created on the stack.
 
-Just like arguments, you can also include the name of the parameter in the square brackets `[]`. For example, the above code can also be written as:
+Just like in a function call, you can use keyword parameters in the `SIMD` constructor. The constructors in the previous example can also be written as:
 
 ```mojo
 def main():
-    var a = SIMD[DType.float64, size=4](1.0, 2.0, 3.0, 4.0)
-    var b = SIMD[DType.int64, size=8](89, 117, 104, 97, 111, 90, 104, 117)
-    var c = SIMD[DType.bool, size=2](True, False)
-    var d = SIMD[DType.uint8, size=8](1, 2, 3, 4)
-    var e = SIMD[DType.float32, size=1](1.0)
+    var a = SIMD[dtype=DType.float64, size=4](1.0, 2.0, 3.0, 4.0)
+    var b = SIMD[dtype=DType.int64, size=8](89, 117, 104, 97, 111, 90, 104, 117)
+    var c = SIMD[dtype=DType.bool, size=2](True, False)
+    var d = SIMD[dtype=DType.uint8, size=8](1, 2, 3, 4)
+    var e = SIMD[dtype=DType.float32, size=1](1.0)
 ```
+
+## Next step
+
+Now you have a basic understanding of how parameterization works in Mojo. You can use it to write more efficient code. However, it is not the end of the story. There is another, yet more powerful, concept called **generics** in Mojo. It can further improve the efficiency and readability of your code, and can make your code more Pythonic.
