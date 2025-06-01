@@ -42,7 +42,7 @@ export default defineConfig({
         text: 'Open Miji', link: '/docs/'
       },
       { text: 'Mojo official', link: 'https://www.modular.com/max/mojo/' },
-      { text: 'Repo', link: 'https://github.com/forFudan/MojoMiji' }
+      { text: 'Miji at GitHub', link: 'https://github.com/forFudan/MojoMiji' }
     ],
     sidebar: {
       '/docs': [
@@ -109,7 +109,7 @@ export default defineConfig({
               // ]
             },
             {
-              text: 'Operators', link: '/docs/basic/operators',
+              text: 'Operators and assignment', link: '/docs/basic/operators',
             },
           ],
         },
@@ -155,6 +155,14 @@ export default defineConfig({
             //   text: 'Reference system',
             //   link: '/docs/misc/reference'
             // },
+            {
+              text: 'Glossary of Mojo terms',
+              link: '/docs/misc/glossary'
+            },
+            {
+              text: 'Useful tips and warnings',
+              link: '/docs/misc/tips'
+            },
           ]
         },
       ],

@@ -36,9 +36,8 @@ features:
 
 "Miji" is the latinization of the Chinese word <ruby>秘<rt>mì</rt>籍<rt>jí</rt></ruby>, which literally means a "secret book" or "book of tips". You can call this book "Mojo Miji", "Miji Book", or just "the Miji".
 
-[Repo of this website and Miji](https://github.com/forFudan/MojoMiji)  
-[Repo of Standard Library of Mojo porgramming language](https://github.com/modularml/mojo)  
-[Repo of Numojo (Numeric Mojo)](https://github.com/Mojo-Numerics-and-Algorithms-group/NuMojo)
+[GitHub repository of this Miji](https://github.com/forFudan/MojoMiji)  
+[GitHub repository of Mojo's standard library](https://github.com/modularml/mojo)
 
 :::
 
