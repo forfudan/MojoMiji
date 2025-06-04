@@ -17,6 +17,8 @@ This means that Python list object has multiple layers in its memory layout. The
 For example, below is an abstract representation of how the Python list `my_list = [0.125, True, 0.5, "Hello", 42]` is stored in the memory.
 
 ```console
+# Mojo Miji - Memory Layout - Python list
+
          Variable `my_list`: list
             ↓ (points to the PyListObject) 
         ┌────────┬────────┬────────┬────────┐
@@ -79,6 +81,8 @@ Thus, there are only two layers in the memory layout of a Mojo list: the first l
 Below is a similar abstract representation of how the Mojo list `my_list = List[Float64](0.125, 12.0, 12.625, -2.0, -12.0)` is stored in the memory.
 
 ```console
+# Mojo Miji - Memory Layout - Mojo List
+
         local variable `my_list`: List[Float64]
             ↓  (points to the instance of the struct `List[Float64]`)
         ┌────────────────┬────────────┬────────────────┐

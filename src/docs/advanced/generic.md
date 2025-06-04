@@ -282,7 +282,7 @@ For the compiler, it does not matter whether you explicitly declare the trait or
 
 :::
 
-### What compiler does with generic
+## What compiler does with generic
 
 When the Mojo compiler sees a generic function, it will automatically generate a specialized version of the function for each type that is used as an argument. It is similar to what we have done in the first example, `src/advanced/favorite_food.mojo`, where we wrote a function for each type of animal. But now, it is done automatically by the compiler. So,
 
@@ -420,11 +420,21 @@ The Mojo's developer team is also noticing this inconvenience, and they have som
 
 :::
 
+## Python vs Mojo in generic
+
+As a Pythonista, you may have heard about a concept called "duck typing", which means that:
+
+It is the methods that an object owns that determines whether it is of a certain type, but not how the object is defined in the `class` block or whether several objects are inherited from the same parent.
+
+For example, if an object has a method `eat()`, a method `walk()`, a method `speak()`, and a method `think()`, then it is considered to be of the type "human", even though it is not defined in a class called `Human`. If the `print()` function can be applied on several objects, then these objects all belong to the same type "printable", even though they are not belonging to the same class or inherited from the same parent class.
+
+You may still use the idea of duck typing in Mojo, but replace it by **traits**: If several types implement the same methods, they can be considered to be of the same trait. You can use the trait to write generic functions that can operate on all these types.
+
 ## Built-in traits in Mojo
 
-Mojo provides quite a lot of built-in traits that you can use in your code. Sometimes, you may even not aware that you are using them. For example, many dunder methods, such as `__str__()`, `__repr__()`, `__absable__()`, `__gt__()`, etc., are actually implementing the built-in traits.
+Mojo provides quite a lot of built-in traits that you can use in your code. Sometimes, you may even not aware that you are using them. For example, many dunder methods, such as `__str__()`, `__repr__()`, `__absable__()`, `__gt__()`, etc., are actually implementing the built-in traits. Some non-dunder methods, such as `write_to()`, also implement the built-in traits.
 
-For example, when we want to take the absolute value of a number, we can use the `abs()` function:
+Let's look it one of these built-in traits, `Absable`, which is used to take the absolute value of a number. Types that conform to the `Absable` trait can be used with the built-in function `abs()` to get the absolute value of the number. See the following example:
 
 ```mojo
 # src/advanced/absable_trait.mojo
@@ -480,11 +490,23 @@ note: failed to infer parameter 'T', argument type 'String' does not conform to 
               ^
 ```
 
-## Use dunder methods to use built-in functions
+::: tip Dunders in Python
 
-The examples above indicate that you can always define your own types that implement the `Absable` trait, and use the built-in `abs()` function to get the absolute value of your type. In this way, the dunder method `__abs__()` is a uniformed API for `abs()` function to get the absolute value of all types with the method `__abs__()`.
+You may be familiar these dunder methods and built-in functions. You may also once defined these dunders to allow other users to apply the built-in functions on your custom types. Yes, your knowledge of Python's dunder methods and built-in functions can be directly applied to Mojo. Although Mojo will do some checks on the types and traits during compile time, while Python checks the methods at run time, the final coding style is identical.
 
-This applies to all built-in functions that require a certain trait to be implemented. For example, if you want to use the `len()` function to get the length of your type, you need to implement the `__len__()` method in your type, which conforms to the built-in trait `Sizable`. The same applies to other built-in functions and even operators, such as `str()`, `repr()`, `int()`, `float()`, `+`, `>=`, etc.
+This is another reason why Mojo is so Pythonic.
+
+:::
+
+## Dunder methods and built-in functions
+
+The examples above show that you can utilize the built-in functions by defining your own dunder methods. The dunder methods are entry points for universal built-in functions, which are provided by the Mojo, to work on your custom types. This feature is very powerful, as it allows users to use their familiar built-in functions on any new types of values they encounter.
+
+For example, when you see a variable `v` of the `Vector` type. Even though you have never learnt about the details of the `Vector` type, you can still, naturally, use the built-in functions like `print(v)` to display it on your screen, `len(v)` to get the number of item, and `for i in v:` to iterate over the items in the vector.
+
+On the other hand, if you want the other users to access your custom type with the built-in functions, you need to implement the corresponding dunder methods in your type. For example, if you want others to use the `len()` function to get the length of your type, you need to implement the `__len__()` method in your type, which conforms to the built-in trait `Sizable`. The same applies to other built-in functions and even operators, such as `str()`, `repr()`, `int()`, `float()`, `+`, `>=`, etc. To emphasize,
+
+**Defining dunder methods in your structs is a way to conform to the built-in traits and to make use of the built-in functions.**
 
 In the following example, we define a custom type `Pixel` that represents a pixel in a 2D space with `x` and `y` coordinates. In order to display the pixel in a human-readable format, we want to (1) define the string representation of the pixel, (2) call the built-in `String()` constructor to convert the pixel to its string representation, and (3) print the string representation of the pixel.
 
@@ -518,3 +540,33 @@ The output of the code is as follows:
 Pixel(212, 149)
 Pixel(-12, 391)
 ```
+
+Below is a summary of the dunder methods and the built-in traits they conform to:
+
+| Dunder Method | Built-in Trait | Description |
+
+## Dunder methods and operators overloading
+
+Not only are the behaviors of built-in functions impacted by the dunder methods, but also the behaviors of operators. For example, we want to add two `Pixel` objects together using our own rules, let's say, the sum of two pixels being the square root of the summed squares of each coordinate:
+
+$$
+(x_1, y_1) + (x_2, y_2) = (\sqrt{x_1^2 + x_2^2}, \sqrt{y_1^2 + y_2^2})
+$$
+
+We can so this by defining a method, e.g., `pixel1.add(pixel2)`. But it is not very intuitive.
+
+A more intuitive way is to use the `+` operator to add two `Pixel` objects together. However, Mojo won't do this automatically for you. You need to define the behavior of the `+` operator for the `Pixel` type yourself. This is called **operator overloading**.
+
+To overload an operator, you need to define the corresponding dunder method in your type. For the `+` operator, the dunder method is `__add__()`. When you use the `+` operator on two `Pixel` objects, Mojo will automatically call the `__add__()` method of the first `Pixel` object and pass the second `Pixel` object as an argument. That is to say, the following transformation will happen:
+
+```mojo
+pixel1 + pixel2 -> pixel1.__add__(pixel2)
+```
+
+Let's try to implement this and update the `Pixel` type in `src/advanced/pixel_with_add.mojo`:
+
+```mojo
+
+```
+
+Below is a table summarizing the dunder methods and the operators they overload:

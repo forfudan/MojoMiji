@@ -12,13 +12,13 @@ I have to say that it is difficult. You may find that you are still at a loss af
 
 [[toc]]
 
-## Why it ownership important?
+## An intuitive example of ownership
 
-Because we want a better tool to help us ensure memory safety, that values are valid and that the values are not assessed in an unintended way.
+Why do we need **ownership** in Mojo and why is it so important? Because we want a better model, a set of rules, to help us ensure memory safety, so that values are not assessed in an unintended way.
 
-Let's use a more intuitive example to illustrate these concepts:
+Let me first use a more intuitive example to illustrate these concepts, a metaphor that is about spies and wars without fire.
 
-In a metropolitan city, there are many, many houses, each with a specific address and a person living in it. Some of these persons are secret agents. You are also a secret agent, and your job is to find these agents at their addresses, then either talk to them or do something (good or bad) on them. You never met these agents before, so you can only find them by their addresses. As your boss, they cares about that:
+In a metropolitan city, there are many, many houses, each with a specific address and a person living in it. Some of these persons are **secret agents*. You are also a secret agent, and your task is to find these agents at their addresses, then either talk to them or do something (good or bad) on them. You never met these agents before, so you can only find them by their addresses. As your boss, they cares about that:
 
 1. You should be able to find the correct (intended) person at an address. In other words, if a person has not yet moved in or has already left the house, you should not try to find him there. (Otherwise, you will meet a wrong person. Your secret got exposed or you will be in trouble.)
 1. You should not harm, remove, or replace the person at the address, unless you are permitted to do so. Without clear permission, you should only talk with the person at the address. (Otherwise, you may cause losses to your organization.)
@@ -44,6 +44,185 @@ Any other parties, who want to read or modify a value at an address, have to fir
 
 During the compilation, the Mojo compiler will check whether the ownership rules are strictly followed. If not, it will raise an error and refuse to compile the code. This is to ensure that the program is safe and the issues mentioned above do not occur at runtime.
 
+::: warning You can be still safe without knowing the ownership model
+
+The ownership model is not something that you have to check yourself. It is a set of rules that the Mojo compiler checks at compile time. That is to say, even you do not know anything about the ownership model, you can still write safe and correct Mojo code. On the other hand, if your code passes the compilation, it is guaranteed to be safe and correct in terms of memory management.
+
+Thus, learning the ownership model is not a must, but it is good for the following reasons:
+
+1. It helps you avoid tons of compilation errors. If you do not know ownership model, you are prone to write code that violates the ownership rules, which will lead to compilation errors. This would be very frustrating.
+1. It helps you to quickly understand the issue and debug your code when you see compilation errors. If you do not know ownership model, you will be completely lost when you see compilation errors related to ownership. You cannot fix these issues quickly and correctly.
+1. It helps you to write more efficient and safe code. If do do not know ownership model, you may write code that would cause too much unnecessary memory allocation, copying, and deallocation. When you are moving from "make it right" to "make it fast", you will find that the ownership model is a very useful conceptual tool.
+1. It helps you to avoid memory-related issues when you are coding with **unsafe code**. Unsafe code is sometime powerful, but it bypasses the compiler's checks on ownership. If you do not know the ownership model, your code may cause severe memory-related issues, such as dangling pointers, uninitialized values, and memory leaks. You may not even know that you are doing something wrong.
+
+:::
+
+## Four statuses of ownership when there are more than one variable
+
+If there is only one variable and one value, then we do not need ownership, naturally. We need ownership only when several variables are involved and they may intend to access the same value. In this case, we need to understand four possible statuses of ownership when there are more than one variable, namely:
+
+- **isolated**: each variable owns its own value.
+- **pointed**: one variable owns a value, while another variable is a safe pointer to the value.
+- **aliased**: one variable owns a value, while another variable is an alias of the value.
+- **unsafely pointed**: one variable is an unsafe pointer to a value, but does not have the information on the owner of the value.
+
+The pointed status and aliased status can be referred to as **referenced**. Depending on the context, "reference" can either mean a pointer or an alias.
+
+### Isolated
+
+In the **isolated** status, each variable owns its own value. In other words, the address of variable `a` is different from the address of variable `b`.
+
+As shown in the following diagram, the variable `a` owns the value `89` which is stored at the address `0x17ca81f8` in the memory, while the variable `b` owns the value `117` which is stored at the address `0x17ca81f9` in the memory. The two values are independent of each other. If you change the value of `a`, it will not affect the value of `b`, and vice versa. Since it is also a physical separation, we say this status is the **safest**.
+
+```console
+# Mojo Miji - Ownership - Isolated status
+                     a                          b
+                     ↓                          ↓
+                 ┌────────┬────────┬────────┬─────────────────┐
+Value (readable) │  89    │  117   │  104   │       111       │
+                 ├────────┼────────┼────────┼─────────────────┤
+Type             │ UInt8  │ UInt8  │ UInt8  │      UInt16     │   
+                 ├────────┼────────┼────────┼─────────────────┤
+Value (binary)   │01011001│01110101│01101000│00000000 01101111│
+                 ├────────┼────────┼────────┼────────┬────────┤
+Address (hex)    │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│
+                 └────────┴────────┴────────┴────────┴────────┘
+```
+
+### Pointed
+
+In the **pointed** status, the value of one variable is the information on another variable. In other words, the variable `a` owns a value at a certain address. Variable `b` is a pointer type that contains the information on the address of `a`. We say that `b` is pointing to `a`'s value.
+
+As shown in the following diagram, the variable `a` is an 8-bit unsigned integer (`UInt8`) with the value `89` stored at the address `0x17ca81f8` in the memory. The variable `b` is a pointer object that stores the address of `a`'s value, i.e., `0x17ca81f8`. You can then use `b[]` to access the value of `a` at the address `0x17ca81f8`. If you change the value of `a`, it will also affect the value of `b[]`, and vice versa. This is because `b` is just a pointer to the value of `a`, not a copy of it.
+
+Notably, the type of `b` is `Pointer[UInt8, a]`, which means that `b` is a pointer to an 8-bit unsigned integer **type** (`UInt8`) and that `b` is associated with the **lifetime** of `a`. These two pieces of information is very important because:
+
+1. By indicating the type of the value that `b` points to, the Mojo compiler can ensure that the value at the address `0x17ca81f8` will be dereferenced correctly. In this case, Mojo will read 8 bits from the address `0x17ca81f8` when you dereference `b`. (In another scenario, if `b` is a pointer to a `UInt16`, then de-referencing will read 16 bits from the address `0x17ca81f8`.)
+1. By indicating `a` in the type of the variable `b`, the Mojo compiler knows that the **`a` is the ultimate and the only owner** of the value. It will checks the rules of ownership at compile time to ensure memory safety. If you use `b[]` after `a` is destroyed, the Mojo compiler will raise an error. We will discuss this later.
+
+```console
+# Mojo Miji - Ownership - Pointed status
+                     a                          b         ┌───────────────────────────────────────────────────────────────┐
+                     ↓                          ↓         │                                                               │
+                 ┌────────┬────────┬────────┬───────────────────────────────────────────────────────────────────────┐     │
+Value (readable) │  89    │  117   │  104   │      0x17ca81f8                                                       │     │
+                 ├────────┼────────┼────────┼───────────────────────────────────────────────────────────────────────┤     │
+Type             │ UInt8  │ UInt8  │ UInt8  │      Pointer[UInt8, a]                                                │     │
+                 ├────────┼────────┼────────┼───────────────────────────────────────────────────────────────────────┤     │
+Value (binary)   │01011001│01110101│01101000│00000000 00000000 00000000 00000000 00010111 11001010 10000001 11111000│     │
+                 ├────────┼────────┼────────┼────────┬────────┬────────┬────────┬────────┬────────┬────────┬────────┤     │
+Address (hex)    │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│17ca81a3│17ca81a4│17ca81a5│17ca81a6│17ca81a7│17ca81a8│     │
+                 └────────┴────────┴────────┴────────┴────────┴────────┴────────┴────────┴────────┴────────┴────────┘     │
+                      ↑                                                                                                   │
+                      └───────────────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+::: info Pointer is also a type
+
+In Mojo, as well as other languages, "pointer" is also a type. The value of a pointer variable is the address of another variable. The pointer variable also occupies a certain amount of memory.
+
+Thus, pointer is not free and not costless. If assessing a value is through a pointer with a larger size than the value itself, it may be more efficient to just do a copy.
+
+:::
+
+## Aliased
+
+In the **aliased** status, one variable has the same type and the same address as another variable, but the former does not the right to destroy the value or transfer the ownership. In other words, the variable `a` has the ownership of the value. the variable `b` has the same type and the address `a`. You can use `b` to access the value of `a` directly, you can modify the value of `a` through `b` under certain conditions, but you cannot transfer the ownership of the value from `a` to a third-party via `b`, nor can you destroy the value of `a` via `b`. If the lifetime of `b` ends, the value of `a` will not be destroyed.
+
+Let's use a more daily life example. Person A owns a house, and Person B lives in the house. We say that Person A is the owner of the house, while Person B is the user of the house. Person B can use the house, make changes to the house, but cannot destroy the house or sell it to another person. If Person B moves out of the house, the house will still be owned by Person A and will not be destroyed.
+
+As shown in the following diagram, the variable `a` is an 8-bit unsigned integer (`UInt8`) with the value `89` stored at the address `0x17ca81f8` in the memory. The variable `b` an alias variable that refers to the variable `a`. For the aliased status, no additional memory is allocated for the variable `b`.
+
+The aliased status usually occurs when we define a function. The argument of a function is an alias of the variable that is passed to the function. The function can access the value of the variable, but cannot transfer the ownership of the value or destroy it. If the function ends, the argument dies, but variable will still be valid and can be used later. Moreover, if the argument can modify the value of the variable, it is a **mutable** alias (`mut` keyword), otherwise it is an immutable alias.h (`read` keyword).
+
+```console
+# Mojo Miji - Ownership - Aliased status
+                    a ← b
+                    ↓   ⇣                       
+                 ┌────────┬────────┬────────┬─────────────────┐
+Value (readable) │  89    │  117   │  104   │  97    │  111   │
+                 ├────────┼────────┼────────┼─────────────────┤
+Type             │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │
+                 ├────────┼────────┼────────┼─────────────────┤
+Value (binary)   │01011001│01110101│01101000│01100001│01101111│
+                 ├────────┼────────┼────────┼────────┬────────┤
+Address (hex)    │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│
+                 └────────┴────────┴────────┴────────┴────────┘
+```
+
+::: info Aliased is not the same as pointed
+
+In the pointed status, the variable `b` is not the same type as the variable `a`. So you have to dereference `b` to access the value of `a`, e.g., `print(b[])`.
+
+In the aliased status, the variable `b` is the same type as the variable `a`. So you can access the value of `a` directly with `b`, e.g., `print(b)`.
+
+:::
+
+### Unsafely pointed
+
+The last status is the **unsafely pointed** status. It is similar to the pointed status, but the variable `b` now an unsafe pointer type. In other words, the variable `b` is a pointer to an address in memory, but it does not have the information on the owner of the value at that address.
+
+As shown in the following diagram, the unsafe pointer `b` is pointed to the address `0x17ca81f8` where the value `89` is stored. Currently, variable `a` owns the value at this address, so you can use `b[]` to access the value of `a`. However, if the variable `a` is destroyed, the value at the address `0x17ca81f8` will also be destroyed. If you try to access the value at this address via `b[]`, it will be an invalid (undefined) value. If later, a new variable `c` is created at the same address, then `b[]` will access the value of `c`, which is not what you intended.
+
+Because the unsafe pointer `b` does not contain information about the owner `a`, Mojo cannot check the rules of ownership for you. You have to make sure yourself that the value at the address is valid before you access it.
+
+```console
+# Mojo Miji - Ownership - Aliased status
+                    a
+                    ↓
+                 ┌────────┬────────┬────────┬─────────────────┐
+Value (readable) │  89    │  117   │  104   │  97    │  111   │
+                 ├────────┼────────┼────────┼─────────────────┤
+Type             │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │
+                 ├────────┼────────┼────────┼─────────────────┤
+Value (binary)   │01011001│01110101│01101000│01100001│01101111│
+                 ├────────┼────────┼────────┼────────┬────────┤
+Address (hex)    │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│
+                 └────────┴────────┴────────┴────────┴────────┘
+                    ↑
+                b: UnsafePointer[UInt8]
+
+                (`a` is destroyed)
+                 ┌────────┬────────┬────────┬─────────────────┐
+Value (readable) │ 0      │  117   │  104   │  97    │  111   │
+                 ├────────┼────────┼────────┼─────────────────┤
+Type             │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │
+                 ├────────┼────────┼────────┼─────────────────┤
+Value (binary)   │00000000│01110101│01101000│01100001│01101111│
+                 ├────────┼────────┼────────┼────────┬────────┤
+Address (hex)    │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│
+                 └────────┴────────┴────────┴────────┴────────┘
+                    ↑
+                b: UnsafePointer[UInt8]
+
+                (a new variable `c` is allocated at the address)      
+                    c
+                    ↓
+                 ┌────────┬────────┬────────┬─────────────────┐
+Value (readable) │ 255    │  117   │  104   │  97    │  111   │
+                 ├────────┼────────┼────────┼─────────────────┤
+Type             │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │
+                 ├────────┼────────┼────────┼─────────────────┤
+Value (binary)   │11111111│01110101│01101000│01100001│01101111│
+                 ├────────┼────────┼────────┼────────┬────────┤
+Address (hex)    │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│
+                 └────────┴────────┴────────┴────────┴────────┘
+                    ↑
+                b: UnsafePointer[UInt8]
+```
+
+::: tip Unsafe pointer
+
+Because Mojo cannot help you verify the validity of the value at the address by applying the ownership rules, you have to ensure that the value at the address is valid yourself. Otherwise, you may encounter various memory-related issues as I mentioned above. This is why we call it an **unsafe pointer**. You should use it with caution.
+
+Good news that you can fulfill most of your needs without using unsafe pointers. Unsafe pointers are only needed either when you want to program for some data types for which you have to manage the memory manually, or when you want to program for some data types that needs low-level memory manipulation for performance reasons.
+
+In some other programming languages, such as C and C++, unsafe pointers are the default way to access values in memory. In Mojo, however, unsafe pointers are not the default way. It is more verbose and explicit, so that you do not want to type it unless you really need it.
+
+So, just use the safe pointers and enjoy the benefits that Mojo brings you!
+
+:::
+
 ## Rules of ownership
 
 ::: info Conceptual
@@ -56,7 +235,7 @@ Nothing is perfect, so does the ownership model. It is not a golden sword that c
 
 :::
 
-Here are the most important, but not all, rules of ownership in Mojo. They are either enforced as part of the language (syntax or semantics) or checked by the Mojo compiler at compile time:
+After knowing the four statuses of ownership, we can now come to the basic rules of ownership in Mojo. They are either enforced as part of the language (syntax or semantics) or checked by the Mojo compiler at compile time:
 
 1. A value can have only one owner at a time throughout its lifetime, from creation to destruction.
 1. If the lifetime of the owner ends, the value will be destroyed.
@@ -71,6 +250,8 @@ The following figure shows a value `0b00000100` stored at the address `0x16b6a8f
 Since the value is destroyed, this memory block is uninitialized. It can later be assigned to another owner. For example, a new variable `b: Int16 = 00000000 00001111` is created at the same address. It will then own the new value `00000000 00001111`.
 
 ```console
+# Mojo - Ownership - Destroyed, freed, and re-assigned in memory
+
                 variable `a: Int8` owns the value
                                ↓
         ┌────────┬────────┬────────┬────────┬────────┬────────┐
@@ -173,7 +354,7 @@ error: use of uninitialized value 'a'
 
 For lists with millions of elements, it is no point to move the values to a new address when being transferred. The moving of values in the memory is costly and inefficient. Since `a` will no longer be used after the transfer, we can simply let `b` to own the value at the same address as `a`. In other words, transferring the ownership is just like renaming the variable (while the type, the value, and the address are unchanged).
 
-However, this is not guaranteed. In some cases, the address of the value may change after the transfe. For example, in the output above, we can see that the address of `a` is `0x16f350988`, while the address of `b` is `0x16f350970`.
+However, this is not guaranteed. In some cases, the address of the value may change after the transfer. For example, in the output above, we can see that the address of `a` is `0x16f350988`, while the address of `b` is `0x16f350970`.
 
 Whether the values are kept in the same address depends on how compiler optimizes the code.
 
@@ -181,7 +362,7 @@ Whether the values are kept in the same address depends on how compiler optimize
 
 ### Copy a value
 
-When you copy a value, you are creating a new value that is equal but independent of the original value, and then let `b` to own this new value. After the copy, `a` will still be valid and can be used as before.If you change the value of `a`, it will not affect the value of `b`, and vice versa.
+When you copy a value, you are creating a new value that is equal but independent of the original value, and then let `b` to own this new value. After the copy, `a` will still be valid and can be used as before.If you change the value of `a`, it will not affect the value of `b`, and vice versa. In other words, copying is to create an **isolated status**.
 
 The copy of a value (and the ownership) is **usually** done with the `=` operator, e.g., `var b = a`. You may find that it is just like value assignment. Yes, it because **assignment creates a copy of the value by default** in Mojo.
 
@@ -255,7 +436,7 @@ For example, in Rust, the default behavior of `=` operator is to transfer the ow
 
 In Mojo, the default behavior of `=` operator is to copy the value, which is safe and simple. You do not need to use safe pointers because they are also more verbose compared to Rust, e.g., `var b = Pointer(to=a)`. Since most of the the values are copied by default, you encounter less compilation errors due to ownership issues. However, you may unconsciously make a lot of copies of big objects that are not necessary, which leads to performance issues.
 
-Which design is better? Maybe I would say Mojo. It starts with make it working, enable you to write code quickly, even though you made some unnecessary copies. Later, you can make it faster by using `Pointer` or `^` operator to avoid unnecessary copies. 
+Which design is better? Maybe I would say Mojo. It **starts with "make it work"**, enable you to write code quickly, even though you made some unnecessary copies. Later, you can **make it fast** by using `Pointer` or `^` operator to avoid unnecessary copies.
 
 In Rust, however, you have to think about ownership and lifetime from the very beginning, which brings more mental burden and frustrating you at the stage when you should focus on writing code and implementing your logic.
 
@@ -283,6 +464,111 @@ b = 1
 ```
 
 This is because the value is small enough to be copied efficiently, and transferring it does not help gain performance (remember that the address of an object is already 64-bit). In this case, the `^` operator is ignored by the compiler.
+
+:::
+
+### "copyinit" vs "moveinit"
+
+We have discussed about the assignment expressions in Chapter [Operators](../basic/operators.md). You may remember that each assignment expression is implemented as a dunder-method call, such as `__copyinit__()` or `__moveinit__()`. The former is used to copy the value, while the latter is used to transfer the ownership of the value. For example, the following code illustrate how these methods are defined in a struct `MyType` (Note that you have to use `fn` keywords to define these methods, not `def`):
+
+```mojo
+struct MyType:
+    ...
+
+    # Use `fn` keywords
+    fn __copyinit__(out self, other: Self):
+        self.value = other.value  # Copy the value from `other` to `self`
+        ...
+
+    fn __moveinit__(out self, other: Self):
+        self.value = other.value^  # Transfer the ownership of the value from `other` to `self`
+        ...
+```
+
+When you do `var y = x`, the Mojo compiler will call `__copyinit__()` to copy the value from `x` to `y`, i.e., `MyType.__copyinit__(y, x)`.
+
+When you do `var y = x^`, the Mojo compiler will call `__moveinit__()` to transfer the ownership of the value from `x` to `y`, i.e., `MyType.__moveinit__(y, x)`. After that, `x` will no longer be valid and cannot be used anymore.
+
+Nevertheless, there are some exceptions. You **do not need to memorize them**, but it is good to know that they exist:
+
+1. **Non-transferable types**: For some structs that are small enough to be copied efficiently, the `__moveinit__()` method is not necessary. In this case, the Mojo compiler will ignore the `^` operator and call `__copyinit__()` instead. Moreover, you will also receive a message from the compiler that a copy is made instead of a move.
+1. **Internal optimization**: In some situations, the value does not need to be copied. For example, in the following code, after the the assignment `y = x`, the variable `x` is never used again. In this case, "move" is more efficient than "copy". The Mojo compiler will then try to use `__moveinit__()` instead of `__copyinit__()`, even if you do not use the `^` operator.
+The same applies `x = y`, which may also call `__moveint__()` instead of `__copyinit__()`. This is because Mojo's compiler will try to use the most efficient way to copy the value from `y` to `x`, which may be a move operation if possible.
+
+::: danger Inconsistent behaviors of copy and move
+
+The second exception, though improving the performance and efficiency, may lead to some potential issues, especially when the behaviors of `copy` and `move` are inconsistent. Here is an example to illustrate this issue:
+
+```mojo
+# src/advanced/copy_move_inconsistency.mojo
+struct Team:
+    var names: List[String]
+
+    def __init__(out self, owned *names: String):
+        # Copy the incoming names into the List
+        self.names = List[String](elements=names^)
+
+    fn __copyinit__(out self, other: Self):
+        self.names = other.names
+
+    fn __moveinit__(out self, owned other: Self):
+        self.names = other.names^
+        # When move, add another person
+        self.names.append("Yuhao")
+
+
+def main():
+    var a = Team("Akari", "Bob", "Coco", "David")
+    var b = a
+
+    print("New team `b` contains the following people: ")
+    for i in b.names:
+        print(i[], end=", ")
+```
+
+In this example, we define a struct `Team` that has a list of names (representing the team members). The `__copyinit__()` method copies the names from one `Team` object to another. The `__moveinit__()` method transfers the ownership of the names from one `Team` object to another, but also adds a new name "Yuhao" to the list.
+
+In the main function, we create a `Team` object `a` with four names. We then assign the value of `a` to variable `b`. Since there is no transfer operator `^`, you may think that a copy is made. So you run the code and want to see four names printed. However, the output is:
+
+```console
+Akari, Bob, Coco, David, Yuhao,
+```
+
+A new person is added into the list. Why? Because the second exception mentioned above applies here. The Mojo compiler optimizes the assignment `var b = a` to a move operation, i.e., `Team.__moveinit__(b, a)`, instead of a copy operation. This is because the variable `a` is not used after the assignment, so it is more efficient to move the value instead of copying it.
+
+If you want to achieve a true "copy" instead of a "move", you need use the variable `a` after the assignment `var b = a`. For example, you can change the main function to:
+
+```mojo
+def main():
+    var a = Team("Akari", "Bob", "Coco", "David")
+    var b = a
+
+    print("New team `b` contains the following people: ")
+    for i in b.names:
+        print(i[], end=", ")
+
+    print("\nOld team `a` contains the following people: ")
+    for i in a.names:
+        print(i[], end=", ")
+```
+
+When you run the code, you will get the following output:
+
+```console
+New team `b` contains the following people: 
+Akari, Bob, Coco, David, 
+Old team `a` contains the following people: 
+Akari, Bob, Coco, David,
+```
+
+This time, the output is as expected. The `__copyinit__()` method is called, and there are only four people in the team `b`.
+
+Why we have this issue? There are two causes:
+
+1. The Mojo compiler optimizes the assignment `var b = a` to a move operation, by assuming that the value of `a` is not modified during the assignment.
+1. There is inconsistency of the behaviors defined by `copy` and `move`. The `__copyinit__()` method does not add a new person, while the `__moveinit__()` method does. In other words, the value is changed after the move.
+
+Which cause is more severe? I would say the second one. The first one is just an optimization, but the second one is a design flaw that can lead to unexpected behaviors. It is better to keep the behaviors of `copy` and `move` consistent, so that you can avoid such issues.
 
 :::
 

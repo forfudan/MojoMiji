@@ -235,8 +235,6 @@ def main():
         print("Finally block executed")
 ```
 
-We will discuss exception handling in detail in the later chapters.
-
 ### Definition keywords
 
 Definition keywords are used to define variables, functions, structs, classes, etc.
@@ -259,7 +257,7 @@ def main():
     var b = 2
 ```
 
-Nevertheless, there is still some difference in the philosophy and behavior of variable declaration and assignment between Mojo and Python. For example, in Python, you can easily re-assign a variable to a new value with a different type. But in Mojo, you cannot do this. You can only re-assign a variable to a value with the same type. We will discuss this in detail in the later chapters ([variables](../basic/variables.md)).
+Nevertheless, there is still some difference in the philosophy and behavior of variable declaration and assignment between Mojo and Python. For example, in Python, you can easily re-assign a variable to a new value with a different type. But in Mojo, you cannot do this. You can only re-assign a variable to a value with the same type. We will discuss this in detail in Chapter ([Variables](../basic/variables.md)).
 
 ::: info `let` keyword
 
@@ -290,7 +288,7 @@ fn sub(a: Int, b: Int) -> Int:
     return a - b
 ```
 
-The `def` keyword and the `fn` keyword share the most of the functionality. The main difference is in the default behavior of the arguments. If a function is defined with `fn`, the arguments are immutable by default, and you cannot change the values of the arguments within the function. If a function is defined with `def`, the arguments are immutable by default, but changing the values of the arguments will create a mutable copy of them. We will discuss this in detail in the later chapters ([functions](../basic/functions.md)).
+The `def` keyword and the `fn` keyword share the most of the functionality. The main difference is in the default behavior of the arguments. If a function is defined with `fn`, the arguments are immutable by default, and you cannot change the values of the arguments within the function. If a function is defined with `def`, the arguments are immutable by default, but changing the values of the arguments will create a mutable copy of them. We will discuss this in detail in Section [def vs fn](../basic/functions#def-vs-fn) of Chapter ([Functions](../basic/functions.md)).
 
 #### Classes vs Structs
 
@@ -321,7 +319,7 @@ This prints:
 Hello, world! I am Yuhao Zhu and I am 33 years old.
 ```
 
-In Mojo, however, we do not have "class" (yet). Instead, we have "struct". A struct is a data structure that can contain multiple fields and methods. It is similar to a class, but it cannot be inherited. Structs are defined with the `struct` keyword. For example, we define a struct that achieves the same functionality as the `Human` class in Python:
+In Mojo, however, we do not have "class" (yet). Instead, we have "struct". A struct is a composite that contains multiple fields and methods. It is similar to a class, but it cannot be inherited. Structs are defined with the `struct` keyword. For example, we define a struct that achieves the same functionality as the `Human` class in Python:
 
 ```mojo
 struct Human:
@@ -340,7 +338,15 @@ def main():
     person.greet()
 ```
 
-It is mostly similar to the Python code. The main difference is that we have to use `var` to define the attributes of the struct, and we use `out` to modify the `self` parameter. We will discuss this in detail in the later chapters.
+It is mostly similar to the Python code. The main difference is that we have to use `var` to define the attributes of the struct, and we use `out` to modify the `self` parameter.
+
+The following table provides a brief summary of the similarities and differences between Mojo structs and Python classes. We will discuss more in Chapter ([Structs](../basic/structs.md)).
+
+| Feature                    | Mojo                                    | Python                                                          |
+| -------------------------- | --------------------------------------- | --------------------------------------------------------------- |
+| Define structs             | `struct StructName[parameters](Trait):` | `class ClassName(ParentClass):`                                 |
+| Define fields (attributes) | `var name: Type`                        | No declaration needed, optionally `name: Type` or `name = None` |
+| Define methods             | `def method(self):`                     | `def method(self):`                                             |
 
 ## Data types
 
@@ -348,7 +354,7 @@ It is mostly similar to the Python code. The main difference is that we have to 
 
 Basic data types are the most common data types in programming languages, they can be numeric. They are usually small in size, simple memory layout, and intuitive in meaning. For example, integers, floating-point numbers, strings, and booleans are the most common basic data types in almost all programming languages. In Python, these are `int`, `float`, `str`, and `bool`.
 
-Mojo provides the corresponding basic data types as well. They behave almost the same as in Python. In most cases, you can use the these types without any issues. The following tables lists the basic data types in Python and their corresponding types in Mojo. Note that they are not exactly the same. We will discuss the differences in detail later ([Things that are different](./different.md)).
+Mojo provides the corresponding basic data types as well. They behave almost the same as in Python. In most cases, you can use the these types without any issues. The following tables lists the basic data types in Python and their corresponding types in Mojo. Note that they are not exactly the same. We will discuss the differences in detail later in Chapter ([Things that are different](./different.md)).
 
 | Python type | Mojo type | Description           | Behavior                                 |
 | ----------- | --------- | --------------------- | ---------------------------------------- |
@@ -407,7 +413,7 @@ For example, `__str__()` is used to define the string representation of an objec
 
 You see, dunder methods allows you to use the same function `print()` to print different objects, as long as these objects have the `__str__()` method defined. If you create a new class `Human`, you do not need to modify the system function `print()` in order to get it printed, but just add a `__str__()` method in the class `Human`.
 
-Mojo also inherit this feature. You can use system functions like `print()`, `len()`, `sum()`, etc, on your own structs by defining the corresponding dunder methods. This is called "trait". A type that conforms to a trait guarantees that it implements all of the features of the trait. We will discuss this in detail in the later chapters.
+Mojo also inherit this feature. You can use system functions like `print()`, `len()`, `sum()`, etc, on your own structs by defining the corresponding dunder methods. Moreover, this is also related to the concept "trait". A type that conforms to a trait guarantees that it implements all of the features of the trait. We will discuss this in detail as an advanced topic in Chapter [Generic and traits](../advanced/generic.md).
 
 ## Modules, packages, and imports
 

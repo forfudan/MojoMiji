@@ -189,6 +189,8 @@ Since the bytes are continuously stored in the memory, programming languages nee
 The following example shows how `"abc"` is stored in the memory as a Mojo's `String` type. Note that "a", "b", and "c" are all ASCII characters, which are represented by one byte each in UTF-8 encoding.
 
 ```console
+# Mojo Miji - Data types - Internal representation of String "abc"
+
 Each cell represent a byte (UInt8).
 ┌──┬──┬──┐
 │97│98│99│
@@ -204,6 +206,8 @@ While ASCII codes are always stored as one-byte with UTF-8 encoding, other Chara
 For example, "<ruby>你<rt>nǐ</rt>好<rt>hǎo</rt></ruby>", which means "hello" in Chinese, are display as two characters, but it is stored by 6 bytes in the memory. The following figure illustrates how these two Chinese characters are stored in the memory as a Mojo's `String` type. We can see that each character taking 3 bytes (starting with `111`).
 
 ```console
+# Mojo Miji - Data types - Internal representation of String "你好"
+
 Each cell represent a byte (UInt8).
 ┌───┬───┬───┬───┬───┬───┐
 │228│189│160│229│165│189│
@@ -514,6 +518,8 @@ Then Mojo will allocate a continuous block of memory on **heap** to store the ac
 The following figure illustrates how the `List` is stored in the memory. You can see that a continuous block of memory on the heap (from the address `17ca81f8` to `17ca81a2`) stores the actual values of the elements of the list. Each element is a `UInt8` value, and thus is of 1 byte long. The data field on the stack store the address of the first byte of the block of memory on the heap, which is `17ca81f8`.
 
 ```console
+# Mojo Miji - Data types - List in memory
+
         local variable `me = List[UInt8](89, 117, 104, 97, 111)`
             ↓  (meta data on stack)
         ┌────────────────┬────────────┬────────────┐

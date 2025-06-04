@@ -113,7 +113,7 @@ Let's run the code again with `pixi run mojo src/move/fibonacci.mojo`. On my mac
 
 See, a huge performance gain! The Mojo code is more than ***50 times*** faster than the Python code. What we did is just copying-pasting from the Python code and making small modifications, but we gained a performance comparable to C.
 
-::: tip naming convention of Mojo type
+::: tip Naming convention of Mojo type
 
 In Python, types and classes are usually named with CamelCase. But there are some exceptions: primitive types like `int`, `float`, `str`, etc, are name with lowercase. For consistency, Mojo uses CamelCase for all types and classes. So `int` in Python is `Int` in Mojo, `float` is `Float64`, `str` is `String`, etc.
 
@@ -127,7 +127,7 @@ There are some other reasons why Mojo is much faster. In this example. One reaso
 
 :::
 
-::: info Comparison with C and Rust
+::: info Speed comparison with C and Rust
 
 Now you know that Mojo is much faster than Python. You may wonder how the performance of Mojo is compared to C and Rust. So I also implement the same code in C and Rust.
 
@@ -280,7 +280,7 @@ error: expression must be mutable in assignment
                 ~~~~~~~~^~~~~~~~~~~~
 ```
 
-This is another important and new feature of Mojo: the arguments cannot be modified at will within the body of a function. This is to avoid unintentional changes to the original variable that is passed into the function. If you intend to change the value of the argument within the function, you have to explicitly declare the argument as ***mutable***. This is done via several special keywords in the function signature. We will discuss this more in [the chapter about functions](../basic/functions). For now, we just add the keyword `mutable` in front of the argument `array`. By doing this, we tell Mojo that we want to modify the variable `array` by using this function.
+This is another important and new feature of Mojo: the arguments cannot be modified at will within the body of a function. This is to avoid unintentional changes to the original variable that is passed into the function. If you intend to change the value of the argument within the function, you have to explicitly declare the argument as ***mutable***. This is done via several special keywords in the function signature. We will discuss this more in Chapter [Functions](../basic/functions). For now, we just add the keyword `mutable` in front of the argument `array`. By doing this, we tell Mojo that we want to modify the variable `array` by using this function.
 
 ```mojo
 def bubble_sort(mut array: List[Float64]):

@@ -149,7 +149,7 @@ In some sense, declaring a function using `def` or `fn` are equivalent. Finally,
 
 So the selection of keywords is more related to your personal preference. A Pythonista may prefer `def` because it is more Pythonistic. A Rustacean may prefer `fn` because it is more Rust-like.
 
-From my perspective, I prefer `def` for my personal projects, but would stick to `fn` functions in projects where I need to collaborate with others. This is because `fn` is more strict about the behaviors of the functions, e.g., mandatory `raises` keyword, not allowing argument shadowing, etc.
+From my perspective, I prefer `def` for my personal projects, but would stick to `fn` functions in projects where I need to collaborate with others. This is because `fn` is stricter and more explicit about the behaviors of the functions, e.g., mandatory `raises` keyword, not allowing argument shadowing, etc. In some cases, you may find out that you have to use `fn` keyword to define a function, e.g., `__copyinit__()` where implicit `raises` is not allowed.
 
 Interestingly, the word `fn` itself does not look Pythonic. Python usually truncates the words from left, e.g., `def`. Maybe `func` is a more Pythonic keyword. Nevertheless, Rust users may find `fn` pleasing to the eye.
 
@@ -523,7 +523,7 @@ fn main() {
 
 :::
 
-## `def` vs `fn`
+## def vs fn
 
 Now let's go back to the differences between `fn` and `def`.
 
@@ -589,4 +589,3 @@ Now we try to understand the words above:
 ***Changing the values of the arguments will create a mutable copy of them.*** It means that, if you try to change the value of the argument `x` within the function, it is possible. In the backend, Mojo will create a mutable copy of `x` (at a new address) and assign the new value `2` to it. The new `x` is no longer pointing to the same memory address as `a`. In the example above, you see that when you change the value of `x` to `2`, the address of `x` is changed, meaning that a mutable copy of `x` is created.
 
 [^optimization]: Mojo compiler will also determine whether a copy is needed even though we ask for a copy. It is a kind of optimization.
-[^copy]: For some small structs, a copy is made.
