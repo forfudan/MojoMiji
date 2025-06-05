@@ -21,7 +21,7 @@ export default defineConfig({
     }
   },
   head: [
-    ['link', { rel: 'icon', href: '/logo.png', type: 'image/png' }]
+    ['link', { rel: 'icon', href: '/icon.png', type: 'image/png' }]
   ],
   vite: {
     css: {
@@ -36,7 +36,7 @@ export default defineConfig({
     }
   },
   themeConfig: {
-    logo: '/logo.png',
+    logo: '/icon.png',
     nav: [
       {
         text: 'Open Miji', link: '/docs/'
@@ -111,6 +111,9 @@ export default defineConfig({
             {
               text: 'Operators and assignment', link: '/docs/basic/operators',
             },
+            {
+              text: 'Structs', link: '/docs/basic/structs',
+            },
           ],
         },
         {
@@ -132,15 +135,15 @@ export default defineConfig({
           ]
         },
         {
-          text: 'PART VI: EXTENDED MOJO', link: '/docs/extensions/extensions',
+          text: 'PART VI: EXTENDED MOJO', link: '/docs/extended/extended',
           items: [
             {
               text: 'DeciMojo',
-              link: '/docs/extensions/decimojo'
+              link: '/docs/extended/decimojo'
             },
             {
               text: 'NuMojo',
-              link: '/docs/extensions/numojo'
+              link: '/docs/extended/numojo'
             },
           ]
         },
@@ -236,7 +239,7 @@ export default defineConfig({
   //     title: "Mojo入門指南",
   //     description: "從Python出發",
   //     themeConfig: {
-  //       logo: '/logo.png',
+  //       logo: '/icon.png',
   //       nav: [
   //         { text: '開啓攻略', link: '/zht/docs/intro' },
   //         { text: 'Mojo官網', link: 'https://www.modular.com/max/mojo/' }

@@ -70,7 +70,7 @@ def main():
 
 Note that there is no error message printed in this case. This is because Mojo does not perform runtime checks for integer overflows by default. We need to be very careful when using integer types in Mojo compared to Python.
 
-If you really need to work on big integers that are larger than the capacity of `Int`, you can consider using the `BigInt` type in the [decimojo package](../extensions/decimojo.md), which has the similar functionality as the `int` type in Python.
+If you really need to work on big integers that are larger than the capacity of `Int`, you can consider using the `BigInt` type in the [decimojo package](../extended/decimojo.md), which has the similar functionality as the `int` type in Python.
 
 ::: tip Exercise
 
@@ -138,7 +138,7 @@ You may find that the output of `Float16(1.414)` is `1.4140625`, which is not ex
 This is a common issue in many programming languages, including Python. You can have two methods to avoid or mitigate this issue:
 
 1. Use higher precision floating-point types, such as `Float64` or `Float32`, which can represent more decimal places and reduce the error. Note that the values are still inexact, but the error can be negligible.
-1. Use the `Decimal` type, which is internally presented in base 10. It can represent decimal numbers exactly, but it is slower than floating-point types. You can find more information about `Decimal` type in the [decimojo package](../extensions/decimojo.md).
+1. Use the `Decimal` type, which is internally presented in base 10. It can represent decimal numbers exactly, but it is slower than floating-point types. You can find more information about `Decimal` type in the [decimojo package](../extended/decimojo.md).
 
 :::
 

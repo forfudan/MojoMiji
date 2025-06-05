@@ -20,7 +20,7 @@ by ***Yuhao Zhu 朱宇浩***
   - [Data types - basic](./basic/types) (Fundamental building blocks of Mojo)
   - [Operators and assignment](./basic/operators) (Operators and assignment expressions)
   <!-- - [Control flows (Yuhao is working on this)](./basic/control_flows) -->
-  <!-- - [Structs (Yuhao is working on this)](./basic/structs) -->
+  - [Structs](./basic/structs) (Structs in Mojo, similar to classes in Python)
 - [Part IV: Advanced Mojo](./advanced/advanced)
   - [Data type - SIMD](./advanced/simd) (The first-class `SIMD` type)
   <!-- - [Error handling (Yuhao is working on this)](./advanced/error_handling) -->
@@ -30,9 +30,9 @@ by ***Yuhao Zhu 朱宇浩***
   <!-- - [Lifetime] -->
   <!-- - [Call Python in Mojo](./advanced/python) -->
 - [Part V: A case study - Matrix type] (Let's implement a Matrix type in Mojo)
-- [Part VI: Extended Mojo](./extensions/extensions)
-  - [NuMojo](./extensions/numojo) (A library for numerical computing and NDArray)
-  - [DeciMojo](./extensions/decimojo) (A library for arbitrary-precision integers and decimals)
+- [Part VI: Extended Mojo](./extended/extended)
+  - [NuMojo](./extended/numojo) (A library for numerical computing and NDArray)
+  - [DeciMojo](./extended/decimojo) (A library for arbitrary-precision integers and decimals)
 - [Part VII: Miscellaneous](./misc/misc)
   - [Memory layout of Mojo objects](./misc/layout) (How Mojo objects are stored in memory)
   <!-- - [Reference system](./misc/reference) (Reference system of Mojo) -->

@@ -6,9 +6,9 @@ hero:
   text: "A Guide to Mojo Programming Language"
   tagline: from A Pythonista's Perspective
   image:
-    dark: /logo.png
-    light: /logo.png
-    alt: logo
+    dark: /icon.png
+    light: /icon.png
+    alt: icon
   actions:
     - theme: brand
       text: Open Miji

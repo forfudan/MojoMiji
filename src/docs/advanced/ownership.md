@@ -57,7 +57,7 @@ Thus, learning the ownership model is not a must, but it is good for the followi
 
 :::
 
-## Four statuses of ownership when there are more than one variable
+## Four statuses of ownership
 
 If there is only one variable and one value, then we do not need ownership, naturally. We need ownership only when several variables are involved and they may intend to access the same value. In this case, we need to understand four possible statuses of ownership when there are more than one variable, namely:
 
