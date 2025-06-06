@@ -41,6 +41,12 @@ In Mojo, there are several types for representing floating-point numbers. They d
 
 In short, Mojo's `Float64` type is almost the same as Python's `float` type. You can safely use it without worrying about the differences. Mojo also provides other floating-point types with different sizes. You can wisely choose the appropriate type based on your needs (desired precision and range).
 
+::: info More on floats
+
+We will discuss floating-point types in more detail in Section [Floating-point number](../basic/types#float) of Chapter [Data Types](../basic/types.md).
+
+:::
+
 ### String
 
 ::: warning String is changing rapidly
@@ -106,12 +112,6 @@ def main():
 ```
 
 To access a code point in a Python `str`, you can just use indexing or slicing, such as `s[i]` or `s[i:j]`. However, in Mojo, you cannot do this directly at the moment. This feature is still under development.
-
-::: info More on integers
-
-We will discuss floating-point types in more detail in Section [Floating-point number](../basic/types.md#floating-point-number) of Chapter [Data Types](../basic/types.md).
-
-:::
 
 ### List
 

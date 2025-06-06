@@ -36,7 +36,7 @@ The ownership model and semantics implemented by Mojo are (significantly) differ
 
 :::
 
-The key of the "ownership" model is that any value (a meaning piece of information that you directly or indirectly create or use) has an owner. The variable is the owner of the value; the struct is the owner of its fields. The ownership is also hierarchical, meaning that an owner may also have an owner. For example, a integer value is owned by a variable `size` which is further owned by a `List` instance.
+The key of the "ownership" model is that any value (a meaningful piece of information that you directly or indirectly create or use) has an owner. The variable is the owner of the value; the struct is the owner of its fields. The ownership is also hierarchical, meaning that an owner may also have an owner. For example, a integer value is owned by a variable `size` which is further owned by a `List` instance.
 
 A value can have only one **owner** throughout its lifetime, from creation to destruction. The owner has the supreme authority over the value, including the right to read, modify, and destroy the value. If the owner dies, the value will also be destroyed.
 

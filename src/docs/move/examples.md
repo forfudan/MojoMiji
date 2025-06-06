@@ -164,8 +164,7 @@ fn fib (n: i64) -> i64 {
 }
 
 fn main() {
-    let n: i64 = 50;
-    for i in 0..n {
+    for i in 0..50 {
         print!("{}, ", fib(i));
     }
 }

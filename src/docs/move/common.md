@@ -45,6 +45,8 @@ Both styles have their own advantages and disadvantages. I will not discuss them
 
 Some people indeed proposes optional, alternative syntax for code blocks in Mojo. You may find these discussions of interest: [Issue #284](https://github.com/modular/modular/issues/284) and [Issue #2929](https://github.com/modular/modular/issues/2929).
 
+I also wish that Mojo could support an optional block ending keyword to make auto-formatting more convenient. I will discuss this [in this page](../misc/wishes).
+
 :::
 
 ### Indentation
