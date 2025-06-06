@@ -35,8 +35,8 @@ by ***Yuhao Zhu 朱宇浩***
   - [NuMojo](./extend/numojo) (A library for numerical computing and NDArray)
   - [DeciMojo](./extend/decimojo) (A library for arbitrary-precision integers and decimals)
 - [PART VII: MISCELLANEOUS](./misc/misc)
-  - [Memory layout of Mojo objects](./misc/layout) (How Mojo objects are stored in memory)
+  <!-- - [Memory layout of Mojo objects](./misc/layout) (How Mojo objects are stored in memory) -->
   <!-- - [Reference system](./misc/reference) (Reference system of Mojo) -->
   - [Glossary of Mojo terms](./misc/glossary) (Find explanations of key terms and concepts)
   - [Useful tips and warnings](./misc/tips) (Do not fall into the pits I fell into)
-  - [Further readings]
+  <!-- - [Further readings] -->

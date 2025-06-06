@@ -330,10 +330,12 @@ There are some other proposals for this keyword, such as `immut`.
 
 :::
 
-If an argument is declared with the keyword `read`, then a read-only reference of the value is passed into the function. If we apply our conceptual model, the following things will happen:
+If an argument is declared with the keyword `read`, then a read-only reference of the value is passed into the function. If we apply our [conceptual model of variables](../basic/variables.md#conceptual-model-of-variable), the following things will happen:
 
 1. The argument will get the same address as the variable you passed into the function, so it can access the value at that address.
 1. The value at the address is marked as "immutable", meaning that you cannot change the it within the function. The value of the variable outside the function will thus be protected from being modified.
+
+If we apply the [four-status model of ownership](../advanced/ownership.md#four-statuses-of-ownership) introduced in Chapter [Ownership](../advanced/ownership.md) later, this means that a **immutable aliases status** is created.
 
 ::: info A mutable copy
 
@@ -360,6 +362,7 @@ fn foo(some: Int) -> None:  # default is `read`
 An example that read elements from a list and print them is as follows. Note that the keyword `read` can be left out.
 
 ```mojo
+# src/basic/read_keyword.mojo
 def print_list_of_string(read a: List[String]):
     print("[", end="")
     for i in range(len(a)):
@@ -376,6 +379,7 @@ def main():
 If you define a function with `fn`, attempting to change the value of an argument with `read` modifier will cause an error at compile time. See the following example:
 
 ```mojo
+# src/basic/read_keyword_change.mojo
 fn changeit(read some: List[Int]) -> List[Int]:
     some[0] = 100
 
@@ -403,9 +407,12 @@ The keyword `mut` allows you to pass a mutable reference of the value into the f
 1. The argument will get the same address as the variable you passed into the function, so it can access the value at that address.
 1. The argument is marked as "mutable", meaning that you can change the value at the **address** of the argument within the function. Since the address of the argument is the same as that of the variable you passed into the function, this means that the value of the variable outside the function will also be modified.
 
+If we apply the [four-status model of ownership](../advanced/ownership.md#four-statuses-of-ownership) introduced in Chapter [Ownership](../advanced/ownership.md) later, this means that a **mutable aliases status** is created.
+
 The following example examines the functionality of the `mut` keyword **from the memory's perspective**, so that you can understand the concepts and mechanics better. For this purpose, we need to import the `Pointer` class from the `memory` module, which allows us to print the address of a variable or an argument.
 
 ```mojo
+# src/basic/mut_keyword.mojo
 from memory import Pointer
 
 def changeit(mut a: Int8):
@@ -439,9 +446,9 @@ In function call: argument `a` is of the value 10 and the address 0x16b6a8fb0
 Before change:    variable `x` is of the value 10 and the address 0x16b6a8fb0
 ```
 
-Let's look into the code and see what has happened:
+Let's use a diagram to illustrate what happens in the memory when you run the code.
 
-First, you create variable with the name `x` and type `Int8` and assign value `5` to it. Mojo assigns a space in the memory, which is of 1-byte (8-bit) length at the address `16b6a8fb0`. The value `5` is stored as `00000100` (binary representation) at the address. See the following illustration.
+First, you create variable with the name `x` and type `Int8` and assign value `5` to it. Mojo assigns a space in the memory, which is of 1-byte (8-bit) length at the address `16b6a8fb0` and store the value `5` as `00000100` (binary representation) at the address. See the following illustration.
 
 ```console
         ┌─────────┬─────────┬─────────┬─────────┬─────────┬─────────┐
@@ -481,7 +488,7 @@ Address │16b6a8fae│16b6a8faf│16b6a8fb0│16b6a8fb1│16b6a8fb2│16b6a8fb3
                           variable `x` (Int8)
 ```
 
-Finally, you go out of the function `changeit()` and back to the `main()` function. The argument `a` is no longer in scope and is destroyed. But `x` is still there and its value is now `10`.
+Finally, you go out of the function `changeit()` and back to the `main()` function. The argument `a` is no longer in scope and is destroyed. But `x` is still there and its value is now `10`. The final illustration of the memory is as follows:
 
 ```console
         ┌─────────┬─────────┬─────────┬─────────┬─────────┬─────────┐
@@ -495,7 +502,7 @@ Address │16b6a8fae│16b6a8faf│16b6a8fb0│16b6a8fb1│16b6a8fb2│16b6a8fb3
 
 ::: tip Compared to Rust
 
-You can modify the value of passed-in variable at its original address if you use `mut` keyword. It is similar to Rust's mutable reference, e.g., `fn foo(a: &mut i8)`. But keep in mind that the reference in Mojo is more an alias than a safe pointer, which means a de-referencing is not needed. 
+You can modify the value of passed-in variable at its original address if you use `mut` keyword. It is similar to Rust's mutable reference, e.g., `fn foo(a: &mut i8)`. But keep in mind that the reference in Mojo is more an alias than a safe pointer, which means a de-referencing is not needed. We will cover this topic in detail in Chapter [Ownership](../advanced/ownership.md).
 
 Let's copy the the previous example here, and re-write it in Rust for comparison.
 
@@ -522,6 +529,123 @@ fn main() {
 ```
 
 :::
+
+### keyword `owned`
+
+The keyword `owned` allows you to pass a **copy** of the value into the function. In other words, the following things will happen:
+
+1. The value of the variable you passed into the function will be copied to a new address in the memory, and the argument of the function will get this new address and the value at that address.
+1. The argument **owns** the value at the new address. It can modify the value at the address.
+1. Since the address of the argument in the function is different from that of the variable you passed into the function, the value of the variable outside the function will not be modified.
+
+If we apply the [four-status model of ownership](../advanced/ownership.md#four-statuses-of-ownership) introduced in Chapter [Ownership](../advanced/ownership.md) later, this means that a **isolated status** is created.
+
+The following example examines the functionality of the `owned` keyword **from the memory's perspective**. In the function signature of `changeit()`, we use the `owned` keyword to indicate that the argument `a` is an owned copy of the value passed in.
+
+```mojo
+# src/basic/owned_keyword.mojo
+from memory import Pointer
+
+
+def changeit(owned a: Int8):
+    print(
+        String(
+            "Within function call: argument `a` is of the value {} and the address {}"
+        ).format(a, String(Pointer(to=a)))
+    )
+    a = 10
+    print("Within function call: change value of a to 10 with `a = 10`")
+    print(
+        String(
+            "Within function call: argument `a` is of the value {} and the address {}"
+        ).format(a, String(Pointer(to=a)))
+    )
+
+def main():
+    var x: Int8 = 5
+    print(
+        String(
+            "Before function call: variable `x` is of the value {} and the address {}"
+        ).format(x, String(Pointer(to=x)))
+    )
+    changeit(x)
+    print(
+        String(
+            "Before function call: variable `x` is of the value {} and the address {}"
+        ).format(x, String(Pointer(to=x)))
+    )
+```
+
+When you run the code, you will see the following output:
+
+```console
+Before function call: variable `x` is of the value 5 and the address 0x16bb384f7
+Within function call: argument `a` is of the value 5 and the address 0x16bb38510
+Within function call: change value of a to 10 with `a = 10`
+Within function call: argument `a` is of the value 10 and the address 0x16bb38510
+Before function call: variable `x` is of the value 5 and the address 0x16bb384f7
+```
+
+You will see that:
+
+1. The variable passed into the function (`x`) and the argument (`a`) have the same value `5` at the beginning of the function call, but they are at different addresses in the memory.
+1. The value of the argument `a` is changed to `10` within the function, but the value of the variable `x` outside the function remains `5`.
+
+Let's use a diagram to illustrate what happens in the memory when you run the code.
+
+First, you create variable with the name `x` and type `Int8` and assign value `5` to it. Mojo assigns a space in the memory, which is of 1-byte (8-bit) length at the address `16bb384f7`, and then store the value `5` as `00000100` (binary representation) at the address. See the following illustration.
+
+```console
+        ┌─────────┬─────────┬─────────┬─────────┐
+Value   │         │         │ 00000100│         │
+        ├─────────┼─────────┼─────────┼─────────┤
+Address │16bb384f5│16bb384f6│16bb384f7│16bb384f8│
+        └─────────┴─────────┴─────────┴─────────┘
+                                 ↑
+                          variable `x` (Int8)
+```
+
+Next, you pass this variable `x` into the function `changeit()` with the `owned` keyword. Mojo will then copy the value (`0b00000100`) to a new address `0x16bb38510`, and let the argument `a` to own this new value and the address. These two variables are completely isolated from each other. See the following illustration.
+
+```console
+                                                                argument `a` (Int8)
+                                                                         ↓
+        ┌─────────┬─────────┬─────────┬─────────┬─────────┬─────────┬─────────┬─────────┐
+Value   │         │         │ 00000100│         │         │         │ 00000100│         │
+        ├─────────┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┤
+Address │16bb384f5│16bb384f6│16bb384f7│16bb384f8│   ...   │16bb38509│16bb38510│16bb38511│
+        └─────────┴─────────┴─────────┴─────────┴─────────┴─────────┴─────────┴─────────┘
+                                 ↑
+                          variable `x` (Int8)
+```
+
+Then, you re-assign a value `10` to the `a`. Since `a` is marked as **owned**, it has the exclusive ownership of its value. The re-assignment of value is thus allowed. The new value `00001010` (binary representation of the integer 10) is then stored into the memory location at address `16bb38510`. Now the updated illustration of the memory goes as follows.
+
+```console
+                                                                argument `a` (Int8)
+                                                                         ↓
+        ┌─────────┬─────────┬─────────┬─────────┬─────────┬─────────┬─────────┬─────────┐
+Value   │         │         │ 00000100│         │         │         │ 00001010│         │
+        ├─────────┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┤
+Address │16bb384f5│16bb384f6│16bb384f7│16bb384f8│   ...   │16bb38509│16bb38510│16bb38511│
+        └─────────┴─────────┴─────────┴─────────┴─────────┴─────────┴─────────┴─────────┘
+                                 ↑
+                          variable `x` (Int8)
+```
+
+Finally, you go out of the function `changeit()` and back to the `main()` function. The argument `a` is no longer in scope and is destroyed, so is the value owned by it. But `x` is still there and its value is still `5`. The final illustration of the memory is as follows:
+
+```console
+                                     The value is destroyed and the memory at the address is uninitialized
+                                                                         ↓
+        ┌─────────┬─────────┬─────────┬─────────┬─────────┬─────────┬─────────┬─────────┐
+Value   │         │         │ 00000100│         │         │         │         │         │
+        ├─────────┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┤
+Address │16bb384f5│16bb384f6│16bb384f7│16bb384f8│   ...   │16bb38509│16bb38510│16bb38511│
+        └─────────┴─────────┴─────────┴─────────┴─────────┴─────────┴─────────┴─────────┘
+                                 ↑
+                          variable `x` (Int8)
+```
 
 ## def vs fn
 
@@ -551,7 +675,8 @@ If a function is defined with `def`, the arguments are immutable by default, but
 This sounds confusing. Let's try to understand it by looking at the following example:
 
 ```mojo
-def change_value_in_def(x: Int):
+# src/basic/def_read_and_modify.mojo
+def change_value_in_def(read x: Int):
     print("===============================")
     print("Calling `change_value_in_def()`")
     print("x =", x, "at address", String(Pointer(to=x)))
@@ -572,20 +697,20 @@ This code runs without any error, and the output is as follows:
 
 ```console
 Initializing a to 1
-a = 1 at address 0x16d4d0960
+a = 1 at address 0x16f40c4e0
 ===============================
 Calling `change_value_in_def()`
-x = 1 at address 0x16d4d09c0
+x = 1 at address 0x16f40c540
 Change x to 2
-x = 2 at address 0x16d4d0998
+x = 2 at address 0x16f40c518
 ===============================
-a = 1 at address 0x16d4d0960
+a = 1 at address 0x16f40c4e0
 ```
 
 Now we try to understand the words above:
 
 ***If a function is defined with `def`, the arguments are immutable by default.*** It means that calling the function will not change the value of the variable you passed in. In the example above, the value `a` is not changed after calling `change_value_in_def()`.
 
-***Changing the values of the arguments will create a mutable copy of them.*** It means that, if you try to change the value of the argument `x` within the function, it is possible. In the backend, Mojo will create a mutable copy of `x` (at a new address) and assign the new value `2` to it. The new `x` is no longer pointing to the same memory address as `a`. In the example above, you see that when you change the value of `x` to `2`, the address of `x` is changed, meaning that a mutable copy of `x` is created.
+***Changing the values of the arguments will create a mutable copy of them.*** It means that, if you try to change the value of the argument `x` within the function, it is possible. In the backend, Mojo will create a mutable copy of `x` (at a new address) and assign the new value `2` to it. The `x` is never pointing to the same memory address as `a`. In the example above, you see that `x` never has the same address as `a`.
 
 [^optimization]: Mojo compiler will also determine whether a copy is needed even though we ask for a copy. It is a kind of optimization.

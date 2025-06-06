@@ -66,7 +66,7 @@ If there is only one variable and one value, then we do not need ownership, natu
 - **aliased**: one variable owns a value, while another variable is an alias of the value.
 - **unsafely pointed**: one variable is an unsafe pointer to a value, but does not have the information on the owner of the value.
 
-The pointed status and aliased status can be referred to as **referenced**. Depending on the context, "reference" can either mean a pointer or an alias.
+You may see that the, in some documents or discussions, a "reference" can either mean a pointer or an alias, depending on the context. This may lead to confusion, especially for beginners. In this Miji, **I will try to avoid using the term "reference" unless it can be applied to both pointers and aliases**. In all other cases, I will use explicitly the term "pointer" for a safe pointer and the term "alias" for an alias.
 
 ### Isolated
 

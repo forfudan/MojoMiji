@@ -159,10 +159,10 @@ export default defineConfig({
         {
           text: 'PART VII: MISCELLANEOUS',
           items: [
-            {
-              text: 'Memory layout of Mojo objects',
-              link: '/docs/misc/layout'
-            },
+            // {
+            //   text: 'Memory layout of Mojo objects',
+            //   link: '/docs/misc/layout'
+            // },
             // {
             //   text: 'Reference system',
             //   link: '/docs/misc/reference'

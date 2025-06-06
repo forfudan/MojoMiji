@@ -4,7 +4,7 @@ A variable is a fundamental concept in programming which allows you to store, re
 
 [[toc]]
 
-## A conceptual model of variables
+## Conceptual model of variable
 
 There are various way to define the term "variable", and the definition varies across programming languages. In this Miji, I would provide the following conceptual model which I found easy to understand and remember when I program in Mojo:
 
