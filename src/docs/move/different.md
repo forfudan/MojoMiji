@@ -169,3 +169,29 @@ def main():
 ```
 
 We will discuss the list type in more detail in Section [List](../basic/types.md#list) of Chapter [Data Types](../basic/types.md). Chapter [Memory Layout of Mojo objects](../misc/layout.md) provides some abstract diagrams to illustrate the memory layouts of a list in Python and Mojo.
+
+## Other difference
+
+In addition to the differences in data types, there are some other differences (maybe nuances) between Mojo and Python that you should be aware of:
+
+| feature                                     | python                          | mojo                                               |
+| ------------------------------------------- | ------------------------------- | -------------------------------------------------- |
+| Variable definition                         | No keyword                      | `var` (in some cases optional)                     |
+| Variable re-definition possible?            | Yes                             | No                                                 |
+| Function definition                         | `def`                           | `def` (looser) or `fn` (stricter)                  |
+| Argument behavior depends on?               | Type                            | Modifiers, e.g., `read`, `mut`, `owned`            |
+| Argument passed by?                         | Reference                       | Value (`owned`) or reference (`read`, `mut`)       |
+| Default argument mutability                 | Mutable or a new copy           | Immutable (default to `read` modifier)             |
+| Raises in the function signature            | No need                         | No need for `def` function, need for `fn` function |
+| A main function is needed                   | No                              | Yes                                                |
+| Function overloading                        | No                              | Yes                                                |
+| Chained comparison                          | Yes                             | Yes                                                |
+| `a = b` for lists                           | Copy reference                  | Copy value                                         |
+| Define a type                               | `class`                         | `struct`                                           |
+| Class or struct inheritable?                | Yes                             | No                                                 |
+| Define attributes in class / struct         | No, but can use type annotation | Yes, use `var`                                     |
+| Compile time parametrization                | No                              | Yes                                                |
+| Generic and traits                          | No                              | Yes                                                |
+| Dunder methods to access built-in functions | Yes                             | Yes, via traits                                    |
+| Operators overloading                       | Yes                             | Yes, via traits                                    |
+| Transfer ownership of variables             | No                              | Yes, use `a = b^`                                  |

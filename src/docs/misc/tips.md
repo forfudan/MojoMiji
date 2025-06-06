@@ -2,17 +2,37 @@
 
 This chapter summarizes the information, tips, and warnings that are scattered throughout the Miji. It is intended to help you quickly find the information you need without having to search through the entire Miji.
 
-[Speed comparison with C and Rust](../move/examples.md): Do you know that Mojo is faster than C and Rust in some cases?
+[Speed comparison with C and Rust](../move/examples#fibonacci-sequence): Do you know that Mojo is faster than C and Rust in some cases? I am also surprised by the results of the speed comparison.
+
+[Docstring style guide](../move/common#documentation-string): There are many styles of docstring in Python. Some people use Google style, some people use NumPy style, and some people use reStructuredText (reST) style. Do you know that Mojo has its own [docstring style guide](https://github.com/modular/modular/blob/main/mojo/stdlib/docs/docstring-style-guide.md)?
 
 [Why you should always use `var` to define variables](../basic/variables.md): It is good to cultivate a habit of using `var` to define variables. Otherwise, it may lead to confusion and unintended behavior, especially when you are working with nested scopes.
 
+[Type is important](../basic/variables.md#conceptual-model-of-variable): Type is important to a variable. It determines how the value is stored in memory, how much space it occupies, how it can be interpreted, and how it can be manipulated.
+
+[Do not abuse function overloading](../basic/functions.md#function-overloading): Functional overloading is powerful, but it can lead to confusion if you use it as a general container for anything. You should always make the function names self-explanatory.
+
+[Arguments and reference - Mojo vs Rust](../basic/functions.md): Do you know that the term "reference" means different things in Mojo and Rust?
+
+[Floating-point values are inexact](../basic/types#float): Are you aware that floating-point values are inexact and can lead to unexpected results? This is because floating-point values are represented in binary format, which cannot always be exactly represented in decimal format.
+
+[Why we should use constructors explicitly](../basic/types#integer): Let's do an exercise to understand why we should always use constructors explicitly.
+
 [Chained comparison: Syntax sugar or poison?](../basic/operators.md): Are you aware that chained comparison can lead to confusion and unintended behavior?
+
+[`Float64` or `SIMD[DType.float64, 1]`](../advanced/simd.md#type-of-simd): You can use either `Float64` or `SIMD[DType.float64, 1]` to represent a single-precision floating-point value, because the former one is just an alias of the latter. In most cases, using the former one is more concise and readable.
+
+[`Int` and `Bool` are not SIMD types](../advanced/simd.md#type-of-simd): Do you know that the built-in type `Int` and `Bool` are not aliases of SIMD? The corresponding SIMD types are actually `SIMD[DType.index, 1]` or `SIMD[DType.bool, 1]`, respectively. So, don't be surprised if the compiler complains about the type mismatch when you try to use `Int` or `Bool` in a SIMD context.
+
+[Implicit and explicit trait declaration](../advanced/generic#traits): Do you know that Mojo allows you to use traits either implicitly or explicitly? You do not need to put the name a trait in the struct declaration. As long as you define all the methods that the trait requires, the compiler will automatically treat the struct as conforming to the trait. It is useful when you want to apply some self-defined traits on a built-in type.
+
+[Use multiple traits in functions](../advanced/generic#multiple-traits): At the moment, Mojo does not support using multiple traits for a type parameter in functions.
 
 [Syntax shapes your behavior - Rust vs Mojo in transfer of ownership](../advanced/ownership.md): Are you aware that your coding style is influenced by the syntax of the programming language you use?
 
 [You can be still safe without knowing the ownership model](../advanced/ownership.md): Do you know that you can still be safe without understanding the ownership model? But this does not apply if you begin to dive into the ocean of unsafe Mojo.
 
-[Arguments and reference - Mojo vs Rust](../basic/functions.md): Do you know that the term "reference" means different things in Mojo and Rust?
+[Non-transferable values](../advanced/ownership.md): Do you know that some values cannot be transferred to another owner? This is because they are small enough to be copied efficiently. If you use `^` to transfer ownership of such values, the compiler will ignore this and treat them as if they were copied.
 
 [ASAP Destruction Policy](../advanced/ownership.md): Do you know that Mojo compiler has a policy that destroys a variable as soon as they are used for the last time? However, any safe pointers to the variable can extend the lifetime of the variable to as long as the pointer is alive.
 

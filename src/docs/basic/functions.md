@@ -647,6 +647,103 @@ Address │16bb384f5│16bb384f6│16bb384f7│16bb384f8│   ...   │16bb38509
                           variable `x` (Int8)
 ```
 
+## Function overloading
+
+Function overloading is a cool feature of Mojo which does not appear in Python. For example, you want to implement a function called `bigger` that can either take in one or two arguments of the integral type. If one argument is passed in, then it returns the argument itself. If two arguments are passed in, then it returns the bigger one. In Python, you would probably use the following trick:
+
+```py
+def bigger(a: int, b: int | None = None) -> int:
+    """Returns the bigger of one or two integers.
+    
+    Args:
+        a (int): First integer.
+        b (int | None): Second integer. Defaults to None.
+    
+    Returns:
+        int: The bigger of the two integers if both are provided,
+            otherwise returns the first integer.
+    """
+    
+    if b is None:
+        return a
+    return a if a > b else b
+
+def main():
+    print(bigger(1, 2))
+    print(bigger(3))
+
+main()
+```
+
+In the above code, we set the argument `b` to be either an integer or a `None` type. If the user only passes in one variable, `b` will be `None` and the value of `a` will be returned. If the user passes in two values, then the bigger number will be returned.
+
+However, in Mojo, this trick may not be helpful. Mojo is a statically-typed language and each variable must have a fixed type (well, you can use `Optional` type, but you have to do some de-packing and it will not be efficient). Luckily, Mojo allows function overloading. This feature allows you to define functions with the same name multiple times as long as they are with different arguments. See the following example:
+
+```mojo
+# src/basic/bigger.mojo
+fn bigger(a: Int) -> Int:
+    return a
+
+fn bigger(a: Int, b: Int) -> Int:
+    return a if a > b else b
+
+fn main():
+    print(bigger(1, 2))
+    print(bigger(3))
+```
+
+You can run this code and see that it works as expected.
+
+So what we learnt from the above example?
+
+1. You can define the functions multiple times with the same name, e.g., `bigger()`.
+1. You have to make sure that the arguments of the functions are different, e.g., one function takes one argument and the other takes two arguments.
+1. The Mojo compiler will check the number and the types of the arguments you passed into the function, and then infer which function signature to use.
+
+Of course, you can continue this overloading to more accept more variants. This feature would be very useful when you want to implement a function but with different settings.
+
+::: danger Do not abuse function overloading
+
+Though function overloading is useful, it may also lead to problems. For example, you overload a function `foo()` with 10 different signatures. These signature are very different from each other. If someone is using your function, they will see 10 different signatures as functional hints in VS Code. They have to scroll to check which one is their intended.
+
+Moreover, the moment they types in the first argument, the number of visible functional hints will decrease so as to match the type of the argument. So they cannot see other overloads anymore. If they want to see the alternative signatures, they have to delete everything after the left parenthesis `(`.
+
+The root cause is that Mojo does not (yet) support a unified docstring for all function overloads. The Python type of one-line docstring that summarize all possible combination of arguments is not possible.
+
+Thus, try not to abuse the function overloading. Do not use function overloading as a container to hold everything. If two functions are aimed for different purposes, give them two different names. You should always make the function names self-explanatory. For example,
+
+```mojo
+def from_object(a: String) -> Matrix:
+    ...
+
+def from_object(*a: Float64) -> Matrix:
+    ...
+
+def from_object(a: List[Int]) -> Matrix:
+    ...
+
+def from_object(a: PyObject) -> Matrix:
+    ...
+```
+
+is inferior to
+
+```mojo
+def from_string(a: String) -> Matrix:
+    ...
+
+def from_float(*a: Float64) -> Matrix:
+    ...
+
+def from_list(a: List[Int]) -> Matrix:
+    ...
+
+def from_pyobject(a: PyObject) -> Matrix:
+    ...
+```
+
+:::
+
 ## def vs fn
 
 Now let's go back to the differences between `fn` and `def`.

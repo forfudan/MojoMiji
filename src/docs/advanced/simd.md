@@ -269,12 +269,18 @@ Your brain may be burning right now, but let me explain: In Mojo, the basic nume
 
 **SIMD is the first-class type** in Mojo. This may sounds a little bit exaggerated, but it is true.
 
+::: warning `Int` and `Bool` are not SIMD types
+
 Nevertheless, there are two important exceptions that you need to be aware of:
 
-- `Int` type is not an `SIMD` type. You cannot vectorize operations on `Int` objects. If you want to use SIMD with integers, you need to consider using the specific integral type such as `Int32` (`SIMD[DType.int32]`) and `Int64` (`DType.int64`).
+- `Int` type is not an `SIMD` type. You cannot vectorize operations on `Int` objects. If you want to use SIMD with integers, you need to consider using the specific integral type such as `Int32` (`SIMD[DType.int32]`), `Int64` (`SIMD[DType.int64]`), or `SIMD[DType.index]`.
 - `Bool` type is not an `SIMD` type. This means that `Bool` and `SIMD[DType.bool]` are completely two different things. You cannot vectorize operations on `Bool` objects. If you want to use SIMD with boolean values, you need to use `SIMD[DType.bool]`.
 
-::: tip `Float64()` vs `SIMD[DType.float64, 1]()`, which one to use?
+So, don't be surprised if the compiler complains about the type mismatch when you try to use `Int` or `Bool` in a SIMD context.
+
+:::
+
+::: tip `Float64()` vs `SIMD[DType.float64, 1]()`, which to use?
 
 If you look into the source code of the standard library, you will find that `Float64` is defined as `alias Float64 = SIMD[DType.float64, 1]`. This applies to many other numeric types as well. As an alias, `Float64()` and `SIMD[DType.float64, 1]()` are equivalent in terms of functionality.
 

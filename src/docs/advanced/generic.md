@@ -242,7 +242,7 @@ def main():
 
 If we run this code, we will get the same output as before.
 
-::: tip Name of the gereric type
+::: tip Name of the generic type
 
 In the code above, I use `CertainType` as the name of the generic type. It is just a placeholder, and you can use any valid identifier you like. During compilation, the Mojo compiler will automatically replace this placeholder with the actual type names.
 
