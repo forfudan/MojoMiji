@@ -35,7 +35,7 @@ The following table summarizes the most important operators in Mojo, ranking fro
 | `or`                                                             | Boolean or (binary)                                                     |                                                                              |                                               |
 | `y if x else z`                                                  | Conditional expression (ternary)                                        |                                                                              |                                               |
 
-Similar to Python, Mojo also supports **operator overloading**. You can define custom behavior for operators by implementing the corresponding dunder methods in your structs.
+Similar to Python, Mojo also supports **operator overloading**. You can define custom behavior for operators by implementing the corresponding dunder methods in your structs. We will cover this topic in more detail in Chapter [Structs](../basic/structs) and Chapter [Generic](../advanced/generic.md).
 
 ## Chained comparison
 

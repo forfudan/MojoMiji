@@ -508,6 +508,8 @@ On the other hand, if you want the other users to access your custom type with t
 
 **Defining dunder methods in your structs is a way to conform to the built-in traits and to make use of the built-in functions.**
 
+You may remember that we have already discussed this topic in Section [Basic methods](../basic/structs#basic-methods) of Chapter [Structs](../basic/structs.md). But let's rewind a bit and take a look at another example.
+
 In the following example, we define a custom type `Pixel` that represents a pixel in a 2D space with `x` and `y` coordinates. In order to display the pixel in a human-readable format, we want to (1) define the string representation of the pixel, (2) call the built-in `String()` constructor to convert the pixel to its string representation, and (3) print the string representation of the pixel.
 
 To use `String()` constructor, the type `Pixel` need to conform to the `Stringable` trait, which requires the type to implement the dunder method `__str__()` that returns a string representation of the pixel. The code is as follows:
@@ -541,21 +543,34 @@ Pixel(212, 149)
 Pixel(-12, 391)
 ```
 
-Below is a summary of the dunder methods and the built-in traits they conform to:
+Below is a summary of the most common dunder methods, the built-in traits they conform to, and the built-in functions they enable.
 
-| Dunder Method | Built-in Trait | Description |
+| Dunder method | Built-in trait  | Built-in function | Description                                                |
+| ------------- | --------------- | ----------------- | ---------------------------------------------------------- |
+| `__str__()`   | `Stringable`    | `String()`        | String representation of the object                        |
+| `__repr__()`  | `Representable` | `repr()`          | String representation in the format of a constructor       |
+| `write_to()`  | `Writable`      | `print()`         | Write the object to a writer instance to enable printing   |
+| `__len__()`   | `Sizable`       | `len()`           | Length of the object                                       |
+| `__abs__()`   | `Absable`       | `abs()`           | Absolute value of the object                               |
+| `__int__()`   | `Intable`       | `Int()`           | Convert the object to an integer with the constructor      |
+| `__bool__()`  | `Boolable`      | `Bool()`          | Convert the object to a boolean value with the constructor |
+| `__round__()` | `Roundable`     | `round()`         | Round the object                                           |
 
 ## Dunder methods and operators overloading
 
-Not only are the behaviors of built-in functions impacted by the dunder methods, but also the behaviors of operators. For example, we want to add two `Pixel` objects together using our own rules, let's say, the sum of two pixels being the square root of the summed squares of each coordinate:
+Not only are the behaviors of built-in functions impacted by the dunder methods, but also the behaviors of operators. However, **not all dunder methods that overload operators conform to a trait**. We will summarize this at the end of this section.
+
+For example, we want to add two `Complex` objects together using our own rules, let's say, the sum of two pixels being the summed squares of each coordinate:
 
 $$
-(x_1, y_1) + (x_2, y_2) = (\sqrt{x_1^2 + x_2^2}, \sqrt{y_1^2 + y_2^2})
+(x_1, y_1) + (x_2, y_2) = (x_1^2 + x_2^2, y_1^2 + y_2^2)
 $$
 
 We can so this by defining a method, e.g., `pixel1.add(pixel2)`. But it is not very intuitive.
 
 A more intuitive way is to use the `+` operator to add two `Pixel` objects together. However, Mojo won't do this automatically for you. You need to define the behavior of the `+` operator for the `Pixel` type yourself. This is called **operator overloading**.
+
+You may remember that we have already discussed this topic in Section [Arithmetic operators](../basic/structs#arithmetic-operators) of Chapter [Structs](../basic/structs.md). Let's quickly recap it here.
 
 To overload an operator, you need to define the corresponding dunder method in your type. For the `+` operator, the dunder method is `__add__()`. When you use the `+` operator on two `Pixel` objects, Mojo will automatically call the `__add__()` method of the first `Pixel` object and pass the second `Pixel` object as an argument. That is to say, the following transformation will happen:
 
@@ -563,10 +578,52 @@ To overload an operator, you need to define the corresponding dunder method in y
 pixel1 + pixel2 -> pixel1.__add__(pixel2)
 ```
 
-Let's try to implement this and update the `Pixel` type in `src/advanced/pixel_with_add.mojo`:
+Let's try to implement this and update the `Pixel` type in `src/advanced/pixel.mojo`:
 
 ```mojo
+# src/advanced/pixel.mojo
+struct Pixel(Stringable):
+    ...
 
+    fn __add__(self, other: Pixel) -> Pixel:
+        return Pixel(self.x**2 + other.x**2, self.y**2 + other.y**2)
+
+def main():
+    var point1 = Pixel(212,149)
+    var point2 = Pixel(-12,391)
+    print(String(point1))
+    print(String(point2))
+
+    var point3 = point1 + point2  # point1.__add__(point2)
+    print(String(point3))
 ```
 
-Below is a table summarizing the dunder methods and the operators they overload:
+When we run this code, we will get the following output as expected:
+
+```console
+Pixel(212, 149)
+Pixel(-12, 391)
+Pixel(45088, 175082)
+```
+
+Below is a table summarizing the most common dunder methods, the operators they overload, and the built-in traits they conform to.
+
+| Dunder method    | Built-in trait | Built-in operator | Description                        |
+| ---------------- | -------------- | ----------------- | ---------------------------------- |
+| `__add__()`      |                | `+`               | Addition                           |
+| `__sub__()`      |                | `-`               | Subtraction                        |
+| `__mul__()`      |                | `*`               | Multiplication                     |
+| `__truediv__()`  |                | `/`               | Division                           |
+| `__floordiv__()` |                | `//`              | Floor division                     |
+| `__mod__()`      |                | `%`               | Modulus                            |
+| `__pow__()`      | `Powable`      | `**`              | Power                              |
+| `__gt__()`       | `Comparable`   | `>`               | Greater than                       |
+| `__ge__()`       | `Comparable`   | `>=`              | Greater than or equal to           |
+| `__lt__()`       | `Comparable`   | `<`               | Less than                          |
+| `__le__()`       | `Comparable`   | `<=`              | Less than or equal to              |
+| `__eq__()`       | `Comparable`   | `==`              | Equal                              |
+| `__ne__()`       | `Comparable`   | `!=`              | Not equal                          |
+| `__getitem__()`  |                | `a[]`             | Indexing and slicing               |
+| `__setitem__()`  |                | `a[] = b`         | Assignment by index or slice       |
+| `__copyinit__()` | `Copyable`     | Mostly `y = x`    | Copy the value to another variable |
+| `__moveinit__()` | `Movable`      | Mostly `y = x^`   | Move the value to another variable |

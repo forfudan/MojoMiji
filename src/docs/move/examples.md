@@ -279,7 +279,7 @@ error: expression must be mutable in assignment
                 ~~~~~~~~^~~~~~~~~~~~
 ```
 
-This is another important and new feature of Mojo: the arguments cannot be modified at will within the body of a function. This is to avoid unintentional changes to the original variable that is passed into the function. If you intend to change the value of the argument within the function, you have to explicitly declare the argument as ***mutable***. This is done via several special keywords in the function signature. We will discuss this more in Chapter [Functions](../basic/functions). For now, we just add the keyword `mutable` in front of the argument `array`. By doing this, we tell Mojo that we want to modify the variable `array` by using this function.
+This is another important and new feature of Mojo: the arguments cannot be modified at will within the body of a function. This is to avoid unintentional changes to the original variable that is passed into the function. If you intend to change the value of the argument within the function, you have to explicitly declare the argument as ***mutable***. This is done via several special keywords in the function signature. We will discuss this more in Chapter [Functions](../basic/functions). For now, we just add the keyword `mut` in front of the argument `array`. By doing this, we tell Mojo that we want to modify the variable `array` by using this function.
 
 ```mojo
 def bubble_sort(mut array: List[Float64]):
@@ -335,7 +335,7 @@ For this example, we have to change more lines to adapt our Python code to Mojo,
 
 - Explicitly specify the type of the arguments of the function.
 - Use the list constructor to create a list and specify the type of the elements.
-- Use the keyword `mutable` before arguments in function signature if you want to modify their values.
+- Use the keyword `mut` before arguments in function signature if you want to modify their values.
 - Printing lists is currently not supported in Mojo. You have to define a helper function to print the list.
 
 If you already use the type-hint system a lot in Python, you will not find these changes too difficult. If you do not use the type-hint system in Python, you may find it a bit annoying and frustrated. But believe me, it is a good practice to declare the types of variables and arguments of functions, in both Mojo and Python. It makes our code more readable and maintainable, and it enables the linter to do static checks and find out potential bugs before you run the code.

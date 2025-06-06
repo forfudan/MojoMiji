@@ -18,7 +18,7 @@ Why do we need **ownership** in Mojo and why is it so important? Because we want
 
 Let me first use a more intuitive example to illustrate these concepts, a metaphor that is about spies and wars without fire.
 
-In a metropolitan city, there are many, many houses, each with a specific address and a person living in it. Some of these persons are **secret agents*. You are also a secret agent, and your task is to find these agents at their addresses, then either talk to them or do something (good or bad) on them. You never met these agents before, so you can only find them by their addresses. As your boss, they cares about that:
+In a metropolitan city, there are many, many houses, each with a specific address and a person living in it. Some of these persons are **secret agents**. You are also a secret agent, and your task is to find these agents at their addresses, then either talk to them or do something (good or bad) on them. You never met these agents before, so you can only find them by their addresses. As your boss, they cares about that:
 
 1. You should be able to find the correct (intended) person at an address. In other words, if a person has not yet moved in or has already left the house, you should not try to find him there. (Otherwise, you will meet a wrong person. Your secret got exposed or you will be in trouble.)
 1. You should not harm, remove, or replace the person at the address, unless you are permitted to do so. Without clear permission, you should only talk with the person at the address. (Otherwise, you may cause losses to your organization.)
@@ -63,10 +63,10 @@ If there is only one variable and one value, then we do not need ownership, natu
 
 - **isolated**: each variable owns its own value.
 - **pointed**: one variable owns a value, while another variable is a safe pointer to the value.
-- **aliased**: one variable owns a value, while another variable is an alias of the value.
-- **unsafely pointed**: one variable is an unsafe pointer to a value, but does not have the information on the owner of the value.
+- **aliased**: one variable owns a value, while another variable is an alias of the first variable.
+- **unsafely pointed**: one variable is an unsafe pointer to the address of a value, but does not track the status of the owner of the value.
 
-You may see that the, in some documents or discussions, a "reference" can either mean a pointer or an alias, depending on the context. This may lead to confusion, especially for beginners. In this Miji, **I will try to avoid using the term "reference" unless it can be applied to both pointers and aliases**. In all other cases, I will use explicitly the term "pointer" for a safe pointer and the term "alias" for an alias.
+In some documents or discussions, a "reference" can either mean a pointer or an alias, depending on the context. This may lead to confusion, especially for beginners. In this Miji, **I will try to avoid using the term "reference" unless it can be applied to both pointers and aliases**. In all other cases, I will use explicitly the term "pointer" for a safe pointer and the term "alias" for an alias.
 
 ### Isolated
 
@@ -95,11 +95,6 @@ In the **pointed** status, the value of one variable is the information on anoth
 
 As shown in the following diagram, the variable `a` is an 8-bit unsigned integer (`UInt8`) with the value `89` stored at the address `0x17ca81f8` in the memory. The variable `b` is a pointer object that stores the address of `a`'s value, i.e., `0x17ca81f8`. You can then use `b[]` to access the value of `a` at the address `0x17ca81f8`. If you change the value of `a`, it will also affect the value of `b[]`, and vice versa. This is because `b` is just a pointer to the value of `a`, not a copy of it.
 
-Notably, the type of `b` is `Pointer[UInt8, a]`, which means that `b` is a pointer to an 8-bit unsigned integer **type** (`UInt8`) and that `b` is associated with the **lifetime** of `a`. These two pieces of information is very important because:
-
-1. By indicating the type of the value that `b` points to, the Mojo compiler can ensure that the value at the address `0x17ca81f8` will be dereferenced correctly. In this case, Mojo will read 8 bits from the address `0x17ca81f8` when you dereference `b`. (In another scenario, if `b` is a pointer to a `UInt16`, then de-referencing will read 16 bits from the address `0x17ca81f8`.)
-1. By indicating `a` in the type of the variable `b`, the Mojo compiler knows that the **`a` is the ultimate and the only owner** of the value. It will checks the rules of ownership at compile time to ensure memory safety. If you use `b[]` after `a` is destroyed, the Mojo compiler will raise an error. We will discuss this later.
-
 ```console
 # Mojo Miji - Ownership - Pointed status
                      a                          b         ┌───────────────────────────────────────────────────────────────┐
@@ -117,6 +112,11 @@ Address (hex)    │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│17ca8
                       └───────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+Notably, the type of `b` is `Pointer[UInt8, a]`, which means that `b` is a pointer to an 8-bit unsigned integer **type** (`UInt8`) and that `b` is associated with the **lifetime** of `a`. These two pieces of information is very important because:
+
+1. By indicating the type of the value that `b` points to, the Mojo compiler can ensure that the value at the address `0x17ca81f8` will be dereferenced correctly. In this case, Mojo will read 8 bits from the address `0x17ca81f8` when you dereference `b`. (In another scenario, if `b` is a pointer to a `UInt16`, then de-referencing will read 16 bits from the address `0x17ca81f8`.)
+1. By indicating `a` in the type of the variable `b`, the Mojo compiler knows that **the variable `a` is the ultimate and the only owner** of the value. It will checks the rules of ownership at compile time to ensure memory safety. If you use `b[]` after `a` is destroyed, the Mojo compiler will raise an error. We will discuss this later.
+
 ::: info Pointer is also a type
 
 In Mojo, as well as other languages, "pointer" is also a type. The value of a pointer variable is the address of another variable. The pointer variable also occupies a certain amount of memory.
@@ -125,15 +125,15 @@ Thus, pointer is not free and not costless. If assessing a value is through a po
 
 :::
 
-## Aliased
+### Aliased
 
-In the **aliased** status, one variable has the same type and the same address as another variable, but the former does not the right to destroy the value or transfer the ownership. In other words, the variable `a` has the ownership of the value. the variable `b` has the same type and the address `a`. You can use `b` to access the value of `a` directly, you can modify the value of `a` through `b` under certain conditions, but you cannot transfer the ownership of the value from `a` to a third-party via `b`, nor can you destroy the value of `a` via `b`. If the lifetime of `b` ends, the value of `a` will not be destroyed.
+In the **aliased** status, one variable has the same type and the same address as another variable, but the former does not have the right to (1) destroy the value or (2) transfer the ownership to a third-party. In other words, the variable `a` has the ownership of the value. the variable `b` has the same type and the address `a`. You can use `b` to access the value of `a` directly, you can modify the value of `a` through `b` under certain conditions, but you cannot transfer the ownership of the value from `a` to a third-party via `b`, nor can you destroy the value of `a` via `b`. If the lifetime of `b` ends, the value of `a` will not be destroyed.
 
 Let's use a more daily life example. Person A owns a house, and Person B lives in the house. We say that Person A is the owner of the house, while Person B is the user of the house. Person B can use the house, make changes to the house, but cannot destroy the house or sell it to another person. If Person B moves out of the house, the house will still be owned by Person A and will not be destroyed.
 
 As shown in the following diagram, the variable `a` is an 8-bit unsigned integer (`UInt8`) with the value `89` stored at the address `0x17ca81f8` in the memory. The variable `b` an alias variable that refers to the variable `a`. For the aliased status, no additional memory is allocated for the variable `b`.
 
-The aliased status usually occurs when we define a function. The argument of a function is an alias of the variable that is passed to the function. The function can access the value of the variable, but cannot transfer the ownership of the value or destroy it. If the function ends, the argument dies, but variable will still be valid and can be used later. Moreover, if the argument can modify the value of the variable, it is a **mutable** alias (`mut` keyword), otherwise it is an immutable alias.h (`read` keyword).
+The aliased status usually occurs when we define a function. The argument of a function is an alias of the variable that is passed to the function. The function can access the value of the variable, but cannot transfer the ownership of the value or destroy it. If the function ends, the argument dies, but variable will still be valid and can be used later. Moreover, if the argument can modify the value of the variable, it is a **mutable** alias (`mut` keyword), otherwise it is an immutable alias (`read` keyword).
 
 ```console
 # Mojo Miji - Ownership - Aliased status
@@ -217,7 +217,7 @@ Because Mojo cannot help you verify the validity of the value at the address by 
 
 Good news that you can fulfill most of your needs without using unsafe pointers. Unsafe pointers are only needed either when you want to program for some data types for which you have to manage the memory manually, or when you want to program for some data types that needs low-level memory manipulation for performance reasons.
 
-In some other programming languages, such as C and C++, unsafe pointers are the default way to access values in memory. In Mojo, however, unsafe pointers are not the default way. It is more verbose and explicit, so that you do not want to type it unless you really need it.
+In some other programming languages, such as C and C++, unsafe pointers are the default way to access values in memory and the syntax is simple. In Mojo, however, using unsafe pointers is more verbose, so that you do not want to type it unless you really need it.
 
 So, just use the safe pointers and enjoy the benefits that Mojo brings you!
 
