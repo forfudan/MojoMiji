@@ -49,7 +49,7 @@ The chained comparison can be extended to even more than operands. The compiler 
 
 ::: danger Chained comparison: Syntax sugar or poison?
 
-I would say that I love almost every piece of Python syntax, except for two things: (1) no block ending keyword and (2) chained comparison.
+I would say that I love almost every piece of Python syntax, except for two things: (1) no optional block ending keyword and (2) chained comparison.
 
 Some people may find chained comparison a very sweet and useful syntax sugar. For example, you can use `a < b < c` instead of writing `(a < b) and (b < c)`, which is more concise. Other people, including me, may find this syntax sugar rather toxic, which may cause confusion and unintended behavior. For example, the following code may not behave as you expect:
 

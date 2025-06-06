@@ -39,4 +39,5 @@ by ***Yuhao Zhu 朱宇浩***
   <!-- - [Reference system](./misc/reference) (Reference system of Mojo) -->
   - [Glossary of Mojo terms](./misc/glossary) (Find explanations of key terms and concepts)
   - [Useful tips and warnings](./misc/tips) (Do not fall into the pits I fell into)
+  - [Wishes for extra features](./misc/wishes) (Some features I wish Mojo could have)
   <!-- - [Further readings] -->

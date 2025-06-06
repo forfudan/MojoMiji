@@ -175,6 +175,10 @@ export default defineConfig({
               text: 'Useful tips and warnings',
               link: '/docs/misc/tips'
             },
+            {
+              text: 'Wishes for extra features',
+              link: '/docs/misc/wishes'
+            },
           ]
         },
       ],
