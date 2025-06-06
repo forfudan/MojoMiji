@@ -27,7 +27,7 @@ In Mojo, there are multiple types for representing integers, but the most common
 
 You may think that this `Int` type is the same as the `int` type in Python, but it is not true. The `int` type in Python is an arbitrary-precision integer type, which means it can grow as large as the memory allows ,e.g., 1 followed by 1000 zeros. In contrast, the `Int` type in Mojo is a fixed-size integer type, which means it has a limited range of values. On a 64-bit system, the range of `Int` of Mojo is from `-2^63` to `2^63 - 1`. If you try to conduct operations that exceed this range, you will encounter an overflow.
 
-Thus, you need to always be careful when you are doing big integer calculations in Mojo. If you really need to work on big integers that are larger than the capacity of `Int`, you can consider using the `BigInt` type in the [decimojo package](../extended/decimojo.md), which has the similar functionality as the `int` type in Python.
+Thus, you need to always be careful when you are doing big integer calculations in Mojo. If you really need to work on big integers that are larger than the capacity of `Int`, you can consider using the `BigInt` type in the [decimojo package](../extend/decimojo.md), which has the similar functionality as the `int` type in Python.
 
 ::: info More on integers
 

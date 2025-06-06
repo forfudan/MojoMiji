@@ -135,20 +135,29 @@ export default defineConfig({
           ]
         },
         {
-          text: 'PART VI: EXTENDED MOJO', link: '/docs/extended/extended',
+          text: 'PART V: APPLY MOJO', link: '/docs/applied/applied',
           items: [
             {
-              text: 'DeciMojo',
-              link: '/docs/extended/decimojo'
-            },
-            {
-              text: 'NuMojo',
-              link: '/docs/extended/numojo'
+              text: 'General design of a matrix type',
+              link: '/docs/applied/design'
             },
           ]
         },
         {
-          text: 'PART VI: MISCELLANEOUS',
+          text: 'PART VI: EXTEND MOJO', link: '/docs/extend/extend',
+          items: [
+            {
+              text: 'DeciMojo',
+              link: '/docs/extend/decimojo'
+            },
+            {
+              text: 'NuMojo',
+              link: '/docs/extend/numojo'
+            },
+          ]
+        },
+        {
+          text: 'PART VII: MISCELLANEOUS',
           items: [
             {
               text: 'Memory layout of Mojo objects',

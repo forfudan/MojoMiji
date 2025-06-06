@@ -31,11 +31,11 @@ Address │0x26c6a89a│0x26c6a89b│0x26c6a89c│0x26c6a89d│0x26c6a89e│0x26
         └──────────┴──────────┴──────────┴──────────┴──────────┴──────────┴──────────┴──────────┘
 ```
 
-When you program in Mojo, you can always think of or analyze a variable from these four aspects and use the figure above. When you see a variable `a`, you should treat it as four things (name, type, address, value) instead of just a name.
+When you program in Mojo, you should always view a variable as a system consisting of four aspects, a name, a type, an address, and a value. You should not only regard it as a name or a label. In this way, you can better understand **how variables are interacted with each other**. When you step into the concept "[ownership](../advanced/ownership.md)", it will save you a lot of effort to understand it.
 
 For example, when you initialize a variable, you are doing the following things: (1) Select an **name** for the variable, (2) Specify the **type** of the variable, (3) Ask for an **address**, a memory space, to store the date, and (4) Store the **value** in the memory space in a binary format.
 
-When you use a variable with its name, you are doing the following four things: (1) Find out the information of the variable in the symbol table, which includes its name, type, and address in the memory, (2) Go to the memory address to retrieve the value stored there, and (3) Interpret the value according to its type.
+When you use a variable via its name, you are doing the following four things: (1) Find out the information of the variable in the symbol table, which includes its name, type, and address in the memory, (2) Go to the memory address to retrieve the value stored there, and (3) Interpret the value according to its type.
 
 ::: tip Type is important
 

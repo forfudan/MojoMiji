@@ -149,8 +149,10 @@ Mojo has the exactly the same rules for identifiers as Python does. You can alwa
 - Identifiers cannot be a keyword (reserved word), e.g, `if`, `for`, `while`, `def`, etc. are not valid identifiers.
 - Identifiers are case-sensitive.
 
-::: info
+::: info More on identifiers
+
 We will discuss the identifiers in more detail in Section [Identifiers](../basic/variables#identifiers) of Chapter [Variables](../basic/variables).
+
 :::
 
 ## Keywords

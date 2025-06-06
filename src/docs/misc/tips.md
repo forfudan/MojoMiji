@@ -4,6 +4,8 @@ This chapter summarizes the information, tips, and warnings that are scattered t
 
 [Speed comparison with C and Rust](../move/examples.md): Do you know that Mojo is faster than C and Rust in some cases?
 
+[Why you should always use `var` to define variables](../basic/variables.md): It is good to cultivate a habit of using `var` to define variables. Otherwise, it may lead to confusion and unintended behavior, especially when you are working with nested scopes.
+
 [Chained comparison: Syntax sugar or poison?](../basic/operators.md): Are you aware that chained comparison can lead to confusion and unintended behavior?
 
 [Syntax shapes your behavior - Rust vs Mojo in transfer of ownership](../advanced/ownership.md): Are you aware that your coding style is influenced by the syntax of the programming language you use?
