@@ -6,11 +6,15 @@ This chapter summarizes the information, tips, and warnings that are scattered t
 
 [Docstring style guide](../move/common#documentation-string): There are many styles of docstring in Python. Some people use Google style, some people use NumPy style, and some people use reStructuredText (reST) style. Do you know that Mojo has its own [docstring style guide](https://github.com/modular/modular/blob/main/mojo/stdlib/docs/docstring-style-guide.md)?
 
+[Graph: Memory layout of a variable](../basic/variables): This graph illustrates how a variable of `Int` type is laid out in memory.
+
 [Why you should always use `var` to define variables](../basic/variables.md): It is good to cultivate a habit of using `var` to define variables. Otherwise, it may lead to confusion and unintended behavior, especially when you are working with nested scopes.
 
 [Type is important](../basic/variables.md#conceptual-model-of-variable): Type is important to a variable. It determines how the value is stored in memory, how much space it occupies, how it can be interpreted, and how it can be manipulated.
 
 [Do not abuse function overloading](../basic/functions.md#function-overloading): Functional overloading is powerful, but it can lead to confusion if you use it as a general container for anything. You should always make the function names self-explanatory.
+
+[Graph: `read` and `owned` arguments in memory](../basic/functions#mutability-of-arguments): These graphs illustrate how `read` and `owned` arguments are laid out in memory and how they are interacted with the variables you pass to the function.
 
 [Arguments and reference - Mojo vs Rust](../basic/functions.md): Do you know that the term "reference" means different things in Mojo and Rust?
 
@@ -19,6 +23,12 @@ This chapter summarizes the information, tips, and warnings that are scattered t
 [Why we should use constructors explicitly](../basic/types#integer): Let's do an exercise to understand why we should always use constructors explicitly.
 
 [Chained comparison: Syntax sugar or poison?](../basic/operators.md): Are you aware that chained comparison can lead to confusion and unintended behavior?
+
+[Graph: Memory layout of a struct](../basic/structs#memory-layout-of-struct): This graph illustrate how a struct is laid out in memory.
+
+[Fetch value of a field in a struct](../basic/structs#memory-layout-of-struct): Are you curious about how Mojo fetches the value of a field in a struct, e.g., `human.age`? It calculates the offset of the field from the start of the struct in memory, and then reads the value with the address.
+
+[Verify the memory layout of a struct](../basic/structs#memory-layout-of-struct): Do you know that you can verify the memory layout of a struct by using `bitcast()` method of `UnsafePointer`? But use it with caution.
 
 [`Float64` or `SIMD[DType.float64, 1]`](../advanced/simd.md#type-of-simd): You can use either `Float64` or `SIMD[DType.float64, 1]` to represent a single-precision floating-point value, because the former one is just an alias of the latter. In most cases, using the former one is more concise and readable.
 

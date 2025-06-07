@@ -421,12 +421,172 @@ ZeroDivisionError: Cannot divide by zero in complex division.
 
 After implementing this simple `Complex` struct, I hope that, at this moment, you have been convinced that Mojo's struct is not difficult. That is great! You can begin to write your own Mojo structs if case you want to try it out yourself.
 
-<!-- ### Operations
+## Memory layout of struct
 
-## Memory layout of a struct
+You may wonder how Mojo stores the struct in memory. In short, Mojo stores the fields of a struct in a **contiguous block of memory** on stack, and the size of the struct is the **sum of the sizes of all its fields** up to the nearest multiple of 8 bytes. The block of memory on stack is **fixed in size** during the runtime, although it may further point to other blocks of memory on heap for some fields that are composite types, e.g., `List`, `String`, etc (refer to [Memory layout of Mojo objects](../misc/layout.md) for more details).
 
+Let see a concrete example, a `Human` struct that represents a human with a name (string), an age (8-bit unsigned integer ranging from 0 to 255), a height in meter (16-bit floating number), and birth date (list of 16-bit unsigned integers representing year, month, and day). The code is as follows:
 
-## Additional features of Mojo structs
+```mojo
+# src/basic/human.mojo
+struct Human:
+    """A simple human structure."""
+
+    var name: String
+    var age: UInt8
+    var height: Float16
+    var date: List[UInt16]
+
+    fn __init__(out self, name: String, age: UInt8, height: Float16, date: List[UInt16]):
+        """Initializes a human with a name."""
+        self.name = name
+        self.age = age
+        self.height = height
+        self.date = date
+
+fn main():
+    var human = Human("Yuhao Zihong Xianyong Mengzexianke Zhu", 124, 1.70, List[UInt16](1901, 2, 5))
+```
+
+We have four fields in the `Human` struct, and their types are fixed and known at compile time. Note that the `String` and `List` types are composite types, which means that:
+
+1. Their actual data is stored on heap, and the struct only contains a pointer to the data (i.e., `UnsafePointer`).
+1. They contain additional metadata (like size and capacity) in addition to the actual data.
+1. The size of the unsafe pointer, the size and the capacity are 8 bytes each.
+1. Since `String` and `List` are also structs, according to the rule mentioned above, the size of the `String` and `List` fields takes 24 bytes each (summation of the sizes of their own fields).
+
+The size of each field of Human is thus summarized as follows:
+
+| Field    | Type           | Size (bytes) | Note                                                                                       |
+| -------- | -------------- | ------------ | ------------------------------------------------------------------------------------------ |
+| `name`   | `String`       | 24 (8 * 3)   | Contains three fields: data (`UnsafePointer`), size (`Int`), capacity (`UInt` but encoded) |
+| `age`    | `UInt8`        | 1            |                                                                                            |
+| `height` | `Float16`      | 2            |                                                                                            |
+| `date`   | `List[UInt16]` | 24 (8 * 3)   | Contains three fields: data (`UnsafePointer`), size (`Int`), capacity (`Int`)              |
+
+In total, the total size of all fields of the `Human` struct is `24 + 1 + 2 + 24 = 51` bytes. Mojo then aligns the size of the struct to the nearest multiple of 8 bytes, so the actual size of the `Human` struct is `56` bytes (5 bytes are not used to store any data, not necessarily at the end).
+
+When you create an instance of the `Human` struct, Mojo allocates a block of memory on stack with size 56 bytes, and stores the values of the fields in this block. Below is a brief illustration of how the memory layout of the `Human` struct looks like in memory. Note that the addresses are randomly generated and the capacity of `String` type is encoded and is not a human-readable value.
+
+```console
+# Memory layout of Human struct
+
+                    Variable `human: Human`
+                     │
+                     │  Field `name`                                   Field `age`    Field `height`     Field `date`
+                     │  │                                              │              │                  │
+                     ↓  ↓                                              ↓              ↓                  ↓
+                 ┌──────────────────────────────────────────────────┬─────────────┬───────────┬───────────────────┬───────────┬──────────────────────────────────────────────────┐
+Field            │                name: String                      │  age: UInt8 │  Unused   │  height: Float16  │  Unused   │               date: List[UInt16]                 │
+                 ├─────────────────────┬───────────┬────────────────┼─────────────┼───────────┼───────────────────┼───────────┼─────────────────────┬───────────┬────────────────┤
+Field in field   │ data: UnsafePointer │ size: Int │ capacity: UInt │             │           │                   │           │ data: UnsafePointer │ size: Int │ capacity: Int  │
+                 ├─────────────────────┼───────────┼────────────────┼─────────────┼───────────┼───────────────────┼───────────┼─────────────────────┼───────────┼────────────────┤
+Size in byte     │ 8                   │   38      │       8        │   1         │   1       │ 2                 │  4        │ 8                   │   8       │       8        │
+                 ├─────────────────────┼───────────┼────────────────┼─────────────┼───────────┼───────────────────┼───────────┼─────────────────────┼───────────┼────────────────┤
+Value            │ 0x1000              │   5       │   (encoded)    │   124       │           │ 1.70              │           │ 0x2000              │   3       │       3        │
+                 ├─────────────────────┼───────────┼────────────────┼─────────────┼───────────┼───────────────────┼───────────┼─────────────────────┼───────────┼────────────────┤
+Address          │ 0x00-0x07           | 0x08-0x0F |   0x10-0x17    │  0x18       │  0x19     │ 0x1a-0x1b         │ 0x1c-0x1f │ 0x20-0x27           │ 0x28-0x2f │ 0x30-0x37      │
+                 ├─────────────────────┼───────────┼────────────────┼─────────────┼───────────┼───────────────────┼───────────┼─────────────────────┼───────────┼────────────────┤
+Offset           │ 0                   | 8         |   16           │  24         │  25       │ 26                │  28       │ 32                  │ 40        │ 48             │
+                 └─────────────────────┴───────────┴────────────────┴─────────────┴───────────┴───────────────────┴───────────┴─────────────────────┴───────────┴────────────────┘
+                     │                                                                                                             │
+            ┌────────┘                                                                                                             │
+            ↓ (points to a continuous memory block that contains the actual data of the String)                                    │
+        ┌────────┬────────┬────────┬────────┬────────┐                                                                             │
+Type    │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │                                                                             │
+        ├────────┼────────┼────────┼────────┼────────┤                                                                             │
+Value   │   89   │   117  │   104  │   97   │   111  │                                                                             │
+        ├────────┼────────┼────────┼────────┼────────┤                                                                             │
+Address │ 0x1000 │ 0x1001 │ 0x1002 │ 0x1003 │ 0x1004 │                                                                             │
+        └────────┴────────┴────────┴────────┴────────┘                                                                             │
+                                                                                                                                   │
+            ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+            ↓ (points to a continuous memory block that contains the actual data of the List)
+        ┌───────────────┬───────────────┬───────────────┐
+Type    │ UInt16        │ UInt16        │ UInt16        │
+        ├───────────────┼───────────────┼───────────────┤
+Value   │  1901         │   2           │   5           │
+        ├───────────────┼───────────────┼───────────────┤
+Address │ 0x2000-0x2001 │ 0x2002-0x2003 │ 0x2004-0x2005 │
+        └───────────────┴───────────────┴───────────────┘
+```
+
+::: tip Fetch value of a field in a struct
+
+This may be beyond the scope of this Miji, but you may wonder how Mojo fetches the value of a field in a struct, e.g., `print(human.name)`. 
+
+The answer is that Mojo fetches this value at the correct address and with the correct type information.
+
+Mojo always remembers the first address of the struct of `human` in memory, which is `0x00` in the above example. It then uses the above memory layout to calculate the distance of the field `name` from the start of the struct's memory block, which is 24 bytes (8 bytes for `data`, 8 bytes for `size`, and 8 bytes for `capacity`). Such distance is called the **offset** of the field. Mojo calculates the address of the `name` field as `0x00 + 24 = 0x18`, and reads the value from this address.
+
+:::
+
+::: danger Verify the memory layout of a struct
+
+You can easily (but not safely) verify whether the above memory layout is correct by casting the values in the memory block to a sequence of bytes or other types. Users of C language may be familiar with this approach. In Mojo, we could use the `bitcast()` method of an unsafe pointer (`UnsafePointer`) to achieve this.
+
+But be warned that this is an unsafe operation! You should not touch this unless you are sure about what you are doing.
+
+```mojo
+# src/basic/human.mojo
+from memory import UnsafePointer
+
+struct Human:
+    # same as above
+    ...
+
+fn main():
+    var human = Human("Yuhao Zihong Mengzexianke Xianyong Zhu", 124, 1.70, List[UInt16](1901, 2, 5))
+    var ptr = UnsafePointer(to=human).bitcast[UInt8]()
+    print("Fields of `human: Human` on stack")
+    print("Byte 0x00-0x07 should be `data: UnsafePointer`:", end=" ")
+    print((ptr + 0).bitcast[UnsafePointer[UInt8]]()[])
+    print("Byte 0x08-0x0f should be `size: Int`:", end=" ")
+    print((ptr + 8).bitcast[Int]()[])
+    print("Byte 0x18 should be `age: UInt8`:", end=" ")
+    print((ptr + 24).bitcast[UInt8]()[])
+    print("Byte 0x1a-0x1b should be `height: Float16`:", end=" ")
+    print((ptr + 26).bitcast[Float16]()[])
+    print("Byte 0x20-0x27 should be `data: UnsafePointer`:", end=" ")
+    print((ptr + 32).bitcast[UnsafePointer[UInt16]]()[])
+    print("Byte 0x28-0x2f should be `size: Int`:", end=" ")
+    print((ptr + 40).bitcast[Int]()[])
+    print("Byte 0x30-0x37 should be `capacity: Int`:", end=" ")
+    print((ptr + 48).bitcast[Int]()[])
+    print("========================================")
+    print("Data of `date: List[UInt16]` on heap")
+    for i in range(0, 3):
+        print(((ptr + 32).bitcast[UnsafePointer[UInt16]]()[] + i)[], end=" ")
+```
+
+Running this code will output the following, which matches the memory layout we discussed above:
+
+```console
+(base) ZHU@MBP-Dr-Yuhao-Zhu basic % magic run mojo run -I ./src human.mojo
+Human on stack
+Byte 0x00-0x07 should be `data: UnsafePointer`: 0x3180042b0
+Byte 0x08-0x0f should be `size: Int`: 38
+Byte 0x18 should be `age: UInt8`: 124
+Byte 0x1a-0x1b should be `height: Float16`: 1.7001953
+Byte 0x20-0x27 should be `data: UnsafePointer`: 0x1083cc008
+Byte 0x28-0x2f should be `size: Int`: 3
+Byte 0x30-0x37 should be `capacity: Int`: 3
+========================================
+Data of `date: List[UInt16]` on heap
+1901 2 5 %  
+```
+
+:::
+
+::: tip Why I use such a long name?
+
+The name of the human in the previous example, "Yuhao Zihong Xianyong Mengzexianke Zhu", is quite long. Why I choose this long name? Because the `String` type in Mojo will optimize the memory layout for short strings (less than 24 bytes) by simply storing the string data in the 24-bit memory block of the `String` struct, without allocating additional memory on heap. To force a heap allocation, I used such a long name.
+
+Actually, this long name is not random. It consists my given name, my courtesy name(s), my art name, and my family name.
+
+:::
+
+<!-- ## Additional features of Mojo structs
 
 ### Static methods
 
