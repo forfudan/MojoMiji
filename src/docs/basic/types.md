@@ -159,16 +159,17 @@ There are many ongoing discussions about the design of `String` in Mojo. The off
 
 ::: tip Quick comparison between Mojo and Python
 
-| Functionality                     | Python `str`                           | Mojo `String`                                       |
-| --------------------------------- | -------------------------------------- | --------------------------------------------------- |
-| Constructed from string literals  | Use of`str()` constructor is optional. | You have to use `String()` constructor.             |
-| Print string with `print()`       | Yes.                                   | Yes.                                                |
-| Format string with `format()`     | Yes, use `{}`.                         | Yes, but you cannot specify formatting, e.g, `.2f`. |
-| f-strings                         | Yes.                                   | Not supported.                                      |
-| Iteration over UTF-8 code points  | Yes, use `for i in s:` directly.       | Yes, but more complicated.                          |
-| UTF8-assured indexing and slicing | Yes, use `s[i]` or `s[i:j]` directly.  | Not supported.                                      |
+The following table summarizes the differences between `String` in Mojo and `str` in Python. Note that some features are still under development in Mojo, so they may not be available in the current version. This table is also referred in Chapter [Differences between Python and Mojo](../move/different#string).
 
-This table is referred in Chapter [Differences between Python and Mojo](../move/different#string).
+| Functionality                     | Python `str`                          | Mojo `String`                                       |
+| --------------------------------- | ------------------------------------- | --------------------------------------------------- |
+| Constructed from string literals  | str literal is coerced to str type.   | You have to use `String()` constructor.             |
+| Print string with `print()`       | Yes.                                  | Yes.                                                |
+| Format string with `format()`     | Yes, use `{}`.                        | Yes, but you cannot specify formatting, e.g, `.2f`. |
+| f-strings                         | Supported.                            | Not supported (yet).                                |
+| formatted values                  | Supported, e.g., `{:0.2f}`, `{:0.3%}` | Not supported (yet)                                 |
+| Iteration over UTF-8 code points  | Yes, use `for i in s:` directly.      | Yes, but more complicated.                          |
+| UTF8-assured indexing and slicing | Yes, use `s[i]` or `s[i:j]` directly. | Not supported.                                      |
 
 :::
 

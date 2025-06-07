@@ -11,7 +11,7 @@ by ***Yuhao Zhu 朱宇浩***
   - [Initiate Mojo project](./start/project) (Initiate a Mojo project and install Mojo compiler)
   - [My first Mojo program](./start/hello) (Hello, world!)
 - [PART II: MOVE INTO MOJO](./move/move)
-  - [Convert Python code into Mojo](./move/examples) (Three examples, Python becomes Mojo)
+  - [Convert Python code into Mojo](./move/examples) (Four examples, Python becomes Mojo)
   - [Things that are in common](./move/common) (Similarities between Python and Mojo)
   - [Things are different](./move/different) (Differences between Python and Mojo)
 - [PART III: BASIC MOJO](./basic/basic)

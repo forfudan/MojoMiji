@@ -1,6 +1,6 @@
 # Convert Python code into Mojo
 
-In this chapter, we will look at some simple examples of Python and Mojo code. The goal is to help you have a image of how Mojo looks like and how it is similar to or different from Python.
+In this chapter, we will look at some simple examples of Python and Mojo code. It covers the basic syntax, data types, functions, structs, control flows, error handling, and some common idioms in both languages. The goal is to help you have a image of how Mojo looks like and how it is similar to or different from Python.
 
 [[toc]]
 
@@ -39,6 +39,8 @@ Nine-nine Multiplication Table
 9 * 9 = 81
 ```
 
+---
+
 Now we program in Mojo. A clever way is to simply copy the above Python file and change the file extension to `.mojo`. Then we remove the last line `main()` because it is not needed.
 
 Let's compile and run this Mojo code by `magic run mojo src/move/multiplication_table.mojo`. You may see the following error message:
@@ -49,7 +51,7 @@ error: 'StringLiteral["{} * {} = {}"]' value has no attribute 'format'
                   ~~~~~~~~~~~~~~^
 ```
 
-Here we see another difference between Python and Mojo: `format` is not a method of the string literal in Mojo. This is because, in Python, we do not differentiate between string and string literal. The contents between quotation marks ("") is of `str` type and you can use the `format()` method. However, in Mojo, we do differentiate between string and string literal. I will discuss this in the following chapters.
+Here we see another difference between Python and Mojo: `format` is not a method of the string literal in Mojo. This is because, in Python, we do not need differentiate between string and string literal ourselves, because the latter type is coerced to the first type when you call a str method. The contents between quotation marks ("") is of `str` type and you can use the `format()` method. However, in Mojo, we do differentiate between string and string literal. I will discuss more about string in Chapter [Data types](../basic/types#string).
 
 For now, to fix the error, we have to explicitly convert the string literal to a String object by calling the `String()` constructor. So we change the line to:
 
@@ -62,6 +64,20 @@ For now, to fix the error, we have to explicitly convert the string literal to a
 Now you run the code again. You will see the same output as in Python.
 
 Great! We see that we can migrate our Python code to Mojo easily with very little modification. But we enjoy the performance of Mojo. How big is the performance gain? Let's check it out using the next example.
+
+::: tip Difference between Python and Mojo
+
+The table below summarizes the differences between Python and Mojo in this example.
+
+| Feature           | Python                                | Mojo                                            |
+| ----------------- | ------------------------------------- | ----------------------------------------------- |
+| `main()` function | Not needed                            | Mandatory as an entry point                     |
+| String type       | str literal is coerced to str type    | You have to explicitly use `String` constructor |
+| String formatting | `str.format()` method                 | `String().format()` method                      |
+| f-strings         | Supported                             | Not supported (yet)                             |
+| formatted values  | Supported, e.g., `{:0.2f}`, `{:0.3%}` | Not supported (yet)                             |
+
+:::
 
 ## Fibonacci sequence
 
@@ -91,7 +107,11 @@ Let's run the code with the command `python src/move/fibonacci.py`. The output i
 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181, 6765, 10946, 17711, 28657, 46368, 75025, 121393, 196418, 317811, 514229, 832040, 1346269, 2178309, 3524578, 5702887, 9227465, 14930352, 24157817, 39088169, 63245986,
 ```
 
-On my machine (Apple M4 Pro), it takes about ***24 seconds*** to run the code. This is because the recursive method is very inefficient. The time complexity is exponential. Let's migrate the code to Mojo and see how fast it is.
+On my machine (Apple M4 Pro), it takes about ***24 seconds*** to run the code. This is because the recursive method is very inefficient. The time complexity is exponential.
+
+---
+
+Let's migrate the code to Mojo and see how fast it is.
 
 Just like what we did in the previous example, we copy the above Python file and change the file extension to `.mojo`. Then we remove the last line `main()`.
 
@@ -112,6 +132,16 @@ def main():
 Let's run the code again with `pixi run mojo src/move/fibonacci.mojo`. On my machine, it takes around ***0.35*** seconds only.
 
 See, a huge performance gain! The Mojo code is more than ***50 times*** faster than the Python code. What we did is just copying-pasting from the Python code and making small modifications, but we gained a performance comparable to C.
+
+::: tip Difference between Python and Mojo
+
+The table below summarizes the differences between Python and Mojo in this example.
+
+| Feature       | Python              | Mojo                       |
+| ------------- | ------------------- | -------------------------- |
+| Integral type | `int` (big integer) | `Int` (fixed-size integer) |
+
+:::
 
 ::: tip Naming convention of Mojo type
 
@@ -237,7 +267,11 @@ Input array: [64.1, 34.523, 25.1, -12.3, 22.0, -11.5, 90.49]
 After sorting: [-12.3, -11.5, 22.0, 25.1, 34.523, 64.1, 90.49]
 ```
 
-We can visually verify that the array is correctly sorted in ascending order. Now we try to migrate the code to Mojo. Just like what we did in the previous examples, we copy the above Python file and change the file extension to `.mojo`. Then we remove the last line `main()`.
+We can visually verify that the array is correctly sorted in ascending order.
+
+---
+
+Now we try to migrate the code to Mojo. Just like what we did in the previous examples, we copy the above Python file and change the file extension to `.mojo`. Then we remove the last line `main()`.
 
 Now you immediately see that you IDE is complaining more errors than before. The first error message is:
 
@@ -340,6 +374,497 @@ For this example, we have to change more lines to adapt our Python code to Mojo,
 
 If you already use the type-hint system a lot in Python, you will not find these changes too difficult. If you do not use the type-hint system in Python, you may find it a bit annoying and frustrated. But believe me, it is a good practice to declare the types of variables and arguments of functions, in both Mojo and Python. It makes our code more readable and maintainable, and it enables the linter to do static checks and find out potential bugs before you run the code.
 
+::: tip Difference between Python and Mojo
+
+The table below summarizes the differences between Python and Mojo in this example.
+
+| Feature                               | Python              | Mojo                         |
+| ------------------------------------- | ------------------- | ---------------------------- |
+| Integral type                         | `int` (big integer) | `Int` (fixed-size integer)   |
+| Type annotation in function signature | Optional            | Mandatory                    |
+| List type                             | `list[float]`       | `List[Float64]`              |
+| Construct a list instance             | Wrapped in `[]`     | Wrapped in `List[Float64]()` |
+| Mutable argument                      | Default             | Must use `mut` keyword       |
+| Print list with `print()`             | Supported           | Not supported (yet)          |
+
+:::
+
+## Triangle type
+
+In the last example, we will look into a more complex data structure of Python: "class". Class is a container for variables (attributes) and functions (methods), so that these variables and functions can be accessed via a uniformed interface. It also allows us to achieve the object-oriented programming (OOP )paradigm, which is a powerful way to organize our code and data.
+
+In this example, we will define a class to represent a triangle. The `Triangle` class (1) reads in three sides from the user, (2) saves these sides as attributes, and (3) do some verification to check if the three sides can form a valid triangle. The `Triangle` class also contains two methods: one to calculate the perimeter of the triangle and another to calculate the area of the triangle using Heron's formula:
+
+$$
+S = \sqrt{s (s-a)(s-b)(s-c)}
+$$
+
+Now let's do this in Python first. We create a file in the `src/move/` directory called `triangle.py` and write the code in it.
+
+As a Pythonista, you may want to do this yourself first since it is not difficult. If you are not sure how to do this, you can refer to the code below.
+
+Note that I will use a more stricter style of Python code, which means that I will include "docstrings" for the class and the methods. I will also use type annotations for variables and arguments if necessary.
+
+```python
+# src/move/triangle.py
+class Triangle:
+    """A class to represent a triangle."""
+
+    def __init__(self, a: float, b: float, c: float):
+        """Initializes a triangle with three sides.
+
+        Parameters:
+            a (float): Length of side a.
+            b (float): Length of side b.
+            c (float): Length of side c.
+
+        Raises:
+            ValueError: If the lengths do not form a valid triangle.
+        """
+        self.a = a
+        self.b = b
+        self.c = c
+
+        if (
+            (self.a + self.b <= self.c)
+            or (self.a + self.c <= self.b)
+            or (self.b + self.c <= self.a)
+        ):
+            raise ValueError("The lengths of sides do not form a valid triangle.")
+
+    def area(self) -> float:
+        """Calculates the area of the triangle using Heron's formula.
+
+        Returns:
+            float: The area of the triangle.
+        """
+        s = (self.a + self.b + self.c) / 2
+        return (s * (s - self.a) * (s - self.b) * (s - self.c)) ** 0.5
+
+    def perimeter(self) -> float:
+        """Calculates the perimeter of the triangle.
+
+        Returns:
+            float: The perimeter of the triangle.
+        """
+        return self.a + self.b + self.c
+
+    def __str__(self) -> str:
+        """Returns a string representation of the triangle.
+
+        Returns:
+            A string representation of the triangle.
+
+        Notes:
+            You can use the `str()` or `print()` to call this method.
+        """
+        return f"Triangle(a={self.a}, b={self.b}, c={self.c})"
+
+
+def main():
+    # A valid triangle with sides 3, 4, and 5
+    print("Creating a valid triangle with sides 3, 4, and 5:")
+    triangle = Triangle(3, 4, 5)
+    print(triangle)
+    print(f"Area: {triangle.area()}")
+    print(f"Perimeter: {triangle.perimeter()}")
+
+    # An invalid triangle with sides 1, 2, and 3
+    print("\nCreating an invalid triangle with sides 1, 2, and 3:")
+    try:
+        invalid_triangle = Triangle(1, 2, 3)
+        print(invalid_triangle)
+    except ValueError as e:
+        print(f"Error: {e}")
+
+
+main()
+```
+
+Now we run the code with `python src/move/triangle.py`. The output is:
+
+```console
+Creating a valid triangle with sides 3, 4, and 5:
+Triangle(a=3, b=4, c=5)
+Area: 6.0
+Perimeter: 12
+
+Creating an invalid triangle with sides 1, 2, and 3:
+Error: The lengths of sides do not form a valid triangle.
+```
+
+It is as expected. The first triangle is a valid triangle with sides 3, 4, and 5. The area is 6.0 and the perimeter is 12. The second triangle is not a valid triangle with sides 1, 2, and 3, so it raises a `ValueError` exception. This exception was successfully caught by the try-except statement and printed out.
+
+---
+
+Now, let's migrate the code to Mojo. Just like what we did in the previous examples, we copy the above Python file and change the file extension to `.mojo`.
+
+We first do some simple changes to the code using the knowledge we have learned so far:
+
+- We change the type hints from `float` to `Float64` and from `str` to `String`.
+- We use `String` constructor to create the string and use `format()` method instead of "f-string".
+- Remove `main()` at the end of the file.
+
+After these changes, we have the following code:
+
+```mojo
+# src/move/triangle_from_py.mojo
+class Triangle:
+    """A class to represent a triangle."""
+
+    def __init__(self, a: Float64, b: Float64, c: Float64):
+        """Initializes a triangle with three sides.
+
+        Parameters:
+            a (Float64): Length of side a.
+            b (Float64): Length of side b.
+            c (Float64): Length of side c.
+
+        Raises:
+            ValueError: If the lengths do not form a valid triangle.
+        """
+        self.a = a
+        self.b = b
+        self.c = c
+
+        if (
+            (self.a + self.b <= self.c)
+            or (self.a + self.c <= self.b)
+            or (self.b + self.c <= self.a)
+        ):
+            raise ValueError(
+                "The lengths of sides do not form a valid triangle."
+            )
+
+    def area(self) -> Float64:
+        """Calculates the area of the triangle using Heron's formula.
+
+        Returns:
+            Float64: The area of the triangle.
+        """
+        s = (self.a + self.b + self.c) / 2
+        return (s * (s - self.a) * (s - self.b) * (s - self.c)) ** 0.5
+
+    def perimeter(self) -> Float64:
+        """Calculates the perimeter of the triangle.
+
+        Returns:
+            Float64: The perimeter of the triangle.
+        """
+        return self.a + self.b + self.c
+
+    def __str__(self) -> String:
+        """Returns a string representation of the triangle.
+
+        Returns:
+            A string representation of the triangle.
+
+        Notes:
+            You can use the `str()` or `print()` to call this method.
+        """
+        return String("Triangle(a={}, b={}, c={})").format(
+            self.a, self.b, self.c
+        )
+
+
+def main():
+    # A valid triangle with sides 3, 4, and 5
+    print("Creating a valid triangle with sides 3, 4, and 5:")
+    triangle = Triangle(3, 4, 5)
+    print(triangle)
+    print(String("Area: {}").format(triangle.area()))
+    print(String("Perimeter: {}").format(triangle.perimeter()))
+
+    # An invalid triangle with sides 1, 2, and 3
+    print("\nCreating an invalid triangle with sides 1, 2, and 3:")
+    try:
+        invalid_triangle = Triangle(1, 2, 3)
+        print(invalid_triangle)
+    except ValueError as e:
+        print("Error:", e)
+```
+
+This will be the starting point of our Mojo code. You will see many error messages when you run the code with `magic run mojo src/move/triangle_from_py.mojo`. The first error message is, which should also be highlighted by the IDE is about the first line:
+
+```console
+/Users/ZHU/Programs/my-first-mojo-project/src/move/triangle.mojo:1:1: error: classes are not supported yet
+class Triangle:
+^
+```
+
+Ah, "classes are not supported yet" in Mojo! This is a bit disappointing to you. You may ask: does this mean that Mojo cannot fulfill the OOP paradigm? The answer is no. Mojo does not support classes yet, but it supports a similar concept called "**struct**".
+
+Structs are similar to classes, containing variables (fields) and functions (methods). They can achieve encapsulation, data abstraction, polymorphism. The only thing that structs do not support is inheritance. It means that you cannot create a new struct that inherits from an existing struct. It is a different design philosophy called "composition", which is still a way to achieve OOP paradigm. We will discuss more about structs in Chapter [Structs](../basic/structs).
+
+If we do not use inheritance, structs in Mojo are almost the same as classes in Python. So we can simply change the keyword `class` to `struct`:
+
+```mojo
+struct Triangle:
+    ...
+```
+
+There will be no error message for this line anymore, so do the next line, the docstring. Yes, Mojo supports exactly the same docstring syntax as Python. You can learn more about docstring in Section [Documentation string](../move/common.md#documentation-string).
+
+The next error message is about the `__init__` method.
+
+```console
+/Users/ZHU/Programs/my-first-mojo-project/src/move/triangle.mojo:4:18: error: argument type must be specified
+    def __init__(self, a: float, b: float, c: float):
+```
+
+This method in Python is a special method to create an instance of the class by using the class name as a constructor, e.g., `Triangle(3, 4, 5)`. In Mojo, we have the same philosophy, we also use `__init__()` as a constructor, but we have to explicitly specify the "ownership modifier" of the first argument `self` as `out`. This indicates that the `__init__()` method will create a new instance of the struct as an output. (`out` is a abbreviation of "output".)
+
+We then update the first line of the `__init__()` method, by adding the `out` keyword before `self`, and by changing the type of the three arguments from `float` to `Float64`:
+
+```mojo
+...
+def __init__(out self, a: Float64, b: Float64, c: Float64):
+    ...
+...
+```
+
+The next warning message is about the docstring of the `__init__()` method. It says:
+
+```console
+unknown parameter 'a (float)' in doc string
+```
+
+This is because Mojo uses "**argument**" to refer to both Python's "parameter" and "argument". Mojo then use "**parameter** to refer to something else, a run-time constant. We will discuss more about the difference between argument and parameter in Chapter [Functions](../basic/functions#declaration-and-usage) and Chapter [Parameterization](../advanced/parameterization.md).
+
+For now, we just change the docstring to use "Args" instead of "Parameters". Moreover, we remove the type of the arguments in the docstring, because we have already specified the types in the function signature:
+
+```mojo
+...
+"""
+Args:
+    a: Length of side a.
+    b: Length of side b.
+    c: Length of side c.
+"""
+...
+```
+
+The next error message is the first line in the body of the `__init__()` method:
+
+```console
+/Users/ZHU/Programs/my-first-mojo-project/src/move/triangle.mojo:15:13: error: 'Triangle' value has no attribute 'a'
+        self.a = a
+        ~~~~^
+```
+
+"What does this mean", you may ask?
+
+As mentioned above, Mojo is a statically typed language. It does not allow you to create new attributes on the fly. You have to declare the attributes in the struct definition, so that Mojo can allocate the correct amount of memory for the struct instance. When the `__init__()` function is called, it will copy the values you pass in into the allocated memory.
+
+So, we need to explicitly declare the attributes `a`, `b`, and `c` in the struct definition. This is done by using the `var` keyword before the attribute name, a colon `:` and the type of the attribute. The code after the change looks like this:
+
+```mojo
+struct Triangle:
+    """A class to represent a triangle."""
+
+    # Declare attributes
+    var a: Float64
+    var b: Float64
+    var c: Float64
+    
+    ...
+```
+
+The next error message is about the error we raised when the three sides do not form a valid triangle:
+
+```console
+/Users/ZHU/Programs/my-first-mojo-project/src/move/triangle.mojo:29:19: error: use of unknown declaration 'ValueError'
+            raise ValueError("The lengths of sides do not form a valid triangle.")
+                  ^~~~~~~~~~
+```
+
+This is because Mojo does not have the built-in exception `ValueError` like Python. Instead, Mojo has a more general exception called `Error`. So we change the line to:
+
+```mojo
+raise Error("The lengths of sides do not form a valid triangle.")
+```
+
+After this change, you will be happy to see that there are no more error message in the body of the struct `Triangle`.
+
+---
+
+Then we come to the main function. The first error message is about printing the triangle:
+
+```console
+/Users/ZHU/Programs/my-first-mojo-project/src/move/triangle.mojo:64:10: error: invalid call to 'print': could not deduce parameter 'Ts' of callee 'print'
+    print(triangle)
+    ~~~~~^~~~~~~~~~
+/Users/ZHU/Programs/my-first-mojo-project/src/move/triangle.mojo:64:11: note: failed to infer parameter 'Ts', argument type 'Triangle' does not conform to trait 'Writable'
+    print(triangle)
+          ^~~~~~~~
+/Users/ZHU/Programs/my-first-mojo-project/src/move/triangle.mojo:1:1: note: function declared here
+struct Triangle:
+^
+```
+
+Ah, it is the same error as we had in the previous example when we tried to print a list. The core message is "argument type 'Triangle' does not conform to trait 'Writable'". What does this mean? Maybe you have to wait until you reach Chapter [Generic and traits](../advanced/generic). For now, you can understand this issue in the following way:
+
+In Python, when you call `print(triangle)`, Python interpreter will automatically call the `__str__()` method of the `Triangle` class to get a string representation of the triangle. That is to say, `print(triangle)` will be expanded to `print(triangle.__str__())`.
+
+In Mojo, however, it is not possible. the `__str__()` method is only used for the purposes of **converting the instance to a string**, by calling the constructor `String(triangle)`. In order to **print** out an instance, you have to implement another method called `write_to()` in the struct.
+
+I am not going to write this `write_to()` method for you here because it covers some other concepts. A quick and easy workaround is to simply use the `String()` constructor to first convert the instance to a string, and then use the `print()` function to print the string. So we change the line to:
+
+```mojo
+print(String(triangle))
+...
+print(String(invalid_triangle))
+```
+
+Finally, we come to the last error message, which is about try-except statement:
+
+```console
+/Users/ZHU/Programs/my-first-mojo-project/src/move/triangle.mojo:73:18: error: expected ':' after 'except'
+    except Error as e:
+                 ^
+```
+
+The reason is simple: Mojo does not support the `as` keyword in the `except` clause. So we change the line to:
+
+```mojo
+except e:
+    print("Error:", e)
+```
+
+After all these changes, we have our final Mojo code as follows:
+
+```mojo
+# src/move/triangle.mojo
+struct Triangle:
+    """A class to represent a triangle."""
+
+    # Declare attributes
+    var a: Float64
+    var b: Float64
+    var c: Float64
+
+    def __init__(out self, a: Float64, b: Float64, c: Float64):
+        """Initializes a triangle with three sides.
+        
+        Args:
+            a: Length of side a.
+            b: Length of side b.
+            c: Length of side c.
+
+        Raises:
+            Error: If the lengths do not form a valid triangle.
+        """
+        self.a = a
+        self.b = b
+        self.c = c
+
+        if (
+            (self.a + self.b <= self.c)
+            or (self.a + self.c <= self.b)
+            or (self.b + self.c <= self.a)
+        ):
+            raise Error("The lengths of sides do not form a valid triangle.")
+
+    def area(self) -> Float64:
+        """Calculates the area of the triangle using Heron's formula.
+        
+        Returns:
+            Float64: The area of the triangle.
+        """
+        var s: Float64 = (self.a + self.b + self.c) / 2
+        return (s * (s - self.a) * (s - self.b) * (s - self.c)) ** 0.5
+
+    def perimeter(self) -> Float64:
+        """Calculates the perimeter of the triangle.
+        
+        Returns:
+            Float64: The perimeter of the triangle.
+        """
+        return self.a + self.b + self.c
+
+    def __str__(self) -> String:
+        """Returns a string representation of the triangle.
+        
+        Returns:
+            A string representation of the triangle.
+
+        Notes:
+            You can use the `str()` or `print()` to call this method.
+        """
+        return String("Triangle(a={}, b={}, c={})").format(self.a, self.b, self.c)
+
+
+def main():
+    # A valid triangle with sides 3, 4, and 5
+    print("Creating a valid triangle with sides 3, 4, and 5:")
+    triangle = Triangle(3, 4, 5)
+    print(String(triangle))
+    print(String("Area: {}").format(triangle.area()))
+    print(String("Perimeter: {}").format(triangle.perimeter()))
+
+    # An invalid triangle with sides 1, 2, and 3
+    print("\nCreating an invalid triangle with sides 1, 2, and 3:")
+    try:
+        invalid_triangle = Triangle(1, 2, 3)
+        print(String(invalid_triangle))
+    except e:
+        print("Error:", e)
+```
+
+Compiling and running the code with `magic run mojo src/move/triangle.mojo` generates no error messages and gives the expected output:
+
+```console
+Creating a valid triangle with sides 3, 4, and 5:
+Triangle(a=3.0, b=4.0, c=5.0)
+Area: 6.000000000120229
+Perimeter: 12.0
+
+Creating an invalid triangle with sides 1, 2, and 3:
+Error: The lengths of sides do not form a valid triangle.
+```
+
+::: tip Difference between Python and Mojo
+
+The table below summarizes the differences between Python and Mojo in this example.
+
+| Feature                            | Python                    | Mojo                                             |
+| ---------------------------------- | ------------------------- | ------------------------------------------------ |
+| Define type                        | `class` keyword           | `struct` keyword                                 |
+| Inheritance                        | Supported                 | Not supported                                    |
+| Attributes                         | No declaration needed     | Declared in struct definition with keyword `var` |
+| Argument of the type itself        | `self`                    | `self`, but following the keyword `out`          |
+| Parameter vs argument in docstring | `Parameters` in docstring | `Args` in docstring                              |
+| Exception classes                  | Several built-in classes  | `Error` is the only built-in exception class     |
+| `print()` calls                    | `__str__()` method        | `write_to()` method                              |
+| `__str__()` is used for            | `print()` and `str()`     | Only for string conversion via `String()`        |
+| `as` in except statement           | Supported                 | Not supported                                    |
+
+:::
+
+::: tip `write_to()` method
+
+If you want to implement the `write_to()` method to print the triangle directly, you can do it like this:
+
+```mojo
+fn write_to[T: Writer](self, mut writer: T):
+    """Writes the complex number to a writer."""
+    writer.write("Triangle(a=", self.a, ", b=", self.b, ", c=", self.c, ")")
+```
+
+Then you can call `print(triangle)` directly without using `String()`.
+
+```mojo
+print(triangle)
+```
+
+This will print the triangle in the same way as `print(String(triangle))`:
+
+```console
+Triangle(a=3.0, b=4.0, c=5.0)
+```
+
+:::
+
 ## Next step
 
-With these three examples, you should have a good idea of how Mojo code looks like and how it is similar to or different from Python. You also see how powerful Mojo is in terms of performance. In the next chapters, we will investigate the concepts that are in common between Mojo and Python, so that you do not need to change your coding habits.
+With these four examples, you should have a good idea of how Mojo code looks like and how it is similar to or different from Python. You also see how powerful Mojo is in terms of performance. In the next chapters, we will investigate the concepts that are in common between Mojo and Python, so that you do not need to change your coding habits.
