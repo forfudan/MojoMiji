@@ -29,8 +29,9 @@ by ***Yuhao Zhu 朱宇浩***
   - [Ownership](./advanced/ownership) (The ownership system in Mojo)
   <!-- - [Lifetime] -->
   <!-- - [Call Python in Mojo](./advanced/python) -->
-- [PART V: APPLY MOJO](./apply/apply.md) (Let's implement a Matrix type in Mojo)
-  - [General design](./apply/design.md) (Some preparation work before we write the code)
+- [PART V: APPLY MOJO](./apply/apply.md) (Let's use Mojo to program something useful)
+  - [Design of MatMojo library](./apply/design.md) (Some preparation work for writing a matrix library)
+  - [Make it work](./apply/work.md) (Define and implement the basic functionalities)
 - [PART VI: EXTEND MOJO](./extend/extend)
   - [NuMojo](./extend/numojo) (A library for numerical computing and NDArray)
   - [DeciMojo](./extend/decimojo) (A library for arbitrary-precision integers and decimals)

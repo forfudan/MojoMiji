@@ -135,11 +135,15 @@ export default defineConfig({
           ]
         },
         {
-          text: 'PART V: APPLY MOJO', link: '/docs/applied/applied',
+          text: 'PART V: APPLY MOJO', link: '/docs/apply/apply',
           items: [
             {
-              text: 'General design of a matrix type',
-              link: '/docs/applied/design'
+              text: 'Design of MatMojo library',
+              link: '/docs/apply/design'
+            },
+            {
+              text: 'Make it work',
+              link: '/docs/apply/work'
             },
           ]
         },

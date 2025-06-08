@@ -464,18 +464,20 @@ The size of each field of Human is thus summarized as follows:
 | `height` | `Float16`      | 2            |                                                                                            |
 | `date`   | `List[UInt16]` | 24 (8 * 3)   | Contains three fields: data (`UnsafePointer`), size (`Int`), capacity (`Int`)              |
 
-In total, the total size of all fields of the `Human` struct is `24 + 1 + 2 + 24 = 51` bytes. Mojo then aligns the size of the struct to the nearest multiple of 8 bytes, so the actual size of the `Human` struct is `56` bytes (5 bytes are not used to store any data, not necessarily at the end).
+In total, the total size of all fields of the `Human` struct is `24 + 1 + 2 + 24 = 51` bytes. Mojo then aligns the size of the struct to the nearest multiple of 8 bytes, so the actual size of the `Human` struct is `56` bytes (5 bytes are not used to store any data, not necessarily located at the end).
 
-When you create an instance of the `Human` struct, Mojo allocates a block of memory on stack with size 56 bytes, and stores the values of the fields in this block. Below is a brief illustration of how the memory layout of the `Human` struct looks like in memory. Note that the addresses are randomly generated and the capacity of `String` type is encoded and is not a human-readable value.
+When you create an instance of the `Human` struct, Mojo allocates a block of memory on stack with size 56 bytes, and stores the values of the fields in this block. 
+
+Below is a brief illustration of how the memory layout of the `Human` struct looks like in memory. Note that the addresses are randomly generated and the capacity of `String` type is encoded and is not a human-readable value.
 
 ```console
 # Memory layout of Human struct
 
                     Variable `human: Human`
                      │
-                     │  Field `name`                                   Field `age`    Field `height`     Field `date`
-                     │  │                                              │              │                  │
-                     ↓  ↓                                              ↓              ↓                  ↓
+                     │  Field `name`                                   Field `age`                  Field `height`                   Field `date`
+                     │  │                                              │                            │                                │
+                     ↓  ↓                                              ↓                            ↓                                ↓
                  ┌──────────────────────────────────────────────────┬─────────────┬───────────┬───────────────────┬───────────┬──────────────────────────────────────────────────┐
 Field            │                name: String                      │  age: UInt8 │  Unused   │  height: Float16  │  Unused   │               date: List[UInt16]                 │
                  ├─────────────────────┬───────────┬────────────────┼─────────────┼───────────┼───────────────────┼───────────┼─────────────────────┬───────────┬────────────────┤

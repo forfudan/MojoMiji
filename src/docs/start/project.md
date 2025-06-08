@@ -26,7 +26,7 @@ Therefore, before we start writing our first Mojo script, we need to first creat
 To do this, you can navigate to the directory where you want to create your Mojo project folder. For me, it is `/Users/ZHU/Programs`. Then run the following command in your terminal.
 
 ```bash
-pixi init myproj -c "https://conda.modular.com/max-nightly" -c "https://repo.prefix.dev/modular-community" -c "conda-forge"
+pixi init my-first-mojo-project -c "https://conda.modular.com/max" -c "https://repo.prefix.dev/modular-community" -c "conda-forge"
 ```
 
 This will create a folder called `my-first-mojo-project` in the current directory. You can go in to this folder by typing:

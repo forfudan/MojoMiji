@@ -1,10 +1,14 @@
-# General design of a matrix type
+# Design of a matrix type
 
-Before we start implementing the Matrix type, we need to prepare ourself with some basic knowledge about matrices, e.g., how to represent them in Mojo, how to access their elements, and how to perform basic operations on them.
+From this Chapter, we will work a project that implements a matrix type in Mojo. The matrix type is a fundamental data structure in numerical computing. It is not as complicated and flexible as and N-dimensional array (`NDArray`), but it is more efficient if we are only dealing with two-dimensional data.
+
+The final outcome will be a **Mojo package** which can be imported and used by other Mojo programs and by other users. Let's call it `MatMojo`, short for "Matrix in Mojo". The package will contain a `Matrix` type that provides basic functionalities for matrix operations, such as element-wise addition, subtraction, multiplication, division, and matrix multiplication. It will also support basic statistical operations, such as sum, max, and min.
 
 [[toc]]
 
 ## Internal representation of a matrix
+
+Before we start implementing the Matrix type, we need to prepare ourself with some basic knowledge about matrices, e.g., how to represent them in Mojo, how to access their elements, and how to perform basic operations on them.
 
 ### Contiguous memory layout
 
@@ -120,11 +124,15 @@ Nevertheless, if you are particularly interested in some fixed-size matrix, e.g.
 
 To represent a matrix in Mojo, we need to define a struct that contains the following fields:
 
-- type: a `DType` value that indicates the data type of the elements in the matrix, e.g., `int64`, `float32`, `bool`, etc. This is similar to the `dtype` argument in NumPy. However, we can make use of the parameterization feature of Mojo to make the matrix type known at the compile time.
-- data: a one-dimensional array-like data structure (e.g., `List`) that stores all the elements of the matrix on the heap.
-- size: a tuple that stores the size of the matrix, i.e., the number of rows and columns.
-- strides: a tuple that stores the strides of the matrix, i.e., how many elements we need to skip to access the next row or column. Since we use row-major order, the strides will be `(n, 1)`, where `n` is the number of columns in the matrix. Thus, this field is optional, as we can always calculate the strides from the size of the matrix. Nevertheless, we will keep it for convenience and allow you to extend the matrix type to support column-major order in the future.
-- flags: a mapping table that stores information on the memory layout of the matrix, e.g., whether it is row-major or column-major, whether it is contiguous or not, etc. This field is also optional, as we always ensure, by design, that the matrix is contiguous in memory and is of row-major order. However, we will keep it for convenience and allow you to extend the matrix type to support column-major order or data referencing.
+- `dtype`: a `DType` value that indicates the data type of the elements in the matrix, e.g., `int64`, `float32`, `bool`, etc. This is similar to the `dtype` argument in NumPy. However, we can make use of the parameterization feature of Mojo to make the matrix type known at the compile time.
+- `data`: a one-dimensional array-like data structure (e.g., `List`) that stores all the elements of the matrix on the heap.
+- `size`: an integral value that stores the total number of elements in the matrix.
+- `shape`: a tuple that stores the shape of the matrix, i.e., the number of rows and columns. The shape and size are related: `size == shape[0] * shape[1]`.
+- `strides`: a tuple that stores the strides of the matrix, i.e., how many elements we need to skip to access the next row or column. Since we use row-major order, the strides will be `(n, 1)`, where `n` is the number of columns in the matrix. Thus, this field is optional, as we can always calculate the strides from the size of the matrix. Nevertheless, we will keep it for convenience and allow you to extend the matrix type to support column-major order in the future.
+
+Additional fields to consider in future:
+
+- `flags`: a mapping table that stores information on the memory layout of the matrix, e.g., whether it is row-major or column-major, whether it is contiguous or not, etc. This field can be optional if we always ensure, by design, that the matrix is contiguous in memory and is of row-major order. However, when you introduce data referencing in future, you need this field to keep track that of the memory layout as well as the ownership.
 
 ## Methods of the matrix type
 
@@ -158,3 +166,24 @@ There are a lot of mathematical or statistical methods that we can implement for
 
 - `reshape()`: a method that allows you to reshape the matrix to a new size, e.g., from a 2x3 matrix to a 3x2 matrix. This method will return a new matrix with the same data but a different size.
 - `transpose()`: a method that allows you to transpose the matrix, i.e., swap the rows and columns.
+
+## Package structure
+
+Modular programming is a good practice in software development, it divides the code into smaller, manageable pieces of files, each of which has a specific functional purpose. This makes the code in your project more organized, easier to read, easier to maintain, and easier to collaborate with others. For example, if you are using Git for version control and collaboration, you will just work on a specific file for a specific feature or functionality, without touching the other files. This reduces the risk of conflicting with others' work.
+
+So, let's divide our matrix type implementation into several files, each of which has a specific functional purpose. The package structure will look like this:
+
+1. `matrix.mojo`: the main file that contains the implementation of the `Matrix` type and its methods.
+1. `creation.mojo`: a file that contains functions for creating a matrix, such as `from_list()`. We can then use `matmojo.from_list()` to create a matrix from a list of lists. It also contains functions for creating a matrix with random values.
+1. `math.mojo`: a file that contains mathematical and statistical methods for the matrix type, such as `min()`, `max()`, `sum()`, `mean()`, etc.
+1. `utils.mojo`: a file that contains miscellaneous methods for the matrix type, such as `reshape()`, `transpose()`, etc.
+
+Of course, you can add more files as needed, or split the existing files into smaller ones. Since this is a small project, we will keep the number of files to a minimum but still allows us to organize the code in a modular way.
+
+## Other directories for the project
+
+As your project grows, you may want to add some other directories to hold the documentation, tests, benchmarks, and other auxiliary files. Here are some suggestions:
+
+1. `docs/`: a directory that contains the documentation of the project, e.g., users guide, API reference, roadmap, etc.
+1. `tests/`: a directory that contains the test cases for the project.
+1. `benches/`: a directory that contains the benchmark tests for the project.

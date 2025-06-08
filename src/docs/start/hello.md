@@ -10,7 +10,7 @@ Let's create a folder in our project directory called `src`. Then we create a su
 
 ```console
 my-first-mojo-project
-├── mojoproject.toml
+├── pixi.toml
 └── src
     └── start
         └── hello.mojo
@@ -84,7 +84,7 @@ On the contrary, in Mojo, the process is a bit different:
 
 ::: tip Two commands
 
-`magic run mojo file.mojo` is actually a short cut for the following two commands. You can try yourself:
+`pixi run mojo file.mojo` is actually a short cut for the following two commands. You can try yourself:
 
 ```bash
 pixi run mojo build src/hello.mojo  # Compile the Mojo file
