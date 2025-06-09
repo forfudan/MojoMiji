@@ -22,6 +22,10 @@ This chapter summarizes the information, tips, and warnings that are scattered t
 
 [Why we should use constructors explicitly](../basic/types#integer): Let's do an exercise to understand why we should always use constructors explicitly.
 
+[Is character a grapheme cluster or a code point?](../basic/types#string): Do you know that a "character" can mean different things? It can be a single byte, a code point, or a grapheme cluster. So you should be more explicit about what you mean by "character" in your code.
+
+[Visual checks of valid UTF-8 code points](../basic/types#string): Do you know that, in the first byte of a valid UTF-8 code point, the number of leading ones is equal to the number of bytes for non-single-byte code point.
+
 [Chained comparison: Syntax sugar or poison?](../basic/operators.md): Are you aware that chained comparison can lead to confusion and unintended behavior?
 
 [Graph: Memory layout of a struct](../basic/structs#memory-layout-of-struct): This graph illustrate how a struct is laid out in memory.

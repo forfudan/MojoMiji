@@ -1,6 +1,6 @@
 # Make it work
 
-After a general design of the library, we can start to implement it. We will first try to make it work: to implement the basic functionalities of the matrix type.
+After a general design of the library, we can start to implement it. We will first try to **make it work**: to implement the basic functionalities of the matrix type.
 
 [[toc]]
 
@@ -311,7 +311,7 @@ Printing the matrix directly:
  [      9.0     10.0    11.0    12.0    ]]
 ```
 
-It looks good! We know that the `Matrix` type is working as expected: it correctly initializes the matrix with the given data and shape.
+It looks good! Now we know that the `Matrix` type is working as expected: it correctly initializes the matrix with the given data and shape.
 
 ::: info More comprehensive implementation
 
