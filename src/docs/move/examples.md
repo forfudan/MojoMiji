@@ -51,7 +51,7 @@ error: 'StringLiteral["{} * {} = {}"]' value has no attribute 'format'
                   ~~~~~~~~~~~~~~^
 ```
 
-Here we see another difference between Python and Mojo: `format` is not a method of the string literal in Mojo. This is because, in Python, we do not need differentiate between string and string literal ourselves, because the latter type is coerced to the first type when you call a str method. The contents between quotation marks ("") is of `str` type and you can use the `format()` method. However, in Mojo, we do differentiate between string and string literal. I will discuss more about string in Chapter [Data types](../basic/types#string).
+Here we see another difference between Python and Mojo: `format` is not a method of the string literal in Mojo. This is because, in Python, we do not need differentiate between string and string literal ourselves, because the latter type is coerced to the first type when you call a str method. The contents between quotation marks ("") is of `str` type and you can use the `format()` method. However, in Mojo, we do differentiate between string and string literal. I will discuss more about string in Chapter [String](../basic/string).
 
 For now, to fix the error, we have to explicitly convert the string literal to a String object by calling the `String()` constructor. So we change the line to:
 

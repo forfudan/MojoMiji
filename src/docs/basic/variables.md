@@ -1,5 +1,8 @@
 # Variables
 
+> Taiji (☯) generates two Yi's (⚊ ⚋); the two Yi's generate four Xiang's (⚌ ⚍ ⚎ ⚏); the four Xiang's generate eight Gua's (☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷).  
+> -- *Yi-Jing (I Ching)*
+
 A variable is a fundamental concept in programming which allows you to store, read, and manipulate data. It can be seen as a container of data, enabling you to refer to the data by a symbolic name rather than the value in the memory directly. This is essential for writing readable and maintainable code.
 
 [[toc]]

@@ -1,5 +1,8 @@
 # Data type - SIMD
 
+> Just do what I have ordered, all of you, together!  
+> -- Yuhao Zhu, *Gate of Heaven*
+
 Although SIMD is considered a "small" struct and is, perhaps, the most fundamental data type in Mojo, I still make a separate chapter for it and put it in the "advanced" part. This is because there is not a counterpart of SIMD in Python and it is even not a built-in type for many other programming languages. Luckily, Mojo includes this type as a fundamental numerical type and makes it built-in. This type helps Mojo to achieve high performance in numerical computing, especially in vectorized operations.
 
 [[toc]]

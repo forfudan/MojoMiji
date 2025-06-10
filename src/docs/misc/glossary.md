@@ -10,7 +10,7 @@ This glossary provides a list of key terms and concepts related to the Mojo prog
 | shadowing              | [Variables](../basic/variables)                      |
 | reference              | [function](../basic/functions.md)                    |
 | Overloading            | [Functions](../basic/functions#function-overloading) |
-| dereferencing operator | [Data types](../basic/types#string)                  |
 | uninitialized          | [SIMD](../advanced/simd)                             |
 | compile time           | [ownership](../advanced/ownership)                   |
 | run time               | [ownership](../advanced/ownership)                   |
+| dereferencing operator | [ownership](../advanced/ownership)                   |

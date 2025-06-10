@@ -99,14 +99,9 @@ export default defineConfig({
             },
             {
               text: 'Data types - basic', link: '/docs/basic/types',
-              // items: [
-              //   { text: "Integer" },
-              //   { text: "Float" },
-              //   { text: "String" },
-              //   { text: "Boolean" },
-              //   { text: "List" },
-              //   { text: "Tuple" },
-              // ]
+            },
+            {
+              text: 'Data type - string', link: '/docs/basic/string',
             },
             {
               text: 'Operators and assignment', link: '/docs/basic/operators',

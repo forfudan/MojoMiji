@@ -18,6 +18,7 @@ by ***Yuhao Zhu 朱宇浩***
   - [Variables](./basic/variables) (Declare and use variables in Mojo)
   - [Functions](./basic/functions) (Define and use functions in Mojo)
   - [Data types - basic](./basic/types) (Fundamental building blocks of Mojo)
+  - [Data type - string](./basic/string) (`String` in Mojo, similar to `str` in Python)
   - [Operators and assignment](./basic/operators) (Operators and assignment expressions)
   <!-- - [Control flows (Yuhao is working on this)](./basic/control_flows) -->
   - [Structs](./basic/structs) (Structs in Mojo, similar to classes in Python)

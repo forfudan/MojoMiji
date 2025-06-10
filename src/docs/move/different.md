@@ -57,7 +57,7 @@ The behavior of `String` has been changing rapidly since Mojo version 24.5. Some
 
 ::: info More on string
 
-We will discuss the string type in more detail in Section [String](../basic/types.md#string) of Chapter [Data Types](../basic/types.md).
+We will discuss the string type in more detail in Chapter [String](../basic/string).
 
 :::
 

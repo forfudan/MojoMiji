@@ -1,7 +1,7 @@
 # Introduction
 
 > Everything is about programming except for programming itself. Programming is about control.  
-> -- Yuhao Zhu, A Story of the Gate of Heaven
+> -- Yuhao Zhu, *Gate of Heaven*
 
 Mojo is a new programming language developed by Modular, a company founded by Chris Lattner, the creator of Swift and LLVM. The language was made known to the public in 2023 and it has been open-sourcing its [standard library](https://github.com/modular/modular) gradually since early 2024. Mojo is initially designed to be a superset of the Python programming language, incorporating modern features such as static typing, ownership, traits, and meta-programming. These enhancements allow Python users to transition easily while benefiting from increased execution speed and enhanced safety. Mojo’s long-term goal is to be fully compatible with Python syntax and ecosystem^[In my opinion, this is quite challenging; a more reasonable expectation is that users will only need to make minor modifications to their Python code so that it can run in Mojo.].
 

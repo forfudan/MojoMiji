@@ -1,5 +1,8 @@
 # Structs
 
+> You exist as a free spirit until you join a group, whereupon you are rechristened as a ***Spirit von der Gruppe***.  
+> -- Yuhao Zhu, *Gate of Heaven*
+
 Though Python does not has the concept of "struct", it has a similar concept called "class". In many cases, you can use a struct to achieve the same functionality as a class in Python. These, I put the struct in the "basic" part of this Miji Book.
 
 [[toc]]

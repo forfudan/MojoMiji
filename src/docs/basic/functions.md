@@ -1,5 +1,8 @@
 # Functions
 
+> laziness brings creativity.  
+> -- Yuhao Zhu, *Gate of Heaven*
+
 Now we are familiar with variables in Mojo. This chapter continue with functions.
 
 [[toc]]
