@@ -28,6 +28,7 @@ by ***Yuhao Zhu 朱宇浩***
   - [Parameterization](./advanced/parameterization) (Shift work from run time to compile time)
   - [Generic and traits](./advanced/generic) (Move to generic programming with traits)
   - [Ownership](./advanced/ownership) (The ownership system in Mojo)
+  - [References](./advanced/references) (References in Mojo)
   <!-- - [Lifetime] -->
   <!-- - [Call Python in Mojo](./advanced/python) -->
 - [PART V: APPLY MOJO](./apply/apply.md) (Let's use Mojo to program something useful)
@@ -38,7 +39,6 @@ by ***Yuhao Zhu 朱宇浩***
   - [DeciMojo](./extend/decimojo) (A library for arbitrary-precision integers and decimals)
 - [PART VII: MISCELLANEOUS](./misc/misc)
   <!-- - [Memory layout of Mojo objects](./misc/layout) (How Mojo objects are stored in memory) -->
-  <!-- - [Reference system](./misc/reference) (Reference system of Mojo) -->
   - [Glossary of Mojo terms](./misc/glossary) (Find explanations of key terms and concepts)
   - [Useful tips and warnings](./misc/tips) (Do not fall into the pits I fell into)
   - [Wishes for extra features](./misc/wishes) (Some features I wish Mojo could have)

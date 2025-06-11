@@ -32,7 +32,7 @@ That's it. This is all about memory management and the objective of the ownershi
 
 ::: info Mojo vs Rust
 
-The ownership model and semantics implemented by Mojo are (significantly) different from Rust's references and lifetimes (See [this article](https://gist.github.com/lattner/da647146ea573902782525f3446829ff) by Chris Lattner).
+The ownership model and semantics implemented by Mojo are (significantly) different from Rust's references and lifetimes (See [this article](https://gist.github.com/lattner/da647146ea573902782525f3446829ff) by Chris Lattner). You can also refer to [References](../advanced/references.md) for more details.
 
 :::
 
@@ -61,10 +61,10 @@ Thus, learning the ownership model is not a must, but it is good for the followi
 
 If there is only one variable and one value, then we do not need ownership, naturally. We need ownership only when several variables are involved and they may intend to access the same value. In this case, we need to understand four possible statuses of ownership when there are more than one variable, namely:
 
-- **isolated**: each variable owns its own value.
-- **pointed**: one variable owns a value, while another variable is a safe pointer to the value.
-- **aliased**: one variable owns a value, while another variable is an alias of the first variable.
-- **unsafely pointed**: one variable is an unsafe pointer to the address of a value, but does not track the status of the owner of the value.
+- **isolated**: each variable owns its own value. It can be created by a copy of the value or the `owned` keyword.
+- **pointed**: one variable owns a value, while another variable is a safe pointer to the value. It can be created by the `Pointer` type.
+- **aliased**: one variable owns a value, while another variable is an alias of the first variable. It can be created by the `read` or `mut` keyword in the sub-function scope. From v25.4, it can also be created by the `ref` keyword in the local scope.
+- **unsafely pointed**: one variable is an unsafe pointer to the address of a value, but does not track the status of the owner of the value. It can be created by the `UnsafePointer` type.
 
 In some documents or discussions, a "reference" can either mean a pointer or an alias, depending on the context. This may lead to confusion, especially for beginners. In this Miji, **I will try to avoid using the term "reference" unless it can be applied to both pointers and aliases**. In all other cases, I will use explicitly the term "pointer" for a safe pointer and the term "alias" for an alias.
 
@@ -133,7 +133,9 @@ Let's use a more daily life example. Person A owns a house, and Person B lives i
 
 As shown in the following diagram, the variable `a` is an 8-bit unsigned integer (`UInt8`) with the value `89` stored at the address `0x17ca81f8` in the memory. The variable `b` an alias variable that refers to the variable `a`. For the aliased status, no additional memory is allocated for the variable `b`.
 
-The aliased status usually occurs when we define a function. The argument of a function is an alias of the variable that is passed to the function. The function can access the value of the variable, but cannot transfer the ownership of the value or destroy it. If the function ends, the argument dies, but variable will still be valid and can be used later. Moreover, if the argument can modify the value of the variable, it is a **mutable** alias (`mut` keyword), otherwise it is an immutable alias (`read` keyword).
+The aliased status usually occurs when we define a function. The argument of a function is an alias of the variable that is passed to the function. The function can access the value of the variable, but cannot transfer the ownership of the value or destroy it. If the function ends, the argument dies, but variable will still be valid and can be used later. Moreover, if the argument can modify the value of the variable, it is a **mutable** alias (`mut` keyword), otherwise it is an **immutable** alias (`read` keyword).
+
+(Future) From v25.4, the aliased status can also be created in the **local scope** with the `ref` keyword.
 
 ```console
 # Mojo Miji - Ownership - Aliased status

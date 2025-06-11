@@ -23,8 +23,7 @@
   "scripts": {
     "dev": "vitepress dev src",
     "build": "vitepress build src",
-    "build2": "vitepress build src --base /mojomiji/",
-    "preview": "vitepress preview src "
+    "preview": "vitepress preview src"
   },
   "dependencies": {
     "@vueuse/core": "^10.9.0"

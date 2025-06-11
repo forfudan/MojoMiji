@@ -51,3 +51,5 @@ This chapter summarizes the information, tips, and warnings that are scattered t
 [ASAP Destruction Policy](../advanced/ownership.md): Do you know that Mojo compiler has a policy that destroys a variable as soon as they are used for the last time? However, any safe pointers to the variable can extend the lifetime of the variable to as long as the pointer is alive.
 
 [Inconsistent behaviors of copy and move](../advanced/ownership.md): If you define different behaviors for `__copyinit__()` and `__moveinit__` in a struct, you may encounter unexpected behaviors when you use the assignment operator `=`. This is because the Mojo compiler will call the `__moveinit__()` method if the variable is not used after the assignment. So, you should always define the same behavior for both methods.
+
+[Historical keywords of references conventions](../advanced/references#keywords-of-conventions): Do you know that the keywords `read`, `mut`, and `owned` were not always the keywords used to define the ownership and mutability of function arguments? You can find the historical keywords and the versions of Mojo when they were introduced and deprecated.

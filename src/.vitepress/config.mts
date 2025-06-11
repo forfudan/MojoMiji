@@ -127,6 +127,10 @@ export default defineConfig({
               text: 'Ownership',
               link: '/docs/advanced/ownership'
             },
+            {
+              text: 'References',
+              link: '/docs/advanced/references'
+            },
           ]
         },
         {
@@ -161,10 +165,6 @@ export default defineConfig({
             // {
             //   text: 'Memory layout of Mojo objects',
             //   link: '/docs/misc/layout'
-            // },
-            // {
-            //   text: 'Reference system',
-            //   link: '/docs/misc/reference'
             // },
             {
               text: 'Glossary of Mojo terms',

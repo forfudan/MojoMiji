@@ -205,7 +205,9 @@ def main():
 
 :::info `let` and `var`
 
-Do you know that, in early versions of Mojo, the `let` keyword is used to declare immutable variables (just like in Rust) and the `var` keyword is used to declare mutable variables. From v24.4 (2024-06-07), the `let` keyword has been completely removed from the language.
+Do you know that, in early versions of Mojo, the `let` keyword is used to declare immutable variables (just like in Rust) and the `var` keyword is used to declare mutable variables. From v24.4 (2024-06-07), the `let` keyword has been completely removed from the language. You can find relevant discussion in the following thread on GitHub:
+
+- [let and var Keywords #120](https://github.com/modular/modular/discussions/120)
 
 From v24.5 (2024-09-13), the `var` keyword has also become optional, to be fully compatible with Python. However, many Magicians find this not a good move. In the following sections, you will see why.
 

@@ -298,7 +298,7 @@ def main():
 
 If an argument is mutable, it means that the function can modify the value of the argument, i.e., the value (belonging to a variable outside the function) that passed into the function. In Python, this mutability is determined by the type of the value. In Mojo, however, you have more control over the mutability of the arguments. Although there is a default behavior, you can always explicitly define the mutability of the arguments in the function declaration.
 
-The mutability of the arguments is defined by several keywords, namely, `read`, `mut`, `owned` and `out`. I will also call them "mutability modifiers" in this Miji. Let's discuss them one by one.
+The mutability of the arguments is defined by several keywords, namely, `read`, `mut`, and `owned`. I will also call them "mutability modifiers" in this Miji. Let's discuss them here one by one. Later, after we have introduced the concept of ownership, **we will revisit these keywords** and discuss more about the references system of Mojo in Chapter [Reference](../advanced/references.md).
 
 ::: warning Arguments and reference - Mojo vs Rust
 
