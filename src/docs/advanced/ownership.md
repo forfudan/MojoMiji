@@ -59,11 +59,13 @@ Thus, learning the ownership model is not a must, but it is good for the followi
 
 ## Four statuses of ownership
 
-If there is only one variable and one value, then we do not need ownership, naturally. We need ownership only when several variables are involved and they may intend to access the same value. In this case, we need to understand four possible statuses of ownership when there are more than one variable, namely:
+If there is only one variable and one value, we do not need ownership at all. We need ownership only when several variables are involved and they may intend to access the same value.
+
+There are many ways to introduce the concept of "ownership". I thought about it for a long time and finally decided to build a conceptual model of ownership based on the **statuses possible statuses of ownership**. This model can help you understand the relationship between variables and values, and then we will discuss how the ownership rules are related to these statuses. The statuses are:
 
 - **isolated**: each variable owns its own value. It can be created by a copy of the value or the `owned` keyword.
-- **pointed**: one variable owns a value, while another variable is a safe pointer to the value. It can be created by the `Pointer` type.
 - **aliased**: one variable owns a value, while another variable is an alias of the first variable. It can be created by the `read` or `mut` keyword in the sub-function scope. From v25.4, it can also be created by the `ref` keyword in the local scope.
+- **pointed**: one variable owns a value, while another variable is a safe pointer to the value. It can be created by the `Pointer` type.
 - **unsafely pointed**: one variable is an unsafe pointer to the address of a value, but does not track the status of the owner of the value. It can be created by the `UnsafePointer` type.
 
 In some documents or discussions, a "reference" can either mean a pointer or an alias, depending on the context. This may lead to confusion, especially for beginners. In this Miji, **I will try to avoid using the term "reference" unless it can be applied to both pointers and aliases**. In all other cases, I will use explicitly the term "pointer" for a safe pointer and the term "alias" for an alias.
@@ -88,6 +90,41 @@ Value (binary)   │01011001│01110101│01101000│00000000 01101111│
 Address (hex)    │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│
                  └────────┴────────┴────────┴────────┴────────┘
 ```
+
+### Aliased
+
+In the **aliased** status, one variable has the same type and the same address as another variable, but the former does not have the right to (1) destroy the value or (2) transfer the ownership to a third-party. In other words, the variable `a` has the ownership of the value. the variable `b` has the same type and the address `a`. You can use `b` to access the value of `a` directly, you can modify the value of `a` through `b` under certain conditions, but you cannot transfer the ownership of the value from `a` to a third-party via `b`, nor can you destroy the value of `a` via `b`. If the lifetime of `b` ends, the value of `a` will not be destroyed.
+
+Let's use a more daily life example. Person A owns a house, and Person B lives in the house. We say that Person A is the owner of the house, while Person B is the user of the house. Person B can use the house, make changes to the house, but cannot destroy the house or sell it to another person. If Person B moves out of the house, the house will still be owned by Person A and will not be destroyed.
+
+As shown in the following diagram, the variable `a` is an 8-bit unsigned integer (`UInt8`) with the value `89` stored at the address `0x17ca81f8` in the memory. The variable `b` an alias variable that refers to the variable `a`. For the aliased status, no additional memory is allocated for the variable `b`.
+
+The aliased status usually occurs when we define a function. The argument of a function is an alias of the variable that is passed to the function. The function can access the value of the variable, but cannot transfer the ownership of the value or destroy it. If the function ends, the argument dies, but variable will still be valid and can be used later. Moreover, if the argument can modify the value of the variable, it is a **mutable** alias (`mut` keyword), otherwise it is an **immutable** alias (`read` keyword).
+
+(Future) From v25.4, the aliased status can also be created in the **local scope** with the `ref` keyword.
+
+```console
+# Mojo Miji - Ownership - Aliased status
+                    a ← b
+                    ↓   ⇣                       
+                 ┌────────┬────────┬────────┬─────────────────┐
+Value (readable) │  89    │  117   │  104   │  97    │  111   │
+                 ├────────┼────────┼────────┼─────────────────┤
+Type             │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │
+                 ├────────┼────────┼────────┼─────────────────┤
+Value (binary)   │01011001│01110101│01101000│01100001│01101111│
+                 ├────────┼────────┼────────┼────────┬────────┤
+Address (hex)    │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│
+                 └────────┴────────┴────────┴────────┴────────┘
+```
+
+::: info Aliased is not the same as pointed
+
+In the pointed status, the variable `b` is not the same type as the variable `a`. So you have to dereference `b` to access the value of `a`, e.g., `print(b[])`.
+
+In the aliased status, the variable `b` is the same type as the variable `a`. So you can access the value of `a` directly with `b`, e.g., `print(b)`.
+
+:::
 
 ### Pointed
 
@@ -122,41 +159,6 @@ Notably, the type of `b` is `Pointer[UInt8, a]`, which means that `b` is a point
 In Mojo, as well as other languages, "pointer" is also a type. The value of a pointer variable is the address of another variable. The pointer variable also occupies a certain amount of memory.
 
 Thus, pointer is not free and not costless. If assessing a value is through a pointer with a larger size than the value itself, it may be more efficient to just do a copy.
-
-:::
-
-### Aliased
-
-In the **aliased** status, one variable has the same type and the same address as another variable, but the former does not have the right to (1) destroy the value or (2) transfer the ownership to a third-party. In other words, the variable `a` has the ownership of the value. the variable `b` has the same type and the address `a`. You can use `b` to access the value of `a` directly, you can modify the value of `a` through `b` under certain conditions, but you cannot transfer the ownership of the value from `a` to a third-party via `b`, nor can you destroy the value of `a` via `b`. If the lifetime of `b` ends, the value of `a` will not be destroyed.
-
-Let's use a more daily life example. Person A owns a house, and Person B lives in the house. We say that Person A is the owner of the house, while Person B is the user of the house. Person B can use the house, make changes to the house, but cannot destroy the house or sell it to another person. If Person B moves out of the house, the house will still be owned by Person A and will not be destroyed.
-
-As shown in the following diagram, the variable `a` is an 8-bit unsigned integer (`UInt8`) with the value `89` stored at the address `0x17ca81f8` in the memory. The variable `b` an alias variable that refers to the variable `a`. For the aliased status, no additional memory is allocated for the variable `b`.
-
-The aliased status usually occurs when we define a function. The argument of a function is an alias of the variable that is passed to the function. The function can access the value of the variable, but cannot transfer the ownership of the value or destroy it. If the function ends, the argument dies, but variable will still be valid and can be used later. Moreover, if the argument can modify the value of the variable, it is a **mutable** alias (`mut` keyword), otherwise it is an **immutable** alias (`read` keyword).
-
-(Future) From v25.4, the aliased status can also be created in the **local scope** with the `ref` keyword.
-
-```console
-# Mojo Miji - Ownership - Aliased status
-                    a ← b
-                    ↓   ⇣                       
-                 ┌────────┬────────┬────────┬─────────────────┐
-Value (readable) │  89    │  117   │  104   │  97    │  111   │
-                 ├────────┼────────┼────────┼─────────────────┤
-Type             │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │
-                 ├────────┼────────┼────────┼─────────────────┤
-Value (binary)   │01011001│01110101│01101000│01100001│01101111│
-                 ├────────┼────────┼────────┼────────┬────────┤
-Address (hex)    │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│
-                 └────────┴────────┴────────┴────────┴────────┘
-```
-
-::: info Aliased is not the same as pointed
-
-In the pointed status, the variable `b` is not the same type as the variable `a`. So you have to dereference `b` to access the value of `a`, e.g., `print(b[])`.
-
-In the aliased status, the variable `b` is the same type as the variable `a`. So you can access the value of `a` directly with `b`, e.g., `print(b)`.
 
 :::
 

@@ -28,7 +28,7 @@ by ***Yuhao Zhu 朱宇浩***
   - [Parameterization](./advanced/parameterization) (Shift work from run time to compile time)
   - [Generic and traits](./advanced/generic) (Move to generic programming with traits)
   - [Ownership](./advanced/ownership) (The ownership system in Mojo)
-  - [References](./advanced/references) (References in Mojo)
+  - [References](./advanced/references) (The reference system in Mojo)
   <!-- - [Lifetime] -->
   <!-- - [Call Python in Mojo](./advanced/python) -->
 - [PART V: APPLY MOJO](./apply/apply.md) (Let's use Mojo to program something useful)

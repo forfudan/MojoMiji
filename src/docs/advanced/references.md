@@ -1,4 +1,4 @@
-# References system of Mojo
+# Reference system of Mojo
 
 [[toc]]
 
