@@ -392,3 +392,27 @@ Address │16bb384f5│16bb384f6│16bb384f7│16bb384f8│   ...   │16bb38509
                                  ↑
                           variable `x` (Int8)
 ```
+
+## Chained references
+
+In Mojo, the references (aliases) can be chained through the ownership system. This means that you can create an alias to a variable that is already an alias of another variable. Then the two aliases will both be tied to the original owner of the value, and they will share the same address in the memory. For example, see the following code:
+
+```mojo
+def main():
+    var a = String("I am owned by `a`")
+    var ref b = a
+    var ref c = b
+    print(a, "at", String(Pointer(to=a)))
+    print(b, "at", String(Pointer(to=b)))
+    print(c, "at", String(Pointer(to=c)))
+```
+
+If we run it, we will see the following output:
+
+```console
+I am owned by `a` at 0x16d43cc90
+I am owned by `a` at 0x16d43cc90
+I am owned by `a` at 0x16d43cc90
+```
+
+In this example, we create a variable `a` with the value `I am owned by a`, and then create a mutable reference (alias) `b` of `a` using the `ref` keyword. Then we create another mutable reference (alias) `c` of `b`. As a result, `b` and `c` are both aliases of `a`, which means that they share the same address in the memory (`0x16d43cc90`). The value of `a`, `b`, and `c` are all the same.

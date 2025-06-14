@@ -293,7 +293,7 @@ In Mojo, a value can either be **transferred** or **copied** to another variable
 
 ### Transfer a value
 
-When you **transfer** a value, you are transferring the ownership of the value from one variable `a` to another variable `b`. The variable `a` will no longer own the value and will be immediately decommissioned. In other words, the quaternary system `a` consisting a name, a type, an address, and a value, does not exist anymore. If you try to use the name `a` later, the Mojo compiler will raise an error.
+When you **transfer** a value, you are transferring the ownership of the value from one variable `a` to another variable `b`. The variable `a` will no longer own the value and will be immediately decommissioned (or we can say "destroyed", "uninitialized", etc). In other words, the quaternary system `a` consisting a name, a type, an address, and a value, does not exist anymore. If you try to use the name `a` later, the Mojo compiler will raise an error.
 
 The transfer of (the ownership of) a value is **usually** done with the `^` operator, e.g., `var b = a^`. It reads as "transfer the ownership of the value from the variable `a` to the variable `b`, and then remove the variable `a` from the scope".
 
@@ -659,11 +659,11 @@ a is at address 0x16d4d4958 with de-referenced value: Hello, Mojo!
 
 ::: danger ASAP Destruction Policy
 
-Compared to Rust, Mojo is more aggressive in destroying variables. Rust variables end their lifetime at the end of a code block, but Mojo destroys a variable immediately after its last use ([ASAP destruction](https://docs.modular.com/mojo/manual/lifecycle/death)).
+Compared to Rust, Mojo is more aggressive in destroying variables. Rust variables end their lifetime at the end of the current scope (code block), but Mojo destroys a variable immediately after its last use. This is called [ASAP destruction](https://docs.modular.com/mojo/manual/lifecycle/death).
 
 You may then wonder, in the previous example, why the pointer `ptr` is still valid after the last use of `a`, i.e., `var b = a`?
 
-This is because the Mojo compiler will also check whether there are any safe pointers or alias to the value of `a`, if so, the `a` is still regarded as **in use** and will not be destroyed immediately. In other words, the lifetime of a variable is extended if there are still safe pointers or alias to the value it owns, unless you explicitly make it invalid by using the `^` operator.
+This is because the Mojo compiler will also check whether there are any safe pointers or alias to the value of `a`, if so, the `a` is still regarded as **in use** and will not be destroyed immediately. In other words, **the lifetime of a variable is extended if there are still safe pointers or alias to the value it owns**, unless you explicitly make it invalid by using the `^` operator. We will discuss this in more detail in Chapter [Lifetime](../advanced/lifetime).
 
 Nevertheless, it is only valid for safe pointers. The immediate destruction rule may bring troubles if you are using unsafe code: for example, `B` is an unsafe pointer to data in the structure `A`, but the Mojo compiler cannot infer this. `A` is destroyed immediately after its last use, resulting in `B` being a dangling pointer pointing to already freed memory.
 

@@ -29,7 +29,7 @@ by ***Yuhao Zhu 朱宇浩***
   - [Generic and traits](./advanced/generic) (Move to generic programming with traits)
   - [Ownership](./advanced/ownership) (The ownership system in Mojo)
   - [References](./advanced/references) (The reference system in Mojo)
-  <!-- - [Lifetime] -->
+  - [Lifetime](./advanced/lifetime) (The lifetime system in Mojo)
   <!-- - [Call Python in Mojo](./advanced/python) -->
 - [PART V: APPLY MOJO](./apply/apply.md) (Let's use Mojo to program something useful)
   - [Design of MatMojo library](./apply/design.md) (Some preparation work for writing a matrix library)

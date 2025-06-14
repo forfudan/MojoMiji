@@ -131,6 +131,10 @@ export default defineConfig({
               text: 'References',
               link: '/docs/advanced/references'
             },
+            {
+              text: 'Lifetime',
+              link: '/docs/advanced/lifetime'
+            }
           ]
         },
         {
