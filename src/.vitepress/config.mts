@@ -41,8 +41,7 @@ export default defineConfig({
       {
         text: 'Open Miji', link: '/docs/'
       },
-      { text: 'Mojo official', link: 'https://www.modular.com/max/mojo/' },
-      { text: 'Miji at GitHub', link: 'https://github.com/forFudan/MojoMiji' }
+      { text: 'Mojo official website', link: 'https://www.modular.com/max/mojo/' },
     ],
     sidebar: {
       '/docs': [
@@ -240,7 +239,7 @@ export default defineConfig({
       },
     },
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/forFudan/' },
+      { icon: 'github', link: 'https://github.com/forFudan/MojoMiji' },
     ]
   },
 

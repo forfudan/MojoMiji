@@ -402,7 +402,11 @@ We can make a quick comparison between the performance of the two approaches. In
 - The first approach is to use plain iteration. We simply iterate over each element and add them into the result at the same index. This is similar to the traditional approach we discussed earlier.
 - The second approach is to use the `+` operator on two SIMD objects.
 
-To calculate the time taken for each approach, we need to import the `time` module and use the `perf_counter_ns()` function. The code looks like this:
+To calculate the time taken for each approach, we use both the built-in `time` module and the built-in `benchmark` module.
+
+### Comparison with `time` module
+
+The `time` module in Mojo provides several functions to record the current time. You can then use the difference between two time points to calculate the elapsed time for a specific operation. For you comparison, we will use the `perf_counter_ns()` function, which returns the current time in nanoseconds. This is a high-resolution timer that is suitable for measuring short durations.
 
 ```mojo
 # src/advanced/simd_performance.mojo
@@ -449,3 +453,81 @@ Result is [1000000.0, 2000000.0, 3000000.0, 4000000.0, 5000000.0, 6000000.0, 700
 ```
 
 The results are correct for both approaches, but the time taken for the vectorized operation is significantly less than that of the plain iteration. In this case, the vectorized operation is about 60 times faster than the plain iteration.
+
+### Comparison with `benchmark` module
+
+The `benchmark` module is a built-in module in Mojo that provides a convenient way to measure the performance of your code by running it several times. The timer is outside the program and will not affect the performance of your code. The code is as follows:
+
+```mojo
+# src/advanced/simd_performance_benchmark.mojo
+import benchmark
+
+
+fn plain_iterations[iter: Int, a: SIMD[DType.float64, 8]]():
+    result = SIMD[DType.float64, 8](0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+    for _i in range(iter):
+        for _j in range(8):
+            result[_j] += a[_j]
+    print(result)
+    return
+
+
+fn simd_operation[iter: Int, a: SIMD[DType.float64, 8]]():
+    result = SIMD[DType.float64, 8](0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+    for _ in range(iter):
+        result += a
+    print(result)
+    return
+
+
+fn main() raises:
+    alias a = SIMD[DType.float64, 8](1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0)
+    alias iter = Int(10_000_000)
+
+    var report_plain_iter = benchmark.run[plain_iterations[iter, a]](1)
+    var report_simd_operation = benchmark.run[simd_operation[iter, a]](1)
+
+    report_plain_iter.print_full()
+    report_simd_operation.print_full()
+```
+
+Run this code with `pixi run mojo src/advanced/simd_performance_benchmark.mojo` command in the terminal and see the output:
+
+```console
+--------------------------------------------------------------------------------
+Benchmark Report (s)
+--------------------------------------------------------------------------------
+Mean: 0.33412400000000003
+Total: 2.338868
+Iters: 7
+Warmup Total: 0.334701
+Fastest Mean: 0.334124
+Slowest Mean: 0.334124
+
+Batch: 1
+Iterations: 7
+Mean: 0.334124
+Duration: 2.338868
+
+--------------------------------------------------------------------------------
+Benchmark Report (s)
+--------------------------------------------------------------------------------
+Mean: 0.0059282
+Total: 0.059282
+Iters: 10
+Warmup Total: 0.005379
+Fastest Mean: 0.0059282
+Slowest Mean: 0.0059282
+
+Batch: 1
+Iterations: 10
+Mean: 0.0059282
+Duration: 0.059282
+```
+
+Thus, the mean time taken for two approaches are:
+
+- Plain iteration: 0.334124 seconds
+- SIMD operation: 0.0059282 seconds
+
+The vectorized operation is about 56 times faster than the plain iteration. This result is similar to the previous one.
