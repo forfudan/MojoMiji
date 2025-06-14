@@ -10,6 +10,12 @@ Luckily, you do not need to know the ownership model if you just want to write s
 
 I have to say that it is difficult. You may find that you are still at a loss after reading this chapter. Don't worry. You are not alone. What you need is just to code more and think more. As you accumulated sufficient experience after a while, you can back to this chapter again or read other materials, and will eventually manage it.
 
+::: info Compatible Mojo version
+
+Compatible Mojo version of this chapter: v25.3, except for the `ref` keyword, which with be introduced in v25.4.
+
+:::
+
 [[toc]]
 
 ## An intuitive example of ownership

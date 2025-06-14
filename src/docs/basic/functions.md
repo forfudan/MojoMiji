@@ -222,8 +222,8 @@ Recall the conceptual model of variables I discussed in the chapter [Variables](
 
 - **Name**: The name of the argument is defined in the function declaration. You can use this name to refer to the argument within the function body. You cannot re-define the name of the argument within the function body, as it will cause a compilation error. The name of the argument is not necessarily the same as the name of the variable you pass into the function.
 - **Type**: The type of the argument is also defined in the function declaration. It indicates what kind of value the argument can accept. The type of the argument must match the type of the value you pass into the function and will be checked by the Mojo compiler.
-- **Address**: Depending on the use cases, the address of the argument can either be the same as the address of the variable you pass into the function, or a new address that is allocated for the argument. This is determined by the mutability modifier of the argument[^optimization], which we will discuss later.
-- **Value**: The value of the argument is equal to the value of the variable that you pass into the function. Depending on the use cases, a copying action of the value may happen or not. This is also determined by the mutability modifier of the argument, which we will discuss later.
+- **Address**: Depending on the use cases, the address of the argument can either be the same as the address of the variable you pass into the function, or a new address that is allocated for the argument. This is determined by several modifier keyword before the argument[^optimization], which we will discuss later.
+- **Value**: The value of the argument is equal to the value of the variable that you pass into the function. Depending on the use cases, a copying action of the value may happen or not. This is also determined by the modifier of the argument, which we will discuss later.
 
 ### Positional arguments
 

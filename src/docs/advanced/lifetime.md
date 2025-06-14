@@ -1,4 +1,4 @@
-# Lifetime of values
+# Lifetime system
 
 > I do not fear death. I fear only you dying after me.  
 > -- Yuhao Zhu, *Gate of Heaven*
@@ -6,6 +6,14 @@
 Lifetime is a concept that describes how long a value (of a variable) exists in memory. It is central to the ownership model because accessing a value after it has been destroyed can lead to undefined behavior. e.g., double free, use after free, dangling pointer, etc. Recall that in Chapter [Ownership](../advanced/ownership#lifetime-of-owner-longer-than-reference), we discussed one of the ownership rules: **the lifetime of the owner must be longer than the lifetime of the reference**. This is a fundamental rule that ensures that references are always valid.
 
 Many people think that lifetime is a complex concept, as well as how to denote it in your code. Indeed, in Rust, lifetime annotation seems to be complex, and failing to understand it can lead to many compiler errors. In Mojo, however, the syntax related to lifetime is much simpler and more intuitive.
+
+::: warning Compatible Mojo version
+
+The lifetime system in Mojo is still evolving. The syntax and semantics described in this document are subject to change in future versions of Mojo.
+
+Compatible Mojo version of this chapter: v25.4-nighty.
+
+:::
 
 [[toc]]
 
@@ -120,7 +128,7 @@ def main():
     print("The end of the example.")
 ```
 
-::: ASAP destruction policy
+::: tip ASAP destruction policy
 
 Compared to Rust, Mojo is more aggressive in destroying variables. Rust variables end their lifetime at the end of the current scope (code block), but Mojo destroys a variable immediately after its last use. This is called [ASAP destruction](https://docs.modular.com/mojo/manual/lifecycle/death).
 
@@ -151,7 +159,7 @@ This way, Mojo ensures that the owner variable `a` is always valid when its refe
 
 We have earlier discussed about the [chained references](../advanced/references#chained-references) in previous chapter. We can extend this chaining rule to lifetime as well.
 
-In Mojo, the lifetime of a variable can be chained through references. For example, if you have a reference `b` to a variable `a`, and then you create another reference `c` to `b`, then `c` will contains the information on the lifetime of the original owner `a`. This means that `c` can only be used as long as `a` is valid.
+In Mojo, the lifetime of a variable can be chained through references. For example, if you have a reference `b` to a variable `a`, and then you create another reference `c` to `b`, then `c` will contains the information on the lifetime (as well as the **mutability**) of the original owner `a`. This means that `c` can only be used as long as `a` is valid.
 
 Let's illustrate this with an example:
 
@@ -206,7 +214,7 @@ struct Pointer[
 ](ExplicitlyCopyable, Stringable, Copyable, Movable):
 ```
 
-Thus, the `a` in `Pointer[String, a]` corresponds to the `origin` parameter of the `Pointer` type. This `origin` parameter is of the type `Origin[mut]`, which is a special type that carries the information on the origin reference.
+Thus, the `a` in `Pointer[String, a]` corresponds to the `origin` parameter of the `Pointer` type. This `origin` parameter is of the type `Origin[mut]`, which is a special type that carries the information on the origin reference including the mutability of the value.
 
 This parameter can be inferred by the compiler when you create a pointer, or you can explicitly specify it when you create a pointer. You can also use the `__origin_of()` function to get the origin reference of a variable pass this value to the function. For example, the following two lines are equivalent:
 
@@ -317,3 +325,206 @@ The smaller of the two integers is 2 at address 0x16fc54c70
 ```
 
 The output is as expected, we always get the smaller of the two integers, the pointer `c` points to the address of the smaller one, and the owner is alive until the last line of the code.
+
+## Lifetime in functions
+
+In the previous example, we create a pointer `c` in the local scope of the `main()` function that may either point to `a` or `b`. You may now wonder whether you can also do this for a function. The answer is yes.
+
+In the following example, we want to create a function `shorter()` that takes two strings (words) as input, and returns a pointer to the shorter one. We then call this function in the `main()` function. The code is as follows.
+
+```mojo
+# src/advanced/lifetime_function_pointer.mojo
+def shorter(
+    word1: String, word2: String
+) -> Pointer[String, __origin_of(word1, word2)]:
+    if len(word1) < len(word2):
+        return Pointer[String, __origin_of(word1, word2)](to=word1)
+    else:
+        return Pointer[String, __origin_of(word1, word2)](to=word2)
+
+
+def main():
+    var a: String = String("beautiful")
+    var b: String = String("pretty")
+
+    var c = shorter(a, b)
+
+    print(
+        String('The first word you give is "{}" at address {}').format(
+            a, String(Pointer(to=a))
+        )
+    )
+    print(
+        String('The second word you give is "{}" at address {}').format(
+            b, String(Pointer(to=b))
+        )
+    )
+    print(
+        String('The shorter of the two words is "{}" at address {}').format(
+            c[], String(Pointer(to=c[]))
+        )
+    )
+```
+
+The code is very similar to the previous example, except that we take out the if-statement into a separate function `shorter()`. The function takes two strings as input, and returns a pointer to the shorter one.
+
+One thing that worth noting is that the return type of the function is `Pointer[String, __origin_of(word1, word2)]`, which means that the returned pointer will point to either argument `word1` or `word2`. Therefore, the lifetime of the returned pointer shall not be longer than the lifetime of the arguments `word1` and `word2`.
+
+We have also learned previously that the arguments `word1` and `word2` are immutable aliases of the variables in the caller function `main()`. This means that the lifetime of the arguments `word1` and `word2` is the same as the lifetime of the variables `a` and `b` in the caller function.
+
+Using the **chained lifetime rule**, we know that the lifetime of the returned pointer, which is assigned to `c`, should be no longer than the lifetime of either `a` or `b` in the caller function. In other words, both `a` and `b` are destroyed only after `c` is lastly used in the caller function.
+
+Running the code will give us the following output:
+
+```console
+The first word you give is "beautiful" at address 0x16f768540
+The second word you give is "pretty" at address 0x16f768558
+The shorter of the two words is "pretty" at address 0x16f768558
+```
+
+This is exactly what we expect.
+
+## Lifetime annotation - Mojo vs Rust
+
+If you have used Rust before, you may notice that the above example is very popular in Rust books. Usually a similar example would appear as the first example in the chapter about lifetime.
+
+Let's re-write this example in Rust to see how it looks like, but firstly, a incorrect implementation that would not pass the Rust compiler:
+
+```rust
+fn shorter(word1: &String, word2: &String) -> &String {
+    if word1.len() < word2.len() {
+        word1
+    } else {
+        word2
+    }
+}
+
+fn main() {
+    let a: String = String::from("Beautiful");
+    let b: String = String::from("Pretty");
+
+    let c: &String = shorter(&a, &b);
+
+    println!(r#"The first word you give is "{}" at address {:p}"#, a, &a);
+    println!(r#"The second integer you give is "{}" at address {:p}"#, b, &b);
+    println!(r#"The shorter of the two words is "{}" at address {:p}"#, c, &c);
+}
+```
+
+Even though **no error message is shown in IDE**, this code will not compile in Rust.
+
+```console
+error[E0106]: missing lifetime specifier
+ --> combined_lifetime.rs:1:47
+  |
+1 | fn shorter(word1: &String, word2: &String) -> &String {
+  |                   -------         -------     ^ expected named lifetime parameter
+  |
+  = help: this function's return type contains a borrowed value, but the signature does not say whether it is borrowed from `word1` or `word2`
+help: consider introducing a named lifetime parameter
+  |
+1 | fn shorter<'a>(word1: &'a String, word2: &'a String) -> &'a String {
+  |           ++++         ++                 ++             ++
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0106`.
+```
+
+The reason is already in the error message: **the function's return type contains a borrowed value, but the signature does not say whether it is borrowed from `word1` or `word2`**. In Rust, you need to explicitly annotate the lifetime in the function signature to indicate that the return value should have the same lifetime as either argument `word1` or `word2`. The correct implementation should look like this:
+
+```rust
+fn shorter<'a>(word1: &'a String, word2: &'a String) -> &'a String {
+    ...
+}
+```
+
+Here, you use the lifetime annotation `'a` in the function signature, in the type annotation of the arguments, and in the type annotation of the return value. `a` is a formal lifetime parameter which can be any name, but it is conventionally named `'a` in Rust.
+
+This this way, you tell the Rust compiler that the lifetime of the return value is `a`, and it is the same as the lifetime of either `word1` or `word2`. This way, the compiler can ensure that the return value will not outlive the arguments.
+
+After this change, the code will compile successfully in Rust. The final Rust code looks like this:
+
+```rust
+fn shorter<'a>(word1: &'a String, word2: &'a String) -> &'a String {
+    if word1.len() < word2.len() {
+        word1
+    } else {
+        word2
+    }
+}
+
+fn main() {
+    let a: String = String::from("beautiful");
+    let b: String = String::from("pretty");
+
+    let c: &String = shorter(&a, &b);
+
+    println!(r#"The first word you give is "{}" at address {:p}"#, a, &a);
+    println!(r#"The second integer you give is "{}" at address {:p}"#, b, &b);
+    println!(r#"The shorter of the two words is "{}" at address {:p}"#, c, &c);
+}
+```
+
+The  output is similar our Mojo code.
+
+```console
+The first word you give is "beautiful" at address 0x16b9ce888
+The second integer you give is "pretty" at address 0x16b9ce8a0
+The shorter of the two words is "pretty" at address 0x16b9ce8b8
+```
+
+---
+
+We may want to compare the design philosophy of lifetime annotation in Mojo and Rust:
+
+```mojo
+def shorter(
+    word1: String, word2: String
+) -> Pointer[String, __origin_of(word1, word2)]:
+    ...
+```
+
+```rust
+fn shorter<'a>(word1: &'a String, word2: &'a String) -> &'a String {
+    ...
+}
+```
+
+In **Mojo**, a safe pointer must be created with the information of the original owner. Thus, you cannot use a `Pointer` type as a function argument because you cannot put a existing variable into the `__origin_of()` function.
+
+Moreover, the origin reference in the `Pointer` type cannot be overwritten in your code. Failing to do so will lead to an error as early as in the editing time (IDE warning).
+
+This means that, if your code causes no warning message in the IDE, then it is highly likely that the code will pass the compiler without lifetime errors.
+
+In **Rust**' syntax, however, you do not write the origin owner(s) as a parameter in the signature of the borrower (i.e., the reference). Thus, you have to use the lifetime annotation before all arguments and the return value to indicate the relationship between their lifetimes.
+
+Therefore, the IDE will not warn you about the lifetime issues until you compile the code.
+
+The design philosophy of Mojo and Rust lifetime systems is different. Different people may prefer one over the other. From my perspective, I prefer Mojo's design for the following reasons:
+
+1. By putting the origin reference in the annotation of the pointer or alias, the chains of the relationship between the owner and the borrower is more explicit and clear.
+1. This annotation only needs to be done in the reference (alias or safe pointer).
+1. The syntax is more elegant and Pythonic, since `&'a` looks quite strange.
+
+## Lifetime in functions - ref vs Pointer
+
+In the previous example, we used `Pointer` type to return the pointer to the shorter string. However, we can also use `ref` type to achieve the same goal. The code will look like this:
+
+```mojo
+def shorter(ref a: String, ref b: String) -> ref [a, b] String:
+    if len(a) < len(b):
+        return a
+    else:
+        return b
+
+def main():
+    var a: String = String("beautiful")
+    var b: String = String("pretty")
+
+    var ref c = shorter(a, b)
+    
+    print(String('The first word you give is "{}" at address {}').format(a, String(Pointer(to=a))))
+    print(String('The second word you give is "{}" at address {}').format(b, String(Pointer(to=b))))
+    print(String('The shorter of the two words is "{}" at address {}').format(c, String(Pointer(to=c))))
+```

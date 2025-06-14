@@ -8,13 +8,9 @@ String is one of the most important concepts in programming languages, but also 
 
 Nevertheless, most programming languages do have a built-in string type. Mojo is no exception. However, the design of `String` in Mojo is, inevitably, changing rapidly, due to the reasons we mentioned above. Even within the development team, there are different opinions on how to design the `String` type. This is why we put string in this standalone chapter.
 
-[[toc]]
+::: warning Compatible Mojo version
 
-## What is a string?
-
-::: warning Version 25.3
-
-This section is based on Mojo version 25.3. The behavior of `String` has been changing rapidly since then. Some of the features described here may not be applicable to the latest versions of Mojo, and some of the features may still be changing in future versions.
+The behavior of `String` has been changing rapidly. Some of the features described here may not be applicable to the latest versions of Mojo, and some of the features may still be changing in future versions.
 
 There are many ongoing discussions about the design of `String` in Mojo. The official team is still working on it. Here are some nice references that we can refer to:
 
@@ -23,7 +19,13 @@ There are many ongoing discussions about the design of `String` in Mojo. The off
 - [PR #3984: Un-deprecate `String.__iter__()`](https://github.com/modular/modular/pull/3984).
 - [PR #3988: String, ASCII, Unicode, UTF, Graphemes](https://github.com/modular/modular/pull/3988).
 
+Compatible Mojo version of this chapter: v25.3.
+
 :::
+
+[[toc]]
+
+## What is a string?
 
 String is an important type of Mojo and Python, which represents a sequence of UTF-8 encoded code points (aka characters). The coding space is so large that it can present almost all human languages and symbols. It is also flexible as it represents different characters in different lengths, allowing for efficient storage and processing of text data. For example, the English alphabet is represented by one byte per character, while Chinese characters are usually represented by three bytes per character.
 

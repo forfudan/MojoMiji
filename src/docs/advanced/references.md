@@ -8,6 +8,12 @@ In Chapter [Functions](../basic/functions) earlier, we introduced the keywords `
 
 In this chapter, we will re-visit the concept of **reference** in Mojo again, but focuses more on different keywords and behaviors of references.
 
+::: info Compatible Mojo version
+
+Compatible Mojo version of this chapter: v25.3, except for the `ref` keyword, which will be introduced in v25.4.
+
+:::
+
 [[toc]]
 
 ## References are not pointers
@@ -39,7 +45,7 @@ Auto-dereferencing is convenient, but it also increase the complexity of the syn
 
 Currently, there are three keywords that are related to references in Mojo: `read`, `mut`, and `owned`. Moreover, a `out` keyword is also used to define a named result of a function. In v25.5, there will be a new keyword `ref` to create an alias in the local scope.
 
-The keywords `read`, `mut`, and `owned`, were not always the ones used to define the ownership and mutability of function arguments. In the early days of Mojo, there were other keywords. The current keywords system is discussed in the following discussion thread on GitHub:
+The keywords `read`, `mut`, and `owned`, were not always the ones used to define the ownership and mutability of function arguments (*aka* argument conventions). In the early days of Mojo, there were other keywords. The current keywords system is discussed in the following discussion thread on GitHub:
 
 - [[Proposal] New ref convention for returning references #2874](https://github.com/modular/modular/discussions/2874)
 
