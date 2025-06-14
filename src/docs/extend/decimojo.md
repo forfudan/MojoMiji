@@ -1,8 +1,96 @@
-# DeciMojo
+# Arbitrary-precision numbers
+
+As discussed in Chapter [What are different](../move/different.md) and Chapter [Data Types](../basic/types#integer), Mojo's built-in integer types are fixed-width integers, while Python's built-in `int` type is an arbitrary-precision integer. This means that you need to be careful when using Mojo's built-in integer types, as they can overflow and lead to unexpected results.
+
+Sometimes, you may still need to use arbitrary-precision integers or decimals in Mojo, especially for financial calculations or scientific computing where precision is crucial. During migrating my Python code to Mojo, I found that I need such numeric types, so I implemented them in the `decimojo` package. The `decimojo` package provides a comprehensive library for arbitrary-precision decimal and integer mathematics in Mojo.
 
 [[toc]]
 
-## Overview
+## Overflow of integers
+
+Let's use a simple example to illustrate the overflow issue of integral types in Mojo:
+
+```mojo
+def main():
+    var a = Int(1234567890123456789)
+    var b = Int(12)
+    print(a, "*", b, "=", a * b)
+```
+
+When you run this code, you will get the following result:
+
+```console
+1234567890123456789 * 12 = -3631929392228070148
+```
+
+This does not make any sense, two positive integers multiplied together should not yield a negative integer. The only reason is that the result of the multiplication (14814814681481481468) exceeds the maximum value that a 64-bit signed integer can hold (9223372036854775807).
+
+This error is quite common, yet detrimental. Why? Because it is not caught by the compiler or during the run time. You may never notice it if, for example, it is one of the ten thousands of intermediate steps in a long calculation.
+
+There are three ways to avoid this issue:
+
+1. Use even larger integer types, such as `Int128` or `Int256`, which can hold larger values without overflow. However, this is not always useful, as these types still have a maximum value.
+1. Add more checks in your code to ensure that the values do not exceed the maximum value of the integer type you are using. This can be cumbersome and error-prone, especially for complex calculations.
+1. Use an arbitrary-precision integer type that can hold any value without overflow. This is the safest solution, but may be slower than using fixed-width integers.
+
+Python chooses the third option. The built-in `int` type in Python is an arbitrary-precision integer type, which means it can hold any value without overflow. This is why you can run the above code in Python and get the correct result:
+
+```python
+def main():
+    a = 1234567890123456789
+    b = 12
+    print(a, "*", b, "=", a * b)
+
+main()
+# Output:
+# 1234567890123456789 * 12 = 14814814681481481468
+```
+
+This kind of arbitrary-precision integer type is usually called a **"big integer"** or **"big number"**. It is a common feature in many programming languages, including Python, Java, and C#.
+
+If you want to use arbitrary-precision integers in Mojo, then you should implement you own big integer type or use a third-party library that provides such functionality. `decimojo` is one such library that provides arbitrary-precision integers. We can re-write the above example using the `decimojo.BigInt` type as follows:
+
+```mojo
+from decimojo import BigInt
+
+
+def main():
+    var a = Int(1234567890123456789)
+    var b = Int(12)
+    print(a, "*", b, "=", BigInt(a) * BigInt(b))
+```
+
+This will give you the correct result:
+
+```console
+1234567890123456789 * 12 = 14814814681481481468
+```
+
+You can actually work on more extreme cases, for example, calculating the power of `a` to `b`:
+
+```mojo
+from decimojo import BigInt
+
+def main():
+    var a = Int(1234567890123456789)
+    var b = Int(12)
+    print(a, "**", b, "=", BigInt(a) ** BigInt(b))
+```
+
+When you run this code, you will get the following result:
+
+```console
+1234567890123456789 ** 12 = 12536598767934098837011289671595456457885541576391566217874996122697055512637259324480105568130484327376910432118088483145279663445798477902348851871108361672220924450351951840609761138957964307683784160819562366959121
+```
+
+
+## Inexact floating-point numbers
+
+Let's also use a simple example to illustrate the inexactness of floating-point numbers in Mojo:
+
+(to be worked on)
+
+## DeciMojo library
 
 DeciMojo provides an arbitrary-precision decimal and integer mathematics library for Mojo, delivering exact calculations for financial modeling, scientific computing, and applications where floating-point approximation errors are unacceptable. Beyond basic arithmetic, the library includes advanced mathematical functions with guaranteed precision.
 

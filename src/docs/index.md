@@ -35,11 +35,12 @@ by ***Yuhao Zhu 朱宇浩***
   - [Design of MatMojo library](./apply/design.md) (Some preparation work for writing a matrix library)
   - [Make it work](./apply/work.md) (Define and implement the basic functionalities)
 - [PART VI: EXTEND MOJO](./extend/extend)
-  - [NuMojo](./extend/numojo) (A library for numerical computing and NDArray)
-  - [DeciMojo](./extend/decimojo) (A library for arbitrary-precision integers and decimals)
+  - [Arbitrary-precision numbers](./extend/decimojo) (A library for arbitrary-precision integers and decimals)
+  - [Multi-dimensional arrays](./extend/numojo) (A library for numerical computing and NDArray)
 - [PART VII: MISCELLANEOUS](./misc/misc)
   <!-- - [Memory layout of Mojo objects](./misc/layout) (How Mojo objects are stored in memory) -->
   - [Glossary of Mojo terms](./misc/glossary) (Find explanations of key terms and concepts)
   - [Useful tips and warnings](./misc/tips) (Do not fall into the pits I fell into)
   - [Wishes for extra features](./misc/wishes) (Some features I wish Mojo could have)
+  - [About the author](./misc/author) (A brief introduction of the author)
   <!-- - [Further readings] -->

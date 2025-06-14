@@ -32,7 +32,9 @@ features:
     details: This Miji Book stands from a Pythonista's perspective and always compare Mojo with Python, making it easier for you to convert your Python knowledge into Mojo.
 ---
 
-::: info About this Miji Book
+<!-- <meta http-equiv="Refresh" content="5; url='https://mojo-lang.com/docs'" /> -->
+
+::: info About this Miji
 
 "Miji" is the latinization of the Chinese word <ruby>秘<rt>mì</rt>籍<rt>jí</rt></ruby>, which literally means a "secret book" or "book of tips". You can call this book "Mojo Miji", "Miji Book", or just "the Miji".
 

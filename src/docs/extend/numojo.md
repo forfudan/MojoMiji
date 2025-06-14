@@ -6,6 +6,8 @@ I will discuss the conceptual models of the NDArray and how the functionalities 
 
 Some of the functionalities are not yet fulfilled due to Mojo, e.g., parameterized traits. We will incorporate them once they are ready.
 
+[[toc]]
+
 ## Array initializing
 
 Array initializing method, i.e., `__init__` constructs a pure container

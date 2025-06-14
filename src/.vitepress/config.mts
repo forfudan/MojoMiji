@@ -43,6 +43,10 @@ export default defineConfig({
       },
       { text: 'Mojo official website', link: 'https://www.modular.com/max/mojo/' },
     ],
+    logoLink: {
+      link: 'https://mojo-lang.com/docs',
+      target: '_self',
+    },
     sidebar: {
       '/docs': [
         {
@@ -153,11 +157,11 @@ export default defineConfig({
           text: 'PART VI: EXTEND MOJO', link: '/docs/extend/extend',
           items: [
             {
-              text: 'DeciMojo',
+              text: 'Arbitrary-precision numbers',
               link: '/docs/extend/decimojo'
             },
             {
-              text: 'NuMojo',
+              text: 'Multi-dimensional arrays',
               link: '/docs/extend/numojo'
             },
           ]
@@ -181,6 +185,10 @@ export default defineConfig({
               text: 'Wishes for extra features',
               link: '/docs/misc/wishes'
             },
+            {
+              text: 'About the author',
+              link: '/docs/misc/author'
+            }
           ]
         },
       ],

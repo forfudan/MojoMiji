@@ -4,7 +4,7 @@ In this chapter, we will look at some simple examples of Python and Mojo code. I
 
 [[toc]]
 
-## Multiplication table
+## Case 1: Multiplication table
 
 The first example is about multiplication table ([Wiki page](https://en.wikipedia.org/wiki/Multiplication_table)). The multiplication table is a table of numbers that shows the result of multiplying two integral numbers together. When I am kid, before going to the elementary school, I was already able to memorize the Chinese multiplication table (<ruby>九<rt>jǐu</rt>九<rt>jǐu</rt>乘<rt>chéng</rt>法<rt>fǎ</rt>表<rt>biǎo</rt></ruby> / Nine-nine song). It is a powerful tool for learning multiplication and finding the product of two numbers quickly.
 
@@ -79,7 +79,7 @@ The table below summarizes the differences between Python and Mojo in this examp
 
 :::
 
-## Fibonacci sequence
+## Case 2: Fibonacci sequence
 
 To demonstrate the gain in speed, we use Fibonacci sequence as an example. The Fibonacci sequence is a sequence of numbers in which each number is the sum of the two preceding ones, usually starting with 0 and 1.
 
@@ -232,7 +232,7 @@ To be frank, I am also surprised by the performance of Mojo in this case. Maybe 
 
 :::
 
-## Sort numbers
+## Case 3: Sort numbers
 
 In the next example, we will look into more more complex data structure: lists. The goal is to show you more about the differences between Python and Mojo. You have to modify your Python code a bit more than the previous examples so that it can be run in Mojo.
 
@@ -389,7 +389,7 @@ The table below summarizes the differences between Python and Mojo in this examp
 
 :::
 
-## Triangle type
+## Case 4: Triangle type
 
 In the last example, we will look into a more complex data structure of Python: "class". Class is a container for variables (attributes) and functions (methods), so that these variables and functions can be accessed via a uniformed interface. It also allows us to achieve the object-oriented programming (OOP )paradigm, which is a powerful way to organize our code and data.
 
