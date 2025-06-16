@@ -69,14 +69,16 @@ If there is only one variable and one value, we do not need ownership at all. We
 
 There are many ways to introduce the concept of "ownership". I thought about it for a long time and finally decided to build a conceptual model of ownership based on the **statuses possible statuses of ownership**. This model can help you understand the relationship between variables and values, and then we will discuss how the ownership rules are related to these statuses. The statuses are:
 
-- **isolated**: each variable owns its own value. It can be created by a copy of the value or the `owned` keyword.
-- **aliased**: one variable owns a value, while another variable is an alias of the first variable. It can be created by the `read` or `mut` keyword in the sub-function scope. From v25.4, it can also be created by the `ref` keyword in the local scope.
-- **pointed**: one variable owns a value, while another variable is a safe pointer to the value. It can be created by the `Pointer` type.
-- **unsafely pointed**: one variable is an unsafe pointer to the address of a value, but does not track the status of the owner of the value. It can be created by the `UnsafePointer` type.
+1. **isolated**: each variable owns its own value. It can be created by a copy of the value or the `owned` keyword.
+2. **referenced**: one variable owns a value, while another variable is an alias (body double) of the first variable. It can be created by the `read` or `mut` keyword in the sub-function scope. From v25.4, it can also be created by the `ref` keyword in the local scope.
+3. **pointed**: one variable owns a value, while another variable is a safe pointer to the value. It can be created by the `Pointer` type.
+4. **unsafe**: one variable is an unsafe pointer to the address of a value, but does not track the status of the owner of the value. It can be created by the `UnsafePointer` type.
 
-In some documents or discussions, a "reference" can either mean a pointer or an alias, depending on the context. This may lead to confusion, especially for beginners. In this Miji, **I will try to avoid using the term "reference" unless it can be applied to both pointers and aliases**. In all other cases, I will use explicitly the term "pointer" for a safe pointer and the term "alias" for an alias.
+Among these statuses, the isolated status is the safest as no sharing or borrowing is involved. The referenced status and the pointed status have many features and behaviors in common, and they are both guaranteed to be safe with the help of the ownership rules and the Mojo compiler. The unsafe status does not belong to the safe Mojo realm, and we will not discuss it in this Chapter but in a separate chapter on unsafe Mojo later.
 
-### Isolated
+In some Mojo documents or discussions, the term "reference" can either mean a pointer or an alias (body double), depending on the context. This may lead to confusion, especially for beginners. In this Miji, **I will try to avoid using the term "reference" unless it means the general "borrowing" concept**. In all other cases, I will use explicitly the term "pointer" for a safe pointer, the term "reference" for an reference (alias, body double), and the term "Rust-style reference" for the reference in Rust.
+
+### Isolated status
 
 In the **isolated** status, each variable owns its own value. In other words, the address of variable `a` is different from the address of variable `b`.
 
@@ -97,20 +99,20 @@ Address (hex)    │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│
                  └────────┴────────┴────────┴────────┴────────┘
 ```
 
-### Aliased
+### Referenced status
 
-In the **aliased** status, one variable has the same type and the same address as another variable, but the former does not have the right to (1) destroy the value or (2) transfer the ownership to a third-party. In other words, the variable `a` has the ownership of the value. the variable `b` has the same type and the address `a`. You can use `b` to access the value of `a` directly, you can modify the value of `a` through `b` under certain conditions, but you cannot transfer the ownership of the value from `a` to a third-party via `b`, nor can you destroy the value of `a` via `b`. If the lifetime of `b` ends, the value of `a` will not be destroyed.
+In the **referenced** status, one variable has the same type and the same address as another variable, but the former does not have the right to (1) destroy the value or (2) transfer the ownership to a third-party. In other words, the variable `a` has the ownership of the value. the variable `b` has the same type and the address `a`. You can use `b` to access the value of `a` directly, you can modify the value of `a` through `b` under certain conditions, but you cannot transfer the ownership of the value from `a` to a third-party via `b`, nor can you destroy the value of `a` via `b`. If the lifetime of `b` ends, the value of `a` will not be destroyed.
 
 Let's use a more daily life example. Person A owns a house, and Person B lives in the house. We say that Person A is the owner of the house, while Person B is the user of the house. Person B can use the house, make changes to the house, but cannot destroy the house or sell it to another person. If Person B moves out of the house, the house will still be owned by Person A and will not be destroyed.
 
-As shown in the following diagram, the variable `a` is an 8-bit unsigned integer (`UInt8`) with the value `89` stored at the address `0x17ca81f8` in the memory. The variable `b` an alias variable that refers to the variable `a`. For the aliased status, no additional memory is allocated for the variable `b`.
+As shown in the following diagram, the variable `a` is an 8-bit unsigned integer (`UInt8`) with the value `89` stored at the address `0x17ca81f8` in the memory. The variable `b` an body-double variable that refers to the variable `a`. For the referenced status, no additional memory is allocated for the variable `b`.
 
-The aliased status usually occurs when we define a function. The argument of a function is an alias of the variable that is passed to the function. The function can access the value of the variable, but cannot transfer the ownership of the value or destroy it. If the function ends, the argument dies, but variable will still be valid and can be used later. Moreover, if the argument can modify the value of the variable, it is a **mutable** alias (`mut` keyword), otherwise it is an **immutable** alias (`read` keyword).
+The referenced status usually occurs when we define a function. The argument of a function is an reference of the variable that is passed to the function. The function can access the value of the variable, but cannot transfer the ownership of the value or destroy it. If the function ends, the argument dies, but variable will still be valid and can be used later. Moreover, if the argument can modify the value of the variable, it is a **mutable** reference (`mut` keyword), otherwise it is an **immutable** reference (`read` keyword).
 
-(Future) From v25.4, the aliased status can also be created in the **local scope** with the `ref` keyword.
+(Future) From v25.4, the referenced status can also be created in the **local scope** with the `ref` keyword.
 
 ```console
-# Mojo Miji - Ownership - Aliased status
+# Mojo Miji - Ownership - Referenced status
                     a ← b
                     ↓   ⇣                       
                  ┌────────┬────────┬────────┬─────────────────┐
@@ -124,15 +126,15 @@ Address (hex)    │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│
                  └────────┴────────┴────────┴────────┴────────┘
 ```
 
-::: info Aliased is not the same as pointed
+::: info Referenced is not the same as pointed
 
 In the pointed status, the variable `b` is not the same type as the variable `a`. So you have to dereference `b` to access the value of `a`, e.g., `print(b[])`.
 
-In the aliased status, the variable `b` is the same type as the variable `a`. So you can access the value of `a` directly with `b`, e.g., `print(b)`.
+In the referenced status, the variable `b` is the same type as the variable `a`. So you can access the value of `a` directly with `b`, e.g., `print(b)`.
 
 :::
 
-### Pointed
+### Pointed status
 
 In the **pointed** status, the value of one variable is the information on another variable. In other words, the variable `a` owns a value at a certain address. Variable `b` is a pointer type that contains the information on the address of `a`. We say that `b` is pointing to `a`'s value.
 
@@ -168,16 +170,16 @@ Thus, pointer is not free and not costless. If assessing a value is through a po
 
 :::
 
-### Unsafely pointed
+### Unsafe status
 
-The last status is the **unsafely pointed** status. It is similar to the pointed status, but the variable `b` now an unsafe pointer type. In other words, the variable `b` is a pointer to an address in memory, but it does not have the information on the owner of the value at that address.
+The last status is the **unsafe** status. It is similar to the pointed status, but the variable `b` now an unsafe pointer type. In other words, the variable `b` is a pointer to an address in memory, but it does not have the information on the owner of the value at that address.
 
 As shown in the following diagram, the unsafe pointer `b` is pointed to the address `0x17ca81f8` where the value `89` is stored. Currently, variable `a` owns the value at this address, so you can use `b[]` to access the value of `a`. However, if the variable `a` is destroyed, the value at the address `0x17ca81f8` will also be destroyed. If you try to access the value at this address via `b[]`, it will be an invalid (undefined) value. If later, a new variable `c` is created at the same address, then `b[]` will access the value of `c`, which is not what you intended.
 
 Because the unsafe pointer `b` does not contain information about the owner `a`, Mojo cannot check the rules of ownership for you. You have to make sure yourself that the value at the address is valid before you access it.
 
 ```console
-# Mojo Miji - Ownership - Aliased status
+# Mojo Miji - Ownership - Unsafe status
                     a
                     ↓
                  ┌────────┬────────┬────────┬─────────────────┐
@@ -442,7 +444,7 @@ However, this design pattern also has some disadvantages: You may unconsciously 
 
 Many people are not aware that their coding behavior is largely shaped or influenced by the syntax of the programming language they use.
 
-For example, in Rust, the default behavior of `=` operator is to transfer the ownership of a value, after which the variable become invalid. In order not to lose the variable, you tend to use safe pointers (in Rust, "references") more, e.g., `let b = &a` or `let b = &mut a`, even for some small structs. The more you use pointers, the more you encounter compilation errors due to lifetime issues (e.g., the pointer `b` may still refer to a value that has been destroyed).
+For example, in Rust, the default behavior of `=` operator is to transfer the ownership of a value, after which the variable become invalid. In order not to lose the variable, you tend to use safe pointers (Rust-type references) more, e.g., `let b = &a` or `let b = &mut a`, even for some small structs. The more you use pointers, the more you encounter compilation errors due to lifetime issues (e.g., the pointer `b` may still refer to a value that has been destroyed).
 
 In Mojo, the default behavior of `=` operator is to copy the value, which is safe and simple. You do not need to use safe pointers because they are also more verbose compared to Rust, e.g., `var b = Pointer(to=a)`. Since most of the the values are copied by default, you encounter less compilation errors due to ownership issues. However, you may unconsciously make a lot of copies of big objects that are not necessary, which leads to performance issues.
 
@@ -669,7 +671,7 @@ Compared to Rust, Mojo is more aggressive in destroying variables. Rust variable
 
 You may then wonder, in the previous example, why the pointer `ptr` is still valid after the last use of `a`, i.e., `var b = a`?
 
-This is because the Mojo compiler will also check whether there are any safe pointers or alias to the value of `a`, if so, the `a` is still regarded as **in use** and will not be destroyed immediately. In other words, **the lifetime of a variable is extended if there are still safe pointers or alias to the value it owns**, unless you explicitly make it invalid by using the `^` operator. We will discuss this in more detail in Chapter [Lifetime](../advanced/lifetime).
+This is because the Mojo compiler will also check whether there are any safe pointers or references to the value of `a`, if so, the `a` is still regarded as **in use** and will not be destroyed immediately. In other words, **the lifetime of a variable is extended if there are still safe pointers or references to the value it owns**, unless you explicitly make it invalid by using the `^` operator. We will discuss this in more detail in Chapter [Lifetime](../advanced/lifetime).
 
 Nevertheless, it is only valid for safe pointers. The immediate destruction rule may bring troubles if you are using unsafe code: for example, `B` is an unsafe pointer to data in the structure `A`, but the Mojo compiler cannot infer this. `A` is destroyed immediately after its last use, resulting in `B` being a dangling pointer pointing to already freed memory.
 

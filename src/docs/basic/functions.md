@@ -314,12 +314,9 @@ In Mojo, if you pass a value (of a variable) into a function, the function (and 
 
 From my perspective, this is a more intuitive model for users and leads to less mental burden.
 
-Note that the term "reference" means differently in Mojo compared to Rust. In Rust, a reference is a safe pointer to a value. In Mojo, however, depending on the context, it can either be:
+Note that the term "reference" means differently in Mojo compared to Rust. In Rust, a reference is a safe pointer to a value. In Mojo, however, it is an alias (body double) of the variable. For example, an argument can be a (immutable or mutable) reference of the variable being passed into the function. When accessing the value of the argument, you do not need to de-reference it.
 
-- An alias of the variable. For example, an argument can be a (immutable or mutable) reference of the variable being passed into the function.
-- A safe pointer type that stores the address of the value of the variable. For example, `Pointer(to=a)` is a reference of the variable `a`.
-
-In case there is no confusion, I will use the term "reference" for convenience for both cases. Otherwise, I  will use the term "alias" to refer to the first case, and "pointer" to refer to the second case.
+We will discuss more about the references system in Mojo in the later chapter [Reference](../advanced/references.md).
 
 :::
 

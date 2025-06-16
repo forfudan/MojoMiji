@@ -22,7 +22,7 @@ In Rust, "reference" is more a safe pointer to the value than an alias. It is no
 
 In Mojo, "reference" is not a type (a safe pointer) as is in Rust, but is more like the reference in C++. A reference refers to the same value but with a different name. Thus, it is an **alias**, a **body double** that is tidily associated with the original variable. It has some right on the value, but not all the rights. By default, it can read the value. Given more permissions, it can also modify the value. No more than that. It cannot destroy the value or change its ownership.
 
-Since it is not a new type, it is therefore, sharing the same behaviors of the original variable. If you want to get the value of the reference, you do not need to de-reference it. In other words, the auto-dereferencing becomes a result convention of the alias rather than a feature of the reference type.
+Since it is not a new type, it is therefore, sharing the same behaviors of the original variable. If you want to get the value of the reference, you do not need to de-reference it. In other words, the auto-dereferencing becomes a result convention of the references rather than a feature of the reference type (reference in Mojo is no type).
 
 For example, if you pass `a: Int` into function `fn copyit(read some: Int)`, then `some` is an immutable reference (alias) of `a` and behave exactly as `a`. The code `b = some.copy()` within the function would call `a`'s `copy()` method. To print the value, you can simply use `print(some)` without any de-referencing operator, e.g., `print(some[])`.
 
@@ -43,7 +43,7 @@ Auto-dereferencing is convenient, but it also increase the complexity of the syn
 
 ## Keywords of conventions
 
-Currently, there are three keywords that are related to references in Mojo: `read`, `mut`, and `owned`. Moreover, a `out` keyword is also used to define a named result of a function. In v25.5, there will be a new keyword `ref` to create an alias in the local scope.
+Currently, there are three keywords that are related to references in Mojo: `read`, `mut`, and `owned`. Moreover, a `out` keyword is also used to define a named result of a function. In v25.5, there will be a new keyword `ref` to create an reference (alias) in the local scope.
 
 The keywords `read`, `mut`, and `owned`, were not always the ones used to define the ownership and mutability of function arguments (*aka* argument conventions). In the early days of Mojo, there were other keywords. The current keywords system is discussed in the following discussion thread on GitHub:
 
@@ -66,7 +66,7 @@ We will discuss each keyword of conventions in the following sections.
 
 ## Mutable reference in local scope:  `ref`
 
-The keyword `ref` allows you to create a **mutable shared reference** of a value in the **local scope**. At the same time, a mutable [**aliases status**](../advanced/ownership.md#four-statuses-of-ownership) is created. At the same time, a mutable [**aliases status**](../advanced/ownership.md#four-statuses-of-ownership) is created.
+The keyword `ref` allows you to create a **mutable shared reference** of a value in the **local scope**. At the same time, a mutable [**referenced status**](../advanced/ownership.md#four-statuses-of-ownership) is created. At the same time, a mutable [**referenced status**](../advanced/ownership.md#four-statuses-of-ownership) is created.
 
 If we apply our [conceptual model of variables](../basic/variables.md#conceptual-model-of-variable), the following things will happen when you use `var ref y = x`:
 
@@ -97,9 +97,9 @@ I am owned by `a` but modified via `b` at 0x16b33cc80
 I am owned by `a` but modified via `b` at 0x16b33cc80
 ```
 
-In this example, we create a variable `a` with the value `1`, and then create a **mutable reference** `b` of `a` using the `ref` keyword. As it is a **aliased status**, the two variables share the same address in the memory (`0x16ae2cc90`). Both of them are of the same type and have the same behaviors. When we change the value of `b` to `3`, the value of `a` is also changed to `3`.
+In this example, we create a variable `a` with the value `1`, and then create a **mutable reference** `b` of `a` using the `ref` keyword. As it is a **referenced status**, the two variables share the same address in the memory (`0x16ae2cc90`). Both of them are of the same type and have the same behaviors. When we change the value of `b` to `3`, the value of `a` is also changed to `3`.
 
-Because `b` is an alias of `a`, it only has the right to use and modify the value of `a`, but does not have the right to destroy it or change its ownership. For example, in the following code, we try to use the transfer operator `^` to transfer the ownership to variable `c`:
+Because `b` is an reference of `a`, it only has the right to use and modify the value of `a`, but does not have the right to destroy it or change its ownership. For example, in the following code, we try to use the transfer operator `^` to transfer the ownership to variable `c`:
 
 ```mojo
 def main():
@@ -157,7 +157,7 @@ The main difference is that you have to de-reference the `Pointer` to access the
 
 ## Immutable reference in sub-scope: `read`
 
-`read` is the keyword used to define an **immutable shared reference** of a value in the **sub-function scope**. In other words, It creates a read-only alias of the value passed into the function. At the same time, an immutable [**aliases status**](../advanced/ownership.md#four-statuses-of-ownership) is created.
+`read` is the keyword used to define an **immutable shared reference** of a value in the **sub-function scope**. In other words, It creates a read-only reference of the value passed into the function. At the same time, an immutable [**referenced status**](../advanced/ownership.md#four-statuses-of-ownership) is created.
 
 If an argument is declared in the function signature with the keyword `read`, then a read-only reference of the value is passed into the function. If we apply our [conceptual model of variables](../basic/variables.md#conceptual-model-of-variable), the following things will happen:
 
@@ -175,7 +175,7 @@ def main():
 
 ## Mutable reference in sub-scope: `mut`
 
-The keyword `mut` allows you to pass a **mutable shared reference** of a value in the **sub-function scope**. In other words, it creates a mutable alias of the value passed into the function. At the same time, a mutable [**aliases status**](../advanced/ownership.md#four-statuses-of-ownership) is created.
+The keyword `mut` allows you to pass a **mutable shared reference** of a value in the **sub-function scope**. In other words, it creates a mutable reference of the value passed into the function. At the same time, a mutable [**referenced status**](../advanced/ownership.md#four-statuses-of-ownership) is created.
 
 If an argument is declared in the function signature with the keyword `read`, then a mutable reference of the value is passed into the function. If we apply our [conceptual model of variables](../basic/variables.md#conceptual-model-of-variable), the following things will happen:
 
@@ -242,7 +242,7 @@ Address │16b6a8fae│16b6a8faf│16b6a8fb0│16b6a8fb1│16b6a8fb2│16b6a8fb3
                           variable `x` (Int8)
 ```
 
-Next, you pass this value into the function `changeit()` with the `mut` keyword. Mojo will then mark argument `a` as a **mutable** reference of `x`. The argument `a` is an alias of `x`, which means they are of the same type and has the same address `16b6a8fb0`. See the following illustration.
+Next, you pass this value into the function `changeit()` with the `mut` keyword. Mojo will then mark argument `a` as a **mutable** reference of `x`. The argument `a` is an reference (alias) of `x`, which means they are of the same type and has the same address `16b6a8fb0`. See the following illustration.
 
 ```console
                         argument `a` (Int8): Mutable reference of x
@@ -401,7 +401,7 @@ Address │16bb384f5│16bb384f6│16bb384f7│16bb384f8│   ...   │16bb38509
 
 ## Chained references
 
-In Mojo, the references (aliases) can be chained through the ownership system. This means that you can create an alias to a variable that is already an alias of another variable. Then the two aliases will both be tied to the original owner of the value, and they will share the same address in the memory. For example, see the following code:
+In Mojo, the references (aliases) or safe pointers can be chained through the ownership system. This means that you can create an reference (or a pointer) to a variable that is already an reference of (or a pointer to) another variable. Then the two references (or pointers) will both be tied to the original owner of the value, and they will share the same address in the memory. For example, see the following code:
 
 ```mojo
 def main():

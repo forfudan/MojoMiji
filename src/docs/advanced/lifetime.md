@@ -19,7 +19,7 @@ Compatible Mojo version of this chapter: v25.4-nighty.
 
 ## Core philosophy of lifetime
 
-The core philosophy of lifetime system of Mojo is that **the lifetime of a safe pointer or alias (reference), shall not be longer than the lifetime of the variable it points to** ([which is exactly the third ownership rule](../advanced/ownership#lifetime-of-owner-longer-than-reference)). In other words, **the owner of a value must outlive all the borrowers of that value**.
+The core philosophy of lifetime system of Mojo is that **the lifetime of a safe pointer or reference (alias), shall not be longer than the lifetime of the variable it points to** ([which is exactly the third ownership rule](../advanced/ownership#lifetime-of-owner-longer-than-reference)). In other words, **the owner of a value must outlive all the borrowers of that value**.
 
 To start with, let's first discuss the start and the end of a lifetime.
 
@@ -56,7 +56,7 @@ def main():
 We can see that:
 
 1. `a` and `x` are variables that own their values.
-1. `b` and `c` are references (alias or safe pointer) to `a`, while `y` and `z` are references (alias or safe pointer) to `x`.
+1. `b` and `c` are either reference or safe pointer to `a`, while `y` and `z` are either alias or safe pointer to `x`.
 1. `a` transfers the ownership of the value to `d` using the `^` operator.
 1. `i` is a loop variable that is used to iterate over the elements of `d`, with values `0`, `1`, and `2`.
 1. `e` is a variable that holds the value of the `i`-th element of `d` in the scope of the loop.
@@ -76,25 +76,25 @@ I am a string. and I am modified.
 
 Now, let's analyze the lifetime of each variable in this code. The lifetime of a variable is determined by when it is created and when it is destroyed. As mentioned above, a variable's lifetime starts when it is initialized (assigned a value) and ends when it goes out of scope, or all its references (and itself) are lastly used. The following table summarizes the start and end of lifetime for each variable in the code:
 
-| Name | Stage  | Lifetime starts or ends after      | Type    | Code                                        |
-| ---- | ------ | ---------------------------------- | ------- | ------------------------------------------- |
-| `a`  | Starts | Initialization (assigned a value)  | Owner   | `var a = List[Int](1,2,3)`                  |
-| `b`  | Starts | Initialization                     | Alias   | `var ref b = a`                             |
-| `x`  | Starts | Initialization (assigned a value)  | Owner   | `var x = String("I am a string.")`          |
-| `y`  | Starts | Initialization                     | Alias   | `var ref y = x`                             |
-| `c`  | Starts | Initialization                     | Pointer | `var c = Pointer(to=a)`                     |
-| `z`  | Starts | Initialization                     | Pointer | `var z = Pointer(to=x)`                     |
-| `b`  | Ends   | Last used                          | -       | `print("0-th element of a via b:", b[0])`   |
-| `c`  | Ends   | Last used                          | -       | `print("1-st element of a via c:", c[][1])` |
-| `d`  | Starts | When ownership is transferred in   | Owner   | `var d = a^`                                |
-| `a`  | Ends   | When ownership is transferred out  | -       | `var d = a^`                                |
-| `i`  | Starts | When the loop starts               | Owner   | `for i in range(0, 3):`                     |
-| `e`  | Starts | Initialization (each loop)         | Owner   | `var e = d[i]`                              |
-| `e`  | Ends   | When each loop ends (out of scope) | -       | `print("Idx", i, "of d is:", e)`            |
-| `i`  | Ends   | When the loop ends (out of scope)  | -       |                                             |
-| `y`  | Ends   | Last used                          | -       | `print(y)`                                  |
-| `z`  | Ends   | Last used                          | -       | `print(z[])`                                |
-| `x`  | Ends   | Last used via pointer `z`          | Owner   | `print(z[])`                                |
+| Name | Stage  | Lifetime starts or ends after      | Type      | Code                                        |
+| ---- | ------ | ---------------------------------- | --------- | ------------------------------------------- |
+| `a`  | Starts | Initialization (assigned a value)  | Owner     | `var a = List[Int](1,2,3)`                  |
+| `b`  | Starts | Initialization                     | Reference | `var ref b = a`                             |
+| `x`  | Starts | Initialization (assigned a value)  | Owner     | `var x = String("I am a string.")`          |
+| `y`  | Starts | Initialization                     | Reference | `var ref y = x`                             |
+| `c`  | Starts | Initialization                     | Pointer   | `var c = Pointer(to=a)`                     |
+| `z`  | Starts | Initialization                     | Pointer   | `var z = Pointer(to=x)`                     |
+| `b`  | Ends   | Last used                          | -         | `print("0-th element of a via b:", b[0])`   |
+| `c`  | Ends   | Last used                          | -         | `print("1-st element of a via c:", c[][1])` |
+| `d`  | Starts | When ownership is transferred in   | Owner     | `var d = a^`                                |
+| `a`  | Ends   | When ownership is transferred out  | -         | `var d = a^`                                |
+| `i`  | Starts | When the loop starts               | Owner     | `for i in range(0, 3):`                     |
+| `e`  | Starts | Initialization (each loop)         | Owner     | `var e = d[i]`                              |
+| `e`  | Ends   | When each loop ends (out of scope) | -         | `print("Idx", i, "of d is:", e)`            |
+| `i`  | Ends   | When the loop ends (out of scope)  | -         |                                             |
+| `y`  | Ends   | Last used                          | -         | `print(y)`                                  |
+| `z`  | Ends   | Last used                          | -         | `print(z[])`                                |
+| `x`  | Ends   | Last used via pointer `z`          | Owner     | `print(z[])`                                |
 
 Note that, although `x` is last used in the fifth-to-last line, it is not destroyed until `print(z[])` because `z` is pointing to it. The lifetime of `x` is extended until all its references are lastly used. After `print(z[])`, `x` is immediately destroyed, so does the pointer `z`.
 
@@ -132,7 +132,7 @@ def main():
 
 Compared to Rust, Mojo is more aggressive in destroying variables. Rust variables end their lifetime at the end of the current scope (code block), but Mojo destroys a variable immediately after its last use. This is called [ASAP destruction](https://docs.modular.com/mojo/manual/lifecycle/death).
 
-However, the term "last use" does not mean that the variable name lastly appears in the code. It also means that all its references (aliases or safe pointers) are lastly used. As long as one of its references are still alive, the variable will not be destroyed.
+However, the term "last use" does not mean that the variable name lastly appears in the code. It also means that all its references and safe pointers are lastly used. As long as one of its references are still alive, the variable will not be destroyed.
 
 This policy is both safe and efficient:
 
@@ -143,9 +143,9 @@ This policy is both safe and efficient:
 
 ## Tracking lifetime information
 
-How does Mojo ensure, in the last example, that the lifetime of `x` is extended until all its references are lastly used? The answer is **to track the lifetime of the original owner in its references (aliases or safe pointers)**.
+How does Mojo ensure, in the last example, that the lifetime of `x` is extended until all its references are lastly used? The answer is **to track the lifetime of the original owner in its references and safe pointers**.
 
-When you create a reference (alias or safe pointer) to a variable, the reference will carry a piece of information on who is the **original** owner variable. Let's say the owner variable is `a`, and you create several references, e.g., `b`, `c`, `d`, etc, to it. Then all these references will carry the information that `a` is the **original** owner of the value.
+When you create a reference or a safe pointer to a variable, the reference will carry a piece of information on who is the **original** owner variable. Let's say the owner variable is `a`, and you create several references, e.g., `b`, `c`, `d`, etc, to it. Then all these references will carry the information that `a` is the **original** owner of the value.
 
 During compilation, Mojo will do these steps:
 
@@ -184,7 +184,7 @@ I am owned by `a` at 0x16d43cc90
 I am owned by `a` at 0x16d43cc90
 ```
 
-Because `b`, `c`, and `d` are all aliases or safe pointers to `a`, they all contain the information on the lifetime of `a`. This means that Mojo compiler will extend the lifetime of `a` until all these references are lastly used.
+Because `b`, `c`, and `d` are all references or safe pointers to `a`, they all contain the information on the lifetime of `a`. This means that Mojo compiler will extend the lifetime of `a` until all these references are lastly used.
 
 In the VS Code editor, you can hover over the variables to see their lifetime information:
 
@@ -370,7 +370,7 @@ The code is very similar to the previous example, except that we take out the if
 
 One thing that worth noting is that the return type of the function is `Pointer[String, __origin_of(word1, word2)]`, which means that the returned pointer will point to either argument `word1` or `word2`. Therefore, the lifetime of the returned pointer shall not be longer than the lifetime of the arguments `word1` and `word2`.
 
-We have also learned previously that the arguments `word1` and `word2` are immutable aliases of the variables in the caller function `main()`. This means that the lifetime of the arguments `word1` and `word2` is the same as the lifetime of the variables `a` and `b` in the caller function.
+We have also learned previously that the arguments `word1` and `word2` are immutable references of the variables in the caller function `main()`. This means that the lifetime of the arguments `word1` and `word2` is the same as the lifetime of the variables `a` and `b` in the caller function.
 
 Using the **chained lifetime rule**, we know that the lifetime of the returned pointer, which is assigned to `c`, should be no longer than the lifetime of either `a` or `b` in the caller function. In other words, both `a` and `b` are destroyed only after `c` is lastly used in the caller function.
 
@@ -503,8 +503,8 @@ Therefore, the IDE will not warn you about the lifetime issues until you compile
 
 The design philosophy of Mojo and Rust lifetime systems is different. Different people may prefer one over the other. From my perspective, I prefer Mojo's design for the following reasons:
 
-1. By putting the origin reference in the annotation of the pointer or alias, the chains of the relationship between the owner and the borrower is more explicit and clear.
-1. This annotation only needs to be done in the reference (alias or safe pointer).
+1. By putting the origin reference in the annotation of the pointers or references, the chains of the relationship between the owner and the borrower is more explicit and clear.
+1. This annotation only needs to be done in the references or safe pointers, but not in the owner variables.
 1. The syntax is more elegant and Pythonic, since `&'a` looks quite strange.
 
 ## Lifetime in functions - ref vs Pointer
