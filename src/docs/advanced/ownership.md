@@ -107,9 +107,7 @@ Let's use a more daily life example. Person A owns a house, and Person B lives i
 
 As shown in the following diagram, the variable `a` is an 8-bit unsigned integer (`UInt8`) with the value `89` stored at the address `0x17ca81f8` in the memory. The variable `b` an body-double variable that refers to the variable `a`. For the referenced status, no additional memory is allocated for the variable `b`.
 
-The referenced status usually occurs when we define a function. The argument of a function is an reference of the variable that is passed to the function. The function can access the value of the variable, but cannot transfer the ownership of the value or destroy it. If the function ends, the argument dies, but variable will still be valid and can be used later. Moreover, if the argument can modify the value of the variable, it is a **mutable** reference (`mut` keyword), otherwise it is an **immutable** reference (`read` keyword).
-
-(Future) From v25.4, the referenced status can also be created in the **local scope** with the `ref` keyword.
+Using the metaphor of the vault, the variable `a` is the vault that contains the value `89`, while the variable `b` is just a alias of the vault. No new vaults are created for `b`.
 
 ```console
 # Mojo Miji - Ownership - Referenced status
@@ -125,6 +123,10 @@ Value (binary)   │01011001│01110101│01101000│01100001│01101111│
 Address (hex)    │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│
                  └────────┴────────┴────────┴────────┴────────┘
 ```
+
+The referenced status usually occurs when we define a function. The argument of a function is an reference of the variable that is passed to the function. The function can access the value of the variable, but cannot transfer the ownership of the value or destroy it. If the function ends, the argument dies, but variable will still be valid and can be used later. Moreover, if the argument can modify the value of the variable, it is a **mutable** reference (`mut` keyword), otherwise it is an **immutable** reference (`read` keyword).
+
+From Mojo v25.4, the referenced status can also be created in the **local scope** with the `ref` keyword.
 
 ::: info Referenced is not the same as pointed
 
@@ -169,6 +171,14 @@ In Mojo, as well as other languages, "pointer" is also a type. The value of a po
 Thus, pointer is not free and not costless. If assessing a value is through a pointer with a larger size than the value itself, it may be more efficient to just do a copy.
 
 :::
+
+Below is a illustration of the pointed status using the metaphor of vaults. One vault with the name `a`, the type `Int`, and the address `0x423565`, contains a value of `10`. Another vault with the name `ptr`, the type `Pointer[Int, a]`, and the address `0x23562`, contains the value `0x423565`. This value is exactly the address of the vault `a`.
+
+The relationship between the vault `a` and the vault `ptr` is the pointed status: The vault `ptr` is pointing to the vault `a`.
+
+To get the value of the vault `a`, you can take out the value of the vault `ptr` (which is `0x423565`) and use this value search the vaults by address. Of course, you will eventually find the vault `a`. Then you open the vault `a` and get the value inside it (which is `10`). Using the value of a pointer to access another value at the address is called **dereferencing**. In Mojo, it is done with the `[]` operator, e.g., `ptr[]`.
+
+![pointed status](/graphs/pointed_status.jpg)
 
 ### Unsafe status
 

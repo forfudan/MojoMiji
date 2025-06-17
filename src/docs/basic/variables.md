@@ -18,9 +18,14 @@ There are various way to define the term "variable", and the definition varies a
 - The address of the variable defines where the data is stored in memory.
 - The value of the variable is a meaningful piece of information that you directly or indirectly create or use. It is usually stored in a binary format in the memory.
 
-Below is an abstract, internal representation of a variable in memory. The variable is of name `a`, of type `Int`, of address `0x26c6a89a`, and of value `123456789`. Since the `Int` type is 64-bit (8-byte) long, it actually occupies the space from `0x26c6a89a` to `0x26c6a89a + 7` = `0x26c6a8a1`. The value `123456789` is stored in the memory space in a binary format, which is `00000000 00000000 00000000 00000000 00000000 00000000 00000101 00000101` (in little-endian format).
+You can think of a variable as a vault, on whose door is printed a name, a type, and an address. The inside of the vault is a space that can hold a value, as shown in the figure below.
+
+![Variable as a vault](/graphs/variable_as_vault.jpg)
+
+Let's take a look at a concrete example of a variable in Mojo. The variable is of name `a`, of type `Int`, of address `0x26c6a89a`, and of value `123456789`. Since the `Int` type is 64-bit (8-byte) long, it actually occupies the space from `0x26c6a89a` to `0x26c6a89a + 7` = `0x26c6a8a1`. The value `123456789` is stored in the memory space in a binary format, which is `00000000 00000000 00000000 00000000 00000000 00000000 00000101 00000101` (in little-endian format).
 
 ```console
+# Mojo Miji - Basic - Variables
         local variable `a` (Int type, 64 bits or 8 bytes)
             ↓  (stored on stack at address 0x26c6a89a in little-endian format)
         ┌───────────────────────────────────────────────────────────────────────────────────────┐
@@ -33,6 +38,10 @@ Value   │ 00000000 │ 00000000 │ 00000000 │ 00000000 │ 00000111 │ 010
 Address │0x26c6a89a│0x26c6a89b│0x26c6a89c│0x26c6a89d│0x26c6a89e│0x26c6a89f│0x26c6a8a0│0x26c6a8a1│
         └──────────┴──────────┴──────────┴──────────┴──────────┴──────────┴──────────┴──────────┘
 ```
+
+More intuitively, the variable `a` can be visualized as the following vault:
+
+![Variable a as a vault](/graphs/variable_vault_a_int_123456789.jpg)
 
 When you program in Mojo, you should always view a variable as a system consisting of four aspects, a name, a type, an address, and a value. You should not only regard it as a name or a label. In this way, you can better understand **how variables are interacted with each other**. When you step into the concept "[ownership](../advanced/ownership.md)", it will save you a lot of effort to understand it.
 
@@ -89,7 +98,7 @@ def main():
 
 As what you may learn from Python, variables with prefixes like `_` or `__` have some special meanings. Mojo also adopts this convention. For example, variables with a single underscore prefix (e.g., `_temp`) are considered private or temporary variables, and users should not access them directly (like `private` keywords in other languages). Variables with a double underscore prefix (e.g., `__temp`) are considered private to the classes or structs. Particularly, variables with double underscores before and after the name (e.g., `__init__`) are considered special methods for classes or structs, which are called "double-underscore methods" or "**dunder** methods". These dunder methods provide an uniformed interface for system functions to work on different types, achieving polymorphism.
 
-## Variable declaration
+## Variable creation
 
 Now we look into how to create a variable in Mojo with help of the the conceptual model and the figure introduced above.
 
@@ -110,10 +119,10 @@ def main():
     var d: List[Int] = List[Int](1, 2, 3)
 ```
 
-The above code construction of the variables, namely `var name: Type = value`, can be further broken down into two parts:
+The above code which constructs four variables, in a more general format `var name: Type = value`, can be further broken down into two parts:
 
 1. **Definement** (`var name: Type`): A `var` keyword is followed by variable name and type. This tells Mojo compiler that a new variable with the specified name and type shall be created in the current code block (scope). Please allocates a memory space for the variable based on its type.
-1. **Assignment** (`= value`): An equal sign is followed by a value. This tells Mojo compiler to evaluate the value you provided, and store it in the allocated memory space in a binary format. How to convert the value into binary format depends on the type of the variable.
+1. **Assignment** (`= value`): An equal sign is followed by a value. This tells Mojo compiler to store the value in the allocated memory space in a binary format. How to convert the value into binary format depends on the type of the variable.
 
 These two steps can be done simultaneously in one line, as shown in the above example, or separately in two lines, in the following way:
 
@@ -122,9 +131,9 @@ These two steps can be done simultaneously in one line, as shown in the above ex
 def main():
     # Define variables first
     var a: Int
-    var b: Float64 = 2.5
-    var c: String = "Hello, world!"
-    var d: List[Int] = List[Int](1, 2, 3)
+    var b: Float64
+    var c: String
+    var d: List[Int]
 
     # Assign values to the variable names in separate lines
     a = 1
@@ -133,7 +142,7 @@ def main():
     d = List[Int](1, 2, 3)
 ```
 
-These two examples are equivalent. The first example is more concise and Pythonic. The second example is also useful when you want to show which variables will be used in one place. Which one is better depends on your personal preference and the purpose of the code.
+The two examples above are equivalent. The first example is more concise and Pythonic. The second example is also useful when you want to show which variables will be used in one place. Which one is better depends on your personal preference and the purpose of the code.
 
 :::tip Too verbose
 
@@ -143,7 +152,19 @@ If you still want to chill a bit, luckily, Mojo is more than "clever" to allow y
 
 :::
 
-## The `var` keyword
+### Initialized and uninitialized variables
+
+If you declare a variable without assigning a value to it, we call that the variable is **uninitialized**. It is like that you buy a vault (with a name, a type, and an address printed on the door) but you do not put anything inside it. When you assign a value into the variable later, then we can say that the variable is **initialized**.
+
+See the following two figures. If you declare a variable with `var a: Int`, then Mojo will create a space in the memory at the address `0x26c6a89a` (for example). It is like that you buy a new vault without putting anything inside it. It is **uninitialized**.
+
+![Uninitialized variable](/graphs/variable_uninitialized.jpg)
+
+When you use the syntax `a = 123456789`, then Mojo will store the value `123456789` in the memory space at the address `0x26c6a89a`. It is like that you put the value `123456789` into the vault. Now the variable `a` is **initialized**.
+
+![Initialized variable](/graphs/variable_initialized.jpg)
+
+### The `var` keyword
 
 Mojo uses the `var` keyword to declare a variable. This keyword is not required in Python.
 
@@ -179,7 +200,7 @@ def main():
 main()
 ```
 
-But in Mojo, it is not allowed. Yuhao finds this a good design choice, as it helps to avoid confusion and potential bugs caused by variable shadowing. If you want to change the type of a variable, please instead use a different name for the new variable.
+But in Mojo, it is not allowed. I find this a good design choice, as it helps to avoid confusion and potential bugs caused by variable shadowing. If you want to change the type of a variable, please instead use a different name for the new variable.
 
 :::
 
@@ -213,7 +234,7 @@ From v24.5 (2024-09-13), the `var` keyword has also become optional, to be fully
 
 :::
 
-## Type annotations
+### Type annotations
 
 Python is a dynamic, strongly-typed language. When we say that it is strongly-typed, we mean that Python enforces type checking at runtime and there are less implicit type conversions. When we say that it is dynamic, we mean that Python does not require you to declare the type of a variable before using it. You can assign any value to a variable, and Python will determine its type at runtime. From Python 3.5 onwards, Python also supports type hints, which allows you to annotate the types of variables and function arguments, but these are optional and do not affect the runtime behavior and performance of the code. Giving incorrect type hints will not cause any errors. The Python's type hints are primarily for static analysis tools and IDEs to help you catch potential errors before running the code, and it also helps other developers (or yourself in future) understand your code better.
 
@@ -258,6 +279,24 @@ fn main():
     var a: Int = 1
     a = "Hello!"
 ```
+
+You can think of value re-assignment disposing the old value from the vault and putting a new value into the it. The name, type, and address printed on the door of the vault remain unchanged.
+
+## Use of variables
+
+Once a variable is created, you can use it in your code by referring to its name. This is called using the variable. When you use a variable, the Mojo compiler will look up the symbol table to find the information of the variable. Then it will retrieve the value from the memory address.
+
+This name-to-value mapping is straightforward. You do not need to use any extra syntax or operators. Just write down the name of the variable, and the compiler will find out the value for you.
+
+You can think of this process with our previous metaphor as follows:
+
+First, you provide the name of the vault (variable) to the Mojo compiler, let's say, `a`. The Mojo compiler will then look up the room and find the vault with the specified name `a`.
+
+![symbol table as vaults](/graphs/symbol_table_as_vaults.jpg)
+
+It is in the middle of the first row. The Mojo compiler opens the vault and retrieves the value stored inside it.
+
+![Initialized variable](/graphs/variable_initialized.jpg)
 
 ## Scope of variables
 
