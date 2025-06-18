@@ -18,7 +18,7 @@ There are various way to define the term "variable", and the definition varies a
 - The address of the variable defines where the data is stored in memory.
 - The value of the variable is a meaningful piece of information that you directly or indirectly create or use. It is usually stored in a binary format in the memory.
 
-You can think of a variable as a vault, on whose door is printed a name, a type, and an address. The inside of the vault is a space that can hold a value, as shown in the figure below.
+You can think of a variable as a safe vault, on whose door is printed a name, a type, and an address. The inside of the vault is a space that can hold a value, as shown in the figure below.
 
 ![Variable as a vault](/graphs/variable_as_vault.jpg)
 
@@ -48,6 +48,10 @@ When you program in Mojo, you should always view a variable as a system consisti
 For example, when you initialize a variable, you are doing the following things: (1) Select an **name** for the variable, (2) Specify the **type** of the variable, (3) Ask for an **address**, a memory space, to store the date, and (4) Store the **value** in the memory space in a binary format.
 
 When you use a variable via its name, you are doing the following four things: (1) Find out the information of the variable in the symbol table, which includes its name, type, and address in the memory, (2) Go to the memory address to retrieve the value stored there, and (3) Interpret the value according to its type.
+
+There can be many, many variables in a program. They will be stored in different locations in the memory, each with its own name, type, address, and value. The following figure shows a few variables (as safe vaults) in a program. Note that some vaults are bigger than others and occupy more space in the memory. Some addresses are not yet occupied by any vaults.
+
+![Safe memory view](/graphs/safe_memory_view.jpg)
 
 ::: tip Type is important
 

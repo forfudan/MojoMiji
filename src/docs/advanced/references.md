@@ -63,7 +63,6 @@ As a "archaeologist", I always like to track the history of the changes in the l
 
 We will discuss each keyword of conventions in the following sections.
 
-
 ## Mutable reference in local scope:  `ref`
 
 The keyword `ref` allows you to create a **mutable shared reference** of a value in the **local scope**. At the same time, a mutable [**referenced status**](../advanced/ownership.md#four-statuses-of-ownership) is created. At the same time, a mutable [**referenced status**](../advanced/ownership.md#four-statuses-of-ownership) is created.

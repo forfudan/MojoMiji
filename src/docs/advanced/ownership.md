@@ -34,6 +34,20 @@ To achieve these goals, your bose set up several strict rules on the system that
 
 That's it. This is all about memory management and the objective of the ownership model. Just think that the address of houses is the memory address. The person living in the house is the value (data). You never want to access a value that is invalid (e.g., the **dangling-pointer** problem, the **uninitialized-value** problem), to modify a value unintentionally (e.g., the **double-free** problem, the **accidental-overwriting** problem, etc), nor to exhaust the memory (e.g., the **memory-leak** problem). Finally, the rules that your boss set up are the ownership rules that the Mojo compiler checks at compile time.
 
+::: warning Safe visits
+
+Below is an abstract representation of the memory and variables (the vault-metaphor). Each variable is a vault with a name, a type, an address, and a value. Depending on the type of the variable, the value may occupy a different number of bytes in memory. Notably, some addresses do not belong to any variable (no safe vault), which means that they are invalid.
+
+To safely visit the memory to access a value, you have to first know which variable (safe vault) you are visiting, and then you check the address book to find out the location of the variable (safe vault). Finally, you go to the address, open the door, and access the value.
+
+**Unsafe visits** mean that you directly go to an address without checking which vault is at the address, nor confirming whether a vault exists at the address or not.
+
+For example, in the following graph, the address `0x01` does not belong to any variable (safe vault). There might be some garbage at that address. If you just visit the address `0x01` without conducting any checks, you will get the garbage data.
+
+![Safe memory view](/graphs/safe_memory_view.jpg)
+
+:::
+
 ## Ownership in Mojo
 
 ::: info Mojo vs Rust
@@ -127,6 +141,10 @@ Address (hex)    │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│
 The referenced status usually occurs when we define a function. The argument of a function is an reference of the variable that is passed to the function. The function can access the value of the variable, but cannot transfer the ownership of the value or destroy it. If the function ends, the argument dies, but variable will still be valid and can be used later. Moreover, if the argument can modify the value of the variable, it is a **mutable** reference (`mut` keyword), otherwise it is an **immutable** reference (`read` keyword).
 
 From Mojo v25.4, the referenced status can also be created in the **local scope** with the `ref` keyword.
+
+The referenced status is safe. This is because any references will be linked with a valid variable. The references will never be linked to an invalid address or an uninitialized variable. In the following figure, a reference can only be linked with the safe vault `a`, `num`, `val`, or `b`, but cannot be linked with the address `0x01` directly, since there is no safe vault at that address. In other words, **the references access values only if they are stored in safe vaults**.
+
+![Safe memory view](/graphs/safe_memory_view.jpg)
 
 ::: info Referenced is not the same as pointed
 
