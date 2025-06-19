@@ -12,7 +12,7 @@ hero:
   actions:
     - theme: brand
       text: Open Miji
-      link: docs/
+      link: miji/
     # - theme: alt
     #   text: NuMojo
     #   link: numojo/intro
@@ -32,7 +32,7 @@ features:
     details: This Miji Book stands from a Pythonista's perspective and always compare Mojo with Python, making it easier for you to convert your Python knowledge into Mojo.
 ---
 
-<!-- <meta http-equiv="Refresh" content="5; url='https://mojo-lang.com/docs'" /> -->
+<!-- <meta http-equiv="Refresh" content="5; url='https://mojo-lang.com/miji'" /> -->
 
 ::: info About this Miji
 
