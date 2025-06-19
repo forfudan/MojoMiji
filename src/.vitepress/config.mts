@@ -61,11 +61,11 @@ export default defineConfig({
           text: 'PART I: START WITH MOJO',
           link: '/miji/start/start',
           items: [
+            // {
+            //   text: 'Install magic (being deprecated)', link: '/miji/start/magic'
+            // },
             {
-              text: 'Install magic (being deprecated)', link: '/miji/start/magic'
-            },
-            {
-              text: 'Install pixi (alternative solution)', link: '/miji/start/pixi'
+              text: 'Install pixi and extension', link: '/miji/start/pixi'
             },
             {
               text: 'Initiate Mojo project', link: '/miji/start/project'

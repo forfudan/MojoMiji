@@ -86,21 +86,21 @@ You can see that there is currently nothing in the `[dependencies]` section. Thi
 
 ```toml
 [dependencies]
-max = "*"
+max = "==25.4"
 ```
 
 The word on the left side of the `=` is the name of the package. In this case, it is the `max` package, which contains all necessary files to run Mojo code. This also includes the Mojo compiler.
 
 The word on the right side of the `=` is the version of the package you want to install. Here are some examples:
 
-- `max = "==25.3"`: This means to install a specific version of the package, e.g., version 25.3.
-- `max = ">=25.3"`: This means to install any version from 25.3 and later.
-- `max = ">=25.1, <25.4"`: This means to install version 25.1 or later, but less than 25.4.
+- `max = "==25.4"`: This means to install a specific version of the package, e.g., version 25.4.
+- `max = ">=25.4"`: This means to install any version from 25.4 and later.
+- `max = ">=25.1, <25.5"`: This means to install version 25.1 or later, but less than 25.5.
 - `max = "*"`: This means to install the latest version of the package (as available in the channels specified in the "channels" field).
 
 ## Install Mojo compiler
 
-After we put `max = "*"` in the dependencies field, pixi knows that we want to install the latest version of the `max` package. To finish the installation, we need to run the following command in your terminal (Use `Cmd+J` to open the terminal in VS Code):
+After we put `max = "==25.4"` in the dependencies field, pixi knows that we want to install the latest version of the `max` package. To finish the installation, we need to run the following command in your terminal (Use `Cmd+J` to open the terminal in VS Code):
 
 ```bash
 pixi install

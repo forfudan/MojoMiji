@@ -2,12 +2,19 @@
 
 by ***Yuhao Zhu 朱宇浩***
 
+::: warning Compatible Mojo version
+
+This Miji is compatible with Mojo v25.3 (2025-05-06) and is working towards compatibility with Mojo
+v25.4 (2025-06-18).
+
+:::
+
 ## Table of Contents
 
 - [INTRODUCTION](./intro)
 - [PART I: START WITH MOJO](./start/start)
-  - [Install Magic (being deprecated)](./start/magic) (This will be deprecated in future)
-  - [Install package manager](./start/pixi) (Install pixi, the package manager for Mojo)
+  <!-- - [Install Magic (being deprecated)](./start/magic) (This will be deprecated in future) -->
+  - [Install pixi and extension](./start/pixi) (Install package manager and VS Code extension)
   - [Initiate Mojo project](./start/project) (Initiate a Mojo project and install Mojo compiler)
   - [My first Mojo program](./start/hello) (Hello, world!)
 - [PART II: MOVE INTO MOJO](./move/move)

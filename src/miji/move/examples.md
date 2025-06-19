@@ -299,12 +299,6 @@ def bubble_sort(array: List[Float64]):
     ...
 ```
 
-We also need to use the list constructor in your `main()` function to construct the list (just like what we did before for string). So we change the first line in the `main()` function to:
-
-```mojo
-array = List[Float64](64.1, 34.523, 25.1, -12.3, 22.0, -11.5, 90.49)
-```
-
 After the change, you will see that the IDE is still complaining:
 
 ```console
@@ -348,7 +342,7 @@ def print_list(array: List[Float64]):
             print(array[i], end="]\n")
 
 def main():
-    array = List[Float64](64.1, 34.523, 25.1, -12.3, 22.0, -11.5, 90.49)
+    array = [64.1, 34.523, 25.1, -12.3, 22.0, -11.5, 90.49]
     print("Input array:", end=" ")
     print_list(array)
     bubble_sort(array)
@@ -378,14 +372,14 @@ If you already use the type-hint system a lot in Python, you will not find these
 
 The table below summarizes the differences between Python and Mojo in this example.
 
-| Feature                               | Python              | Mojo                         |
-| ------------------------------------- | ------------------- | ---------------------------- |
-| Integral type                         | `int` (big integer) | `Int` (fixed-size integer)   |
-| Type annotation in function signature | Optional            | Mandatory                    |
-| List type                             | `list[float]`       | `List[Float64]`              |
-| Construct a list instance             | Wrapped in `[]`     | Wrapped in `List[Float64]()` |
-| Mutable argument                      | Default             | Must use `mut` keyword       |
-| Print list with `print()`             | Supported           | Not supported (yet)          |
+| Feature                               | Python              | Mojo                       |
+| ------------------------------------- | ------------------- | -------------------------- |
+| Integral type                         | `int` (big integer) | `Int` (fixed-size integer) |
+| Type annotation in function signature | Optional            | Mandatory                  |
+| Annotation for the list type          | `list[float]`       | `List[Float64]`            |
+| Types of elements in a list           | Heterogeneous       | Homogeneous                |
+| Mutable argument                      | Default             | Must use `mut` keyword     |
+| Print list with `print()`             | Supported           | Not supported (yet)        |
 
 :::
 
@@ -509,6 +503,8 @@ After these changes, we have the following code:
 
 ```mojo
 # src/move/triangle_from_py.mojo
+# Adapted from Python code with preliminary changes
+# It is not guaranteed to run successfully yet
 class Triangle:
     """A class to represent a triangle."""
 
@@ -716,6 +712,13 @@ print(String(triangle))
 print(String(invalid_triangle))
 ```
 
+Moreover, for some special double underscore methods like `__str__()`, Mojo requires you to explicitly include the related trait in the struct signature. Here, the `__str__()` method is corresponding to the trait `StringableRaising`. This knowledge is too advanced for beginners and we will discuss this in details in Chapter [Generic and Traits](../advanced/generic.md). For now, we just add the trait name to the struct signature:
+
+```mojo
+struct Triangle(StringableRaising):
+    ...
+```
+
 Finally, we come to the last error message, which is about try-except statement:
 
 ```console
@@ -735,7 +738,7 @@ After all these changes, we have our final Mojo code as follows:
 
 ```mojo
 # src/move/triangle.mojo
-struct Triangle:
+struct Triangle(StringableRaising):
     """A class to represent a triangle."""
 
     # Declare attributes
@@ -745,14 +748,14 @@ struct Triangle:
 
     def __init__(out self, a: Float64, b: Float64, c: Float64):
         """Initializes a triangle with three sides.
-        
+
         Args:
             a: Length of side a.
             b: Length of side b.
             c: Length of side c.
 
         Raises:
-            Error: If the lengths do not form a valid triangle.
+            ValueError: If the lengths do not form a valid triangle.
         """
         self.a = a
         self.b = b
@@ -767,16 +770,16 @@ struct Triangle:
 
     def area(self) -> Float64:
         """Calculates the area of the triangle using Heron's formula.
-        
+
         Returns:
             Float64: The area of the triangle.
         """
-        var s: Float64 = (self.a + self.b + self.c) / 2
+        s = (self.a + self.b + self.c) / 2
         return (s * (s - self.a) * (s - self.b) * (s - self.c)) ** 0.5
 
     def perimeter(self) -> Float64:
         """Calculates the perimeter of the triangle.
-        
+
         Returns:
             Float64: The perimeter of the triangle.
         """
@@ -784,14 +787,16 @@ struct Triangle:
 
     def __str__(self) -> String:
         """Returns a string representation of the triangle.
-        
+
         Returns:
             A string representation of the triangle.
 
         Notes:
             You can use the `str()` or `print()` to call this method.
         """
-        return String("Triangle(a={}, b={}, c={})").format(self.a, self.b, self.c)
+        return String("Triangle(a={}, b={}, c={})").format(
+            self.a, self.b, self.c
+        )
 
 
 def main():
@@ -823,21 +828,24 @@ Creating an invalid triangle with sides 1, 2, and 3:
 Error: The lengths of sides do not form a valid triangle.
 ```
 
+This example is more complex than the previous ones, you may need some more time and effort to understand and adapt to the differences between Python and Mojo. But it is a good starting point to learn how to write Mojo code and how to use the features of Mojo to achieve the same functionality as in Python.
+
 ::: tip Difference between Python and Mojo
 
 The table below summarizes the differences between Python and Mojo in this example.
 
-| Feature                            | Python                    | Mojo                                             |
-| ---------------------------------- | ------------------------- | ------------------------------------------------ |
-| Define type                        | `class` keyword           | `struct` keyword                                 |
-| Inheritance                        | Supported                 | Not supported                                    |
-| Attributes                         | No declaration needed     | Declared in struct definition with keyword `var` |
-| Argument of the type itself        | `self`                    | `self`, but following the keyword `out`          |
-| Parameter vs argument in docstring | `Parameters` in docstring | `Args` in docstring                              |
-| Exception classes                  | Several built-in classes  | `Error` is the only built-in exception class     |
-| `print()` calls                    | `__str__()` method        | `write_to()` method                              |
-| `__str__()` is used for            | `print()` and `str()`     | Only for string conversion via `String()`        |
-| `as` in except statement           | Supported                 | Not supported                                    |
+| Feature                            | Python                    | Mojo                                                |
+| ---------------------------------- | ------------------------- | --------------------------------------------------- |
+| Define type                        | `class` keyword           | `struct` keyword                                    |
+| Inheritance                        | Supported                 | Not supported                                       |
+| Attributes                         | No declaration needed     | Declared in struct definition with keyword `var`    |
+| Argument of the type itself        | `self`                    | `self`, but following the keyword `out`             |
+| Parameter vs argument in docstring | `Parameters` in docstring | `Args` in docstring                                 |
+| Exception classes                  | Several built-in classes  | `Error` is the only built-in exception class        |
+| `print()` calls                    | `__str__()` method        | `write_to()` method                                 |
+| `__str__()` is used for            | `print()` and `str()`     | Only for string conversion via `String()`           |
+| Trait names                        | Not applicable            | Must be explicitly included in the struct signature |
+| `as` in except statement           | Supported                 | Not supported                                       |
 
 :::
 
@@ -867,4 +875,4 @@ Triangle(a=3.0, b=4.0, c=5.0)
 
 ## Next step
 
-With these four examples, you should have a good idea of how Mojo code looks like and how it is similar to or different from Python. You also see how powerful Mojo is in terms of performance. In the next chapters, we will investigate the concepts that are in common between Mojo and Python, so that you do not need to change your coding habits.
+With these four examples, you should already have a good idea of how Mojo code looks like and how it is similar to or different from Python. You also see how powerful Mojo is in terms of performance. In the next chapters, we will investigate the concepts that are in common between Mojo and Python, so that you do not need to change your coding habits.

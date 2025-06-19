@@ -12,7 +12,7 @@ I have to say that it is difficult. You may find that you are still at a loss af
 
 ::: info Compatible Mojo version
 
-Compatible Mojo version of this chapter: v25.3, except for the `ref` keyword, which with be introduced in v25.4.
+This chapter is compatible with Mojo v25.4 (2025-06-18).
 
 :::
 

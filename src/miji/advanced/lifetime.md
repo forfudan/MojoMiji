@@ -11,7 +11,7 @@ Many people think that lifetime is a complex concept, as well as how to denote i
 
 The lifetime system in Mojo is still evolving. The syntax and semantics described in this document are subject to change in future versions of Mojo.
 
-Compatible Mojo version of this chapter: v25.4-nighty.
+This chapter is compatible with Mojo v25.4 (2025-06-18).
 
 :::
 

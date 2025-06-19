@@ -10,7 +10,7 @@ In this chapter, we will re-visit the concept of **reference** in Mojo again, bu
 
 ::: info Compatible Mojo version
 
-Compatible Mojo version of this chapter: v25.3, except for the `ref` keyword, which will be introduced in v25.4.
+This chapter is compatible with Mojo v25.4 (2025-06-18).
 
 :::
 
