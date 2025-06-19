@@ -39,130 +39,130 @@ export default defineConfig({
     logo: '/icon.png',
     nav: [
       {
-        text: 'Open Miji', link: '/docs/'
+        text: 'Open Miji', link: '/miji/'
       },
       { text: 'Mojo official website', link: 'https://www.modular.com/max/mojo/' },
     ],
     logoLink: {
-      link: 'https://mojo-lang.com/docs',
+      link: 'https://mojo-lang.com/miji',
       target: '_self',
     },
     sidebar: {
-      '/docs': [
+      '/miji': [
         {
           text: 'Table of Content',
-          link: '/docs/'
+          link: '/miji/'
         },
         {
           text: 'Introduction',
-          link: '/docs/intro'
+          link: '/miji/intro'
         },
         {
           text: 'PART I: START WITH MOJO',
-          link: '/docs/start/start',
+          link: '/miji/start/start',
           items: [
             {
-              text: 'Install magic (being deprecated)', link: '/docs/start/magic'
+              text: 'Install magic (being deprecated)', link: '/miji/start/magic'
             },
             {
-              text: 'Install pixi (alternative solution)', link: '/docs/start/pixi'
+              text: 'Install pixi (alternative solution)', link: '/miji/start/pixi'
             },
             {
-              text: 'Initiate Mojo project', link: '/docs/start/project'
+              text: 'Initiate Mojo project', link: '/miji/start/project'
             },
             {
-              text: 'My first Mojo program', link: '/docs/start/hello'
+              text: 'My first Mojo program', link: '/miji/start/hello'
             }
           ],
         },
         {
           text: 'PART II: MOVE INTO MOJO',
-          link: '/docs/move/move',
+          link: '/miji/move/move',
           items: [
             {
-              text: 'Convert Python code into Mojo', link: '/docs/move/examples'
+              text: 'Convert Python code into Mojo', link: '/miji/move/examples'
             },
             {
-              text: 'Things that are in common', link: '/docs/move/common'
+              text: 'Things that are in common', link: '/miji/move/common'
             },
             {
-              text: 'Things that are different', link: '/docs/move/different'
+              text: 'Things that are different', link: '/miji/move/different'
             },
           ],
         },
         {
           text: 'PART III: BASIC MOJO',
-          link: '/docs/basic/basic',
+          link: '/miji/basic/basic',
           items: [
             {
-              text: 'Variables', link: '/docs/basic/variables',
+              text: 'Variables', link: '/miji/basic/variables',
             },
             {
-              text: 'Functions', link: '/docs/basic/functions',
+              text: 'Functions', link: '/miji/basic/functions',
             },
             {
-              text: 'Data types - basic', link: '/docs/basic/types',
+              text: 'Data types - basic', link: '/miji/basic/types',
             },
             {
-              text: 'Data type - string', link: '/docs/basic/string',
+              text: 'Data type - string', link: '/miji/basic/string',
             },
             {
-              text: 'Operators and assignment', link: '/docs/basic/operators',
+              text: 'Operators and assignment', link: '/miji/basic/operators',
             },
             {
-              text: 'Structs', link: '/docs/basic/structs',
+              text: 'Structs', link: '/miji/basic/structs',
             },
           ],
         },
         {
-          text: 'PART IV: ADVANCED MOJO', link: '/docs/advanced/advanced',
+          text: 'PART IV: ADVANCED MOJO', link: '/miji/advanced/advanced',
           items: [
             {
-              text: 'Data type - SIMD', link: '/docs/advanced/simd',
+              text: 'Data type - SIMD', link: '/miji/advanced/simd',
             },
             {
-              text: 'Parameterization', link: '/docs/advanced/parameterization',
+              text: 'Parameterization', link: '/miji/advanced/parameterization',
             },
             {
-              text: 'Generic and traits', link: '/docs/advanced/generic',
+              text: 'Generic and traits', link: '/miji/advanced/generic',
             },
             {
               text: 'Ownership',
-              link: '/docs/advanced/ownership'
+              link: '/miji/advanced/ownership'
             },
             {
               text: 'References',
-              link: '/docs/advanced/references'
+              link: '/miji/advanced/references'
             },
             {
               text: 'Lifetime',
-              link: '/docs/advanced/lifetime'
+              link: '/miji/advanced/lifetime'
             }
           ]
         },
         {
-          text: 'PART V: APPLY MOJO', link: '/docs/apply/apply',
+          text: 'PART V: APPLY MOJO', link: '/miji/apply/apply',
           items: [
             {
               text: 'Design of MatMojo library',
-              link: '/docs/apply/design'
+              link: '/miji/apply/design'
             },
             {
               text: 'Make it work',
-              link: '/docs/apply/work'
+              link: '/miji/apply/work'
             },
           ]
         },
         {
-          text: 'PART VI: EXTEND MOJO', link: '/docs/extend/extend',
+          text: 'PART VI: EXTEND MOJO', link: '/miji/extend/extend',
           items: [
             {
               text: 'Arbitrary-precision numbers',
-              link: '/docs/extend/decimojo'
+              link: '/miji/extend/decimojo'
             },
             {
               text: 'Multi-dimensional arrays',
-              link: '/docs/extend/numojo'
+              link: '/miji/extend/numojo'
             },
           ]
         },
@@ -171,23 +171,23 @@ export default defineConfig({
           items: [
             // {
             //   text: 'Memory layout of Mojo objects',
-            //   link: '/docs/misc/layout'
+            //   link: '/miji/misc/layout'
             // },
             {
               text: 'Glossary of Mojo terms',
-              link: '/docs/misc/glossary'
+              link: '/miji/misc/glossary'
             },
             {
               text: 'Useful tips and warnings',
-              link: '/docs/misc/tips'
+              link: '/miji/misc/tips'
             },
             {
               text: 'Wishes for extra features',
-              link: '/docs/misc/wishes'
+              link: '/miji/misc/wishes'
             },
             {
               text: 'About the author',
-              link: '/docs/misc/author'
+              link: '/miji/misc/author'
             }
           ]
         },
@@ -264,19 +264,19 @@ export default defineConfig({
   //     themeConfig: {
   //       logo: '/icon.png',
   //       nav: [
-  //         { text: '開啓攻略', link: '/zht/docs/intro' },
+  //         { text: '開啓攻略', link: '/zht/miji/intro' },
   //         { text: 'Mojo官網', link: 'https://www.modular.com/max/mojo/' }
   //       ],
   //       sidebar: {
-  //         '/zht/docs': [
+  //         '/zht/miji': [
   //           {
-  //             items: [{ text: '簡介', link: '/zht/docs/intro' },]
+  //             items: [{ text: '簡介', link: '/zht/miji/intro' },]
   //           },
   //           {
-  //             items: [{ text: '變量', link: '/zht/docs/variables' },]
+  //             items: [{ text: '變量', link: '/zht/miji/variables' },]
   //           },
   //           {
-  //             items: [{ text: '類型', link: '/zht/docs/types' },]
+  //             items: [{ text: '類型', link: '/zht/miji/types' },]
   //           },
   //         ],
   //       },

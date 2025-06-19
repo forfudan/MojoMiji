@@ -6,10 +6,10 @@ t2s = opencc.OpenCC("t2s")
 
 paths_of_docs = [
     "/index.md",
-    "/docs/introduction.md",
-    "/docs/variables.md",
-    "/docs/types.md",
-    "/docs/ownership.md",
+    "/miji/introduction.md",
+    "/miji/variables.md",
+    "/miji/types.md",
+    "/miji/ownership.md",
 ]
 
 for path_of_doc in paths_of_docs:
