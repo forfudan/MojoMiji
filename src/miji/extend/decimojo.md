@@ -8,7 +8,7 @@ Sometimes, you may still need to use arbitrary-precision integers or decimals in
 
 ## Overflow of integers
 
-Let's use a simple example to illustrate the overflow issue of integral types in Mojo:
+The built-in integral types in Mojo may overflow if the result of an operation exceeds the minimum or maximum value that the type can hold. Let's use a simple example to illustrate the overflow issue of integral types in Mojo:
 
 ```mojo
 def main():
@@ -83,16 +83,94 @@ When you run this code, you will get the following result:
 1234567890123456789 ** 12 = 12536598767934098837011289671595456457885541576391566217874996122697055512637259324480105568130484327376910432118088483145279663445798477902348851871108361672220924450351951840609761138957964307683784160819562366959121
 ```
 
-
 ## Inexact floating-point numbers
 
-Let's also use a simple example to illustrate the inexactness of floating-point numbers in Mojo:
+We are living in a world of decimal numbers. Some theories suggest that the decimal system is more natural for humans, as we have ten fingers. However, computers are built on binary systems, which means they use base-2 numbers. This leads to some interesting challenges when it comes to representing decimal numbers in binary. More specifically, some decimal numbers cannot be represented exactly in binary, which leads to inexact floating-point numbers.
 
-(to be worked on)
+Why would this happen? A quick answer is the following rule:
+
+"In a base-N system, fractions can be represented exactly if and only if the denominator of the fraction is a product of the prime factors of N."
+
+I am not going to provide a mathematical proof here. You can read [this page](https://en.wikipedia.org/wiki/Decimal_representation) if you are interested. This rule has the following implications:
+
+1. In base-10 (decimal) system, fractions can be represented exactly if and only if the denominator is a product of the prime factors of 10, which are 2 and 5.
+1. In base-2 (binary) system, fractions can be represented exactly if and only if the denominator is a product of the prime factors of 2, which is just 2 itself.
+
+This means that some finite decimal numbers cannot be represented exactly in binary. For example, the decimal number `0.1` is a fraction of `1/10`. Since the denominator `10` is a product of the prime factors `2` and `5`, it can be represented exactly in decimal. However, it cannot be represented exactly in binary due to the existence of the prime factor `5` in the denominator.
+
+If you want to store the decimal value `0.1` in the binary format, you can only approximate it. In binary, the decimal value `0.1` is represented as an infinite repeating fraction `0b0.00011001100110011001100110011001100110011001100110011...`, which cannot be represented exactly in a finite number of bits.
+
+This leads to rounding errors when you perform arithmetic operations with such numbers. Usually, the errors are very small and can be ignored in most cases. However, as the intermediate results accumulate, these errors can grow and lead to significant inaccuracies in the final result.
+
+---
+
+On the other hand, floating-point numbers are represented in **fixed-width** binary formats. Thus, it also have a limited range and a limited precision:
+
+1. A limited range means that floating-point numbers can only represent a finite set of values. For example, the `Float64` type in Mojo can represent numbers from approximately `-1.7976931348623157e+308` to `1.7976931348623157e+308`.
+1. A limited precision means that floating-point numbers can only represent a finite number of significant digits. For example, the `Float64` type in Mojo can represent numbers with up to 15-17 significant digits. The larger the number is, the fewer significant digits it can represent.
+
+---
+
+These two factors combined lead to the inexactness of floating-point numbers. Let's use a simple example to illustrate the inexactness of floating-point numbers in Mojo:
+
+```mojo
+def main():
+    var a: Float64 = 1.23456789  # Cannot be represented exactly in binary
+    var b: Float64 = 3.1415926
+
+    print(
+        a, "* 10.0**8 =", a * 10.0**8
+    )  # The correct result should be 123456789.0
+    print(
+        b, "** 10 =", b**10
+    )  # The correct result should have around 70 digits after the decimal point
+```
+
+When you run this code, you will get the following result:
+
+```console
+1.23456789 * 10.0**8 = 123456788.99999999
+3.1415926 ** 10 = 93648.03150144957
+```
+
+The result suggests that the multiplication operation has lost some precision, and the result is not exact as expected.
+
+---
+
+Usually, we can ignore these small errors in most cases, as they are negligible compared to the magnitude of the numbers involved. However, in some cases, such as financial calculations or scientific computing, these errors can accumulate and lead to significant inaccuracies in the final result.
+
+To avoid these issues, we can use arbitrary-precision decimal types that can represent decimal numbers exactly without rounding errors. The decimal types usually store the decimal numbers as a list of digits ranging from 0 to 9, along with a scale factor that indicates the position of the decimal point. It conducts arithmetic operations on the digits directly, just like how we do it in elementary school, which avoids the rounding errors caused by floating-point numbers.
+
+In Python, this decimal type is provided by the built-in `decimal` module as the `Decimal` type. In Mojo, you can use the `BigDecimal` type from the `decimojo` package, which is an arbitrary-precision decimal type that can represent decimal numbers exactly without rounding errors. For example, the above example can be rewritten using the `decimojo.BigDecimal` type as follows:
+
+```mojo
+from decimojo import BigDecimal
+
+
+def main():
+    var a = BigDecimal("1.23456789")
+    var b = BigDecimal("3.1415926")
+
+    print(
+        a, "* 10**8 =", a * BigDecimal("10") ** BigDecimal("8")
+    )  # The correct result should be 123456789.0
+    print(
+        b, "** 10 =", b.power(BigDecimal(10), precision=100)
+    )  # The correct result should have around 70 digits after the decimal point
+```
+
+When you run this code, you will get the following result:
+
+```console
+1.23456789 * 10**8 = 123456789.00000000
+3.1415926 ** 10 = 93648.0315014495481723968473176551378255326155968781378537537925281032037376
+```
+
+You can see that the result is exact as expected, and there are no rounding errors.
 
 ## DeciMojo library
 
-DeciMojo provides an arbitrary-precision decimal and integer mathematics library for Mojo, delivering exact calculations for financial modeling, scientific computing, and applications where floating-point approximation errors are unacceptable. Beyond basic arithmetic, the library includes advanced mathematical functions with guaranteed precision.
+[DeciMojo](https://github.com/forfudan/decimojo) provides an arbitrary-precision decimal and integer mathematics library for Mojo, delivering exact calculations for financial modeling, scientific computing, and applications where floating-point approximation errors are unacceptable. Beyond basic arithmetic, the library includes advanced mathematical functions with guaranteed precision.
 
 The core types are:
 
@@ -107,24 +185,86 @@ The core types are:
 | `Decimal`    | `Dec`   | 128-bit fixed-precision decimal      | `UInt32`,`UInt32`,`UInt32`,`UInt32` |
 | `BigDecimal` | `BDec`  | arbitrary-precision decimal          | `BigUInt`, `Int`, `Bool`            |
 
-## Installation
+---
 
-DeciMojo is available in the [modular-community](https://repo.prefix.dev/modular-community) package repository. You can install it using any of these methods:
+DeciMojo is available in the [modular-community](https://repo.prefix.dev/modular-community) package repository. You can install it by adding ```decimojo = "*"``` in the dependency section of the ```pixi.toml``` file. Then run `pixi install` to download and install the package.
 
-From the `magic` CLI, simply run ```magic add decimojo```. This fetches the latest version and makes it immediately available for import.
+## Core types
 
-For projects with a `mojoproject.toml`file, add the dependency ```decimojo = ">=0.3.0"```. Then run `magic install` to download and install the package.
+### BigInt type
 
-For the latest development version, clone the [GitHub repository](https://github.com/forfudan/decimojo) and build the package locally.
+The BigInt implementation uses a base-10 representation for users (maintaining decimal semantics), while internally using an optimized base-10^9 storage system for efficient calculations. This approach balances human-readable decimal operations with high-performance computing. It provides both floor division (round toward negative infinity) and truncate division (round toward zero) semantics, enabling precise handling of division operations with correct mathematical behavior regardless of operand signs.
 
-| `decimojo` | `mojo`        |
-| ---------- | ------------- |
-| v0.1.0     | ==25.1        |
-| v0.2.0     | ==25.2        |
-| v0.3.0     | ==25.2        |
-| v0.3.1     | >=25.2, <25.4 |
+The `BigInt` type is similar to the `int` type in Python.
 
-## Quick start
+Here is a comprehensive quick-start guide showcasing each major function of the `BigInt` type.
+
+```mojo
+from decimojo import BigInt, BInt
+# BInt is an alias for BigInt
+
+fn main() raises:
+    # === Construction ===
+    var a = BigInt("12345678901234567890")         # From string
+    var b = BInt(12345)                            # From integer
+    
+    # === Basic Arithmetic ===
+    print(a + b)                                   # Addition: 12345678901234580235
+    print(a - b)                                   # Subtraction: 12345678901234555545
+    print(a * b)                                   # Multiplication: 152415787814108380241050
+    
+    # === Division Operations ===
+    print(a // b)                                  # Floor division: 999650944609516
+    print(a.truncate_divide(b))                    # Truncate division: 999650944609516
+    print(a % b)                                   # Modulo: 9615
+    
+    # === Power Operation ===
+    print(BInt(2).power(10))                     # Power: 1024
+    print(BInt(2) ** 10)                         # Power (using ** operator): 1024
+    
+    # === Comparison ===
+    print(a > b)                                   # Greater than: True
+    print(a == BInt("12345678901234567890"))     # Equality: True
+    print(a.is_zero())                             # Check for zero: False
+    
+    # === Type Conversions ===
+    print(a.to_str())                              # To string: "12345678901234567890"
+    
+    # === Sign Handling ===
+    print(-a)                                      # Negation: -12345678901234567890
+    print(abs(BInt("-12345678901234567890")))    # Absolute value: 12345678901234567890
+    print(a.is_negative())                         # Check if negative: False
+
+    # === Extremely large numbers ===
+    # 3600 digits // 1800 digits
+    print(BInt("123456789" * 400) // BInt("987654321" * 200))
+```
+
+### BigDecimal type
+
+The `BigDecimal` type can represent arbitrary-precision decimal values. It is similar to the `decimal` type in the Python's built-in `decimal` module.
+
+Here are some examples showcasing the arbitrary-precision feature of the `BigDecimal` type.
+
+```mojo
+from decimojo import BDec, RM
+
+
+fn main() raises:
+    var PRECISION = 100
+    var a = BDec("123456789.123456789")
+    var b = BDec("1234.56789")
+    print(a.sqrt(precision=PRECISION))
+    # 11111.11106611111096943055498174930232833813065468909453818857935956641682120364106016272519460988485
+    print(a.power(b, precision=PRECISION))
+    # 3.346361102419080234023813540078946868219632448203078657310495672766009862564151996325555496759911131748170844123475135377098326591508239654961E+9989
+    print(a.log(b, precision=PRECISION))
+    # 2.617330026656548299907884356415293977170848626010103229392408225981962436022623783231699264341492663671325580092077394824180414301026578169909
+```
+
+### Decimal type
+
+The `Decimal` type can represent values with up to 29 significant digits and a maximum of 28 digits after the decimal point. When a value exceeds the maximum representable value (`2^96 - 1`), DeciMojo either raises an error or rounds the value to fit within these constraints. For example, the significant digits of `8.8888888888888888888888888888` (29 eights total with 28 after the decimal point) exceeds the maximum representable value (`2^96 - 1`) and is automatically rounded to `8.888888888888888888888888889` (28 eights total with 27 after the decimal point). DeciMojo's `Decimal` type is similar to `System.Decimal` (C#/.NET), `rust_decimal` in Rust, `DECIMAL/NUMERIC` in SQL Server, etc.
 
 Here is a comprehensive quick-start guide showcasing each major function of the `Decimal` type.
 
@@ -188,70 +328,3 @@ fn main() raises:
     print(a.number_of_significant_digits())          # Count significant digits: 5
     print(Decimal("12.34").to_str_scientific())      # Scientific notation: 1.234E+1
 ```
-
-[Click here for 8 key examples](https://zhuyuhao.com/decimojo/docs/examples) highlighting the most important features of the `Decimal` type.
-
-Here are some examples showcasing the arbitrary-precision feature of the `BigDecimal` type.
-
-```mojo
-from decimojo import BDec, RM
-
-
-fn main() raises:
-    var PRECISION = 100
-    var a = BDec("123456789.123456789")
-    var b = BDec("1234.56789")
-    print(a.sqrt(precision=PRECISION))
-    # 11111.11106611111096943055498174930232833813065468909453818857935956641682120364106016272519460988485
-    print(a.power(b, precision=PRECISION))
-    # 3.346361102419080234023813540078946868219632448203078657310495672766009862564151996325555496759911131748170844123475135377098326591508239654961E+9989
-    print(a.log(b, precision=PRECISION))
-    # 2.617330026656548299907884356415293977170848626010103229392408225981962436022623783231699264341492663671325580092077394824180414301026578169909
-```
-
-Here is a comprehensive quick-start guide showcasing each major function of the `BigInt` type.
-
-```mojo
-from decimojo import BigInt, BInt
-# BInt is an alias for BigInt
-
-fn main() raises:
-    # === Construction ===
-    var a = BigInt("12345678901234567890")         # From string
-    var b = BInt(12345)                            # From integer
-    
-    # === Basic Arithmetic ===
-    print(a + b)                                   # Addition: 12345678901234580235
-    print(a - b)                                   # Subtraction: 12345678901234555545
-    print(a * b)                                   # Multiplication: 152415787814108380241050
-    
-    # === Division Operations ===
-    print(a // b)                                  # Floor division: 999650944609516
-    print(a.truncate_divide(b))                    # Truncate division: 999650944609516
-    print(a % b)                                   # Modulo: 9615
-    
-    # === Power Operation ===
-    print(BInt(2).power(10))                     # Power: 1024
-    print(BInt(2) ** 10)                         # Power (using ** operator): 1024
-    
-    # === Comparison ===
-    print(a > b)                                   # Greater than: True
-    print(a == BInt("12345678901234567890"))     # Equality: True
-    print(a.is_zero())                             # Check for zero: False
-    
-    # === Type Conversions ===
-    print(a.to_str())                              # To string: "12345678901234567890"
-    
-    # === Sign Handling ===
-    print(-a)                                      # Negation: -12345678901234567890
-    print(abs(BInt("-12345678901234567890")))    # Absolute value: 12345678901234567890
-    print(a.is_negative())                         # Check if negative: False
-
-    # === Extremely large numbers ===
-    # 3600 digits // 1800 digits
-    print(BInt("123456789" * 400) // BInt("987654321" * 200))
-```
-
-[^fixed]: The `Decimal` type can represent values with up to 29 significant digits and a maximum of 28 digits after the decimal point. When a value exceeds the maximum representable value (`2^96 - 1`), DeciMojo either raises an error or rounds the value to fit within these constraints. For example, the significant digits of `8.8888888888888888888888888888` (29 eights total with 28 after the decimal point) exceeds the maximum representable value (`2^96 - 1`) and is automatically rounded to `8.888888888888888888888888889` (28 eights total with 27 after the decimal point). DeciMojo's `Decimal` type is similar to `System.Decimal` (C#/.NET), `rust_decimal` in Rust, `DECIMAL/NUMERIC` in SQL Server, etc.
-[^integer]: The BigInt implementation uses a base-10 representation for users (maintaining decimal semantics), while internally using an optimized base-10^9 storage system for efficient calculations. This approach balances human-readable decimal operations with high-performance computing. It provides both floor division (round toward negative infinity) and truncate division (round toward zero) semantics, enabling precise handling of division operations with correct mathematical behavior regardless of operand signs.
-[^arbitrary]: Built on top of our completed BigInt implementation, BigDecimal will support arbitrary precision for both the integer and fractional parts, similar to `decimal` and `mpmath` in Python, `java.math.BigDecimal` in Java, etc.

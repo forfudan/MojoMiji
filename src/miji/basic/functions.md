@@ -5,6 +5,12 @@
 
 Now we are familiar with variables in Mojo. This chapter continue with functions.
 
+::: info Compatible Mojo version
+
+This chapter is compatible with Mojo v25.4 (2025-06-18).
+
+:::
+
 [[toc]]
 
 ## Code re-use
@@ -14,6 +20,7 @@ Maybe in other parallelled worlds, programming and programming languages will lo
 To quickly demonstrate the power of functions, consider the following example:
 
 ```mojo
+# src/basic/functions/areas_of_circles.mojo
 def main():
     var pi = 3.1415
     var radius_1: Float64 = 1.0
@@ -40,6 +47,7 @@ It takes in the variable `x` representing radius, conducts some calculation, and
 In Mojo, we can similarly write a function and re-use it as follows:
 
 ```mojo
+# src/basic/functions/areas_of_circles_with_functions.mojo
 def area_of_circle(radius: Float64) -> Float64:
     var pi = 3.1415
     return pi * radius * radius
@@ -58,6 +66,7 @@ In Mojo, functions are composed of two parts: a declaration line and a body.
 
 - The declaration line starts with a keyword, which can be either `def` or `fn`. Then there goes function name, which must be a valid identifier. This is followed by inputs to the function, which called "parameters" or "arguments", wrapped within brackets or parentheses. Finally, there is an optional `raises` keyword and an arrowing pointing to the return type of the function.
 - The body of the function is indented by four spaces. It contains the code that will be executed when the function is called.
+- At the end of the function body, you can use the `return` keyword to return a value from the function. The type of the returned value must match the return type indicated in the declaration line. If the function does not return a value, you can omit the `return` statement. In this case, the function will return `None` by default.
 
 To illustrate, the following is the general syntax of a function declaration in Mojo.
 
@@ -65,10 +74,12 @@ To illustrate, the following is the general syntax of a function declaration in 
 def function_name[parameter1: Type1, parameter2: Type2, ...](argmuent1, argument2, ...) -> ReturnType:
     # function declared by `def`
     ...
+    return
 
 fn function_name[parameter1: Type1, parameter2: Type2, ...](argmuent1, argument2, ...) raises -> ReturnType:
     # function declared by `fn`
     ...
+    return
 ```
 
 Note that there is something wrapped within square brackets `[]`. This is something related to parametrization and does not appear in Python. We will cover it in Chapter [Parametrization](../advanced/parameterization.md) as an advanced topic. For now, we can safely ignore it. So the following is a simplified version of the function declaration syntax:
@@ -78,10 +89,12 @@ Note that there is something wrapped within square brackets `[]`. This is someth
 def function_name(argmuent1, argument2, ...) -> ReturnType:
     # function declared by `def`
     ...
+    return
 
 fn function_name(argmuent1, argument2, ...) raises -> ReturnType:
     # function declared by `fn`
     ...
+    return
 ```
 
 ::: info Python's functions
@@ -116,6 +129,7 @@ As mentioned above, there are two keywords to declare functions in Mojo: `def` a
 The `def` keyword is borrowed from Python. I allows you to declare functions in a way that is very similar to Python, and allow you to enjoy some freedom that Python has. For example, we can translate the Python function `mysum` above into Mojo code as follows:
 
 ```mojo
+# src/basic/functions/mysum.mojo
 def mysum(a: Int, b: Int) -> Int:
     return a + b
 
@@ -137,14 +151,12 @@ Indicating the type of the returned value of function in can also help Mojo comp
 
 The `fn` keyword is unique to Mojo and is not present in Python. It is another way to define a function. For most functionalities (I would say 95 percent of use cases), these two keywords are interchangeable. You can safely choose either.
 
-You may then wonder why there are two keywords to declare functions in Mojo. The reason is to allow different **default behaviors** of functions:
+You may then wonder why there are two keywords to declare functions in Mojo. The reason about the error handling:
 
-- In `fn`, you have to use `raises` keyword to indicate the exceptions that may be raised by the function. On contrary, `def` automatically assumes that the function may raise some exceptions, so you do not need to use the `raises` keyword.
-- If a function is defined with `fn`, the arguments are immutable by default,and you cannot change the values of the arguments within the function. If a function is defined with `def`, the arguments are immutable by default, but changing the values of the arguments will create a mutable copy of them.
+- For `fn`-functions: If there are potential exceptions that may be raised by the function, you have to explicitly indicate them using the `raises` keyword in the function declaration.
+- For `def`-functions: The `raises` keyword is **not needed**. The function will assume that it may raise some exceptions.
 
-The first one is easy: `def` automatically add `raises` to the function for you so you do not need to do that yourself. We will discuss the error-handling in Mojo in the chapters.
-
-The second one is more difficult to understand if you are new to Mojo because it covers some concepts that are not familiar to Python users, e.g., mutability. We will discuss the differences in detail [at the end of this chapter](#def-vs-fn).
+You can think that the `def` keyword will automatically append the keyword `raises` to the end of the function signature, so that you do not need to do that yourself.
 
 ::: info Is `fn` pythonic?
 
@@ -155,6 +167,73 @@ So the selection of keywords is more related to your personal preference. A Pyth
 From my perspective, I prefer `def` for my personal projects, but would stick to `fn` functions in projects where I need to collaborate with others. This is because `fn` is stricter and more explicit about the behaviors of the functions, e.g., mandatory `raises` keyword, not allowing argument shadowing, etc. In some cases, you may find out that you have to use `fn` keyword to define a function, e.g., `__copyinit__()` where implicit `raises` is not allowed.
 
 Interestingly, the word `fn` itself does not look Pythonic. Python usually truncates the words from left, e.g., `def`. Maybe `func` is a more Pythonic keyword. Nevertheless, Rust users may find `fn` pleasing to the eye.
+
+:::
+
+::: details Further reading: `def` and `fn` in early Mojo versions
+
+In early Mojo versions, the difference between `def` and `fn` was more significant. For example, in Mojo v25.3, if a function is defined with `fn`, the arguments are immutable by default (equals to the `read` modifier), and you cannot change the values of the arguments within the function. The following example will cause a compilation error:
+
+```mojo
+# src/basic/functions/change_value_in_fn.mojo
+# This function will cause a compilation error
+fn fn_read_and_modify(x: Int):
+    x = 2
+    print(x)
+
+def main():
+    var a = 1
+    change_value_in_fn(a)
+    print(a)
+```
+
+```console
+error: expression must be mutable in assignment
+    x = 2
+    ^
+```
+
+However, if a function is defined with `def`, the arguments are immutable by default, but changing the values of the arguments will create a mutable copy of them. For example,
+
+```mojo
+# src/basic/def_read_and_modify.mojo
+def change_value_in_def(read x: Int):
+    print("===============================")
+    print("Calling `change_value_in_def()`")
+    print("x =", x, "at address", String(Pointer(to=x)))
+    x = 2
+    print("Change x to 2")
+    print("x =", x, "at address", String(Pointer(to=x)))
+    print("===============================")
+
+def main():
+    var a = 1
+    print("Initializing a to 1")
+    print("a =", a, "at address", String(Pointer(to=a)))
+    change_value_in_def(a)
+    print("a =", a, "at address", String(Pointer(to=a)))
+```
+
+This code runs without any error, and the output is as follows:
+
+```console
+Initializing a to 1
+a = 1 at address 0x16f40c4e0
+===============================
+Calling `change_value_in_def()`
+x = 1 at address 0x16f40c540
+Change x to 2
+x = 2 at address 0x16f40c518
+===============================
+a = 1 at address 0x16f40c4e0
+```
+
+So the difference between `def` and `fn` in Mojo v25.3 is that:
+
+- ***If a function is defined with `def`, the arguments are immutable by default.*** It means that calling the function will not change the value of the variable you passed in. In the example above, the value `a` is not changed after calling `change_value_in_def()`.
+- ***Changing the values of the arguments will create a mutable copy of them.*** It means that, if you try to change the value of the argument `x` within the function, it is possible. In the backend, Mojo will create a mutable copy of `x` (at a new address) and assign the new value `2` to it. The `x` is never pointing to the same memory address as `a`. In the example above, you see that `x` never has the same address as `a`.
+
+From Mojo v25.4, the difference between `def` and `fn` is not that significant anymore. The only difference is whether the keyword `raises` is needed or not.
 
 :::
 
@@ -743,71 +822,5 @@ def from_pyobject(a: PyObject) -> Matrix:
 ```
 
 :::
-
-## def vs fn
-
-Now let's go back to the differences between `fn` and `def`.
-
-If a function is defined with `fn`, the arguments are immutable by default (equals to the `read` modifier), and you cannot change the values of the arguments within the function. The following example will cause a compilation error:
-
-```mojo
-fn change_value_in_fn(x: Int):
-    x = 2
-    print(x)
-
-def main():
-    var a = 1
-    change_value_in_fn(a)
-    print(a)
-```
-
-```console
-error: expression must be mutable in assignment
-    x = 2
-    ^
-```
-
-If a function is defined with `def`, the arguments are immutable by default, but changing the values of the arguments will create a mutable copy of them.
-
-This sounds confusing. Let's try to understand it by looking at the following example:
-
-```mojo
-# src/basic/def_read_and_modify.mojo
-def change_value_in_def(read x: Int):
-    print("===============================")
-    print("Calling `change_value_in_def()`")
-    print("x =", x, "at address", String(Pointer(to=x)))
-    x = 2
-    print("Change x to 2")
-    print("x =", x, "at address", String(Pointer(to=x)))
-    print("===============================")
-
-def main():
-    var a = 1
-    print("Initializing a to 1")
-    print("a =", a, "at address", String(Pointer(to=a)))
-    change_value_in_def(a)
-    print("a =", a, "at address", String(Pointer(to=a)))
-```
-
-This code runs without any error, and the output is as follows:
-
-```console
-Initializing a to 1
-a = 1 at address 0x16f40c4e0
-===============================
-Calling `change_value_in_def()`
-x = 1 at address 0x16f40c540
-Change x to 2
-x = 2 at address 0x16f40c518
-===============================
-a = 1 at address 0x16f40c4e0
-```
-
-Now we try to understand the words above:
-
-***If a function is defined with `def`, the arguments are immutable by default.*** It means that calling the function will not change the value of the variable you passed in. In the example above, the value `a` is not changed after calling `change_value_in_def()`.
-
-***Changing the values of the arguments will create a mutable copy of them.*** It means that, if you try to change the value of the argument `x` within the function, it is possible. In the backend, Mojo will create a mutable copy of `x` (at a new address) and assign the new value `2` to it. The `x` is never pointing to the same memory address as `a`. In the example above, you see that `x` never has the same address as `a`.
 
 [^optimization]: Mojo compiler will also determine whether a copy is needed even though we ask for a copy. It is a kind of optimization.
