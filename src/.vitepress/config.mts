@@ -178,8 +178,12 @@ export default defineConfig({
               link: '/miji/misc/glossary'
             },
             {
-              text: 'Useful tips and warnings',
+              text: 'Tips and warnings',
               link: '/miji/misc/tips'
+            },
+            {
+              text: 'Useful resources and links',
+              link: '/miji/misc/resources'
             },
             {
               text: 'Wishes for extra features',

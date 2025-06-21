@@ -10,6 +10,8 @@ Nevertheless, most programming languages do have a built-in string type. Mojo is
 
 ::: warning Compatible Mojo version
 
+This chapter is compatible with Mojo v25.4 (2025-06-18).
+
 The behavior of `String` has been changing rapidly. Some of the features described here may not be applicable to the latest versions of Mojo, and some of the features may still be changing in future versions.
 
 There are many ongoing discussions about the design of `String` in Mojo. The official team is still working on it. Here are some nice references that we can refer to:
@@ -18,8 +20,6 @@ There are many ongoing discussions about the design of `String` in Mojo. The off
 ) in the Mojo official repo for more up-to-date information.
 - [PR #3984: Un-deprecate `String.__iter__()`](https://github.com/modular/modular/pull/3984).
 - [PR #3988: String, ASCII, Unicode, UTF, Graphemes](https://github.com/modular/modular/pull/3988).
-
-This chapter is compatible with Mojo v25.3 (2025-05-06).
 
 :::
 
@@ -43,32 +43,110 @@ The following table summarizes the differences between `String` in Mojo and `str
 
 ## `String` construction
 
-In Mojo, you can create a `String` by wrapping a string literal with the `String()` constructor. Analogically, in Python, you can create a `str` by wrapping a string literal with the `str()` constructor. For example:
+In Mojo, you can create a `String` instance in two ways:
+
+1. Explicitly declare a variable with the `String` type and assign a string literal to it.
+1. Wrapping a **string literal** with the `String()` constructor.
+
+The methods are similar to Python. Let's take a look at the following examples:
+
+<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
 
 ```mojo
 def main():
-    var s = String("Hello, world!")
-    print(s)
+    var s1 = String("Hello, world!")
+    var s2: String = "Hello, Mojo!"
+    print(s1)
+    print(s2)
 ```
+
+</td><td>
 
 ```python
 def main():
-    s = str("Hello, world!")
-    print(s)
+    s1: str = "Hello, world!"
+    s2 = str("Hello, world!")
+    print(s1)
+    print(s2)
+main()
 ```
 
-## `String` printing and formatting
+</td></tr></table>
+
+If we run the above code, we will get the following output for both Mojo and Python:
+
+```console
+Hello, world!
+Hello, Mojo!
+```
+
+## String literals and String
+
+In Mojo, if you do not explicitly declare a variable with the `String` type or use the `String()` constructor, Mojo compiler will keep the string literal as a `StringLiteral` instance. `StringLiteral` is a special type that stores the string (a sequence of letters or characters) that you write in your source code. When you run the program, the string literal will not be automatically converted to a `String` instance.
+
+`StringLiteral` is useful because it allows you to use a string without creating a `String` instance that is dynamically allocated on the heap, and thus improves performance. The disadvantage is that you cannot modify the string literal, and you cannot apply some string methods on it, such as `format()`.
+
+The following code snippet illustrates the difference between `StringLiteral` and `String` in Mojo. The first variable `s1` is a `StringLiteral` instance because we did not explicitly declare it as a `String` type. The second variable `s2` is a `String` instance because we used the `String()` constructor to wrap the string literal. Nevertheless, both `s1` and `s2` can be printed with the `print()` function. You can also get the address the location of the string literal or string in memory, as well as the address of the first letters of them.
+
+```mojo
+# src/basic/string/string_literal_vs_string.mojo
+def main():
+    var s1 = (
+        "I am of the string literal type with the type name `StringLiteral`"
+    )
+    var s2 = String("I am of the string type with the type name `String`")
+
+    ptr1 = s1.unsafe_ptr()  # Unsafe pointer to the string literal
+    ptr2 = s2._ptr_or_data  # Unsafe pointer to the string
+
+    print(s1)
+    print("My meta data is store at the address", String(Pointer(to=s1)))
+    print("My first letter is stored at the address ", ptr1)
+    for i in range(66):
+        # Print each character of the string literal unsafely
+        print(chr(Int((ptr1 + i)[])), end=" ")
+    print()
+    print("=" * 80)
+    print(s2)
+    print("My meta data is stored at the address", String(Pointer(to=s2)))
+    print("My first letter is stored at the address", ptr2)
+    for i in range(51):
+        # Print each character of the string unsafely
+        print(chr(Int((ptr2 + i)[])), end=" ")
+```
+
+If we run the above code, we will get the following output:
+
+```console
+I am of the string literal type with the type name `StringLiteral`
+My meta data is store at the address 0x16f200408
+My first letter is stored at the address  0x3100040b0
+I   a m   o f   t h e   s t r i n g   l i t e r a l   t y p e   w i t h   t h e   t y p e   n a m e   ` S t r i n g L i t e r a l ` 
+================================================================================
+I am of the string type with the type name `String`
+My meta data is stored at the address 0x16f200390
+My first letter is stored at the address 0x310004030
+I   a m   o f   t h e   s t r i n g   t y p e   w i t h   t h e   t y p e   n a m e   ` S t r i n g `
+```
+
+---
+
+Usually, you do not need to worry about the difference between `StringLiteral` and `String` if you just want to print some sentences. If you later want to use some string-specific methods, such as `format()`, you can simply wrap the string literal with the `String()` constructor to convert it to a `String` instance.
+
+## String printing and formatting
 
 In Mojo, you can print a `String` using the `print()` function.
 
 String formatting is partially supported in Mojo. You can use curly brackets `{}` within a `String` object to indicate where to insert values, and then call the `format` methods to replace those placeholders with actual values. You can optionally put numbering in the placeholders to specify the order of the values to be inserted. For example:
 
 ```mojo
+# src/basic/string/string_printing_and_formatting.mojo
 def main():
     var a = String("Today is {} {} {}").format(1, "Janurary", 2023)
     var b = String("{0} plus {1} equals {2}").format(1.1, 2.34, 3.45)
     print(a)
     print(b)
+# Output:
 # Today is 1 Janurary 2023
 # 1.1 plus 2.34 equals 3.45
 ```
@@ -82,6 +160,8 @@ However, the following features are not supported in Mojo:
 For example, the following code will not work in Mojo:
 
 ```mojo
+# src/basic/string/f_string.mojo
+# This code will not compile
 def main():
     var a = String("Today is {day} {month} {year}").format(day=1, month="Janurary", year=2023)
     var b = String("{0:.2f} plus {1:.2%} equals {2:.3g}").format(1.1, 2.34, 3.45)
@@ -111,11 +191,22 @@ Today is 1 Janurary 2023
 
 :::
 
-## `String` iteration
+## String iteration
 
 In Mojo, you can iterate over the valid characters (code points) of a `String` using the `codepoints()` method. This method returns an iterable object that contains the UTF-8 code points of the string. You can use a `for` loop to iterate over the code points and print them one by one. Note that it is more complicated than that in Python, where you can directly iterate over a `str` object to print each character.
 
-The following examples compares the iteration of strings in Python and Mojo:
+The following examples compares the iteration of strings in Mojo and Python:
+
+<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
+
+```mojo
+def main():
+    my_string = String("Hello, world! 你好，世界！")
+    for char in my_string.codepoints():
+        print(String(char), end="")
+```
+
+</td><td>
 
 ```python
 def main():
@@ -125,18 +216,13 @@ def main():
 main()
 ```
 
-```mojo
-def main():
-    my_string = String("Hello, world! 你好，世界！")
-    for char in my_string.codepoints():
-        print(String(char), end="")
-```
+</td></tr></table>
 
-Let me explain the Mojo code in detail. The `codepoints()` methods construct a iterator object over the UTF-8 code points of the string (`CodepointsIter` type).
+Let me explain the Mojo code in detail:
 
-When you use `for char in my_string.codepoints():`, we iterate over the `CodepointsIter` object, and sequentially get each code point as an `CodePoint` object. Each `CodePoint` object represents a single Unicode code point.
-
-Finally, we use `String(char)` to convert the `CodePoint` object back to a `String` object, which can then be printed with the `print()` function.
+1. The `String.codepoints()` methods construct a iterator object (of `CodepointsIter` type) over the **UTF-8 code points** of the string.
+1. When you use `for char in my_string.codepoints():`, we iterate over the `CodepointsIter` object, and sequentially get each Unicode character as an `CodePoint` object.
+1. Finally, we use `String(char)` to convert the `CodePoint` object back to a `String` object, which can then be printed with the `print()` function.
 
 Note that you cannot directly print a `CodePoint` object, as it does not implement the `Writable` trait at the moment.
 
@@ -148,11 +234,11 @@ You can read more about this change in the article [Unicode Text Segmentation](h
 
 :::
 
-## `String` indexing and slicing
+## String indexing and slicing
 
 In Mojo, you cannot directly index or slice a `String` object to access its code points. This feature is still under development.
 
-## Internal representation of `String`
+## Internal representation of String
 
 You may wonder, how strings are stored in the memory? Is each character stored as the same number of bytes? If not, how do we determine the start and end of each character?
 
@@ -166,7 +252,7 @@ To answer these questions, let's take a look at the following two things:
 > All characters are equal, but some are more equal than others.  
 > -- Yuhao Zhu, *Gate of Heaven*
 
-Characters are the building blocks of texts. They can be letters (Latin, Greek, Slavic, Sanskrit, etc., e.g, "a", "b", "c", "α", "β", "γ", "а", "б", "в", "अ", "आ", "इ"), 漢字 (Hànzì, Kanji, Hanja, e.g., "天", "地", "人"), digits ("1", "2", "3"), punctuation marks ("!", ".", ","), symbols ("@", "#", "$"), or even emojis ("繪文字", literally, "graphic characters", e.g., "😀", "❤️", "🌍").
+Characters are the building blocks of texts. They can be letters (Latin, Greek, Slavic, Sanskrit, etc., e.g, "abc", "αβγ", "абв", "अआइ"), 漢字 (Hànzì, Kanji, Hanja, e.g., "天地人"), digits ("123"), punctuation marks ("!., ?;"), symbols ("@#$"), or even emojis ("繪文字", literally, "graphic characters", e.g., "😀❤️🌍").
 
 **"All characters are equal"**, they do not have a certain rank or order. However, when human beings entered into the era of 0s and 1s (like in telegrams, longs and shorts), they find it convenient to assign characters an ordinal number, so that they can be easily transmitted to and processed by other people.
 
@@ -286,21 +372,56 @@ Okay, let's explain it from the bottom to the top.
 
 So, you can see that there are multiple layers of representation for a `String` in Mojo. Some characters are represented by a single byte, some are represented by a code point, and some are represented by a grapheme cluster. When you use this convenient `String` type in future, you should thank all the people who have worked on this topic.
 
-::: tip Examine the internal representation of a `String`
+### Examine the internal representation of a String
 
 We can examine its exact `UInt8` sequence in the memory with the following code:
 
 ```mojo
-# src/basic/string_internal_representation.mojo
+# src/basic/string/string_internal_representation.mojo
 fn main():
     var s = String("你好shìjiè😀🇨🇳")
     var idx = 0
+    print("Index | Binary       | Decimal | Hexadecimal")
     for i in s.as_bytes():
-        var byte_dec = Int(i[])
+        var byte_dec = Int(i)
         var byte_bin = bin(byte_dec)
         var byte_hex = hex(byte_dec)
-        print(idx, byte_bin, byte_dec, byte_hex)
+        print(idx, "    | ", byte_bin, " | ", byte_dec, "   | ", byte_hex)
         idx += 1
 ```
 
-:::
+If we run the above code, we will get the following output:
+
+```console
+Index | Binary       | Decimal | Hexadecimal
+0     |  0b11100100  |  228    |  0xe4
+1     |  0b10111101  |  189    |  0xbd
+2     |  0b10100000  |  160    |  0xa0
+3     |  0b11100101  |  229    |  0xe5
+4     |  0b10100101  |  165    |  0xa5
+5     |  0b10111101  |  189    |  0xbd
+6     |  0b1110011  |  115    |  0x73
+7     |  0b1101000  |  104    |  0x68
+8     |  0b11000011  |  195    |  0xc3
+9     |  0b10101100  |  172    |  0xac
+10     |  0b1101010  |  106    |  0x6a
+11     |  0b1101001  |  105    |  0x69
+12     |  0b11000011  |  195    |  0xc3
+13     |  0b10101000  |  168    |  0xa8
+14     |  0b11110000  |  240    |  0xf0
+15     |  0b10011111  |  159    |  0x9f
+16     |  0b10011000  |  152    |  0x98
+17     |  0b10000000  |  128    |  0x80
+18     |  0b11110000  |  240    |  0xf0
+19     |  0b10011111  |  159    |  0x9f
+20     |  0b10000111  |  135    |  0x87
+21     |  0b10101000  |  168    |  0xa8
+22     |  0b11110000  |  240    |  0xf0
+23     |  0b10011111  |  159    |  0x9f
+24     |  0b10000111  |  135    |  0x87
+25     |  0b10110011  |  179    |  0xb3
+```
+
+## Main changes in this chapter
+
+- 2025-06-21: Update to accommodate to the changes in Mojo v24.5.

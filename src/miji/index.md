@@ -47,7 +47,8 @@ v25.4 (2025-06-18).
 - [PART VII: MISCELLANEOUS](./misc/misc)
   <!-- - [Memory layout of Mojo objects](./misc/layout) (How Mojo objects are stored in memory) -->
   - [Glossary of Mojo terms](./misc/glossary) (Find explanations of key terms and concepts)
-  - [Useful tips and warnings](./misc/tips) (Do not fall into the pits I fell into)
+  - [Tips and warnings](./misc/tips) (Do not fall into the pits I fell into)
+  - [Useful resources and links](./misc/resources) (Online resources and links related to Mojo)
   - [Wishes for extra features](./misc/wishes) (Some features I wish Mojo could have)
   - [About the author](./misc/author) (A brief introduction of the author)
   <!-- - [Further readings] -->

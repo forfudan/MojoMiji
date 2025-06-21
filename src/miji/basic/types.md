@@ -81,17 +81,17 @@ To allow Mojo to **infer the type of an integer literal**, you can use the follo
 1. If the integer literal starts with `0b` without dot, Mojo will infer it as a binary number and use `Int` as the type.
 1. If the integer literal starts with `0o` without dot, Mojo will infer it as an octal number and use `Int` as the type.
 
-Note that we use the term "literal" here. Literal is a fixed value directly written in the code, such as `0x1F2D`, `1234567890`, `3.14`, or `"I am a sentence."`. Literals usually appear in the right-hand side of an assignment, or as arguments to a function. They are not variables because they do not have a name, a type, or (in most cases) a memory address. These values are directly embedded in to the compiled code. When you run the code, these literals can be used to to create variables of different types, such as integers, floats, strings, etc.
+Note that we use the term "literal" here. Literals are values that you write in the code, *as it is*, such as `0x1F2D`, `1234567890`, `3.14`, or `"I am a sentence."`. Literals usually appear in the right-hand side of an assignment, or as arguments to a function. They are not variables because they do not have a name, a type, or (in most cases) a memory address. These values will be evaluated by the compiler at compile time (with some optimizations if possible) and are directly embedded in to the compiled code. When you run the code, these literals will be converted (materialized) into the corresponding types, such as integers, floats, strings, etc.
 
 Literals usually features with some patterns or prefixes which enable the compiler to infer their types. For example, `0x1F2D` is a hexadecimal integer literal, `0b1010` is a binary integer literal, `3.14` is a decimal floating-point literal, and `"I am a sentence."` is a string literal. The compiler will use these patterns or prefixes to determine the type of the literal. If your type annotation is not compatible with the literal, you will get an error message.
 
 ::: tip R-value and L-value
 
-Literals are usually **R-values**. R-value is a value that does not have a memory address and you cannot use any address-related operations on it. The name "R-value" comes from the fact that they usually appear on the right-hand side of an assignment. On contrary, **L-values** are values that have a memory address and can be assigned to a variable. Although being called "L-value", they can appear on both sides of an assignment.
+Literals are usually **R-values** that does not have a memory address and you cannot use any address-related operations on it. The name "R-value" comes from the fact that they usually appear on the right-hand side of an assignment. On contrary, **L-values** are values that have a memory address and can be assigned to a variable. Although being called "L-value", they can appear on both sides of an assignment.
 
 For example, `var a = 123` is an assignment where `a` is an L-value and `123` is an R-value (as you can use `Pointer(to=a)` to get the address of `a` but you cannot do that for the literal `123`). In the expression `var c = a + b`, `a`, `b`, `c` are all L-values (as you can find the addresses of these variables).
 
-Back to literals again. As said before, literals are usually R-values. However, some literals can be L-values, e.g., string types. This is because string literals are stored in a memory location and can be referenced by their address.
+Back to literals again. As said before, literals are usually R-values. However, some literals can be L-values, e.g., string literals. This is because string literals are stored in a memory location at runtime and can be referenced by their address.
 
 :::
 
@@ -410,41 +410,6 @@ def main():
 # concatenated_list = [1, 2, 3, 4, 5, 6]
 ```
 
-### Print a list
-
-You cannot print the `List` object directly in Mojo (at least at the moment). This is because the `List` type does not implement the `Writable` trait, which is required for printing. To print a `List`, you have to write your own auxiliary function.
-
-```mojo
-# src/basic/types/list_printing.mojo
-def print_list_of_floats(array: List[Float64]):
-    print("[", end="")
-    for i in range(len(array)):
-        if i < len(array) - 1:
-            print(array[i], end=", ")
-        else:
-            print(array[i], end="]\n")
-
-def print_list_of_strings(array: List[String]):
-    print("[", end="")
-    for i in range(len(array)):
-        if i < len(array) - 1:
-            print(array[i], end=", ")
-        else:
-            print(array[i], end="]\n")
-
-def main():
-    var my_list_of_floats = List[Float64](0.125, 12.0, 12.625, -2.0, -12.0)
-    var my_list_of_strings = List[String]("Mojo", "is", "awesome")
-    print_list_of_floats(my_list_of_floats)
-    print_list_of_strings(my_list_of_strings)
-```
-
-::: info `print_lists()` function
-
-We have already seen this auxiliary function in Chapter [Convert Python code into Mojo](../move/examples.md). We will use this kinds of functions to print lists in the following chapters as well.
-
-:::
-
 ### Iterate over a list
 
 We can iterate over a `List` in Mojo using the `for ... in` keywords. This is similar to how we iterate over a list in Python. See the following example:
@@ -572,7 +537,42 @@ For the difference between a pointer and a reference, please refer to Chapter [R
 
 :::
 
-### List in memory
+### Print a list
+
+You cannot print the `List` object directly in Mojo (at least at the moment). This is because the `List` type does not implement the `Writable` trait, which is required for printing. To print a `List`, you have to write your own auxiliary function.
+
+```mojo
+# src/basic/types/list_printing.mojo
+def print_list_of_floats(array: List[Float64]):
+    print("[", end="")
+    for i in range(len(array)):
+        if i < len(array) - 1:
+            print(array[i], end=", ")
+        else:
+            print(array[i], end="]\n")
+
+def print_list_of_strings(array: List[String]):
+    print("[", end="")
+    for i in range(len(array)):
+        if i < len(array) - 1:
+            print(array[i], end=", ")
+        else:
+            print(array[i], end="]\n")
+
+def main():
+    var my_list_of_floats = List[Float64](0.125, 12.0, 12.625, -2.0, -12.0)
+    var my_list_of_strings = List[String]("Mojo", "is", "awesome")
+    print_list_of_floats(my_list_of_floats)
+    print_list_of_strings(my_list_of_strings)
+```
+
+::: info `print_lists()` function
+
+We have already seen this auxiliary function in Chapter [Convert Python code into Mojo](../move/examples.md). We will use this kinds of functions to print lists in the following chapters as well.
+
+:::
+
+### Memory layout of List type
 
 A Mojo `List` is actually a structure that contains three fields:
 
