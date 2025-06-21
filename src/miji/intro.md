@@ -37,15 +37,7 @@ Rotterdam, the Netherlands
 
 Mojo borrows Python’s syntax style, making it very similar to Python code with type annotations. In terms of usage, Mojo allows for easy importation of Python functions and packages. Below are examples of Python and Mojo code, demonstrating their similar styles.
 
-```python
-a = str("Hello, world!")
-print(a)
-
-b: int = 8
-for i in range(10):
-    b = b + i
-print(b)
-```
+<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
 
 ```mojo
 a = String("Hello, world!")
@@ -56,5 +48,19 @@ for i in range(10):
     b = b + i
 print(b)
 ```
+
+</td><td>
+
+```python
+a = str("Hello, world!")
+print(a)
+
+b: int = 8
+for i in range(10):
+    b = b + i
+print(b)
+```
+
+</td></tr></table>
 
 :::

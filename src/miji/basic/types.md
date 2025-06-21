@@ -239,14 +239,39 @@ To construct a floating-point number in Mojo, you can do that in three ways:
 
 See the following examples.
 
+<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
+
 ```mojo
 def main():
-    var a = 3.14                # Float64 by default
-    var b: Float32 = 2.718      # Float32 with type annotation
-    var c = Float16(1.414)      # Float16 with constructor
+    # Float64 by default
+    var a = 3.14
+    # Float32 with type annotation
+    var b: Float32 = 2.718
+    # Float16 with constructor
+    var c = Float16(1.414)
+    
     print(a, b, c)
 # Output: 3.14 2.718 1.4140625
 ```
+
+</td><td>
+
+```python
+def main():
+    # 64-bit float by default
+    a = 3.14
+    # Create a 64-bit float with type annotation
+    b: float = 2.718
+    # Create a 16-bit float with constructor
+    c = float(1.414)
+
+    print(a, b, c)
+
+main()
+# Output: 3.14 2.718 1.414
+```
+
+</td></tr></table>
 
 ::: warning Floating-point values are inexact
 
@@ -269,17 +294,29 @@ The mojo's boolean type is renamed as `Bool`. The two states are `True` and `Fal
 
 The `Bool` type is saved as a single byte in the memory.
 
-::: tip Bool and Int
+### Implicit conversion
 
-Just like Python, Boolean values can be implicitly converted to integers. `True` is equivalent to `1` and `False` is equivalent to `0`. Thus, the following code will work in Mojo:
+Unlike Python, Mojo's Boolean values cannot be implicitly converted to integers for arithmetic operation, even though the bit representation of `True` is equivalent to `1` and `False` is equivalent to `0`. Thus, the following code will **not work** in Mojo:
+
+<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
 
 ```mojo
+# This code will not compile
 def main():
-    print(True + False)  
+    print(True + False)
+# Error
+```
+
+</td><td>
+
+```python
+def main():
+    print(True + False)
+main()
 # Output: 1
 ```
 
-:::
+</td></tr></table>
 
 ## List
 
@@ -410,15 +447,31 @@ We have already seen this auxiliary function in Chapter [Convert Python code int
 
 ### Iterate over a list
 
-We can iterate over a `List` in Mojo using the `for ... in` keywords. This is similar to how we iterate over a list in Python.
+We can iterate over a `List` in Mojo using the `for ... in` keywords. This is similar to how we iterate over a list in Python. See the following example:
+
+<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
 
 ```mojo
 # src/basic/types/list_iteration.mojo
 def main():
     my_list = [1, 2, 3, 4, 5]
     for i in my_list:
-        print(i, end=" ")  # Output: 1 2 3 4 5
+        print(i, end=" ")
+# Output: 1 2 3 4 5
 ```
+
+</td><td>
+
+```python
+def main():
+    my_list = [1, 2, 3, 4, 5]
+    for i in my_list:
+        print(i, end=" ")
+main()
+# Output: 1 2 3 4 5
+```
+
+</td></tr></table>
 
 As a Pythonista, you may find this syntax very familiar. Actually, the above example is **completely identical** to how we iterate over a list in Python.
 

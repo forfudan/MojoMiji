@@ -1,0 +1,13 @@
+<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
+
+```mojo
+
+```
+
+</td><td>
+
+```python
+
+```
+
+</td></tr></table>
