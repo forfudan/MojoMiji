@@ -18,9 +18,11 @@ This chapter summarizes the information, tips, and warnings that are scattered t
 
 [Arguments and reference - Mojo vs Rust](../basic/functions.md): Do you know that the term "reference" means different things in Mojo and Rust?
 
-[Floating-point values are inexact](../basic/types#float): Are you aware that floating-point values are inexact and can lead to unexpected results? This is because floating-point values are represented in binary format, which cannot always be exactly represented in decimal format.
-
 [Why we should use constructors explicitly](../basic/types#integer): Let's do an exercise to understand why we should always use constructors explicitly.
+
+[R-value and L-value](../basic/types#literals-and-type-inference): Do you know that a value can be either an r-value or an l-value?
+
+[Floating-point values are inexact](../basic/types#float): Are you aware that floating-point values are inexact and can lead to unexpected results? This is because floating-point values are represented in binary format, which cannot always be exactly represented in decimal format.
 
 [Is character a grapheme cluster or a code point?](../basic/string#grapheme-clusters): Do you know that a "character" can mean different things? It can be a single byte, a code point, or a grapheme cluster. So you should be more explicit about what you mean by "character" in your code.
 

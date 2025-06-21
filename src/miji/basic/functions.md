@@ -823,4 +823,8 @@ def from_pyobject(a: PyObject) -> Matrix:
 
 :::
 
+## Main changes in this chapter
+
+- 2025-06-20: Update to accommodate to the changes in Mojo v24.5 (2de7fcb0).
+
 [^optimization]: Mojo compiler will also determine whether a copy is needed even though we ask for a copy. It is a kind of optimization.

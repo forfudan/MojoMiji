@@ -74,15 +74,15 @@ This phenomenon can be confusing, especially when you previously programmed in o
 
 Mojo's assignment expressions are also similar to Python's, with one more operator for transfer of ownership. Below is a summary of the assignment expressions in Mojo. Note that the dunders for the augmented assignment operators starts with `i`, which stands for "in-place".
 
-| Operator              | Description                           | Dunder            | Notes                                         |
-| --------------------- | ------------------------------------- | ----------------- | --------------------------------------------- |
-| `y = x`               | Assignment                            | `__copyinit__()`  |                                               |
-| `y = x^`, `y = f(x^)` | Assignment with transfer ownership    | `__moveinit__()`  | **Not in Python**, similar to `x = y` in Rust |
-| `y += x`              | Augmented assignment (addition)       | `__iadd__()`      |                                               |
-| `y -= x`              | Augmented assignment (subtraction)    | `__isub__()`      |                                               |
-| `y *= x`              | Augmented assignment (multiplication) | `__imul__()`      |                                               |
-| `y /= x`              | Augmented assignment (division)       | `__itruediv__()`  |                                               |
-| `y //= x`             | Augmented assignment (floor division) | `__ifloordiv__()` |                                               |
+| Operator              | Description                           | Dunder            | Notes                                                         |
+| --------------------- | ------------------------------------- | ----------------- | ------------------------------------------------------------- |
+| `y = x`               | Assignment                            | `__copyinit__()`  | Different from Python. It copies values instead of references |
+| `y = x^`, `y = f(x^)` | Assignment with transfer ownership    | `__moveinit__()`  | **Not available in Python**, similar to `x = y` in Rust       |
+| `y += x`              | Augmented assignment (addition)       | `__iadd__()`      |                                                               |
+| `y -= x`              | Augmented assignment (subtraction)    | `__isub__()`      |                                                               |
+| `y *= x`              | Augmented assignment (multiplication) | `__imul__()`      |                                                               |
+| `y /= x`              | Augmented assignment (division)       | `__itruediv__()`  |                                                               |
+| `y //= x`             | Augmented assignment (floor division) | `__ifloordiv__()` |                                                               |
 
 We can see that Mojo has an additional assignment operator `x = y^`, which is used to transfer ownership of the value from `y` to `x`. This operator is not available in Python, but it is very useful in Mojo especially when we want to avoid excessive copying of large data structures. This is an advanced feature and you do not need to use it in most cases. We will cover this topic in more detail in Section ["copyinit" vs "moveinit"](../advanced/ownership#copyinit-vs-moveinit)
 of Chapter [Ownership](../advanced/ownership.md).
