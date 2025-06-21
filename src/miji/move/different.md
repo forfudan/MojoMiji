@@ -186,7 +186,7 @@ In addition to the differences in data types, there are some other differences (
 | A main function is needed                   | No                              | Yes                                                |
 | Function overloading                        | No                              | Yes                                                |
 | Chained comparison                          | Yes                             | Yes                                                |
-| `a = b` for lists                           | Copy reference                  | Copy value                                         |
+| `a = b` for lists                           | Copy reference                  | Copy value (deep copy)                             |
 | Define a type                               | `class`                         | `struct`                                           |
 | Class or struct inheritable?                | Yes                             | No                                                 |
 | Define attributes in class / struct         | No, but can use type annotation | Yes, use `var`                                     |

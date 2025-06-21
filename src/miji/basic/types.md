@@ -75,7 +75,7 @@ Note that there is no error message printed in this case. This is because Mojo d
 
 If you really need to work on big integers that are larger than the capacity of `Int`, you can consider using the `BigInt` type in the [decimojo package](../extend/decimojo.md), which has the similar functionality as the `int` type in Python.
 
-::: tip Exercise
+::: tip Exercises
 
 Now we want to calculate the $12345^5$. Since the result is big (around 20 digits), we use `Int128` to avoid overflow. Try to run the following code in Mojo and see what happens. Explain why the result is unexpected and how to fix it.
 
@@ -87,7 +87,7 @@ def main():
 
 :::
 
-::: details Answer
+::: details Answers
 
 The result is `-8429566654717360231`. It is a negative number, which is unexpected. The correct answer should be `286718338524635465625`. Usually, when we see a negative value, we know that it is probably due to an overflow.
 
