@@ -30,6 +30,8 @@ This chapter summarizes the information, tips, and warnings that are scattered t
 
 [Chained comparison: Syntax sugar or poison?](../basic/operators.md): Are you aware that chained comparison can lead to confusion and unintended behavior?
 
+[Non-exhaustive conditionals - Mojo vs Python](../basic/control#non-exhaustive-conditionals): Do you know that non-exhaustive conditionals would lead to compile-time errors in Mojo if you do not handle all possible cases for functions that return a value? This is different from Python, where non-exhaustive conditionals would not lead to errors.
+
 [Graph: Memory layout of a struct](../basic/structs#memory-layout-of-struct): This graph illustrate how a struct is laid out in memory.
 
 [Fetch value of a field in a struct](../basic/structs#memory-layout-of-struct): Are you curious about how Mojo fetches the value of a field in a struct, e.g., `human.age`? It calculates the offset of the field from the start of the struct in memory, and then reads the value with the address.

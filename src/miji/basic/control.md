@@ -11,6 +11,379 @@ Believe me, this should be the easiest chapter of this Miji for a Pythonista, so
 
 [[toc]]
 
+## Conditionals
+
+### if-elif-else syntax
+
+Conditionals are used to execute a block of code only if a certain condition is met. In Mojo, conditionals are implemented with the `if ... elif ... else ...` syntax, which is **identical** to Python's syntax. The complete syntax of a conditional in Mojo is as follows:
+
+```mojo
+if condition1:
+    # do something if condition1 is True
+    ...
+elif condition2:
+    # do something if condition2 is True
+    ...
+elif condition3:
+    # do something if condition3 is True
+    ...
+...
+else:
+    # do something if both conditions are False
+    ...
+```
+
+Here are some key points to note about the syntax:
+
+1. The `condition1`, `condition2`, `condition3`, etc., should be **expressions** that evaluate to a boolean value, i.e., `True` or `False`. Of course, they can also be boolean values directly, e.g., `if True:`.
+1. The conditions do not need to be mutually exclusive, meaning that multiple conditions can be `True` at the same time. In this case, the first `True` condition will be executed, and the rest will be skipped.
+1. If no conditions are `True`, then the final `else:` block will be executed.
+1. The `if` keyword is mandatory, while the `elif` and `else` keywords are optional. You can have an `if` statement without any `elif` or `else` blocks, or you can have multiple `elif` blocks without an `else` block, or you can have an `else` block without any `elif` blocks.
+
+Let's see several examples of conditionals in both Mojo and Python. The first example is a simple program that checks if a number is positive, negative, or zero:
+
+<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
+
+```mojo
+def judge_sign(number: Int) -> None:
+    if number > 0:
+        print(number, "is a positive.")
+    elif number < 0:
+        print(number, "is a negative.")
+    else:
+        print("The number is zero.")
+
+def main():
+    judge_sign(10)
+    judge_sign(-5)
+    judge_sign(0)
+
+# End of the code
+```
+
+</td><td>
+
+```python
+def judge_sign(number: int) -> None:
+    if number > 0:
+        print(number, "is a positive.")
+    elif number < 0:
+        print(number, "is a negative.")
+    else:
+        print("The number is zero.")
+
+def main():
+    judge_sign(10)
+    judge_sign(-5)
+    judge_sign(0)
+
+main()
+```
+
+</td></tr></table>
+
+---
+
+The next example is a program that checks if a string is either `a`, `b`, or `c`. If yes, then it prints the string. For this example, we need use an `if` statement and two `elif` statements, but no `else` statement:
+
+<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
+
+```mojo
+# src/basic/flows/conditional_without_else.mojo
+def check_string(s: String) -> None:
+    if s == "a":
+        print("The string is 'a'.")
+    elif s == "b":
+        print("The string is 'b'.")
+    elif s == "c":
+        print("The string is 'c'.")
+
+def main():
+    check_string("a")
+    check_string("b")
+    check_string("c")
+    check_string("d")
+
+# End of the code
+```
+
+</td><td>
+
+```python
+# src/basic/flows/conditional_without_else.py
+def check_string(s: str) -> None:
+    if s == "a":
+        print("The string is 'a'.")
+    elif s == "b":
+        print("The string is 'b'.")
+    elif s == "c":
+        print("The string is 'c'.")
+
+def main():
+    check_string("a")
+    check_string("b")
+    check_string("c")
+    check_string("d")
+
+main()
+```
+
+</td></tr></table>
+
+Running the above code will give you the output:
+
+```console
+The string is 'a'.
+The string is 'b'.
+The string is 'c'.
+```
+
+Since there is no `else` statement, the program does not print anything for the string `"d"` because it does not match any of the conditions.
+
+---
+
+The last example is a program that checks if a number is even or odd. If the number is even, it prints the number and the message "is an even number". If the number is odd, it prints the number and the message "is an odd number". In this case, we only need an `if` statement and an `else` statement, while the `elif` statement is not needed:
+
+<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
+
+```mojo
+# src/basic/flows/conditional_without_elif.mojo
+def check_even_or_odd(number: Int) -> None:
+    if number % 2 == 0:
+        print(number, "is an even number.")
+    else:
+        print(number, "is an odd number.")
+
+def main():
+    check_even_or_odd(24123)
+    check_even_or_odd(1982)
+    check_even_or_odd(-123)
+
+# End of the code
+```
+
+</td><td>
+
+```python
+# src/basic/flows/conditional_without_elif.py
+def check_even_or_odd(number: int) -> None:
+    if number % 2 == 0:
+        print(number, "is an even number.")
+    else:
+        print(number, "is an odd number.")
+
+def main():
+    check_even_or_odd(24123)
+    check_even_or_odd(1982)
+    check_even_or_odd(-123)
+
+main()
+```
+
+</td></tr></table>
+
+Running the above code will give you the output:
+
+```console
+24123 is an odd number.
+1982 is an even number.
+-123 is an odd number.
+```
+
+### Non-exhaustive conditionals
+
+::: warning Non-exhaustive conditionals - Mojo vs Python
+
+Python is a dynamically typed language, so it does not require that the type of function return value is consistent with the function's return type annotation. Thus, conditionals in Mojo is more stricter than Python's conditionals. This may occasionally lead to compilation errors in Mojo when you do not handle all possible cases in a conditional statement. You should be aware of this difference so that you won't be surprised by the compilation errors in Mojo when the similar code in Python runs without any issues.
+
+:::
+
+In the example above where we check if a string is either `a`, `b`, or `c`, we did not handle the case where the string is **not** one of these three values. This is called a **non-exhaustive conditional**, meaning that there are some cases that are not handled by the conditional statements.
+
+While it is not a problem in the case above, however, it may cause issues in other cases, especially when you are writing a function that is supposed to return a value. If you do not exhaustively handle all possible cases, the function may return `None` implicitly, which is in consistent with the function's return type. This can lead to unexpected behavior and bugs in your code.
+
+For example, if we modify the `check_string` function to **return a string** instead of printing it, the code would be as follows:
+
+```mojo
+# src/basic/flows/conditional_without_else.mojo
+# This code will not compile
+def check_string(s: String) -> String:
+    if s == "a":
+        return "The string is 'a'."
+    elif s == "b":
+        return "The string is 'b'."
+    elif s == "c":
+        return "The string is 'c'."
+
+
+def main() -> None:
+    print(check_string("a"))
+    print(check_string("b"))
+    print(check_string("c"))
+    print(check_string("d"))
+```
+
+This code will not compile and will give you an error message like this:
+
+```console
+error: return expected at end of function with results
+def check_string(s: String) -> String:
+    ^
+```
+
+This is because the function `check_string` is expected to return a `String` value, but it does not handle the case where the input string is not one of `a`, `b`, or `c`. Therefore, the compiler raises an error to remind you that you need to handle all possible cases.
+
+To fix this issue, you can add an `else` statement at the end of the conditional to handle the case where the input string is not one of `a`, `b`, or `c`. The modified code would be as follows:
+
+```mojo
+# src/basic/flows/conditional_without_else_fix.mojo
+def check_string(s: String) -> String:
+    if s == "a":
+        return "The string is 'a'."
+    elif s == "b":
+        return "The string is 'b'."
+    elif s == "c":
+        return "The string is 'c'."
+    else:
+        return "The string is not 'a', 'b', or 'c'."
+
+def main() -> None:
+    print(check_string("a"))
+    print(check_string("b"))
+    print(check_string("c"))
+    print(check_string("d"))
+
+# End of the code
+```
+
+This time, the code will compile and run successfully, giving you the output:
+
+```console
+The string is 'a'.
+The string is 'b'.
+The string is 'c'.
+The string is not 'a', 'b', or 'c'.
+```
+
+Therefore, this is a good practice to ensure that your function handles all possible cases and returns a consistent type of value. **Do not omit the `else` statement** if you are writing a function that is supposed to return a value, even if you think it is not necessary.
+
+---
+
+If you are a Pythonista, you may find that the example above is not a problem in Python. Yes, indeed, if we run the same code in Python, it will run without any issues. Let's try:
+
+```py
+# src/basic/flows/conditional_without_else.py
+def check_string(s: str) -> str:
+    if s == "a":
+        return "The string is 'a'."
+    elif s == "b":
+        return "The string is 'b'."
+    elif s == "c":
+        return "The string is 'c'."
+
+def main():
+    print(check_string("a"))
+    print(check_string("b"))
+    print(check_string("c"))
+    print(check_string("d"))
+
+main()
+```
+
+This code will run successfully and give you the output:
+
+```console
+The string is 'a'.
+The string is 'b'.
+The string is 'c'.
+None
+```
+
+Note that the last line prints `None`. This is because the function `check_string` does not handle the case where the input string is not one of `a`, `b`, or `c`, so it implicitly returns the `None` value. As Python is a dynamically typed language, it does not require that the return type of the function is consistent with the function's return type annotation. If there is inconsistency, the actual return type will prevail over the type annotation, and the function will return `None` for `check_string("d")`.
+
+Thus, in the above Python code, you actually provided a wrong type annotation for the return type of the function `check_string`. It should be `str | None` instead of `str`, because there is a case where the function does not return a string, but `None`.
+
+This is the disadvantage of Python's dynamic typing system. On the one hand, it allows you to write code more flexibly without worrying about errors during runtime. On the other hand, it may lead to unexpected behavior and bugs in your code if you do not handle all possible cases properly. In this example, Python fails to warn you that you would get something that is not what you expected.
+
+Mojo, being a statically typed language, requires that the return type of the function is consistent with the function's return type annotation. Although this may seem a bit strict, it actually helps you to catch potential bugs and errors early during compile time, rather than tolerate them and pass them down to the next steps until the issue finally triggers some big problems.
+
+Maybe next time you program in Python, you will think about this example and realize that you should **handle all possible cases** in your code, even if Python does not require you to do so. You can also use some **type checkers** like `mypy` to help you catch such issues in Python code. This is after all a good practice to ensure that your code is robust and reliable.
+
+### One-liner conditionals
+
+In Mojo, you can also write conditionals in a single line that will evaluate to a value. This is called a **one-liner conditional expression**. The syntax is similar to Python's one-liner expression:
+
+```mojo
+value_when_true if condition else value_when_false
+```
+
+This expression is equivalent to the following `if ... else ...` statement:
+
+```mojo
+if condition:
+    value_when_true
+else:
+    value_when_false
+```
+
+Note that the `value_when_true` and `value_when_false` can be any valid Mojo **expression**, including variables, literals, or function calls. The `condition` should also be a valid Mojo expression that evaluates to a **boolean** value.
+
+Moreover, when you use a one-liner conditional expression, you cannot use the `elif` statement.
+
+Below is an example of a one-liner conditional expression in both Mojo and Python.
+
+<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
+
+```mojo
+# one_liner_conditional_expression.mojo
+def main():
+    var a = 10
+    var b = "sunny"
+    var c = "apple"
+
+    var judge_sign = "negative" if a < 0 else "non-negative"
+    var judge_weather = "nice" if b == "sunny" else "not nice"
+    print(judge_sign)
+    print(judge_weather)
+
+    print("I am apple") if c == "apple" else print("I am not apple")
+
+# End of the code
+```
+
+</td><td>
+
+```python
+# one_liner_conditional_expression.py
+def main():
+    a = 10
+    b = "sunny"
+
+    judge_sign = "negative" if a < 0 else "non-negative"
+    judge_weather = "nice" if b == "sunny" else "not nice"
+
+    print(judge_sign)
+    print(judge_weather)
+
+    print("I am apple") if c == "apple" else print("I am not apple")
+
+main()
+```
+
+</td></tr></table>
+
+Running the above code will give you the output:
+
+```console
+non-negative
+nice
+I am apple
+```
+
+In this example, we use a one-liner conditional expression to determine whether the variable `a` is negative or non-negative, and whether the variable `b` is sunny or not. The results of the one-liners are assigned to the variables `judge_sign` and `judge_weather`, respectively. We then print these variables to see the results.
+
+Moreover, we also use a one-liner conditional expression to print a message based on the value of the variable `c`. This is because the `print()` function implicitly returns the `None` value, and thus it is a valid expression to be used in a one-liner conditional.
+
 ## For loops
 
 Loops are used to repeat a block of code for a finite (or indefinite) number of times. Mojo supports two types of loops: `for` loops and `while` loops.
@@ -46,7 +419,7 @@ else:
     ...
 ```
 
-### `for in` syntax
+### for-in syntax
 
 Let's begin with the `for ... in ...` syntax. The `for in` syntax is used to iterate over an iterable object, such as a list, tuple, or string. It can be used to simplify the code block that is repeated for several times. The syntax is **identical** to Python's `for ... in ...` syntax, so it should be familiar to you.
 
