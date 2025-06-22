@@ -110,6 +110,9 @@ export default defineConfig({
               text: 'Operators and assignment', link: '/miji/basic/operators',
             },
             {
+              text: 'Control flows', link: '/miji/basic/control',
+            },
+            {
               text: 'Structs', link: '/miji/basic/structs',
             },
           ],

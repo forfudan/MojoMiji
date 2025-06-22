@@ -31,17 +31,20 @@ String is an important type of Mojo and Python, which represents a sequence of U
 
 The following table summarizes the differences between `String` in Mojo and `str` in Python. Note that some features are still under development in Mojo, so they may not be available in the current version. This table is also referred in Chapter [Differences between Python and Mojo](../move/different#string).
 
-| Functionality                     | Python `str`                          | Mojo `String`                                       |
-| --------------------------------- | ------------------------------------- | --------------------------------------------------- |
-| Constructed from string literals  | str literal is coerced to str type.   | You have to use `String()` constructor.             |
-| Print string with `print()`       | Yes.                                  | Yes.                                                |
-| Format string with `format()`     | Yes, use `{}`.                        | Yes, but you cannot specify formatting, e.g, `.2f`. |
-| f-strings                         | Supported.                            | Not supported (yet).                                |
-| formatted values                  | Supported, e.g., `{:0.2f}`, `{:0.3%}` | Not supported (yet)                                 |
-| Iteration over UTF-8 code points  | Yes, use `for i in s:` directly.      | Yes, but more complicated.                          |
-| UTF8-assured indexing and slicing | Yes, use `s[i]` or `s[i:j]` directly. | Not supported.                                      |
+| Functionality                           | Python string                             | Mojo string                                            |
+| --------------------------------------- | ----------------------------------------- | ------------------------------------------------------ |
+| Type of string literals                 | `Literal`                                 | `StringLiteral`                                        |
+| String literal auto converted to string | No                                        | No                                                     |
+| Constructed string from string literals | Use `str()` constructor                   | Use `String()` constructor                             |
+| Use string methods on string literals   | Yes, string literals are coerced to `str` | No, some methods are not applicable to string literals |
+| Print string with `print()`             | Yes                                       | Yes                                                    |
+| Format string with `format()`           | Yes, use `{}`                             | Yes, but you cannot specify formatting, e.g, `.2f`     |
+| f-strings                               | Supported                                 | Not supported (yet)                                    |
+| formatted values                        | Supported, e.g., `{:0.2f}`, `{:0.3%}`     | Not supported (yet)                                    |
+| Iteration over UTF-8 code points        | Yes, use `for i in s:` directly           | Yes, but more complicated                              |
+| UTF8-assured indexing and slicing       | Yes, use `s[i]` or `s[i:j]` directly      | Not supported                                          |
 
-## `String` construction
+## String construction
 
 In Mojo, you can create a `String` instance in two ways:
 
@@ -82,9 +85,33 @@ Hello, Mojo!
 
 ## String literals and String
 
-In Mojo, if you do not explicitly declare a variable with the `String` type or use the `String()` constructor, Mojo compiler will keep the string literal as a `StringLiteral` instance. `StringLiteral` is a special type that stores the string (a sequence of letters or characters) that you write in your source code. When you run the program, the string literal will not be automatically converted to a `String` instance.
+In Mojo, `StringLiteral` is a special type that stores the string (a sequence of letters or characters) that you write in your source code. A valid string literal is a sequence of characters enclosed in double quotes `"`, single quotes `'`, or triple quotes `"""` or `'''` (for multi-line strings). It is similar to Python's string literals. For example, `"I am a string literal"`, `'I am also a string literal'`, and `"""I am a multi-line string literal"""` are all valid string literals in Mojo. They are stored as `StringLiteral` instances, which are immutable and cannot be modified.
 
-`StringLiteral` is useful because it allows you to use a string without creating a `String` instance that is dynamically allocated on the heap, and thus improves performance. The disadvantage is that you cannot modify the string literal, and you cannot apply some string methods on it, such as `format()`.
+During compilation, the Mojo compiler will also conduct some operations on string literals. For example, string literals in multiple lines that are wrapped in parentheses `()` will be concatenated into a single string literal. For example, the following code snippet:
+
+```mojo
+def main():
+    var s = (
+        "This is a string literal "
+        "that spans multiple lines."
+    )
+    print(s)
+# Output:
+# This is a string literal that spans multiple lines.
+```
+
+If you **do not** explicitly declare a variable as a `String` type or use the `String()` constructor, Mojo compiler will keep the string literal as a `StringLiteral` instance and **will not** automatically materialize it into a `String` instance at run time. That is to say that the `str1`, `str2`, `str3` variables in the following code snippet are of different types:
+
+```mojo
+def main():
+    var str1 = "Hello"          # StringLiteral
+    var str2: String = "Hello"  # String
+    var str3 = String("Hello")  # String
+```
+
+---
+
+Mojo does not automatically convert the `StringLiteral` type into the `String` type because it avoids creating a `String` instance that is dynamically allocated on the heap, and thus improves performance. The disadvantage is that you cannot modify the string literal, and you cannot apply some string methods on it, such as `format()`.
 
 The following code snippet illustrates the difference between `StringLiteral` and `String` in Mojo. The first variable `s1` is a `StringLiteral` instance because we did not explicitly declare it as a `String` type. The second variable `s2` is a `String` instance because we used the `String()` constructor to wrap the string literal. Nevertheless, both `s1` and `s2` can be printed with the `print()` function. You can also get the address the location of the string literal or string in memory, as well as the address of the first letters of them.
 

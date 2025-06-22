@@ -61,16 +61,17 @@ We will discuss the string type in more detail in Chapter [String](../basic/stri
 
 :::
 
-Mojo's `String` type is similar to Python's `str` type, representing a sequence of Unicode characters. However, there are some differences that you should be aware of:
+Mojo's `String` type is similar to Python's `str` type, representing a sequence of Unicode characters. However, there are some key differences that you should be aware of:
 
-| Functionality                     | Python `str`                           | Mojo `String`                                       |
-| --------------------------------- | -------------------------------------- | --------------------------------------------------- |
-| Constructed from string literals  | Use of`str()` constructor is optional. | You have to use `String()` constructor.             |
-| Print string with `print()`       | Yes.                                   | Yes.                                                |
-| Format string with `format()`     | Yes, use `{}`.                         | Yes, but you cannot specify formatting, e.g, `.2f`. |
-| f-strings                         | Yes.                                   | Not supported.                                      |
-| Iteration over UTF-8 code points  | Yes, use `for i in s:` directly.       | Yes, but more complicated.                          |
-| UTF8-assured indexing and slicing | Yes, use `s[i]` or `s[i:j]` directly.  | Not supported.                                      |
+| Functionality                           | Python `str`                              | Mojo `String`                                          |
+| --------------------------------------- | ----------------------------------------- | ------------------------------------------------------ |
+| Constructed string from string literals | Use `str()` constructor                   | Use `String()` constructor                             |
+| Use string methods on string literals   | Yes, string literals are coerced to `str` | No, some methods are not applicable to string literals |
+| Print string with `print()`             | Yes.                                      | Yes.                                                   |
+| Format string with `format()`           | Yes, use `{}`.                            | Yes, but you cannot specify formatting, e.g, `.2f`.    |
+| f-strings                               | Yes.                                      | Not supported.                                         |
+| Iteration over UTF-8 code points        | Yes, use `for i in s:` directly.          | Yes, but more complicated.                             |
+| UTF8-assured indexing and slicing       | Yes, use `s[i]` or `s[i:j]` directly.     | Not supported.                                         |
 
 If you use only quotation marks to define a string, Mojo will treat it as a string literal type. You format them with `format()`. For example, the following code will raise an error:
 
@@ -117,17 +118,14 @@ To access a code point in a Python `str`, you can just use indexing or slicing, 
 
 In Python, a `list` is a mutable sequence type that can hold Python objects of **any type**. In Mojo, a `List` is also a mutable sequence type but can only hold objects of the **same type**. Here are some key differences between Python's `list` and Mojo's `List`:
 
-| Functionality      | Mojo `List`                     | Python `list`          |
-| ------------------ | ------------------------------- | ---------------------- |
-| Type of elements   | Homogeneous type                | Heterogenous types     |
-| Mutability         | Mutable                         | Mutable                |
-| Inialization       | `List[Type]()`                  | `list()` or `[]`       |
-| Indexing           | Use brackets `[]`               | Use brackets `[]`      |
-| Slicing            | Use brackets `[a:b:c]`          | Use brackets `[a:b:c]` |
-| Extending by items | Use `append()`                  | Use `append()`         |
-| Concatenation      | Use `+` operator                | Use `+` operator       |
-| Printing           | Not supported                   | Use `print()`          |
-| Iterating          | Use `for` loop and de-reference | Use `for` loop         |
+| Functionality      | Mojo `List`            | Python `list`      |
+| ------------------ | ---------------------- | ------------------ |
+| Type of elements   | Homogeneous type       | Heterogenous types |
+| Inialization       | `List[Type]()` or `[]` | `list()` or `[]`   |
+| Printing           | Not supported          | Use `print()`      |
+| Iterating          | Use `for` loop         | Use `for` loop     |
+| Iterator returns   | Reference to element   | Copy of element    |
+| List comprehension | Partially supported    | Supported          |
 
 The following things are common between `List` in Mojo and `list` in Python:
 
@@ -168,7 +166,7 @@ def main():
 # Output: 1 2 3 4 5 
 ```
 
-We will discuss the list type in more detail in Section [List](../basic/types.md#list) of Chapter [Data Types](../basic/types.md). Chapter [Memory Layout of Mojo objects](../misc/layout.md) provides some abstract diagrams to illustrate the memory layouts of a list in Python and Mojo.
+We will discuss the list type in more detail in [Section List of Chapter Data Types](../basic/types.md). Chapter [Memory Layout of Mojo objects](../misc/layout.md) provides some abstract diagrams to illustrate the memory layouts of a list in Python and Mojo.
 
 ## Other difference
 

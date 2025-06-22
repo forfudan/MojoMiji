@@ -27,7 +27,7 @@ v25.4 (2025-06-18).
   - [Data types - basic](./basic/types) (Fundamental building blocks of Mojo)
   - [Data type - string](./basic/string) (`String` in Mojo, similar to `str` in Python)
   - [Operators and assignment](./basic/operators) (Operators and assignment expressions)
-  <!-- - [Control flows (Yuhao is working on this)](./basic/control_flows) -->
+  - [Control flows](./basic/control) (Loops, conditionals, and some about iterables)
   - [Structs](./basic/structs) (Structs in Mojo, similar to classes in Python)
 - [PART IV: ADVANCED MOJO](./advanced/advanced)
   - [Data type - SIMD](./advanced/simd) (The first-class `SIMD` type)

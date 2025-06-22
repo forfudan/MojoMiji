@@ -5,7 +5,7 @@
 
 Operators are symbols that perform operations on one or more operands. They are fundamental building blocks of any programming language, including Mojo and Python. Operators allow you to perform calculations, comparisons, logical operations, and more.
 
-The Mojo's operators and assignment expressions are very similar to Python's. If you are already familiar with Python, simply apply your Python knowledge to Mojo and safely skip this chapter.
+The Mojo's operators and assignment expressions are very similar to Python's. If you are already familiar with Python, just scan through this chapter and focus on the differences.
 
 [[toc]]
 

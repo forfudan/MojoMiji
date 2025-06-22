@@ -308,19 +308,20 @@ main()
 
 In Mojo, a `List` is a mutable, variable-length sequence that can hold a collection of elements of the ***same type***. It is similar to Rust's `Vec` type, but it is different from Python's `list` type that can hold objects of **any type**. Here are some key differences between Python's `list` and Mojo's `List`:
 
-| Functionality      | Mojo `List`                     | Python `list`                               |
-| ------------------ | ------------------------------- | ------------------------------------------- |
-| Type of elements   | Homogeneous type                | Heterogenous types                          |
-| Mutability         | Mutable                         | Mutable                                     |
-| Inialization       | `List[Type]()` or `[]`          | `list()` or `[]`                            |
-| Indexing           | Use brackets `[]`               | Use brackets `[]`                           |
-| Slicing            | Use brackets `[a:b:c]`          | Use brackets `[a:b:c]`                      |
-| Extending by items | Use `append()`                  | Use `append()`                              |
-| Concatenation      | Use `+` operator                | Use `+` operator                            |
-| Printing           | Not supported                   | Use `print()`                               |
-| Iterating          | Use `for` loop and de-reference | Use `for` loop                              |
-| List comprehension | Supported                       | Supported                                   |
-| Memory layout      | Metadata -> Elements            | Pointer -> metadata -> Pointers -> Elements |
+| Functionality      | Mojo `List`            | Python `list`                               |
+| ------------------ | ---------------------- | ------------------------------------------- |
+| Type of elements   | Homogeneous type       | Heterogenous types                          |
+| Mutability         | Mutable                | Mutable                                     |
+| Inialization       | `List[Type]()` or `[]` | `list()` or `[]`                            |
+| Indexing           | Use brackets `[]`      | Use brackets `[]`                           |
+| Slicing            | Use brackets `[a:b:c]` | Use brackets `[a:b:c]`                      |
+| Extending by items | Use `append()`         | Use `append()`                              |
+| Concatenation      | Use `+` operator       | Use `+` operator                            |
+| Printing           | Not supported          | Use `print()`                               |
+| Iterating          | Use `for` loop         | Use `for` loop                              |
+| Iterator returns   | Reference to element   | Copy of element                             |
+| List comprehension | Partially supported    | Supported                                   |
+| Memory layout      | Metadata -> Elements   | Pointer -> metadata -> Pointers -> Elements |
 
 ### Construct a list
 
