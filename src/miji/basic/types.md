@@ -72,28 +72,14 @@ def main():
     print(a, b, c, d, e, f, g, h)
 ```
 
-### Literals and type inference
+---
 
-To allow Mojo to **infer the type of an integer literal**, you can use the following rules:
+To allow Mojo to **infer the type of an integer literal** without explicit type annotation, you can use the following rules:
 
 1. If the integer literal is a decimal number without any prefix or decimal point, Mojo will infer it as `Int` by default.
 1. If the integer literal starts with `0x` without dot, Mojo will infer it as a hexadecimal number and use `Int` as the type.
 1. If the integer literal starts with `0b` without dot, Mojo will infer it as a binary number and use `Int` as the type.
 1. If the integer literal starts with `0o` without dot, Mojo will infer it as an octal number and use `Int` as the type.
-
-Note that we use the term "literal" here. Literals are values that you write in the code, *as it is*, such as `0x1F2D`, `1234567890`, `3.14`, or `"I am a sentence."`. Literals usually appear in the right-hand side of an assignment, or as arguments to a function. They are not variables because they do not have a name, a type, or (in most cases) a memory address. These values will be evaluated by the compiler at compile time (with some optimizations if possible) and are directly embedded in to the compiled code. When you run the code, these literals will be converted (materialized) into the corresponding types, such as integers, floats, strings, etc.
-
-Literals usually features with some patterns or prefixes which enable the compiler to infer their types. For example, `0x1F2D` is a hexadecimal integer literal, `0b1010` is a binary integer literal, `3.14` is a decimal floating-point literal, and `"I am a sentence."` is a string literal. The compiler will use these patterns or prefixes to determine the type of the literal. If your type annotation is not compatible with the literal, you will get an error message.
-
-::: tip R-value and L-value
-
-Literals are usually **R-values** that does not have a memory address and you cannot use any address-related operations on it. The name "R-value" comes from the fact that they usually appear on the right-hand side of an assignment. On contrary, **L-values** are values that have a memory address and can be assigned to a variable. Although being called "L-value", they can appear on both sides of an assignment.
-
-For example, `var a = 123` is an assignment where `a` is an L-value and `123` is an R-value (as you can use `Pointer(to=a)` to get the address of `a` but you cannot do that for the literal `123`). In the expression `var c = a + b`, `a`, `b`, `c` are all L-values (as you can find the addresses of these variables).
-
-Back to literals again. As said before, literals are usually R-values. However, some literals can be L-values, e.g., string literals. This is because string literals are stored in a memory location at runtime and can be referenced by their address.
-
-:::
 
 ### Integer overflow
 
@@ -173,7 +159,7 @@ In Mojo, you can convert an integer to a smaller integer type with narrower rang
 
 :::
 
-### Exercises on integer types
+### Exercises - integer types
 
 Now we want to calculate the $12345^5$. Since the result is big (around 20 digits), we use `Int128` to avoid overflow. Try to run the following code in Mojo and see what happens. Explain why the result is unexpected and how to fix it.
 
@@ -642,6 +628,47 @@ If you are interested in the difference between the the memory layout of a list 
 
 :::
 
-## Main changes in this chapter
+## Literals and type inference
+
+Note that we use the term "literal" in the previous sections. Literals are values that you write in the code, *as it is*, such as `0x1F2D`, `1234567890`, `3.14`, or `"I am a sentence."`. Literals usually appear in the right-hand side of an assignment, or as arguments to a function. They are not variables because they are not linked to a name or, sometimes, a memory address.
+
+The literal values are automatically stored as **specific primitive types** by the compiler according to their patterns, prefixes, or formats. For example, `12` will be stored with the type `IntLiteral`, `3.14` will be stored with the type `FloatLiteral` (a decimal point is detected), and `"I am a sentence."` will be stored as a `StringLiteral` (quotation marks are detected), etc. These literal types are primitive types that are built into the Mojo language or in the standard library and they are **not directly exposed** to users.
+
+During compilation, these literals will be evaluated by the compiler, with some optimizations if possible, and are directly embedded in to the compiled code.
+
+When you run the code, these literal types will be, in most cases, converted (materialized) automatically into the corresponding types. For example, the `IntLiteral` type will be converted to `Int` type and the `FloatLiteral` type will be converted to `Float64` type.
+
+If your type annotation is not compatible with the type of the literal, you will get an error message. For example, you try to assign a float literal to an `Int` variable:
+
+```mojo
+# src/basic/types/incompatible_literal_type_and_annotation.mojo
+# This code will not compile
+def main():
+    var a: Int = 42.5
+    print(a)
+```
+
+Running the code will give you an error message like this:
+
+```console
+error: cannot implicitly convert 'FloatLiteral[42.5]' value to 'Int'
+    var a: Int = 42.5
+                 ^~~~
+```
+
+Note that this error will not happen in Python. The type annotation in Python is just a **hint** for users and type checkers, but it does not affect the runtime behavior of the code. In other words, when there are conflicts between the type annotation and the literal type of the value, Python will take the literal type of the value and ignore the type annotation.
+
+::: tip R-value and L-value
+
+Literals are usually **R-values** that does not have a memory address and you cannot use any address-related operations on it. The name "R-value" comes from the fact that they usually appear on the right-hand side of an assignment. On contrary, **L-values** are values that have a memory address and can be assigned to a variable. Although being called "L-value", they can appear on both sides of an assignment.
+
+For example, `var a = 123` is an assignment where `a` is an L-value and `123` is an R-value (as you can use `Pointer(to=a)` to get the address of `a` but you cannot do that for the literal `123`). In the expression `var c = a + b`, `a`, `b`, `c` are all L-values (as you can find the addresses of these variables).
+
+Back to literals again. As said before, literals are usually R-values. However, some literals can be L-values, e.g., string literals. This is because string literals are stored in a memory location at runtime and can be referenced by their address.
+
+:::
+
+## Major changes in this chapter
 
 - 2025-06-21: Update to accommodate to the changes in Mojo v24.5.
+- 2025-06-22: Add a section about the literal types and type inference.

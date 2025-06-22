@@ -778,7 +778,7 @@ def main():
         print("Hello, world!")
 ```
 
-## Main changes in this chapter
+## Major changes in this chapter
 
 - 2025-06-18: Add some graphs for variables.
 - 2025-06-21: Update to accommodate to the changes in Mojo v24.5 (fcaa01b2).
