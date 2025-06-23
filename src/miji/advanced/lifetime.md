@@ -9,9 +9,9 @@ Many people think that lifetime is a complex concept, as well as how to denote i
 
 ::: warning Compatible Mojo version
 
-The lifetime system in Mojo is still evolving. The syntax and semantics described in this document are subject to change in future versions of Mojo.
-
 This chapter is compatible with Mojo v25.4 (2025-06-18).
+
+The lifetime system in Mojo is still evolving. The syntax and semantics described in this document are subject to change in future versions of Mojo.
 
 :::
 
@@ -28,6 +28,7 @@ To start with, let's first discuss the start and the end of a lifetime.
 The lifetime of a variable is the period during which its value is valid and can be safely assessed (directly or indirectly). In Mojo, the lifetime of a variable starts when it is declared and initialized, and ends when it goes out of scope, is explicitly transferring out its ownership, or all its references (and itself) are lastly used. Let's illustrate the scenarios with an example. Consider the following code:
 
 ```mojo
+# src/advanced/lifetime/lifetime_scenarios.mojo
 def main():
     var a = List[Int](1, 2, 3)
     var x = String("I am a string.")
@@ -101,6 +102,7 @@ Note that, although `x` is last used in the fifth-to-last line, it is not destro
 We will use comments to denote the start and end of lifetime in the above code.
 
 ```mojo
+# src/advanced/lifetime/lifetime_scenarios_with_comments.mojo
 def main():
     var a = List[Int](1, 2, 3)                     # Lifetime of `a` starts here
     var x = String("I am a string.")               # Lifetime of `x` starts here
@@ -195,7 +197,7 @@ In the VS Code editor, you can hover over the variables to see their lifetime in
 | `c`      | `(variable) var b: ref [a] String`     |
 | `d`      | `(variable) var d: Pointer[String, a]` |
 
-Here, the `[a]` in `ref [a] String` means that the values of `b` and `c` are orginally owned by `a`. 
+Here, the `[a]` in `ref [a] String` means that the values of `b` and `c` are originally owned by `a`.
 
 `Pointer[String, a]` means that the pointer instance `d` carries the information on the origin as a **parameter**.
 
@@ -232,6 +234,8 @@ Mojo will automatically track the lifetime of variables and their references, as
 Let's illustrate this with an example: The user is asked to input two integers, then the program will create a pointer that points to the smaller of the two integers (the if-statement), finally, the program will print the values of the two integers and the smaller one. The code is as follows:
 
 ```mojo
+# src/advanced/lifetime/combined_lifetime_wrong.mojo
+# This code will not compile
 def main():
     var a: Int = Int(input("Type the first integer `a`: "))
     var b: Int = Int(input("Type the second integer `b`: "))
@@ -242,8 +246,12 @@ def main():
     else:
         c = Pointer[Int](to=b)
 
-    print("The first integer you give is", a, "at address", String(Pointer(to=a)))
-    print("The second integer you give is", b, "at address", String(Pointer(to=b)))
+    print(
+        "The first integer you give is", a, "at address", String(Pointer(to=a))
+    )
+    print(
+        "The second integer you give is", b, "at address", String(Pointer(to=b))
+    )
     print("The smaller of the two integers is", c[], "at address", String(c))
 ```
 
@@ -259,8 +267,6 @@ The root cause of this problem is that **`c` may point to either `a` or `b` at r
 Let's say, you bet that `c` will always point to `a` and record this in the signature of `c`, then `b` will be destroyed immediately after the `if` statement. If in the runtime, `b` is smaller than `a`, then `c` will point to `b`, then the last line of the code will try to access an address whose value has already been destroyed, leading to use-after-free error.
 
 Let's run the above code to see what happens:
-
-```mojo
 
 If we run it, we will see the following error at compile time:
 
@@ -287,18 +293,23 @@ The answer is to **prepare for both cases beforehand**. We can put the informati
 To do this, we can use the `__origin_of()` function. This function returns an object (of `Origin` type) that records the original owner(s). Then you can pass this object to the constructor of the `Pointer` type. Let's rewrite the code as follows:
 
 ```mojo
+# src/advanced/lifetime/combined_lifetime.mojo
 def main():
     var a: Int = Int(input("Type the first integer `a`: "))
     var b: Int = Int(input("Type the second integer `b`: "))
-    var c: Pointer[Int, origin=__origin_of(a, b)]
+    var c: Pointer[Int, origin = __origin_of(a, b)]
 
     if a < b:
-        c = Pointer[Int, origin=__origin_of(a, b)](to=a)
+        c = Pointer[Int, origin = __origin_of(a, b)](to=a)
     else:
-        c = Pointer[Int, origin=__origin_of(a, b)](to=b)
+        c = Pointer[Int, origin = __origin_of(a, b)](to=b)
 
-    print("The first integer you give is", a, "at address", String(Pointer(to=a)))
-    print("The second integer you give is", b, "at address", String(Pointer(to=b)))
+    print(
+        "The first integer you give is", a, "at address", String(Pointer(to=a))
+    )
+    print(
+        "The second integer you give is", b, "at address", String(Pointer(to=b))
+    )
     print("The smaller of the two integers is", c[], "at address", String(c))
 ```
 
@@ -333,7 +344,7 @@ In the previous example, we create a pointer `c` in the local scope of the `main
 In the following example, we want to create a function `shorter()` that takes two strings (words) as input, and returns a pointer to the shorter one. We then call this function in the `main()` function. The code is as follows.
 
 ```mojo
-# src/advanced/lifetime_function_pointer.mojo
+# src/advanced/lifetime/lifetime_function_pointer.mojo
 def shorter(
     word1: String, word2: String
 ) -> Pointer[String, __origin_of(word1, word2)]:
@@ -512,19 +523,39 @@ The design philosophy of Mojo and Rust lifetime systems is different. Different 
 In the previous example, we used `Pointer` type to return the pointer to the shorter string. However, we can also use `ref` type to achieve the same goal. The code will look like this:
 
 ```mojo
-def shorter(ref a: String, ref b: String) -> ref [a, b] String:
+# src/advanced/lifetime/lifetime_function_ref.mojo
+def shorter(a: String, b: String) -> ref [a, b] String:
     if len(a) < len(b):
         return a
     else:
         return b
+
 
 def main():
     var a: String = String("beautiful")
     var b: String = String("pretty")
 
     var ref c = shorter(a, b)
-    
-    print(String('The first word you give is "{}" at address {}').format(a, String(Pointer(to=a))))
-    print(String('The second word you give is "{}" at address {}').format(b, String(Pointer(to=b))))
-    print(String('The shorter of the two words is "{}" at address {}').format(c, String(Pointer(to=c))))
+
+    print(
+        String('The first word you give is "{}" at address {}').format(
+            a, String(Pointer(to=a))
+        )
+    )
+    print(
+        String('The second word you give is "{}" at address {}').format(
+            b, String(Pointer(to=b))
+        )
+    )
+    print(
+        String('The shorter of the two words is "{}" at address {}').format(
+            c, String(Pointer(to=c))
+        )
+    )
 ```
+
+In this code, we use `ref [a, b] String` as the return type of the function `shorter()`. This means that the returned reference will point to either `a` or `b`, and it will carry the information on both `a` and `b` as the possible original owners of the value. The lifetime information is expressed in the square brackets `[]` after the `ref` keyword and before the type.
+
+## Major changes in this chapter
+
+- 2025-06-23: Update to accommodate to the changes in Mojo v24.5.

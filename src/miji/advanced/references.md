@@ -24,15 +24,26 @@ In Mojo, "reference" is not a type (a safe pointer) as is in Rust, but is more l
 
 Since it is not a new type, it is therefore, sharing the same behaviors of the original variable. If you want to get the value of the reference, you do not need to de-reference it. In other words, the auto-dereferencing becomes a result convention of the references rather than a feature of the reference type (reference in Mojo is no type).
 
-For example, if you pass `a: Int` into function `fn copyit(read some: Int)`, then `some` is an immutable reference (alias) of `a` and behave exactly as `a`. The code `b = some.copy()` within the function would call `a`'s `copy()` method. To print the value, you can simply use `print(some)` without any de-referencing operator, e.g., `print(some[])`.
+For example, if you pass `a: Int` into function `fn copyit(read some: Int)`, then `some` is an immutable reference (alias) of `a` and behave exactly as `a`. The code `b = some.copy()` within the function would call `a`'s `copy()` method. To print the value, you can simply use `print(some)` without any de-referencing operator.
 
-If you want to use Rust-type reference, e.g., `&Type`, you should use the `Pointer` type, which is a safe pointer that will not null or dangling. Then, you need to always deference it to get access the value. For example, a iterator over the `List` type would returns, in each step, a `Pointer` instance pointing to the address of an element of the list. To print the value, you have to first dereference the pointer with `[]`.
+If you want to use Rust-type reference, e.g., `&Type`, you should use the `Pointer` type, which is a safe pointer that will not null or dangling. Then, you need to always deference it to get access the value. The following code illustrate how to achieve similar functionality as the "Rust-type reference" in Mojo.
 
 ```mojo
-def main():
-    for i in List[Int](1, 2, 3, 4):
-        # i is of the type Pointer[Int]
-        print(i[])  # [] is the de-referencing operator
+# src/advanced/references/pointer_and_deref.mojo
+fn main():
+    var val = 42
+    var ptr = Pointer[Int](to=val)
+    print("The address of val is:", String(ptr))
+    print("The value pointed to by ptr is:", ptr[])
+```
+
+```rust
+fn main() {
+    let val = 42;
+    let ptr = &val;
+    println!("The address of val is {:p}", ptr);
+    println!("The value at that address is {}", *ptr);
+}
 ```
 
 ::: info Auto-dereferencing
@@ -67,7 +78,7 @@ We will discuss each keyword of conventions in the following sections.
 
 The keyword `ref` allows you to create a **mutable shared reference** of a value in the **local scope**. At the same time, a mutable [**referenced status**](../advanced/ownership.md#four-statuses-of-ownership) is created. At the same time, a mutable [**referenced status**](../advanced/ownership.md#four-statuses-of-ownership) is created.
 
-If we apply our [conceptual model of variables](../basic/variables.md#conceptual-model-of-variable), the following things will happen when you use `var ref y = x`:
+If we apply our [conceptual model of variables](../basic/variables.md#conceptual-model-of-variable), the following things will happen when you use `var ref y = x` (or equivalently `ref y = x`):
 
 1. The variable `y` will get the same address as the variable `x`, so it can access the value at that address.
 1. The variable `y` is marked as "mutable", meaning that you can change the value at the **address** of the argument `x`.
@@ -76,6 +87,7 @@ If we apply our [conceptual model of variables](../basic/variables.md#conceptual
 Let's look at the following example to see how the `ref` keyword works in the local scope:
 
 ```mojo
+# src/advanced/references/ref_in_local_scope.mojo
 def main():
     var a = String("I am owned by `a`")
     var ref b = a
@@ -90,17 +102,19 @@ def main():
 You can run the code and see the following output:
 
 ```console
-I am owned by `a` at 0x16b33cc80
-I am owned by `a` at 0x16b33cc80
-I am owned by `a` but modified via `b` at 0x16b33cc80
-I am owned by `a` but modified via `b` at 0x16b33cc80
+I am owned by `a` at 0x16ce283d0
+I am owned by `a` at 0x16ce283d0
+I am owned by `a` but modified via `b` at 0x16ce283d0
+I am owned by `a` but modified via `b` at 0x16ce283d0
 ```
 
-In this example, we create a variable `a` with the value `1`, and then create a **mutable reference** `b` of `a` using the `ref` keyword. As it is a **referenced status**, the two variables share the same address in the memory (`0x16ae2cc90`). Both of them are of the same type and have the same behaviors. When we change the value of `b` to `3`, the value of `a` is also changed to `3`.
+In this example, we create a variable `a` with the value `1`, and then create a **mutable reference** `b` of `a` using the `ref` keyword. As it is a **referenced status**, the two variables share the same address in the memory (`0x16ce283d0`). Both of them are of the same type and have the same behaviors. When we change the value of `b` to `3`, the value of `a` is also changed to `3`.
 
 Because `b` is an reference of `a`, it only has the right to use and modify the value of `a`, but does not have the right to destroy it or change its ownership. For example, in the following code, we try to use the transfer operator `^` to transfer the ownership to variable `c`:
 
 ```mojo
+# src/advanced/references/transfer_ownership_via_reference.mojo
+# This code will not compile
 def main():
     var a = String("I am owned by `a`")
     var ref b = a
@@ -118,7 +132,7 @@ def main():
 This gives the following error:
 
 ```console
-/Users/ZHU/Programs/mymojo/temp.mojo:11:14: error: expression does not designate a value with an origin
+error: expression does not designate a value with an origin
     var c = b^
              ^
 ```
@@ -166,9 +180,19 @@ If an argument is declared in the function signature with the keyword `read`, th
 Notably, you cannot use the `read` keyword to define a immutable reference in the **local scope**. For example, the following code will not compile:
 
 ```mojo
+# This code will not compile
 def main():
     var x: Int = 5
     read y = x  # This will not compile
+    print(y)
+```
+
+You should use the `ref` keyword instead:
+
+```mojo
+def main():
+    var x: Int = 5
+    ref y = x
     print(y)
 ```
 
@@ -184,16 +208,26 @@ If an argument is declared in the function signature with the keyword `read`, th
 Notably, you cannot use the `mut` keyword to define a mutable reference in the **local scope**. For example, the following code will not compile:
 
 ```mojo
+# This code will not compile
 def main():
     var x: Float64 = 5.0
     mut y = x  # This will not compile
     print(y)
 ```
 
+You should use the `ref` keyword instead:
+
+```mojo
+def main():
+    var x: Float64 = 5.0
+    ref y = x
+    print(y)
+```
+
 The following example examines the functionality of the `mut` keyword **from the memory's perspective**, so that you can understand the concepts and mechanics better. For this purpose, we need to import the `Pointer` class from the `memory` module, which allows us to print the address of a variable or an argument.
 
 ```mojo
-# src/basic/mut_keyword.mojo
+# src/basic/functions/mut_keyword.mojo
 from memory import Pointer
 
 def changeit(mut a: Int8):
@@ -294,7 +328,7 @@ If we apply our [conceptual model of variables](../basic/variables.md#conceptual
 The following example examines the functionality of the `owned` keyword **from the memory's perspective**. In the function signature of `changeit()`, we use the `owned` keyword to indicate that the argument `a` is an owned copy of the value passed in.
 
 ```mojo
-# src/basic/owned_keyword.mojo
+# src/basic/functions/owned_keyword.mojo
 from memory import Pointer
 
 
@@ -403,6 +437,7 @@ Address │16bb384f5│16bb384f6│16bb384f7│16bb384f8│   ...   │16bb38509
 In Mojo, the references (aliases) or safe pointers can be chained through the ownership system. This means that you can create an reference (or a pointer) to a variable that is already an reference of (or a pointer to) another variable. Then the two references (or pointers) will both be tied to the original owner of the value, and they will share the same address in the memory. For example, see the following code:
 
 ```mojo
+# src/advanced/references/chained_references.mojo
 def main():
     var a = String("I am owned by `a`")
     var ref b = a
@@ -421,3 +456,7 @@ I am owned by `a` at 0x16d43cc90
 ```
 
 In this example, we create a variable `a` with the value `I am owned by a`, and then create a mutable reference (alias) `b` of `a` using the `ref` keyword. Then we create another mutable reference (alias) `c` of `b`. As a result, `b` and `c` are both aliases of `a`, which means that they share the same address in the memory (`0x16d43cc90`). The value of `a`, `b`, and `c` are all the same.
+
+## Major changes in this chapter
+
+- 2025-06-23: Update to accommodate to the changes in Mojo v24.5.

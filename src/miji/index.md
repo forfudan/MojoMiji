@@ -4,8 +4,7 @@ by ***Yuhao Zhu 朱宇浩***
 
 ::: warning Compatible Mojo version
 
-This Miji is compatible with Mojo v25.3 (2025-05-06) and is working towards compatibility with Mojo
-v25.4 (2025-06-18).
+This Miji is compatible with Mojo v25.4 (2025-06-18).
 
 :::
 

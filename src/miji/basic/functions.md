@@ -491,7 +491,7 @@ If we apply the [four-status model of ownership](../advanced/ownership.md#four-s
 The following example examines the functionality of the `mut` keyword **from the memory's perspective**, so that you can understand the concepts and mechanics better. For this purpose, we need to import the `Pointer` class from the `memory` module, which allows us to print the address of a variable or an argument.
 
 ```mojo
-# src/basic/mut_keyword.mojo
+# src/basic/functions/mut_keyword.mojo
 from memory import Pointer
 
 def changeit(mut a: Int8):
@@ -622,7 +622,7 @@ If we apply the [four-status model of ownership](../advanced/ownership.md#four-s
 The following example examines the functionality of the `owned` keyword **from the memory's perspective**. In the function signature of `changeit()`, we use the `owned` keyword to indicate that the argument `a` is an owned copy of the value passed in.
 
 ```mojo
-# src/basic/owned_keyword.mojo
+# src/basic/functions/owned_keyword.mojo
 from memory import Pointer
 
 
