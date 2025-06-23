@@ -5,6 +5,12 @@
 
 Although SIMD is considered a "small" struct and is, perhaps, the most fundamental data type in Mojo, I still make a separate chapter for it and put it in the "advanced" part. This is because there is not a counterpart of SIMD in Python and it is even not a built-in type for many other programming languages. Luckily, Mojo includes this type as a fundamental numerical type and makes it built-in. This type helps Mojo to achieve high performance in numerical computing, especially in vectorized operations.
 
+::: info Compatible Mojo version
+
+This chapter is compatible with Mojo v25.4 (2025-06-18).
+
+:::
+
 [[toc]]
 
 ## Why SIMD?
@@ -12,20 +18,23 @@ Although SIMD is considered a "small" struct and is, perhaps, the most fundament
 Consider the following example where we want to add two lists element-wise. If we use a traditional approach, we would iterate over each element of the lists and perform the addition one by one. (The function `print_list_of_floats` is defined in Section [Print a list](../basic/types.md#print-a-list).)
 
 ```mojo
-# src/basic/add_lists.mojo
+# src/advanced/simd/add_lists.mojo
 def add_lists(a: List[Float64], b: List[Float64]) -> List[Float64]:
     result = List[Float64]()
     for i in range(len(a)):
         result.append(a[i] + b[i])
     return result
 
+
 def main():
     a = List[Float64](1.0, 2.0, 3.0, 4.0)
     b = List[Float64](5.0, 6.0, 7.0, 8.0)
     result = add_lists(a, b)
     for i in result:
-        print(i[], end=", ")
-    # Output: 6.0, 8.0, 10.0, 12.0,
+        print(i, end=", ")
+
+
+# Output: 6.0, 8.0, 10.0, 12.0,
 ```
 
 This approach is straightforward and simple. Compared to Python, plain iteration in Mojo is also much, much faster, since Mojo stores the values of elements of list contiguously in memory. You can safely use plain iteration in Mojo to achieve good performance.
@@ -161,7 +170,7 @@ Here is a summary of the `SIMD` type:
 | ------------------ | ----------------------------------- |
 | Type of elements   | Homogeneous type defined by `DType` |
 | Mutability         | Mutable                             |
-| Inialization       | `SIMD[DType, size]()`               |
+| Initialization     | `SIMD[DType, size]()`               |
 | Indexing           | Use brackets `[]`                   |
 | Slicing            | Use brackets `[a:b:c]`              |
 | Extending by items | Use `append()`                      |
@@ -181,7 +190,7 @@ To create a `SIMD` object, you can use the general syntax `SIMD[DType, size]()`,
 1. An SIMD of `DType.float32` with 1 element. However, we do not explicitly specify the size.
 
 ```mojo
-# src/advanced/create_simd.mojo
+# src/advanced/simd/create_simd.mojo
 def main():
     var a = SIMD[DType.float64, 4](1.0, 2.0, 3.0, 4.0)
     var b = SIMD[DType.int64, 8](89, 117, 104, 97, 111, 90, 104, 117)
@@ -293,7 +302,7 @@ Finally, the Mojo compiler will replace `Float64()` with `SIMD[DType.float64, 1]
 
 :::
 
-## Uninitialized SIMD
+## Uninitialized SIMD elements
 
 Recall the variable `d` in the previous example:
 
@@ -303,7 +312,9 @@ var d = SIMD[DType.uint8, 8](1, 2, 3, 4)
 
 The size of the object is 8, but we only provided 4 elements. The output is then `d = [1, 2, 3, 4, 0, 12, 89, 0]`. If you run your code several times, you will see that the last four elements are different each time (mostly zeros). This is because the last four elements are **uninitialized**.
 
-To help you understand this, let me use graphs to illustrate what has happened in the memory when you created the variable `d`.
+We have discussed about **uninitialized variables** in Chapter [Variables](../basic/variables), which means that the variables are declared but not assigned any value. In the case of `SIMD`, the same applies: a memory block is allocated for the last 4 elements of the SIMD, but no values are assigned to them. The values at these addresses are random and unpredictable, which can lead to unexpected behavior in your program.
+
+To help you understand this, let me use graphs to illustrate what has happened in the memory when you created the variable `d` in the code above.
 
 When you define the variable `d` and indicate that it is a `SIMD[DType.uint8, 8]`, the Mojo compiler will allocate 8 bytes (one byte for each element) of contiguous memory on the stack (e.g., from the address `17ca81f8` to `17ca81a5`), which is just enough to hold 8 elements of type `UInt8`.
 
@@ -386,7 +397,7 @@ You can see that there are more than one way to split the data into smaller SIMD
 Now we finally come to see how SMID can help us to achieve high performance in numerical computing. Let's re-write our previous example of adding two lists element-wise, but this time, using SIMDs.
 
 ```mojo
-# src/advanced/add_lists.mojo
+# src/advanced/add_simds.mojo
 def main():
     a = SIMD[DType.float64, 4](1.0, 2.0, 3.0, 4.0)
     b = SIMD[DType.float64, 4](5.0, 6.0, 7.0, 8.0)
@@ -396,6 +407,8 @@ def main():
 ```
 
 It is just as easy as adding up two numbers. The `+` operator for the `SIMD` type is to perform element-wise addition. You can also use other operators such as `-`, `*`, `/`, etc. to perform element-wise subtraction, multiplication, and division, respectively. Note that these operations are done in parallel for all elements in the SIMD.
+
+---
 
 We can make a quick comparison between the performance of the two approaches. In the mojo file `src/advanced/simd_performance.mojo`, we will implement two approaches to repeatedly add up `[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0]`, element-wise, for 1,000,000 times. The expected result is `[1000000.0, 2000000.0, 3000000.0, 4000000.0, 5000000.0, 6000000.0, 7000000.0, 8000000.0]`.
 
@@ -409,7 +422,7 @@ To calculate the time taken for each approach, we use both the built-in `time` m
 The `time` module in Mojo provides several functions to record the current time. You can then use the difference between two time points to calculate the elapsed time for a specific operation. For you comparison, we will use the `perf_counter_ns()` function, which returns the current time in nanoseconds. This is a high-resolution timer that is suitable for measuring short durations.
 
 ```mojo
-# src/advanced/simd_performance.mojo
+# src/advanced/simd/simd_performance.mojo
 import time
 
 
@@ -459,7 +472,7 @@ The results are correct for both approaches, but the time taken for the vectoriz
 The `benchmark` module is a built-in module in Mojo that provides a convenient way to measure the performance of your code by running it several times. The timer is outside the program and will not affect the performance of your code. The code is as follows:
 
 ```mojo
-# src/advanced/simd_performance_benchmark.mojo
+# src/advanced/simd/simd_performance_benchmark.mojo
 import benchmark
 
 
@@ -531,3 +544,7 @@ Thus, the mean time taken for two approaches are:
 - SIMD operation: 0.0059282 seconds
 
 The vectorized operation is about 56 times faster than the plain iteration. This result is similar to the previous one.
+
+## Major changes in this chapter
+
+- 2025-06-23: Update to accommodate to the changes in Mojo v24.5.

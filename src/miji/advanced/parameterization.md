@@ -2,6 +2,12 @@
 
 Parametrization is not difficult, as you can see in this chapter soon. But it is a very powerful tool that allows us to improve the performance of our programs during execution. We do not have this feature in Python and, I have to say, it is not something that is mandatory to write a program to solve daily problems. So I put this topic in the advanced section of the Miji.
 
+::: info Compatible Mojo version
+
+This chapter is compatible with Mojo v25.4 (2025-06-18).
+
+:::
+
 [[toc]]
 
 ## Compile time vs runtime
@@ -24,7 +30,7 @@ To understand how parameters work, let's start with "parameterized function". A 
 Let's see the following example. You ask the user to input three sentences. The first sentence is printed two times, the second sentence is printed four times, and the third sentence is printed six time. The code looks like this:
 
 ```mojo
-# src/advanced/print_sentences.mojo
+# src/advanced/parameterization/print_sentences.mojo
 def print_sentence_twice(sentence: String):
     for _i in range(2):
         print(sentence)
@@ -53,7 +59,7 @@ If we run this program, we will see that it works as expected. However, the code
 You must have come out with a better solution: we can write a single function that takes an argument for the number of times to print the sentence, as in the following code:
 
 ```mojo
-# src/advanced/print_sentences_argument.mojo
+# src/advanced/parameterization/print_sentences_argument.mojo
 def print_sentence(sentence: String, times: Int):
     for _i in range(times):
         print(sentence)
@@ -77,7 +83,7 @@ At runtime, the only thing that users need to input is the sentences. The number
 Yes, we can. What we need to do is simply take the `times` argument out of the parentheses `()` and put it in the square brackets `[]`. In this way, it becomes a **parameter**. The code will look like this:
 
 ```mojo
-# src/advanced/print_sentences_parameter.mojo
+# src/advanced/parameterization/print_sentences_parameter.mojo
 def print_sentence[times: Int](sentence: String):
     for _i in range(times):
         print(sentence)
@@ -154,7 +160,7 @@ Some data structures (defined by the `struct` keyword) in Mojo can also be param
 Remember that in the [SIMD chapter](./simd.md), we have seen the following code:
 
 ```mojo
-# src/advanced/create_simd.mojo
+# src/advanced/simd/create_simd.mojo
 def main():
     var a = SIMD[DType.float64, 4](1.0, 2.0, 3.0, 4.0)
     var b = SIMD[DType.int64, 8](89, 117, 104, 97, 111, 90, 104, 117)
@@ -173,12 +179,21 @@ Actually the data type and the numbers we put in the square brackets `[]` of the
 Just like in a function call, you can use keyword parameters in the `SIMD` constructor. The constructors in the previous example can also be written as:
 
 ```mojo
+# src/advanced/parameterization/create_simd_with_keyword_parameters.mojo
 def main():
-    var a = SIMD[dtype=DType.float64, size=4](1.0, 2.0, 3.0, 4.0)
-    var b = SIMD[dtype=DType.int64, size=8](89, 117, 104, 97, 111, 90, 104, 117)
-    var c = SIMD[dtype=DType.bool, size=2](True, False)
-    var d = SIMD[dtype=DType.uint8, size=8](1, 2, 3, 4)
-    var e = SIMD[dtype=DType.float32, size=1](1.0)
+    var a = SIMD[dtype = DType.float64, size=4](1.0, 2.0, 3.0, 4.0)
+    var b = SIMD[dtype = DType.int64, size=8](
+        89, 117, 104, 97, 111, 90, 104, 117
+    )
+    var c = SIMD[dtype = DType.bool, size=2](True, False)
+    var d = SIMD[dtype = DType.uint8, size=8](1, 2, 3, 4)
+    var e = SIMD[dtype = DType.float32, size=1](1.0)
+
+    print("a =", a)
+    print("b =", b)
+    print("c =", c)
+    print("d =", d)
+    print("e =", e)
 ```
 
 ## Next step
