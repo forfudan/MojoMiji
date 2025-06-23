@@ -7,7 +7,7 @@ It would be interesting to imagine a world where most of the programming languag
 
 There are three main types of control flows in Python: loops, conditionals, and exceptions. Mojo, being a Python-like language, also supports these control flows with almost the same logic and syntax. In this section, we will cover the first two types of control flows: loops and conditionals. Exceptions will be covered in a later chapter.
 
-Believe me, this should be the easiest chapter of this Miji for a Pythonista, so let's get started!
+For Pythonistas, you can quickly scan this chapter and skip some sections because the concepts in this chapter are very similar to Python's control flows. You may still need to pay attention to some blocks marked in yellow or red colors, which indicate the differences between Mojo and Python.
 
 ::: info Compatible Mojo version
 
