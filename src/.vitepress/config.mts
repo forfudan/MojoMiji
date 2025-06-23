@@ -38,10 +38,10 @@ export default defineConfig({
   themeConfig: {
     logo: '/icon.png',
     nav: [
-      {
-        text: 'Open Miji', link: '/miji/'
-      },
-      { text: 'Mojo official website', link: 'https://www.modular.com/max/mojo/' },
+      // {
+      //   text: 'Open Miji', link: '/miji/'
+      // },
+      { text: 'Mojo resources', link: '/miji/misc/resources' },
     ],
     logoLink: {
       link: 'https://mojo-lang.com/miji',

@@ -9,6 +9,12 @@ There are three main types of control flows in Python: loops, conditionals, and 
 
 Believe me, this should be the easiest chapter of this Miji for a Pythonista, so let's get started!
 
+::: info Compatible Mojo version
+
+This chapter is compatible with Mojo v25.4 (2025-06-18).
+
+:::
+
 [[toc]]
 
 ## Conditionals

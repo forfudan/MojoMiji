@@ -90,7 +90,7 @@ There are many ways to introduce the concept of "ownership". I thought about it 
 
 Among these statuses, the isolated status is the safest as no sharing or borrowing is involved. The referenced status and the pointed status have many features and behaviors in common, and they are both guaranteed to be safe with the help of the ownership rules and the Mojo compiler. The unsafe status does not belong to the safe Mojo realm, and we will not discuss it in this Chapter but in a separate chapter on unsafe Mojo later.
 
-In some Mojo documents or discussions, the term "reference" can either mean a pointer or an alias (body double), depending on the context. This may lead to confusion, especially for beginners. In this Miji, **I will try to avoid using the term "reference" unless it means the general "borrowing" concept**. In all other cases, I will use explicitly the term "pointer" for a safe pointer, the term "reference" for an reference (alias, body double), and the term "Rust-style reference" for the reference in Rust.
+In some Mojo documents or discussions, the term "reference" can either mean a pointer or an alias (body double), depending on the context. This may lead to confusion, especially for beginners. In this Miji, **I will use reference to exclusively mean the name alias of a variable**. For a more general concept that describes either referencing or pointing to a value, I will use the term **borrow**. For the reference in Rust, I will use the term **"Rust-style reference"**.
 
 ### Isolated status
 
@@ -726,6 +726,19 @@ fn main():
 
 :::
 
+## How to enforce ownership rules?
+
+So far, we have discussed the ownership model in Mojo, including the four statuses of ownership, the rules of ownership, and how to transfer or copy values. However, how can the Mojo compiler enforce these rules in practice? How can Mojo compiler know when a value is not used by references anymore and can be destroyed?
+
+The answer is that the Mojo's design ensures that:
+
+1. The lifetime of the owner of a value is properly tracked by the compiler.
+2. Any borrower (reference or pointer) always contain the information about the owner of the value.
+
+The information above will form a chained graph of ownership and lifetime, which is used by the Mojo compiler to check the ownership rules and ensure memory safety.
+
+We will discuss more about how these features are implemented in the following chapters [Reference system](../advanced/references) and [Lifetime system](../advanced/lifetime).
+
 ## A metaphor for ownership
 
 ::: info Just a metaphor
@@ -867,7 +880,7 @@ To solve this problem, the governor change the rules of planning so that workers
 
 The governor then, according to the new rules, examined his plan again. All workers are planned to leave the island as soon as possible.
 
-He restarted the project. This time, everything works well. After 12 months, the enclosed is finished!
+He restarted the project. This time, everything works well. After 12 months, the encyclopedia is finished!
 
 ## From metaphor to Mojo's ownership
 

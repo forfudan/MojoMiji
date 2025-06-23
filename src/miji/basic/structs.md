@@ -5,6 +5,12 @@
 
 Though Python does not has the concept of "struct", it has a similar concept called "class". In many cases, you can use a struct to achieve the same functionality as a class in Python. These, I put the struct in the "basic" part of this Miji Book.
 
+::: info Compatible Mojo version
+
+This chapter is compatible with Mojo v25.4 (2025-06-18).
+
+:::
+
 [[toc]]
 
 ## What is a struct?
@@ -65,7 +71,11 @@ struct StructName[para1: Type1, para2: Type2](Trait1, Trait2):
         ...
 ```
 
-First, you need to provide a name for the struct, and optionally, you can define parameters in square brackets `[]`. The struct can also implement one or more traits, which is a way to define shared behavior across different types. We will discuss this in later chapters [Parametrization](../advanced/parameterization.md) and [Generic and traits](../advanced/generic.md). For now, you can ignore these two features, so that the first row is just `struct StructName:`.
+First, you need to use the `struct` keyword and provide a name for the struct.
+
+Then, optionally, you can define parameters in square brackets `[]`. We will discuss this in the later Chapter [Parametrization](../advanced/parameterization).
+
+The struct can also implement one or more traits, which is a way to define shared behavior across different types. The traits are defined in parentheses `()`. This syntax is similar to how we define a class that inherits from another class in Python. We will discuss more about this in Chapter [Generic and traits](../advanced/generic.md).
 
 Within the code block of the struct, you can declare the fields (attributes) of the struct using the `var` keyword, followed by the field name and its type. It is just like declaring a normal variable, but this time, **we cannot omit the `var` keyword and the type annotation**. These two things are mandatory for Mojo compiler to know how much memory is needed to store the struct.
 
@@ -84,7 +94,9 @@ Let's now look at a simple example, a `Complex` struct that represents a complex
 
 ### Define fields
 
-First, we define the struct with the name `Complex` and two fields, `real` and `imag`. We also use the docstring to describe the struct and its fields, for better documentation and understanding.
+First, we define the struct with the name `Complex` and two fields, `real` and `imag`. We also use the docstring to describe the struct and its fields, for better documentation and understanding. The Mojo code as well as the Python equivalent are as follows:
+
+<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
 
 ```mojo
 # src/basic/complex_number.mojo
@@ -97,9 +109,10 @@ struct Complex:
     """Imaginary part of the complex number."""
 ```
 
-::: info Python equivalent
+</td><td>
 
 ```python
+# src/basic/structs/complex_number.py
 class Complex:
     """Complex number with real and imaginary parts."""
     
@@ -109,17 +122,17 @@ class Complex:
     imag: float  # Imaginary part of the complex number
 ```
 
-:::
+</td></tr></table>
 
 ### Basic methods
 
 Next, we define the `__init__()` method to enable users to use the constructor to initialize the struct instance with the given real and imaginary parts.
 
-We also define a `write_to()` method to to enable `print()` function to work on the struct.
+We also define a `write_to()` method to to enable `print()` function to work on the struct. The Mojo code is as follows.
 
 ```mojo
-# src/basic/complex_number.mojo
-struct Complex:
+# src/basic/structs/complex_number.mojo
+struct Complex(Writable):
     """Complex number with real and imaginary parts."""
 
     var real: Float64
@@ -163,17 +176,32 @@ Complex number c2: 1.0-2.0i
 Complex number c3: 0.0+0.0i
 ```
 
-It is expected, yet two things to note here:
+It is expected, yet several things to note here:
 
 1. The `__init__()` method is defined with the `out` keyword before `self`, which is required in Mojo to indicate that `self` is the output of the method.
 1. We set default values for the `real` and `imag` parameters in the `__init__()` method, so that we can create a complex number without providing any arguments.
-1. The `write_to()` method is defined to enable the `print()` function to work on the struct, as it conforms to the `Writer` trait (we will discuss traits in Chapter [Generic and traits](../advanced/generic.md) later). This method reads in a `Writer` instance, and writes the complex number components and necessary symbols to it. Since the `writer` needs to be modified, we use the `mut` keyword to indicate that it is mutable.
+1. The `write_to()` method is defined to enable the `print()` function to work on the struct. The `write_to()` method reads in a `Writer` instance, and writes the complex number components and necessary symbols to it. Since the `writer` object needs to be modified, we use the `mut` keyword to indicate that it is mutable.
+1. The `write_to()` method is a general method that can be used by many different structs. In Mojo, we call a behavior that can be shared among different types a **trait**. In this case, we say that the `Complex` struct conforms to the `Writable` trait, which means it has a `write_to()` method and can be printed using the `print()`.
+1. We need to explicitly declare the traits in the struct definition, i.e., `struct Complex(Writable):`. This syntax is similar to how we define a class that inherits from another class in Python. We will discuss traits in Chapter [Generic and traits](../advanced/generic.md) later.
+
+::: tip Traits and methods
+
+The concept of traits and how to use them will be covered by this Miji as an advanced topic. However, for now, you just need to remember it in the following way:
+
+Some special dunder methods, such as `write_to()`, `__str__()`, `__int__()`, etc, are corresponding to some traits, such as `Writable`, `Stringable`, `Intable`, etc. If you define these methods in your struct, you have to **explicitly** put the trait name in the struct definition, e.g., `struct Complex(Writable):`.
+
+If you forget to do so, the Mojo compiler will raise an error and remind you which trait you need to add into the parentheses of the struct definition. So, don't worry too much about it for now.
+
+If you are interested in which traits are available in Mojo, you can check Section [Dunder methods and built-in functions](../advanced/generic#dunder-methods-and-built-in-functions).
+
+:::
 
 ::: info Python equivalent
 
 The major difference between Mojo and Python in this part is that Mojo uses the `write_to()` method to enable the `print()` function, while Python uses the `__str__()` method. If you only define a `__str__()` method in Mojo, you can only enable the `String()` constructor to obtain a string representation of the struct, but not the `print()` function. Thus, the Python `__str__()` method can simultaneously achieve two goals (string conversion and printing).
 
 ```python
+# src/basic/structs/complex_number.py
 class Complex:
     """Complex number with real and imaginary parts."""
     
@@ -219,13 +247,13 @@ In Mojo, you can define the behavior of the arithmetic operators by defining spe
 - `__mul__()` for multiplication (`a * b`)
 - `__truediv__()` for division (`a / b`)
 
-It is identical to Python, and we have partially discussed this in Chapter [Operators](../basic/operators.md). For now, we just use our knowledge of Python to define these methods in the `Complex` struct. Later, we will investigate the mechanism behind definement of operators in Chapter [Generic and traits](../advanced/generic.md).
+It is identical to Python, and we have partially discussed this in Chapter [Operators](../basic/operators.md). For now, we just use our knowledge of Python to define these methods in the `Complex` struct. Later, we will investigate the mechanism behind definement of operators in Section [Dunder methods and operators overloading](../advanced/generic#dunder-methods-and-operators-overloading) of Chapter Generic and traits.
 
 The formulae for basic arithmetic operations on complex numbers are simple. As a Pythonista, you can try to do this yourself before looking at the code below, maybe starting with Python code and then converting it to Mojo.
 
 ```mojo
-# src/basic/complex_number.mojo
-struct Complex:
+# src/basic/structs/complex_number.mojo
+struct Complex(Writable):
     """Complex number with real and imaginary parts."""
 
     var real: Float64
@@ -329,7 +357,7 @@ There are some differences between Mojo and Python in this part:
 1. In Python, you can call different types of errors, such as `ZeroDivisionError`, `ValueError`, etc. In Mojo, however, you can only raise a generic `Error` type. More specific error types may be added in the future.
 
 ```python
-# src/basic/complex_number.py
+# src/basic/structs/complex_number.py
 class Complex:
     """Complex number with real and imaginary parts."""
     
@@ -598,3 +626,7 @@ Actually, this long name is not random. It consists my given name, my courtesy n
 ### lifetime methods
 
 (This part maybe moved to Chapter Advanced-Lifetime) -->
+
+## Major changes in this chapter
+
+- 2025-06-23: Update to accommodate to the changes in Mojo v24.5.
