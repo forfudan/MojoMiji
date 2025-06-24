@@ -40,6 +40,8 @@ This chapter summarizes the information, tips, and warnings that are scattered t
 
 [`Float64` or `SIMD[DType.float64, 1]`](../advanced/simd.md#type-of-simd): You can use either `Float64` or `SIMD[DType.float64, 1]` to represent a single-precision floating-point value, because the former one is just an alias of the latter. In most cases, using the former one is more concise and readable.
 
+[`main()` function in a package](../basic/packages#write-packages): Do you know that you cannot run a file with a `main()` function when the file is in a package? Check this section for more details.
+
 [`Int` and `Bool` are not SIMD types](../advanced/simd.md#type-of-simd): Do you know that the built-in type `Int` and `Bool` are not aliases of SIMD? The corresponding SIMD types are actually `SIMD[DType.index, 1]` or `SIMD[DType.bool, 1]`, respectively. So, don't be surprised if the compiler complains about the type mismatch when you try to use `Int` or `Bool` in a SIMD context.
 
 [Implicit and explicit trait declaration](../advanced/generic#traits): Do you know that Mojo allows you to use traits either implicitly or explicitly? You do not need to put the name a trait in the struct declaration. As long as you define all the methods that the trait requires, the compiler will automatically treat the struct as conforming to the trait. It is useful when you want to apply some self-defined traits on a built-in type.

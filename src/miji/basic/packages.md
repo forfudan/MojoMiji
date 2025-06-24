@@ -9,7 +9,7 @@ For Pythonistas, you can quickly scan this chapter and skip some sections becaus
 
 [[toc]]
 
-## Modules and packages
+## Modular programming
 
 When you are working on a larger project, you may write hundreds or even thousands of functions, structs, and traits. Putting all of them in a single file would make it hard to read and maintain. Putting one function per file would create too many files, making it hard to navigate the project.
 
@@ -93,7 +93,7 @@ fn main():
     print("The square root of", x, "is", result)
 ```
 
-### import *
+### import all
 
 Finally, you can use the `from ... import *` statement to import all functions and types from a module into the current file. For example, if we want to import all functions and types from the built-in `math` module, we can write:
 
@@ -127,18 +127,46 @@ This brings us to a practical question: when we want to use a specific function 
 
 The answer is that it depends on the situation. If you only need one or two functions from a module, it might be better to use `from ... import ...` to make your code cleaner. If you need many functions from a module, it might be better to use `import ...` to avoid importing too many functions and causing potential conflicts with other functions in your code.
 
-Nevertheless, the syntax `from ... import *` is generally discouraged. The reason has been explained above. When we see that someone uses `from ... import *` a lot, we may remaind them that:
+Nevertheless, the syntax `from ... import *` is generally discouraged. The reason has been explained above. When we see that someone uses `from ... import *` a lot, we may remind them that:
 
-"Stop contaminating the namespace!"
+"Don't contaminate the namespace!"
 
-## Write modules
+## Write your own modules
 
-A module is a single file containing a set of type alias, global variables, functions, structs, and traits. The **file name** is the module name and serves as the unique identifier for the module. According to the Mojo's naming convention, the module name must be in **snake_case**, namely all letters are lowercase, and words are separated by underscores (`_`). For example, `point.mojo`, `math_library.mojo`, `complex_number_2d_array.mojo`, *etc.*, are all valid module names. Sometimes, the module name may be highly related to the main struct defined in the module. For example, in the Mojo standard library, the module for the `Int` type is named `int.mojo`, and the module for the `String` type is named `string.mojo`.
+You can, of course, write your own modules in Mojo. A module in Mojo is a just single `.mojo` file containing a set of type alias, global variables, functions, structs, and traits.
 
-Let's start with a simple example. Suppose we want to define a `Point` struct that represents a point in 2D space, along with some functions and methods to manipulate it. We write our code in a file named `point.mojo` as follows:
+The **file name** is the module name and serves as the unique identifier for the module. According to the Mojo's naming convention, the module name must be in **snake_case**, namely all letters are lowercase, and words are separated by underscores (`_`). For example, `point.mojo`, `math_library.mojo`, `complex_number_2d_array.mojo`, *etc.*, are all valid module names. Sometimes, the module name may be highly related to the main struct defined in the module. For example, in the Mojo standard library, the module for the `Int` type is named `int.mojo`, and the module for the `String` type is named `string.mojo`.
+
+### A simple example
+
+Let's start with a simple example. Suppose we want to define a `Point` struct that represents a point in 2D space, along with some functions and methods to manipulate it. We write our code in a file named `point.mojo` in the `src/miji/basic/packages/point_type` directory. This file (module) includes the following components:
+
+1. **Docstring**: A brief description of the module and its purpose.
+1. **Imports**: Any necessary imports from other modules or packages.
+1. **Aliases**: Aliases for commonly used types or values.
+1. **Functions**: Functions that may be related to the point type.
+1. **Traits**: Traits that define common behavior for types that can be used with the `Point` struct.
+1. **Structs**: The main `Point` struct that implements a point type and conforms to the customized trait.
+
+::: tip `alias` keyword
+
+The `alias` keyword is used to define **type aliases** or **value aliases** in Mojo. It allows you to create a new name for an existing type or value, making your code more readable and understandable.
+
+The syntax for defining alias is `alias Name = Type` or `alias name = value`. These aliases are replaced with the actual type or value at compile time, so they will be constant at the runtime.
+
+Usually, we define aliases for **commonly used types or values**. For example, the following built-in types of Mojo are actually type aliases:
+
+- `Float64` is a type alias for `SIMD[DType.float64, 1]`, which represents a 64-bit floating-point SIMD with size 1.
+- `Byte` and `UInt8` are both type aliases for `SIMD[DType.uint8, 1]`, which represents an 8-bit unsigned integer SIMD with size 1.
+
+You can also define value aliases, which are constants that can be used throughout your code. For example, you can define an alias for the mathematical constant pi (π) as `alias PI = 3.14159`. During compilation, this alias `PI` will be replaced with the value `3.14159`.
+
+:::
+
+The code for the `point.mojo` module is as follows:
 
 ```mojo
-# src/miji/basic/modules/point.mojo
+# src/miji/basic/packages/point_type/point.mojo
 """
 A example module containing a `Point` struct and related structs and functions.
 """
@@ -202,25 +230,48 @@ struct Point(Distanceable):
         return PI * distance(self) * distance(self)
 ```
 
----
+### Use the module
 
-We can then import this module in another file, for example, `main.mojo`, and use the `Point` struct and its methods:
+We can then import this module and use it in another file. For example, we create a file named `test_point_module.mojo` in the same directory as `point.mojo`. The directory structure will look like this:
+
+```console
+src/miji/basic/packages
+               └─── point_type
+                    ├── point.mojo
+                    └── test_point_module.mojo
+```
+
+We write the following code to use the functions and structs defined in the `point` module:
 
 ```mojo
+# src/basic/packages/point_type/test_point_module.mojo
+import point
+
+
 fn main() raises:
     var x: Float64 = 3.0
     var y: Float64 = 4.0
-    var p = Point(x, y)
 
-    print_address(p)
-    print("Distance between the point and the origin:", distance(p))
+    # Create a point using the imported point module
+    var p = point.Point(x, y)
+
+    point.print_address(p)
+    print("Distance between the point and the origin:", point.distance(p))
     print(
         "Area of the circle with radius equal to the distance from the origin:",
         p.area(),
     )
 ```
 
----
+When you run the `test_point_module.mojo` file, it will output:
+
+```console
+Memory address of the point: 0x16ef443f8
+Distance between the point and the origin: 5.0
+Area of the circle with radius equal to the distance from the origin: 78.53975
+```
+
+This shows that we have successfully imported the `point` module and used the `Point` struct and its methods. Because we imported the entire `point` module, we have to use the `point.` prefix to access the `Point` struct and the `print_address()` function.
 
 ::: danger Global variables
 
@@ -249,13 +300,111 @@ However, please note that global variables are **not fully supported** in Mojo y
 
 :::
 
-## Write packages
+## Write your own packages
 
-A package is a directory containing an `__init__.mojo` file, which can contain multiple modules. The package can be imported using the `import` statement, just like in Python.
+Now we move to writing our own packages. Recall that a package in Mojo is just directory (folder) containing multiple modules and a `__init__.mojo` file.
 
-Notably, you **cannot define** a `main()` function in a package.
+Let's convert our the directory `point_type` into a package. To do this, we need to create a file named `__init__.mojo` in the `point_type` directory. This file will serve as the entry point for the package. You can either leave it empty or add some code to it. For now, we will leave it empty.
 
-## Imports within your own package
+Later, we need to remove the `test_point_module.mojo` file from the `point_type` directory, because Mojo does not allow a package to contain a file with a `main()` function.
+
+::: warning `main()` function in a package
+
+Please note that you **cannot** run a file with a `main()` function when this file **is in a package** (i.e., a directory containing a `__init__.mojo` file). If you try to run such a file, you will get an error.
+
+:::
+
+After that, the directory `point_type` will become a valid Mojo package. You can import this package in another file just like you would import a module. For example, we can create a file named `test_point_type_package.mojo` in the `src/miji/basic/packages` directory, which is at the same level as the `point_type` directory (package).
+
+The directory structure will look like this:
+
+```console
+src/miji/basic/packages
+                ├── point_type
+                │   ├── __init__.mojo
+                │   └── point.mojo
+                └── test_point_type_package.mojo
+```
+
+We write the following code in `test_point_type_package.mojo` to import the `point_type` package and use the `Point` struct and its methods:
+
+```mojo
+# src/basic/packages/test_point_type_package.mojo
+import point_type
+from point_type import point
+from point_type.point import Point
+
+
+fn main() raises:
+    var x: Float64 = 3.0
+    var y: Float64 = 4.0
+
+    # Create a point using the imported point module
+    var p = point.Point(x, y)
+    var q = Point(12, 13)
+    var r = point_type.point.Point(1, 2)
+
+    point.print_address(p)
+    point.print_address(q)
+    point.print_address(r)
+
+    print("Distance between the point and the origin:", point.distance(p))
+    print("Distance between the point and the origin:", point.distance(q))
+    print("Distance between the point and the origin:", point.distance(r))
+
+    print(
+        "Area of the circle with radius equal to the distance from the origin:",
+        p.area(),
+    )
+    print(
+        "Area of the circle with radius equal to the distance from the origin:",
+        q.area(),
+    )
+    print(
+        "Area of the circle with radius equal to the distance from the origin:",
+        r.area(),
+    )
+```
+
+You can see that we can import the `point_type` package as a whole, and then use `point_type.point.Point()` to call the `Point` constructor. We can also import the `point` module from the `point_type` package and use `point.Point()` to call the `Point` constructor. Additionally, we can import the `Point` struct directly from the `point_type.point` module and use it directly.
+
+When you run this file, it will output the memory addresses of the points and their distances from the origin, as well as the areas of circles with radii equal to those distances.
+
+```mojo
+
+When you run the `test_point_type_package.mojo` file, it will output:
+
+```console
+Memory address of the point: 0x16d39c398
+Memory address of the point: 0x16d39c3a8
+Memory address of the point: 0x16d39c3b8
+Distance between the point and the origin: 5.0
+Distance between the point and the origin: 17.69180601295413
+Distance between the point and the origin: 2.23606797749979
+Area of the circle with radius equal to the distance from the origin: 78.53975
+Area of the circle with radius equal to the distance from the origin: 983.3176699999999
+Area of the circle with radius equal to the distance from the origin: 15.707950000000002
+```
+
+## Export your packages
+
+You write your packages for better organization of your code, and also for sharing your code with others. One approach is to share the whole directory of your package, including all the Mojo files.
+
+However, sharing many files may not be the best way to distribute your package. It can be cumbersome for others to download and install your package, especially if it contains many files and directories.
+
+A more convenient way is to **export your package as a single file**. This way, others can easily download and install your package without having to deal with multiple files and directories.
+
+In Mojo, you can export your package as a single file with the `.mojopkg` extension. It is not a compiled binary file, but a compressed file that contains all the functions, structs, and traits defined in the package while maintaining the directory structure of the package. People can import your package with this `.mojopkg` file just like they would import your package from a directory.
+
+To export your package, you can use the `pixi run mojo package` command in the terminal. For example, if you want to export the `point_type` package, you can run the following command in root directory of `my_first_mojo_project`:
+
+```bash
+pixi run mojo package src/basic/packages/point_type
+```
+
+This command will create a file named `point_type.mojopkg` at the root directory of your project. You can then share this file with others, and they can import your package using the `import` statement.
+
+<!-- ## Imports within your own package
 
 When you write your own package, you can import other modules or packages within the package. A question arises: when there are multiple layers of directories, i.e., there are my sub-packages, how do you import modules from them?
 
@@ -263,4 +412,4 @@ The answer is that we can use either relative imports or absolute imports.
 
 ### Relative imports
 
-### Absolute imports
+### Absolute imports -->
