@@ -115,6 +115,9 @@ export default defineConfig({
             {
               text: 'Structs', link: '/miji/basic/structs',
             },
+            {
+              text: "Modules, packages, and imports", link: '/miji/basic/packages',
+            }
           ],
         },
         {
