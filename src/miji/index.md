@@ -13,8 +13,8 @@ This Miji is compatible with Mojo v25.4 (2025-06-18).
 - [INTRODUCTION](./intro)
 - [PART I: START WITH MOJO](./start/start)
   <!-- - [Install Magic (being deprecated)](./start/magic) (This will be deprecated in future) -->
-  - [Install pixi and extension](./start/pixi) (Install package manager and VS Code extension)
-  - [Initiate Mojo project](./start/project) (Initiate a Mojo project and install Mojo compiler)
+  - [Install pixi and extension](./start/pixi) (Package manager and VS Code extension)
+  - [Initiate Mojo project](./start/project) (Install Mojo compiler)
   - [My first Mojo program](./start/hello) (Hello, world!)
 - [PART II: MOVE INTO MOJO](./move/move)
   - [Convert Python code into Mojo](./move/examples) (Four examples, Python becomes Mojo)
@@ -28,6 +28,7 @@ This Miji is compatible with Mojo v25.4 (2025-06-18).
   - [Operators and assignment](./basic/operators) (Operators and assignment expressions)
   - [Control flows](./basic/control) (Loops, conditionals, and some about iterables)
   - [Structs](./basic/structs) (Structs in Mojo, similar to classes in Python)
+  - [Modules and packages](./basic/packages) (Modular programming)
 - [PART IV: ADVANCED MOJO](./advanced/advanced)
   - [Data type - SIMD](./advanced/simd) (The first-class `SIMD` type)
   <!-- - [Error handling (Yuhao is working on this)](./advanced/error_handling) -->
@@ -38,7 +39,7 @@ This Miji is compatible with Mojo v25.4 (2025-06-18).
   - [Lifetime](./advanced/lifetime) (The lifetime system in Mojo)
   <!-- - [Call Python in Mojo](./advanced/python) -->
 - [PART V: APPLY MOJO](./apply/apply.md) (Let's use Mojo to program something useful)
-  - [Design of MatMojo library](./apply/design.md) (Some preparation work for writing a matrix library)
+  - [Design of MatMojo library](./apply/design.md) (Preparation for a matrix library)
   - [Make it work](./apply/work.md) (Define and implement the basic functionalities)
 - [PART VI: EXTEND MOJO](./extend/extend)
   - [Arbitrary-precision numbers](./extend/decimojo) (A library for arbitrary-precision integers and decimals)

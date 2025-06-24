@@ -7,7 +7,7 @@ It would be interesting to imagine a world where most of the programming languag
 
 There are three main types of control flows in Python: loops, conditionals, and exceptions. Mojo, being a Python-like language, also supports these control flows with almost the same logic and syntax. In this section, we will cover the first two types of control flows: loops and conditionals. Exceptions will be covered in a later chapter.
 
-Believe me, this should be the easiest chapter of this Miji for a Pythonista, so let's get started!
+For Pythonistas, you can quickly scan this chapter and jump to the exercises because the concepts in this chapter are very similar to Python's control flows. You may still need to pay attention to some blocks marked in yellow or red colors, which indicate the differences between Mojo and Python.
 
 ::: info Compatible Mojo version
 
@@ -95,7 +95,7 @@ The next example is a program that checks if a string is either `a`, `b`, or `c`
 <table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
 
 ```mojo
-# src/basic/flows/conditional_without_else.mojo
+# src/basic/controls/conditional_without_else.mojo
 def check_string(s: String) -> None:
     if s == "a":
         print("The string is 'a'.")
@@ -116,7 +116,7 @@ def main():
 </td><td>
 
 ```python
-# src/basic/flows/conditional_without_else.py
+# src/basic/controls/conditional_without_else.py
 def check_string(s: str) -> None:
     if s == "a":
         print("The string is 'a'.")
@@ -153,7 +153,7 @@ The last example is a program that checks if a number is even or odd. If the num
 <table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
 
 ```mojo
-# src/basic/flows/conditional_without_elif.mojo
+# src/basic/controls/conditional_without_elif.mojo
 def check_even_or_odd(number: Int) -> None:
     if number % 2 == 0:
         print(number, "is an even number.")
@@ -171,7 +171,7 @@ def main():
 </td><td>
 
 ```python
-# src/basic/flows/conditional_without_elif.py
+# src/basic/controls/conditional_without_elif.py
 def check_even_or_odd(number: int) -> None:
     if number % 2 == 0:
         print(number, "is an even number.")
@@ -211,7 +211,7 @@ While it is not a problem in the case above, however, it may cause issues in oth
 For example, if we modify the `check_string` function to **return a string** instead of printing it, the code would be as follows:
 
 ```mojo
-# src/basic/flows/conditional_without_else.mojo
+# src/basic/controls/conditional_without_else.mojo
 # This code will not compile
 def check_string(s: String) -> String:
     if s == "a":
@@ -242,7 +242,7 @@ This is because the function `check_string` is expected to return a `String` val
 To fix this issue, you can add an `else` statement at the end of the conditional to handle the case where the input string is not one of `a`, `b`, or `c`. The modified code would be as follows:
 
 ```mojo
-# src/basic/flows/conditional_without_else_fix.mojo
+# src/basic/controls/conditional_without_else_fix.mojo
 def check_string(s: String) -> String:
     if s == "a":
         return "The string is 'a'."
@@ -278,7 +278,7 @@ Therefore, this is a good practice to ensure that your function handles all poss
 If you are a Pythonista, you may find that the example above is not a problem in Python. Yes, indeed, if we run the same code in Python, it will run without any issues. Let's try:
 
 ```py
-# src/basic/flows/conditional_without_else.py
+# src/basic/controls/conditional_without_else.py
 def check_string(s: str) -> str:
     if s == "a":
         return "The string is 'a'."
@@ -432,7 +432,7 @@ Let's begin with the `for ... in ...` syntax. The `for in` syntax is used to ite
 For example, let's say you want to calculate the sum of all items in a list of floating-point numbers, `[1.1, 2.2, 3.3, 4.4, 5.5]`. If you do not use a for loop, you need to write the following code:
 
 ```mojo
-# src/basic/flows/sum_of_list_of_floats_without_loop.mojo
+# src/basic/controls/sum_of_list_of_floats_without_loop.mojo
 def main():
     var total = 0.0
     var numbers = [1.1, 2.2, 3.3, 4.4, 5.5]
@@ -453,7 +453,7 @@ Since we are iterating over the list of numbers and taking out each element one 
 <table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
 
 ```mojo
-# src/basic/flows/sum_of_list_of_floats.mojo
+# src/basic/controls/sum_of_list_of_floats.mojo
 def main():
     var total = 0.0
     var numbers = [1.1, 2.2, 3.3, 4.4, 5.5]
@@ -467,7 +467,7 @@ def main():
 </td><td>
 
 ```python
-# src/basic/flows/sum_of_list_of_floats.py
+# src/basic/controls/sum_of_list_of_floats.py
 def main():
     total = 0.0
     numbers = [1.1, 2.2, 3.3, 4.4, 5.5]
@@ -497,7 +497,7 @@ Let's break down the Mojo code and see how it works in Mojo internally:
 Thus, the iterations in the above code can be expanded as follows:
 
 ```mojo
-# src/basic/flows/sum_of_list_of_floats_without_loop.mojo
+# src/basic/controls/sum_of_list_of_floats_without_loop.mojo
 def main():
     var total = 0.0
     var numbers = [1.1, 2.2, 3.3, 4.4, 5.5]
@@ -527,7 +527,7 @@ The `else` keyword is used to define a block of code that will be executed after
 <table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
 
 ```mojo
-# src/basic/flows/break_and_else_statement_in_for_loop.mojo
+# src/basic/controls/break_and_else_statement_in_for_loop.mojo
 def main():
     var my_list = [1, 2, 3, 4, 5]
     for i in my_list:
@@ -548,7 +548,7 @@ def main():
 </td><td>
 
 ```python
-# src/basic/flows/break_and_else_statement_in_for_loop.py
+# src/basic/controls/break_and_else_statement_in_for_loop.py
 def main():
     my_list = [1, 2, 3, 4, 5]
     for i in my_list:
@@ -584,7 +584,7 @@ In the second for loop, we iterate over the same list, but when we reach the ele
 You may wonder, what would the `break` keyword behave if we have nested loops? In Mojo, the `break` statement will only exit the **innermost** loop (**current** loop) that contains the `break` statement. This is similar to Python's behavior. Let's see an example:
 
 ```mojo
-# src/basic/flows/break_and_else_statement_in_for_loop.mojo
+# src/basic/controls/break_and_else_statement_in_for_loop.mojo
 def main():
     var my_list = [1, 2, 3, 4, 5]
     for i in my_list:
@@ -622,7 +622,7 @@ Since the inner loop and the outer loop both exited early, the `else:` blocks fo
 The `continue` keyword is used to skip the rest of the **current** iteration and continue with the next iteration of the loop. It is useful when you want to skip **certain elements** in the iterable without exiting the complete loop. Let's see an example where we calculate the square of each number in a list, but skip the even numbers:
 
 ```mojo
-# src/basic/flows/continue_in_for_loop.mojo
+# src/basic/controls/continue_in_for_loop.mojo
 def main():
     var my_list = [1, 2, 3, 4, 5]
     for i in my_list:
@@ -655,7 +655,7 @@ The `range()` function is helpful when you want to count from `0` to a certain n
 <table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
 
 ```mojo
-# src/basic/flows/range_function.mojo
+# src/basic/controls/range_function.mojo
 def main():
     for i in range(5):
         print(i, "*", i, "=", i * i)
@@ -669,7 +669,7 @@ def main():
 </td><td>
 
 ```python
-# src/basic/flows/range_function.py
+# src/basic/controls/range_function.py
 def main():
     for i in range(5):
         print(i, "*", i, "=", i * i)
@@ -701,11 +701,536 @@ In the second for loop, we use `range(3)` to generate an iterator that gives us 
 
 The `range()` function can also take two or three arguments to specify the start, stop, and step values. For example, `range(2, 6)` will generate an iterator that gives you the numbers `2`, `3`, and `6`, and `range(1, 10, 2)` will generate an iterator that gives you the numbers `1`, `3`, `5`, `7`, and `9`. Note that the `stop` value is never included in the generated sequence.
 
-### Exercises - for loops
+## While loops
+
+A `while` loop is used to repeat a block of code as long as a condition is met. If the condition is not met anymore, the loop will stop and the program will continue to execute the code after the loop. The syntax of a while loop in Mojo is as follows:
+
+```mojo
+while condition:
+    # do something
+    ...
+    # Under some conditions
+    break # optional, to exit the loop early
+    ...
+    # Under some conditions
+    continue # optional, to skip the rest of the loop and continue with the next iteration
+    ...
+```
+
+### `while` syntax
+
+Let's begin with the simplest `while` loop syntax:
+
+```mojo
+while condition:
+    # do something
+```
+
+The "condition" after the `while` keyword is a **boolean expression** that evaluates to `True` or `False`. If the expression is `True`, the we say that the condition is **met** and the loop will execute the code block inside the loop body. After the code block is finished, we will come again to the `while` statement and re-evaluate the condition. If the expression is still `True`, the loop will continue to execute the code block again. This process will repeat until the condition becomes `False`.
+
+Let's demonstrate the `while` loop with an example in both Mojo and Python. We will write a program that counts from `0` to `4` and prints each number:
+
+<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
+
+```mojo
+# src/basic/controls/print_integers_with_while.mojo
+def main():
+    var i = 0
+    while i < 5:
+        print(i)
+        i += 1  # Increment i by 1
+    print("Loop completed successfully!")
+
+# End of the code
+```
+
+</td><td>
+
+```python
+# src/basic/controls/print_integers_with_while.py
+def main():
+    i = 0
+    while i < 5:
+        print(i)
+        i += 1  # Increment i by 1
+    print("Loop completed successfully!")
+
+main()
+```
+
+</td></tr></table>
+
+Yes, the syntax of the `while` loop in Mojo is identical to Python's `while` loop syntax, so it should be familiar to you. The above code will output:
+
+```console
+0
+1
+2
+3
+4
+Loop completed successfully!
+```
+
+### `break`, `continue`, and `else` keywords
+
+The `break` and `continue` keywords in a `while` loop work similarly to those in a `for` loop. The `break` keyword is used to exit the **current** loop early, while the `continue` keyword is used to skip the rest of the **current** iteration and continue with the next iteration.
+
+The `else` keyword in a `while` loop is also similar to that in a `for` loop. It defines a block of code that will be executed after the while loop **successfully** iterates until the **condition is no longer met**. If the loop is exited early by a `break` statement, the `else` block will be skipped.
+
+### For loop vs while loop
+
+Both `for` loops and `while` loops have their own use cases and advantages, though they can often be used interchangeably. Generally, we have the following guidelines:
+
+- **For loops** are typically better suited if you know the exact number of iterations you want to perform, or if you are iterating over a **finite** iterable (*e.g.*, list, string, range, *etc*). It saves you from manually initializing and incrementing the loop variable.
+- **While loops** are typically more appropriate when you do not know the exact number of iterations in advance, or when you are dealing with an interactive situation, or when the loop condition is too complex to fit into an expression.
+
+For example, we can use both a `for` loop and a `while` loop to print the odd numbers from `1` to `10`. Below is an example:
+
+```mojo
+# src/print_odd_numbers_with_for_and_while.mojo
+
+def main():
+    # for loop
+    print("Odd numbers from 1 to 10 using for loop:")
+    for i in range(1, 11):
+        if i % 2 == 1:
+            print(i, end=" ")
+
+    # while loop
+    print("\nOdd numbers from 1 to 10 using while loop:")
+    var i = 1
+    while i < 10:
+        if i % 2 == 1:
+            print(i, end=" ")
+        i += 1  # Increment i by 1
+```
+
+This code will output:
+
+```console
+Odd numbers from 1 to 10 using for loop:
+1 3 5 7 9 
+Odd numbers from 1 to 10 using while loop:
+1 3 5 7 9
+```
+
+Comparing two loops, we can see that, when you use a for loop, the `i` variable is automatically **initialized** and **incremented** until the end of the range is reached. On the contrary, when you use a while loop, you need to manually **initialize** the `i` variable before the loop and **increment** it inside the loop body. Moreover, you need to correctly set the **condition** to ensure that the loop will end at the correct point.
+
+If you forget to increment the `i` variable in the while loop, it will lead to an **infinite loop**, which means that the loop will never end and the program will keep running forever. This is a very common mistake when using while loops, so you **should be careful** to ensure that the condition will eventually become `False` after a certain number of iterations.
+
+Thus, in this case, the `for` loop is more concise and less error-prone than the `while` loop.
+
+---
+
+The next example is to write a program that continuously calculate $x_i = \frac{x_{i-1} + 1}{2}$ until $x_i$ is sufficiently close to $1$ (let's say with a tolerance of `0.0001`). In this case, we do not know how many iterations we will need to perform, so a `while` loop is more suitable. See the code below:
+
+```mojo
+# src/basic/controls/value_convergence.mojo
+fn value_convergence(
+    owned value: Float64,
+    tolerance: Float64 = 0.01,
+) -> Float64:
+    while abs(value - 1) >= tolerance:
+        value = (value + 1) / 2.0
+        print("Current value:", value)
+    return value
+
+fn main():
+    print("Converged value:", value_convergence(100.0, tolerance=0.0001))
+```
+
+If we run the above code, it will output:
+
+```console
+Current value: 50.5
+Current value: 25.75
+Current value: 13.375
+Current value: 7.1875
+Current value: 4.09375
+Current value: 2.546875
+Current value: 1.7734375
+Current value: 1.38671875
+Current value: 1.193359375
+Current value: 1.0966796875
+Current value: 1.04833984375
+Current value: 1.024169921875
+Current value: 1.0120849609375
+Current value: 1.00604248046875
+Current value: 1.003021240234375
+Current value: 1.0015106201171875
+Current value: 1.0007553100585938
+Current value: 1.0003776550292969
+Current value: 1.0001888275146484
+Current value: 1.0000944137573242
+Converged value: 1.0000944137573242
+```
+
+In total, we have 20 iterations to converge the value to `1.0000944137573242`, which is sufficiently close to `1` with a tolerance of `0.0001`. The `while` loop continues until the absolute difference between the current value and `1` is less than the specified tolerance.
+
+Since we do not know how many iterations we will need to perform, we cannot use a `for` loop here, because a `for` loop requires a finite number of iterations to iterate over. In this case, a `while` loop is more suitable.
+
+---
+
+Another example is to write a program that ask the user to give a command to conduct a certain task, let's say, the user can give the following commands:
+
+- "hi": Mojo will print "Hello, master!"
+- "who": Mojo will print "I am Mojo, your loyal assistant!"
+- "when": Mojo will print "I was born in the 2020s, and I am still growing!"
+- For all other inputs: Mojo will print "I don't understand your command."
+
+A code example may look like this:
+
+```mojo
+# src/basic/control/give_commands.mojo
+def main():
+    var input = input(
+        "Please enter one of the following commands:\n(1) hi\n(2) who\n(3)"
+        " when\nWaiting for your order: "
+    )
+    if input == "hi":
+        print("Hello, master!")
+    elif input == "who":
+        print("I am Mojo, your loyal assistant!")
+    elif input == "when":
+        print("I was born in the 2020s, and I am still growing!")
+    else:
+        print("I don't understand your command.")
+```
+
+You can run the above code and give it a command. It will work as expected. However, there is a problem: the program will exit after you give a command. If you want to give another command, you have to run the program again.
+
+To solve this problem, we can use a `while` loop to continuously ask the user for a command. Each time the user gives a command, we will check the command and execute the corresponding action, and then ask the user for the command again.
+
+Moreover, we can also add some special conditions so that the user can exit the program, such as typing "bye" or "farewell". Below is the modified code:
+
+```mojo
+# src/basic/control/give_commands_with_while.mojo
+def main():
+    while True:
+        var input = input(
+            "Please enter one of the following commands:\n(1) hi\n(2) who\n(3)"
+            " when\nIf you want to quit the program, enter 'bye' or"
+            " 'farewell'\nWaiting for your order: "
+        )
+        print()
+        if input == "hi":
+            print("Hello, master!")
+        elif input == "who":
+            print("I am Mojo, your loyal assistant!")
+        elif input == "when":
+            print("I was born in the 2020s, and I am still growing!")
+        elif input == "bye" or input == "farewell":
+            print("Goodbye!")
+            break
+        else:
+            print("I don't understand your command. Please try again.")
+
+        print()
+```
+
+Running the above code will give you an interactive prompt where you can enter commands.
+
+```console
+Please enter one of the following commands:
+(1) hi
+(2) who
+(3) when
+If you want to quit the program, enter 'bye' or 'farewell'
+Waiting for your order: 
+```
+
+If you enter "hi", "who", or "when", Mojo will respond accordingly and ask you for a new order. For example, if you enter "hi", it will output:
+
+```console
+Please enter one of the following commands:
+(1) hi
+(2) who
+(3) when
+If you want to quit the program, enter 'bye' or 'farewell'
+Waiting for your order: hi
+
+Hello, master!
+
+Please enter one of the following commands:
+(1) hi
+(2) who
+(3) when
+If you want to quit the program, enter 'bye' or 'farewell'
+Waiting for your order: 
+```
+
+If you enter "bye" or "farewell", Mojo will say goodbye and exit the program:
+
+```console
+Please enter one of the following commands:
+(1) hi
+(2) who
+(3) when
+If you want to quit the program, enter 'bye' or 'farewell'
+Waiting for your order: farewell
+
+Goodbye!
+```
+
+::: tip `while True:`
+
+You may find the statement `while True:` in the above code somewhat strange. But it is a correct syntax in Mojo (and Python). Remember that the condition after the `while` keyword must be a expression that evaluates to `True` or `False`. Therefore, the value `True` is naturally a valid condition.
+
+This condition is a common idiom when you want to create an infinite loop that will only be exited by a `break` statement under certain conditions, for example, in some interactive programs that requires users to give a series of commands until they decide to exit the program.
+
+:::
+
+### Avoid infinite loop with a counter
+
+Sometimes, finding a proper condition to stop a `while` loop can be tricky, especially when you are dealing complex logics or numerical calculations. Your pre-set conditions after the `while` keyword or for the `break` statement may never be met.
+
+For example, if we write a code to continuously calculate $x_i = \frac{x_{i-1} + 1}{2}$ until $x_i$ is sufficiently close to $0$, we may have the following code:
+
+```mojo
+# src/basic/control/value_not_converging.mojo
+fn value_convergence(
+    owned value: Float64, tolerance: Float64 = 0.01
+) -> Float64:
+    while value >= tolerance:
+        value = (value + 1) / 2.0
+        print("Current value:", value)
+    return value
+
+fn main():
+    print("Converged value:", value_convergence(100.0, tolerance=0.0001))
+```
+
+Running the above code will causes a **infinite loop** because the value will converge to `1` instead of `0`. The condition `value >= tolerance` will never be met, and the loop will keep running forever.
+
+::: tip Stop a running program
+
+You can stop a running program in the terminal by pressing `Ctrl + C`. This is helpful when you encounter an infinite loop or a running process that you want to terminate immediately.
+
+:::
+
+In practice, we can use a variable to keep track of the number of iterations and stop the loop after a certain number of iterations. For example, we can modify the above code to stop the loop after `100` iterations:
+
+```mojo
+# src/basic/control/value_not_converging_but_break_after_some_steps.mojo
+fn value_convergence(
+    owned value: Float64, tolerance: Float64 = 0.01
+) -> Float64:
+    var counter = 0
+    var max_steps = 100
+    while value >= tolerance:
+        value = (value + 1) / 2.0
+        print("Current value:", value)
+
+        if counter >= max_steps:
+            print("Breaking after", max_steps, "steps.")
+            break
+        counter += 1
+    return value
+
+
+fn main():
+    print("Converged value:", value_convergence(100.0, tolerance=0.0001))
+```
+
+Running the above code will output:
+
+```console
+# Omitting the first 90 lines for brevity
+Current value: 1.0
+Current value: 1.0
+Current value: 1.0
+Current value: 1.0
+Current value: 1.0
+Current value: 1.0
+Current value: 1.0
+Current value: 1.0
+Current value: 1.0
+Current value: 1.0
+Breaking after 100 steps.
+Converged value: 1.0
+```
+
+## Iterables and iterators
+
+::: info Move to a standalone chapter
+
+This section may be moved to a standalone chapter in the advanced part of the Miji. That chapter may also cover the concept of generators and comprehensions in case Mojo **fully** supports them in the future.
+
+:::
+
+An object is an **iterable** if it implements a `__iter__()` method that returns an **iterator**.
+
+The iterator is an instance of such a **type** that satisfies the following conditions:
+
+1. It has a `__next__()` method that returns a value at at time,
+1. It has a `__iter__()` method that returns an instance of its own type, and
+1. It has a `__has_next__()` method that returns a boolean indicating whether there are more elements to iterate over.
+
+Since a iterator has a `__iter__()` method that returns itself, we say that **an iterator is also an iterable**. This is why you can also use a for loop to iterate over an iterator.
+
+### `range()` generates an iterator
+
+The `range()` function can generates an object that that satisfies the above conditions of an iterator, and therefore, it is also an iterable to be used in a for loop. In Mojo, a `range()` can return one of the following three types of iterators, depending on the arguments passed to it:
+
+1. `_ZeroStartingRange`: An iterator that starts from `0` and goes up by 1 to a specified end value.
+1. `_SequentialRange`: An iterator that starts from a specified start value and goes up by 1 to a specified end value.
+1. `_StridedRange`: An iterator that starts from a specified start value, goes up by a specified step value, and stops at a specified end value.
+
+They all have a `__next__()` method that returns the next integral number in a range, a `__iter__()` method that returns itself, and a `__has_next__()` method that returns `True` if the end of the range is not reached yet, or `False` if it is.
+
+---
+
+The iterator, such as `_ZeroStartingRange` (the returned type of `range(n)`), could very useful because it does not need to store all numbers in the memory. It stores only **one value** in the memory. In each iteration, it update the value at the address by adding 1 to the current value.
+
+For example, if you run `for i in range(100):`, the following steps will happen:
+
+1. `range(100)` creates an instance of `_ZeroStartingRange`. The `_ZeroStartingRange` instance has two fields: `end` and `curr`, both of type `Int` (64-bit).
+1. The field `end` is initialized to `100` and the `curr` field is initialized to `0`.
+1. The variable `i` is defined as a **reference** to the `curr` field of the `_ZeroStartingRange` instance. The first iteration starts.
+1. The `curr` field is incremented by `1` in the same memory address, so it becomes `1`. The reference `i` also becomes `1`. The second iteration starts.
+1. The `curr` field is incremented by `1` in the same memory address, so it becomes `2`. The reference `i` also becomes `2`. The third iteration starts.
+1. The iteration continues until the `curr` field reaches `100`.
+1. The iteration stops and the loop ends.
+1. The `_ZeroStartingRange` instance is destroyed and the memory is freed. The reference `i` is also destroyed.
+
+Note that, this iterator only occupies 128 bits (16 bytes) of memory, which is much less than storing all 100 numbers in a list (which would occupy 800 bytes). This is why iterators are often used to save memory and improve performance when iterating over large ranges or sequences.
+
+## Exercises
+
+### Print Fibonacci sequence
+
+We are going to write a Mojo program that prints the Fibonacci sequence up to a certain number of terms. In Chapter [Migrate Python into Mojo](../move/examples#fibonacci-sequence), we have already implemented the Fibonacci sequence both in Python and Mojo. However, we used a recursive function to calculate the Fibonacci numbers, which is not very efficient.
+
+In this exercise, we will use a for loop to calculate and print the Fibonacci numbers iteratively: we save the last two Fibonacci numbers in two variables, calculate the next Fibonacci number by adding the last two numbers, and then update the two variables accordingly.
+
+The formula for the Fibonacci sequence is as follows:
+
+$$
+\begin{equation}
+  F_{i} =
+    \begin{cases}
+      0 & \text{if $i = 0$}\\
+      1 & \text{if $i = 1$}\\
+      F_{i-2} + F_{i-1} & \text{if $i \geq 2$}
+    \end{cases}
+\end{equation}
+$$
+
+Here is a template for you to complete the `print_fibonacci()` function:
+
+
+<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
+
+```mojo
+def print_fibonacci(n: Int) -> None:
+    """Prints the first n Fibonacci numbers."""
+
+def main():
+    print_fibonacci(50)
+
+# End of the code
+```
+
+</td><td>
+
+```python
+def print_fibonacci(n: int) -> None:
+    """Prints the first n Fibonacci numbers."""
+
+def main():
+    print_fibonacci(50)
+
+main()
+```
+
+</td></tr></table>
+
+::: details Answer
+
+An example of the Fibonacci sequence in both Mojo and Python is as follows:
+
+<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
+
+```mojo
+# src/basic/controls/print_fibonacci_numbers.mojo
+def print_fibonacci(n: Int) -> None:
+    """Prints the first n Fibonacci numbers."""
+    var prev = 0
+    var curr = 1
+    for _ in range(n):
+        print(prev)
+        prev, curr = curr, prev + curr
+
+def main():
+    print_fibonacci(50)
+
+# End of the code
+```
+
+</td><td>
+
+```python
+# src/basic/controls/print_fibonacci_numbers.py
+def print_fibonacci(n: int) -> None:
+    """Prints the first n Fibonacci numbers."""
+    prev = 0
+    curr = 1
+    for _ in range(n):
+        print(prev)
+        prev, curr = curr, prev + curr
+
+def main():
+    print_fibonacci(50)
+
+main()
+```
+
+</td></tr></table>
+
+::: danger Overflow
+
+Please be aware that the Fibonacci numbers grow very fast, and the maximum value of an `Int` in Mojo is `9223372036854775807` (which is $2^{63} - 1$). If you try to print more than 93 Fibonacci numbers, you will get an a wrong value for the 94-th number due to integer overflow (`-6246583658587674878`).
+
+We have discussed the integer overflow issue in Chapter [Data types](../basic/types#integer-overflow). If you really want to print more than 93 Fibonacci numbers, you can use the `BigInt` type, which is discussed in Chapter [Arbitrary-precision integers](../extend/decimojo).
+
+To properly this issue, you can raise and error or print a warning message if the input number is greater than 93. For example, you can modify the `print_fibonacci()` function as follows:
+
+```mojo
+def print_fibonacci(n: int) -> None:
+    """Prints the first n Fibonacci numbers."""
+    if n > 93:
+        print(
+            "Warning: The input number is too large."
+            "The Fibonacci numbers will overflow."
+        )
+        return
+
+    prev = 0
+    curr = 1
+    for _ in range(n):
+        print(prev)
+        prev, curr = curr, prev + curr
+```
+
+The `return` statement will exit the function early if the input number is greater than 93, so that the users will not get an incorrect result.
+
+Note that this problem will **not** happen in Python, because Python's `int` type can handle arbitrarily large integers.
+
+:::
+
+### Find prime numbers
 
 Let's try determine whether a number is a prime number or not. A prime number is a natural number that is greater than `1` and has no positive integral divisors other than `1` and itself. For example, `100` is not a prime number because it can be divided by `2`, `4`, `5`, `10`, `20`, and `25`. However, `97` is a prime number because it can only be divided by `1` and `97`.
 
-**You need to write a Mojo program** that checks the numbers from $10^{18}$ (a quintillion) to $10^{18} + 100$ (inclusive) and print whether each number is a prime number or not. If it is a prime number, you should also print the smallest prime factor of that number. For example, `1024 is not a prime number with smallest divisor 2`.
+**You need to write a Mojo program** that checks the numbers from $10^{18}$ (a quintillion) to $10^{18} + 100$ (inclusive) and print whether each number is a prime number or not. If it is a prime number, you should also print the smallest prime factor of that number. For example, `1024 is not a prime number with smallest divisor 2`. The output should look like this:
+
+```console
+1000000000000000003 is a prime number
+1000000000000000004 is not a prime number with smallest divisor 2
+1000000000000000005 is not a prime number with smallest divisor 3
+1000000000000000006 is not a prime number with smallest divisor 2
+1000000000000000007 is not a prime number with smallest divisor 1370531
+```
 
 Two hints for you:
 
@@ -725,7 +1250,7 @@ def main():
             ...
 ```
 
-::: details Answers
+::: details Answer
 
 The trick is to use the `break` statement to exit the loop early once you find a divisor. If the loop completes without finding a divisor, then the `else:` block will be executed, indicating that the number is a prime number.
 
@@ -734,7 +1259,7 @@ Below is a solution to the exercises in both Mojo and Python. They will generate
 <table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
 
 ```mojo
-# src/basic/flows/is_prime_number.mojo
+# src/basic/controls/is_prime_number.mojo
 def main():
     var start: Int = 10**18
     var sqrt_of_start: Int = 10**9
@@ -756,7 +1281,7 @@ def main():
 </td><td>
 
 ```python
-# src/basic/flows/is_prime_number.py
+# src/basic/controls/is_prime_number.py
 def main():
     start: int = 10**18
     sqrt_of_start: int = 10**9
@@ -885,47 +1410,454 @@ Running the above code will give you the output:
 
 :::
 
-## Iterables and iterators
+### Print calendar of 1991
 
-::: info Move to a standalone chapter
+In this exercise, we will write a Mojo program that prints the calendar of the year 1991. The calendar should look like this:
 
-This section may be moved to a standalone chapter in the advanced part of the Miji. That chapter may also cover the concept of generators and comprehensions in case Mojo **fully** supports them in the future.
+```console
+Feb
+Mon     Tue     Wed     Thu     Fri     Sat     Sun
+                                1       2       3
+4       5       6       7       8       9       10
+11      12      13      14      15      16      17
+18      19      20      21      22      23      24
+25      26      27      28
+```
+
+Some hints for you:
+
+1. You need to store the number of days in each month of the year 1991 in a list for iteration.
+1. You need to store the information on which week day is the current day of the month. The first day of the year 1991 is a Tuesday, so you can start with `which_weekday = 1` (assuming Monday is `0`). At the end of each iteration, you can update it by incrementing it by `1` and taking the modulo `7`.
+1. You need to print leading spaces for the first week of each month, so that the first day of the month is aligned with the correct day of the week.
+1. Do not forget to print a newline at the end of each week.
+1. You can either use Sunday or Monday as the first day of the week, but you need to be consistent throughout the calendar.
+
+The code below is a template for you to complete.
+
+```mojo
+def print_calendar(year: Int) -> None:
+    """Prints the calendar for the given year.
+    """
+    var days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    var which_weekday = 1  # 1991-01-01 is a Tuesday
+    ...
+
+def main():
+    print_calendar(1991)
+```
+
+::: details Answer
+
+Here is a solution to the exercise for your reference.
+
+```mojo
+# print_calendar_1991.mojo
+def print_calendar(year: Int) -> None:
+    """Prints the calendar for the given year.
+
+    Args:
+        year: The year for which the calendar is printed.
+
+    Note:
+        The calendar is valid for years after 1582.
+    """
+
+    var days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    var which_weekday = 1  # 1991-01-01 is a Tuesday
+    var months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+    ]
+
+    print("Calendar of", year)
+    print()
+
+    for m in range(12):
+        print(months[m])
+        print("Mon\tTue\tWed\tThu\tFri\tSat\tSun")
+        # Print leading spaces for the first week of the month
+        for _ in range(which_weekday):
+            print("  ", end="\t")
+        # Print the days of the month
+        for d in range(1, days_in_month[m] + 1):
+            print(d, end="\t")
+            # If it's the last day of the week, print a newline
+            if which_weekday == 6:
+                print()
+            which_weekday = (
+                which_weekday + 1
+            ) % 7  # Update the day of the week
+        print("\n")
+
+
+def main():
+    print_calendar(1991)
+```
+
+Running the above code will give you the output:
+
+```console
+Calendar of 1991
+
+Jan
+Mon     Tue     Wed     Thu     Fri     Sat     Sun
+        1       2       3       4       5       6
+7       8       9       10      11      12      13
+14      15      16      17      18      19      20
+21      22      23      24      25      26      27
+28      29      30      31
+
+Feb
+Mon     Tue     Wed     Thu     Fri     Sat     Sun
+                                1       2       3
+4       5       6       7       8       9       10
+11      12      13      14      15      16      17
+18      19      20      21      22      23      24
+25      26      27      28
+
+Mar
+Mon     Tue     Wed     Thu     Fri     Sat     Sun
+                                1       2       3
+4       5       6       7       8       9       10
+11      12      13      14      15      16      17
+18      19      20      21      22      23      24
+25      26      27      28      29      30      31
+
+
+Apr
+Mon     Tue     Wed     Thu     Fri     Sat     Sun
+1       2       3       4       5       6       7
+8       9       10      11      12      13      14
+15      16      17      18      19      20      21
+22      23      24      25      26      27      28
+29      30
+
+May
+Mon     Tue     Wed     Thu     Fri     Sat     Sun
+                1       2       3       4       5
+6       7       8       9       10      11      12
+13      14      15      16      17      18      19
+20      21      22      23      24      25      26
+27      28      29      30      31
+
+Jun
+Mon     Tue     Wed     Thu     Fri     Sat     Sun
+                                        1       2
+3       4       5       6       7       8       9
+10      11      12      13      14      15      16
+17      18      19      20      21      22      23
+24      25      26      27      28      29      30
+
+
+Jul
+Mon     Tue     Wed     Thu     Fri     Sat     Sun
+1       2       3       4       5       6       7
+8       9       10      11      12      13      14
+15      16      17      18      19      20      21
+22      23      24      25      26      27      28
+29      30      31
+
+Aug
+Mon     Tue     Wed     Thu     Fri     Sat     Sun
+                        1       2       3       4
+5       6       7       8       9       10      11
+12      13      14      15      16      17      18
+19      20      21      22      23      24      25
+26      27      28      29      30      31
+
+Sep
+Mon     Tue     Wed     Thu     Fri     Sat     Sun
+                                                1
+2       3       4       5       6       7       8
+9       10      11      12      13      14      15
+16      17      18      19      20      21      22
+23      24      25      26      27      28      29
+30
+
+Oct
+Mon     Tue     Wed     Thu     Fri     Sat     Sun
+        1       2       3       4       5       6
+7       8       9       10      11      12      13
+14      15      16      17      18      19      20
+21      22      23      24      25      26      27
+28      29      30      31
+
+Nov
+Mon     Tue     Wed     Thu     Fri     Sat     Sun
+                                1       2       3
+4       5       6       7       8       9       10
+11      12      13      14      15      16      17
+18      19      20      21      22      23      24
+25      26      27      28      29      30
+
+Dec
+Mon     Tue     Wed     Thu     Fri     Sat     Sun
+                                                1
+2       3       4       5       6       7       8
+9       10      11      12      13      14      15
+16      17      18      19      20      21      22
+23      24      25      26      27      28      29
+30      31
+```
 
 :::
 
-An object is an **iterable** if it implements a `__iter__()` method that returns an **iterator**.
+### Print calendar with user input
 
-The iterator is an instance of such a **type** that satisfies the following conditions:
+Now, let's extend the previous exercise to allow the user to input a year and print the calendar for that year. We want the following features:
 
-1. It has a `__next__()` method that returns a value at at time,
-1. It has a `__iter__()` method that returns an instance of its own type, and
-1. It has a `__has_next__()` method that returns a boolean indicating whether there are more elements to iterate over.
+1. The user can input any year after `1582`, which is the year when the Gregorian calendar was introduced. If the user inputs a year before `1582`, we will let the user to input a valid year again.
+1. The program should print the calendar for the given year and handle the leap years correctly. A leap year is a year that is divisible by `4`, except for end-of-century years, which must be divisible by `400`. For example, `2000` is a leap year, but `1900` is not.
+1. The program should correctly calculate the weekday of the first day of the year. You can use the following formula to calculate the weekday of the first day of the year (`0` for Monday):
+    $$
+    year - 1 + \left\lfloor \frac{year - 1}{4}\right\rfloor - \left\lfloor \frac{year - 1}{100}\right\rfloor + \left\lfloor \frac{year - 1}{400}\right\rfloor
+    $$
+1. You can make the calendar prettier by printing the borders and aligning the months and days properly.
 
-Since a iterator has a `__iter__()` method that returns itself, we say that **an iterator is also an iterable**. This is why you can also use a for loop to iterate over an iterator.
+A example output of the program is as follows:
 
-### `range()` generates an iterator
+```console
+Enter a year (after 1582) to print its calendar: 2025
+┌─────────────────────────────────────┐
+│          Calendar of 2025           │
+├─────────────────────────────────────┤
+│                 Jan                 │
+│  Mon  Tue  Wed  Thu  Fri  Sat  Sun  │
+│            1    2    3    4    5    │
+│  6    7    8    9    10   11   12   │
+│  13   14   15   16   17   18   19   │
+│  20   21   22   23   24   25   26   │
+│  27   28   29   30   31             │
+├─────────────────────────────────────┤
+│  ...                                │
+├─────────────────────────────────────┤
+│                 Dec                 │
+│  Mon  Tue  Wed  Thu  Fri  Sat  Sun  │
+│  1    2    3    4    5    6    7    │
+│  8    9    10   11   12   13   14   │
+│  15   16   17   18   19   20   21   │
+│  22   23   24   25   26   27   28   │
+│  29   30   31                       │
+└─────────────────────────────────────┘
+```
 
-The `range()` function can generates an object that that satisfies the above conditions of an iterator, and therefore, it is also an iterable to be used in a for loop. In Mojo, a `range()` can return one of the following three types of iterators, depending on the arguments passed to it:
+::: details Answer
 
-1. `_ZeroStartingRange`: An iterator that starts from `0` and goes up by 1 to a specified end value.
-1. `_SequentialRange`: An iterator that starts from a specified start value and goes up by 1 to a specified end value.
-1. `_StridedRange`: An iterator that starts from a specified start value, goes up by a specified step value, and stops at a specified end value.
+There are some comments for this exercise:
 
-They all have a `__next__()` method that returns the next integral number in a range, a `__iter__()` method that returns itself, and a `__has_next__()` method that returns `True` if the end of the range is not reached yet, or `False` if it is.
+- You need to calculate the leap years and the first day of the year correctly.
+- You need to carefully handle the spaces and borders for the calendar so that everything is aligned properly.
+- Beside printing the leading spaces for the first week of the month, you also need to print trailing spaces for the last week of the month if the last day is not Sunday.
+- Make sure that, if a month ends on a Sunday, you do not print an extra line.
+- The `while True` loop is used to keep asking the user for a valid year until they provide one.
 
----
+Here is a solution to the exercise for your reference.
 
-The iterator, such as `_ZeroStartingRange` (the returned type of `range(n)`), could very useful because it does not need to store all numbers in the memory. It stores only **one value** in the memory. In each iteration, it update the value at the address by adding 1 to the current value.
+```mojo
+# src/basic/controls/print_calendar.mojo
+def print_calendar(year: Int) -> None:
+    """Prints the calendar for the given year.
 
-For example, if you run `for i in range(100):`, the following steps will happen:
+    Args:
+        year: The year for which the calendar is printed.
 
-1. `range(100)` creates an instance of `_ZeroStartingRange`. The `_ZeroStartingRange` instance has two fields: `end` and `curr`, both of type `Int` (64-bit).
-1. The field `end` is initialized to `100` and the `curr` field is initialized to `0`.
-1. The variable `i` is defined as a **reference** to the `curr` field of the `_ZeroStartingRange` instance. The first iteration starts.
-1. The `curr` field is incremented by `1` in the same memory address, so it becomes `1`. The reference `i` also becomes `1`. The second iteration starts.
-1. The `curr` field is incremented by `1` in the same memory address, so it becomes `2`. The reference `i` also becomes `2`. The third iteration starts.
-1. The iteration continues until the `curr` field reaches `100`.
-1. The iteration stops and the loop ends.
-1. The `_ZeroStartingRange` instance is destroyed and the memory is freed. The reference `i` is also destroyed.
+    Note:
+        The calendar is valid for years after 1582.
+    """
 
-Note that, this iterator only occupies 128 bits (16 bytes) of memory, which is much less than storing all 100 numbers in a list (which would occupy 800 bytes). This is why iterators are often used to save memory and improve performance when iterating over large ranges or sequences.
+    var days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0):
+        days_in_month[1] = 29  # February in a leap year
+    var day_of_week = (
+        (year - 1) + (year - 1) // 4 - (year - 1) // 100 + (year - 1) // 400
+    ) % 7
+    var months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+    ]
+
+    print("┌", "─" * 37, "┐", sep="")
+    print("│", " " * 10, "Calendar of ", year, " " * 11, "│", sep="")
+    print("├", "─" * 37, "┤", sep="")
+
+    for m in range(12):
+        print("│", " " * 17, months[m], " " * 17, "│", sep="")
+        print("│  Mon  Tue  Wed  Thu  Fri  Sat  Sun  │\n│  ", end="")
+        # Print leading spaces for the first week of the month
+        for _ in range(day_of_week):
+            print("     ", end="")
+        for d in range(1, days_in_month[m] + 1):
+            if d <= 9:
+                print(d, end="    ")
+            else:
+                print(d, end="   ")
+            if day_of_week == 6:
+                if d != days_in_month[m]:
+                    # If it's Sunday and not the last day of the month
+                    print("│\n│  ", end="")  # New line after Sunday
+                else:
+                    print("│")
+            day_of_week = (day_of_week + 1) % 7  # Update
+        # Print trailing spaces for the last week of the month
+        if day_of_week != 0:  # If the last day is not Sunday
+            for _ in range(day_of_week, 7):
+                print("     ", end="")
+            print("│")
+        if m < 11:  # Not the last month
+            print("├", "─" * 37, "┤", sep="")
+        else:
+            print("└", "─" * 37, "┘", sep="")
+
+
+def main():
+    while True:
+        var year = Int(
+            input("Enter a year (after 1582) to print its calendar: ")
+        )
+        if year <= 1582:
+            print("Year must be after 1582. Please try again.")
+            continue
+        print_calendar(year)
+        break
+```
+
+After running the above code, you will be prompted to enter a year:
+
+```console
+Enter a year (after 1582) to print its calendar:
+```
+
+If you enter an invalid year, you will see the following message:
+
+```console
+Enter a year (after 1582) to print its calendar: 200
+Year must be after 1582. Please try again.
+```
+
+Otherwise, you will see the calendar for the given year. For example, if you enter `2025`, you will see the following output:
+
+```console
+Enter a year (after 1582) to print its calendar: 2025
+┌─────────────────────────────────────┐
+│          Calendar of 2025           │
+├─────────────────────────────────────┤
+│                 Jan                 │
+│  Mon  Tue  Wed  Thu  Fri  Sat  Sun  │
+│            1    2    3    4    5    │
+│  6    7    8    9    10   11   12   │
+│  13   14   15   16   17   18   19   │
+│  20   21   22   23   24   25   26   │
+│  27   28   29   30   31             │
+├─────────────────────────────────────┤
+│                 Feb                 │
+│  Mon  Tue  Wed  Thu  Fri  Sat  Sun  │
+│                           1    2    │
+│  3    4    5    6    7    8    9    │
+│  10   11   12   13   14   15   16   │
+│  17   18   19   20   21   22   23   │
+│  24   25   26   27   28             │
+├─────────────────────────────────────┤
+│                 Mar                 │
+│  Mon  Tue  Wed  Thu  Fri  Sat  Sun  │
+│                           1    2    │
+│  3    4    5    6    7    8    9    │
+│  10   11   12   13   14   15   16   │
+│  17   18   19   20   21   22   23   │
+│  24   25   26   27   28   29   30   │
+│  31                                 │
+├─────────────────────────────────────┤
+│                 Apr                 │
+│  Mon  Tue  Wed  Thu  Fri  Sat  Sun  │
+│       1    2    3    4    5    6    │
+│  7    8    9    10   11   12   13   │
+│  14   15   16   17   18   19   20   │
+│  21   22   23   24   25   26   27   │
+│  28   29   30                       │
+├─────────────────────────────────────┤
+│                 May                 │
+│  Mon  Tue  Wed  Thu  Fri  Sat  Sun  │
+│                 1    2    3    4    │
+│  5    6    7    8    9    10   11   │
+│  12   13   14   15   16   17   18   │
+│  19   20   21   22   23   24   25   │
+│  26   27   28   29   30   31        │
+├─────────────────────────────────────┤
+│                 Jun                 │
+│  Mon  Tue  Wed  Thu  Fri  Sat  Sun  │
+│                                1    │
+│  2    3    4    5    6    7    8    │
+│  9    10   11   12   13   14   15   │
+│  16   17   18   19   20   21   22   │
+│  23   24   25   26   27   28   29   │
+│  30                                 │
+├─────────────────────────────────────┤
+│                 Jul                 │
+│  Mon  Tue  Wed  Thu  Fri  Sat  Sun  │
+│       1    2    3    4    5    6    │
+│  7    8    9    10   11   12   13   │
+│  14   15   16   17   18   19   20   │
+│  21   22   23   24   25   26   27   │
+│  28   29   30   31                  │
+├─────────────────────────────────────┤
+│                 Aug                 │
+│  Mon  Tue  Wed  Thu  Fri  Sat  Sun  │
+│                      1    2    3    │
+│  4    5    6    7    8    9    10   │
+│  11   12   13   14   15   16   17   │
+│  18   19   20   21   22   23   24   │
+│  25   26   27   28   29   30   31   │
+├─────────────────────────────────────┤
+│                 Sep                 │
+│  Mon  Tue  Wed  Thu  Fri  Sat  Sun  │
+│  1    2    3    4    5    6    7    │
+│  8    9    10   11   12   13   14   │
+│  15   16   17   18   19   20   21   │
+│  22   23   24   25   26   27   28   │
+│  29   30                            │
+├─────────────────────────────────────┤
+│                 Oct                 │
+│  Mon  Tue  Wed  Thu  Fri  Sat  Sun  │
+│            1    2    3    4    5    │
+│  6    7    8    9    10   11   12   │
+│  13   14   15   16   17   18   19   │
+│  20   21   22   23   24   25   26   │
+│  27   28   29   30   31             │
+├─────────────────────────────────────┤
+│                 Nov                 │
+│  Mon  Tue  Wed  Thu  Fri  Sat  Sun  │
+│                           1    2    │
+│  3    4    5    6    7    8    9    │
+│  10   11   12   13   14   15   16   │
+│  17   18   19   20   21   22   23   │
+│  24   25   26   27   28   29   30   │
+├─────────────────────────────────────┤
+│                 Dec                 │
+│  Mon  Tue  Wed  Thu  Fri  Sat  Sun  │
+│  1    2    3    4    5    6    7    │
+│  8    9    10   11   12   13   14   │
+│  15   16   17   18   19   20   21   │
+│  22   23   24   25   26   27   28   │
+│  29   30   31                       │
+└─────────────────────────────────────┘
+
+:::

@@ -122,34 +122,23 @@ def main():
 
 As what you may learn from Python, variables with prefixes like `_` or `__` have some special meanings. Mojo also adopts this convention. For example, variables with a single underscore prefix (e.g., `_temp`) are considered private or temporary variables, and users should not access them directly (like `private` keywords in other languages). Variables with a double underscore prefix (e.g., `__temp`) are considered private to the classes or structs. Particularly, variables with double underscores before and after the name (e.g., `__init__`) are considered special methods for classes or structs, which are called "double-underscore methods" or "**dunder** methods". These dunder methods provide an uniformed interface for system functions to work on different types, achieving polymorphism.
 
-## Variable creation
+## Create variables
 
 Now we look into how to create a variable in Mojo with help of the the conceptual model and the figure introduced above.
 
-In Mojo, the **complete** syntax to create a variable is `var name: Type = value`, where,
+In Mojo, the **complete** syntax to create a variable includes two steps:
+
+1. **Declaration**: The syntax is `var name: Type`. A `var` keyword is followed by variable name and type. This tells Mojo compiler that a new variable with the specified name and type shall be created in the current code block (scope). Please allocates a memory space for the variable based on its type. To declare a variable is also called **to define a variable**, as we have provide all information on the variable.
+1. **Initialization** The syntax is `name = value`. An equal sign is followed by a value. This tells Mojo compiler to store the value in the allocated memory space in a binary format. How to convert the value into binary format depends on the type of the variable. To initialize a variable is also called **to assign a value to the variable**.
+
+In the syntaxes of these two steps:
 
 - `var` is the keyword to declare a variable.
 - `name` is the name of the variable, which must be a valid identifier.
 - `Type` is the type of the variable, which must be a valid Mojo type.
-- `value` is the initial value of the variable, which must be a valid literal of the specified type.
+- `value` is the value to put assigned to the variable, which must be a valid literal of the compatible types.
 
-An example go as follows:
-
-```mojo
-# src/basic/variables/variable_creation.mojo
-def main():
-    var a: Int = 1
-    var b: Float64 = 2.5
-    var c: String = "Hello, world!"
-    var d: List[Int] = [1, 2, 3]
-```
-
-The above code which constructs four variables, in a more general format `var name: Type = value`, can be further broken down into two parts:
-
-1. **Definition** (`var name: Type`): A `var` keyword is followed by variable name and type. This tells Mojo compiler that a new variable with the specified name and type shall be created in the current code block (scope). Please allocates a memory space for the variable based on its type.
-1. **Assignment** (`= value`): An equal sign is followed by a value. This tells Mojo compiler to store the value in the allocated memory space in a binary format. How to convert the value into binary format depends on the type of the variable.
-
-These two steps can be done simultaneously in one line, as shown in the above example, or separately in two lines, in the following way:
+Some examples are as follows:
 
 ```mojo
 # src/basic/variables/variable_definition_assignment.mojo
@@ -167,7 +156,18 @@ def main():
     d = [1, 2, 3]
 ```
 
-The two examples above are equivalent. The first example is more concise and Pythonic. The second example is also useful when you want to show which variables will be used in one place. Which one is better depends on your personal preference and the purpose of the code.
+The above two steps can be combined into one line, *i.e.*, `var name: Type = value`. This means that the declaration and initialization take place at the same time. Let's re-write the above examples in this way:
+
+```mojo
+# src/basic/variables/variable_creation.mojo
+def main():
+    var a: Int = 1
+    var b: Float64 = 2.5
+    var c: String = "Hello, world!"
+    var d: List[Int] = [1, 2, 3]
+```
+
+The two ways of creating variables are equivalent. The second example is more concise and Pythonic. The first example is also useful when you want to show other people which variables will be used later. Which one is better depends on your personal preference and the purpose of the code.
 
 :::tip Too verbose
 

@@ -41,7 +41,7 @@ export default defineConfig({
       // {
       //   text: 'Open Miji', link: '/miji/'
       // },
-      { text: 'Mojo resources', link: '/miji/misc/resources' },
+      { text: 'List of Mojo resources', link: '/miji/misc/resources' },
     ],
     logoLink: {
       link: 'https://mojo-lang.com/miji',
@@ -115,6 +115,9 @@ export default defineConfig({
             {
               text: 'Structs', link: '/miji/basic/structs',
             },
+            {
+              text: "Modules and packages", link: '/miji/basic/packages',
+            }
           ],
         },
         {

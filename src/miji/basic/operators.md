@@ -48,7 +48,7 @@ Similar to Python, Mojo also supports **operator overloading**. You can define c
 
 ## Chained comparison
 
-In Mojo, you can chain comparison operators (e.g., `>`, `<`, `>=`, `<=`, `==`, `!=`) together, similar to Python. For example, `(a < b) and (b < c)` can be written as `a < b < c`. This feature is known as **chained comparison**.
+In Mojo, you can chain comparison operators (e.g., `>`, `<`, `>=`, `<=`, `==`, `!=`) together, similar to Python. For example, `(a < b) and (b < c)` can be shortened as `a < b < c`. This feature is known as **chained comparison**.
 
 More specifically, the compiler will do the following transformation when it sees a chained comparison:
 
@@ -56,11 +56,17 @@ More specifically, the compiler will do the following transformation when it see
 
 The chained comparison can be extended to even more than operands. The compiler will compare each consecutive pair of operands and then combine the results with `and`s. For example, `a < b < c < d < e` will be transformed into `(a < b) and (b < c) and (c < d) and (d < e)`.
 
+This feature is actually closer to the `mathematical` definition. In mathematics, when we use multiple comparison operators, we mean that **all consecutive pairs of comparisons are true at the same time**. For example,
+
+$$a < b < c = d \le e < f$$
+
+means $a < b$, $b < c$, $c = d$, $d \le e$, and $e < f$ are all true at the same time.
+
 ::: danger Chained comparison: Syntax sugar or poison?
 
-I would say that I love almost every piece of Python syntax, except for two things: (1) no optional block ending keyword and (2) chained comparison.
+I would say that I love almost every piece of Python syntax, except for two things: (1) [no optional block ending keyword](../misc/wishes#optional-block-ending-keyword) and (2) chained comparison.
 
-Some people may find chained comparison a very sweet and useful syntax sugar. For example, you can use `a < b < c` instead of writing `(a < b) and (b < c)`, which is more concise. Other people, including me, may find this syntax sugar rather toxic, which may cause confusion and unintended behavior. For example, the following code may not behave as you expect:
+Some people may find chained comparison a very sweet and useful syntax sugar. For example, you can use `a < b < c` instead of writing `(a < b) and (b < c)`, which is more intuitive. Other people, including me, may find this syntax sugar rather toxic, which may cause confusion and unintended behavior. For example, the following code may not behave as you expect:
 
 ```mojo
 print(True == False == False)
