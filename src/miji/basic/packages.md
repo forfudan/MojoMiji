@@ -7,6 +7,12 @@ The package system in Mojo is very similar to Python's, with modules and package
 
 For Pythonistas, you can quickly scan this chapter and skip some sections because the concepts in this chapter are very similar to Python's modules and packages.
 
+::: info Compatible Mojo version
+
+This chapter is compatible with Mojo v25.4 (2025-06-18).
+
+:::
+
 [[toc]]
 
 ## Modular programming
@@ -139,7 +145,7 @@ The **file name** is the module name and serves as the unique identifier for the
 
 ### A simple example
 
-Let's start with a simple example. Suppose we want to define a `Point` struct that represents a point in 2D space, along with some functions and methods to manipulate it. We write our code in a file named `point.mojo` in the `src/miji/basic/packages/point_type` directory. This file (module) includes the following components:
+Let's start with a simple example. Suppose we want to define a `Point` struct that represents a point in 2D space, along with some functions and methods to manipulate it. We write our code in a file named `point.mojo` in the `src/basic/packages/point_type` directory. This file (module) includes the following components:
 
 1. **Docstring**: A brief description of the module and its purpose.
 1. **Imports**: Any necessary imports from other modules or packages.
@@ -166,7 +172,7 @@ You can also define value aliases, which are constants that can be used througho
 The code for the `point.mojo` module is as follows:
 
 ```mojo
-# src/miji/basic/packages/point_type/point.mojo
+# src/basic/packages/point_type/point.mojo
 """
 A example module containing a `Point` struct and related structs and functions.
 """
@@ -235,10 +241,10 @@ struct Point(Distanceable):
 We can then import this module and use it in another file. For example, we create a file named `test_point_module.mojo` in the same directory as `point.mojo`. The directory structure will look like this:
 
 ```console
-src/miji/basic/packages
-               └─── point_type
-                    ├── point.mojo
-                    └── test_point_module.mojo
+src/basic/packages
+          └─── point_type
+               ├── point.mojo
+               └── test_point_module.mojo
 ```
 
 We write the following code to use the functions and structs defined in the `point` module:
@@ -314,16 +320,16 @@ Please note that you **cannot** run a file with a `main()` function when this fi
 
 :::
 
-After that, the directory `point_type` will become a valid Mojo package. You can import this package in another file just like you would import a module. For example, we can create a file named `test_point_type_package.mojo` in the `src/miji/basic/packages` directory, which is at the same level as the `point_type` directory (package).
+After that, the directory `point_type` will become a valid Mojo package. You can import this package in another file just like you would import a module. For example, we can create a file named `test_point_type_package.mojo` in the `src/basic/packages` directory, which is at the same level as the `point_type` directory (package).
 
 The directory structure will look like this:
 
 ```console
-src/miji/basic/packages
-                ├── point_type
-                │   ├── __init__.mojo
-                │   └── point.mojo
-                └── test_point_type_package.mojo
+src/basic/packages
+          ├── point_type
+          │   ├── __init__.mojo
+          │   └── point.mojo
+          └── test_point_type_package.mojo
 ```
 
 We write the following code in `test_point_type_package.mojo` to import the `point_type` package and use the `Point` struct and its methods:

@@ -1,4 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&family=Noto+Serif+Khitan+Small+Script&display=swap');
+
 :root {
+
+    --vp-font-family-base: ui-sans-serif, system-ui, -apple-system,
+        BlinkMacSystemFont, 'Segoe UI', Roboto,
+        'Helvetica Neue', Helvetica, Arial, 'Noto Sans', sans-serif,
+        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --vp-font-family-mono: "Inconsolata", ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Monaco,
+        Consolas, 'Liberation Mono', 'Courier New', monospace;
 
     --vp-c-brand-1: var(--vp-c-indigo-1);
     --vp-c-brand-2: var(--vp-c-indigo-2);

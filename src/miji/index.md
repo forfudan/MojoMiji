@@ -19,7 +19,7 @@ This Miji is compatible with Mojo v25.4 (2025-06-18).
 - [PART II: MOVE INTO MOJO](./move/move)
   - [Convert Python code into Mojo](./move/examples) (Four examples, Python becomes Mojo)
   - [Things that are in common](./move/common) (Similarities between Python and Mojo)
-  - [Things are different](./move/different) (Differences between Python and Mojo)
+  - [Things that are different](./move/different) (Differences between Python and Mojo)
 - [PART III: BASIC MOJO](./basic/basic)
   - [Variables](./basic/variables) (Declare and use variables in Mojo)
   - [Functions](./basic/functions) (Define and use functions in Mojo)

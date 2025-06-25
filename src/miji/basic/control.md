@@ -579,7 +579,7 @@ In the first for loop, we iterate over all elements of `my_list` and print them.
 
 In the second for loop, we iterate over the same list, but when we reach the element `3`, we trigger the `break` statement. This exits the loop early, and the `else:` block is skipped, so "Loop completed without break!" is not printed.
 
-#### `break` in nested loops
+### `break` nested loops
 
 You may wonder, what would the `break` keyword behave if we have nested loops? In Mojo, the `break` statement will only exit the **innermost** loop (**current** loop) that contains the `break` statement. This is similar to Python's behavior. Let's see an example:
 
@@ -777,14 +777,18 @@ The `break` and `continue` keywords in a `while` loop work similarly to those in
 
 The `else` keyword in a `while` loop is also similar to that in a `for` loop. It defines a block of code that will be executed after the while loop **successfully** iterates until the **condition is no longer met**. If the loop is exited early by a `break` statement, the `else` block will be skipped.
 
-### For loop vs while loop
+### When are while loops more suitable
 
-Both `for` loops and `while` loops have their own use cases and advantages, though they can often be used interchangeably. Generally, we have the following guidelines:
+Both `for` loops and `while` loops have their own use cases and advantages, even though for loops can always be replaced by an equivalent while loop. Generally, we have the following guidelines:
 
 - **For loops** are typically better suited if you know the exact number of iterations you want to perform, or if you are iterating over a **finite** iterable (*e.g.*, list, string, range, *etc*). It saves you from manually initializing and incrementing the loop variable.
 - **While loops** are typically more appropriate when you do not know the exact number of iterations in advance, or when you are dealing with an interactive situation, or when the loop condition is too complex to fit into an expression.
 
-For example, we can use both a `for` loop and a `while` loop to print the odd numbers from `1` to `10`. Below is an example:
+I will give you three examples to illustrate when to use a `for` loop and when to use a `while` loop.
+
+---
+
+In the first example, we use both a `for` loop and a `while` loop to print the odd numbers from `1` to `10`. Below is an example:
 
 ```mojo
 # src/print_odd_numbers_with_for_and_while.mojo
@@ -871,7 +875,7 @@ Since we do not know how many iterations we will need to perform, we cannot use 
 
 ---
 
-Another example is to write a program that ask the user to give a command to conduct a certain task, let's say, the user can give the following commands:
+The last example is to write a program that ask the user to give a command to conduct a certain task, let's say, the user can give the following commands:
 
 - "hi": Mojo will print "Hello, master!"
 - "who": Mojo will print "I am Mojo, your loyal assistant!"
@@ -1048,6 +1052,167 @@ Current value: 1.0
 Current value: 1.0
 Breaking after 100 steps.
 Converged value: 1.0
+```
+
+## More on loops
+
+### For loops are special while loops
+
+Note that every for loop can be replaced by an equivalent while loop. In other words, you can think of a for loop as a syntax sugar for a while loop.
+
+Why? Let's recall what the syntax `for i in some:` does, assuming some is an iterable object with `100` items:
+
+1. It create an **iterator** from the iterable object `some`.
+1. It starts the iterations over the iterator. In each iteration:
+   - It checks whether the `__has_next__()` method of the iterator returns `True`. If it does, it means there are still more items to iterate over. If it returns `False`, the loop ends.
+   - It calls the `__next__()` method of the iterator to get the next item from the iterator and assigns it to the variable `i`.
+   - It updates the internal status of the iterator (*e.g.*, a counter of the remaining items, or a counter of the current iteration).
+   - It proceeds to the next iteration.
+
+Since there is a **condition** and an **internal counter**, we can then replace the for loop with a while loop that checks the condition and updates the counter accordingly.
+
+Below is an example of how to replace a for loop with a while loop in Mojo.
+
+<table><tr><th>for loop</th><th>while loop</th></tr><tr><td>
+
+```mojo
+# src/basic/control/
+# loop_over_iterators_with_for.mojo
+def main():
+    var iterator = range(10)
+
+    # You can also use `for i in range(10)`
+    # Mojo automatically creates an iterator
+    for i in iterator:
+        print(i, "at", String(Pointer(to=i)))
+```
+
+</td><td>
+
+```mojo
+# src/basic/control/
+# loop_over_iterators_with_while.mojo
+def main():
+    var iterator = range(10)
+
+    # Replacement for the for loop
+    while iterator.__has_next__():
+        i = iterator.__next__()
+        print(i, "at", String(Pointer(to=i)))
+    # End of the replacement
+```
+
+</td></tr></table>
+
+This replacement is **general** and can be applied to **any for loop** that iterates over an iterable object, such as a list, a string, or a range. For example, let's do this replacement for a list:
+
+<table><tr><th>for loop</th><th>while loop</th></tr><tr><td>
+
+```mojo
+def main():
+    var numbers = [1, 2, 3, 4, 5]
+    # Create a list iterator
+    var iterator = numbers.__iter__()
+
+    # You can also use `for i in numbers:`
+    # Mojo automatically creates an iterator
+    for i in iterator:
+        print(i, "at", String(Pointer(to=i)))
+```
+
+</td><td>
+
+```mojo
+def main():
+    var iterator = range(10)
+    # Create a list iterator
+    var iterator = numbers.__iter__()
+
+    # Replacement for the for loop
+    while iterator.__has_next__():
+        ref i = iterator.__next__()
+        print(i, "at", String(Pointer(to=i)))
+    # End of the replacement
+```
+
+</td></tr></table>
+
+### Do-until logic with while loops
+
+Some programming languages provide a `do ... until` (or `repeat ... until`) loop that repeats a block of code until a condition is met. This logic is different from a while loop in that:
+
+1. The condition is a **stopping** condition, meaning that the loop will continue to execute if the condition is **not met** (`False`) and will stop if the condition is **met** (`True`).
+1. The condition is checked **after** the code block is executed, meaning that the code block will always be executed at least once.
+
+Some people may find this logic more intuitive than a while loop, especially when a stopping trigger is more natural than a starting trigger.
+
+Mojo, however, **does not** have a built-in `do ... until` loop syntax. Neither does Python. But we can **simulate this logic** using a while loop with a `break` statement. This is because `break` is also a way to exit the loop early.
+
+For example, we want to find the first Fibonacci number that is greater than `1000`. In programming languages that support repeat-until logic, we can write the following code:
+
+<table><tr><th>Ruby</th><th>Perl</th></tr><tr><td>
+
+```ruby
+# src/basic/control/repeat_until_in_ruby.rb
+def main
+  prev = 0
+  curr = 1
+  threshold = 1_000_000_000
+
+  begin
+    prev, curr = curr, prev + curr
+  end until curr > threshold
+  puts "First Fibonacci number > #{threshold}: #{curr}"
+end
+
+main
+```
+
+</td><td>
+
+```perl
+# src/basic/control/repeat_until_in_perl.pl
+sub main {
+    my $prev = 0;
+    my $curr = 1;
+    my $threshold = 1_000_000_000;
+
+    do {
+        ($prev, $curr) = ($curr, $prev + $curr);
+    } until ($curr > $threshold);
+
+    print "First Fibonacci number > $threshold: $curr\n";
+}
+
+main();
+```
+
+</td></tr></table>
+
+In Mojo, we can achieve the same logic using a while loop by doing the following:
+
+1. Use a `while True:` statement to create an infinite loop.
+1. Inside the loop, we replace the `until` condition with a `if` statement and a `break` statement.
+
+```mojo
+# src/basic/control/repeat_until_with_while.mojo
+def main():
+    var prev = 0
+    var curr = 1
+    threshold = 1_000_000_000
+
+    while True:
+        prev, curr = curr, prev + curr
+        if curr > threshold:
+            break
+
+    print("First Fibonacci number > ", threshold, ": ", curr, sep="")
+```
+
+The above three code snippets will all output the same result:
+
+```console
+First Fibonacci number > 1000000000: 1134903170
 ```
 
 ## Iterables and iterators
