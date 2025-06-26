@@ -12,7 +12,7 @@
     "medium-zoom": "^1.1.0",
     "postcss": "^8.4.35",
     "tailwindcss": "^3.4.1",
-    "vitepress": "1.0.0-rc.44",
+    "vitepress": "1.6.3",
     "vue": "^3.4.21"
   },
   "repository": {
@@ -26,6 +26,8 @@
     "preview": "vitepress preview src"
   },
   "dependencies": {
-    "@vueuse/core": "^10.9.0"
+    "@vueuse/core": "^10.9.0",
+    "tailwind": "^4.0.0",
+    "vitepress-plugin-group-icons": "^1.6.0"
   }
 }

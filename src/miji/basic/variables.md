@@ -126,6 +126,8 @@ As what you may learn from Python, variables with prefixes like `_` or `__` have
 
 Now we look into how to create a variable in Mojo with help of the the conceptual model and the figure introduced above.
 
+### Declare and initialize variables
+
 In Mojo, the **complete** syntax to create a variable includes two steps:
 
 1. **Declaration**: The syntax is `var name: Type`. A `var` keyword is followed by variable name and type. This tells Mojo compiler that a new variable with the specified name and type shall be created in the current code block (scope). Please allocates a memory space for the variable based on its type. To declare a variable is also called **to define a variable**, as we have provide all information on the variable.
@@ -275,13 +277,21 @@ From v24.5 (2024-09-13), the `var` keyword has also become optional, to be fully
 
 Python is a dynamic, strongly-typed language. When we say that it is strongly-typed, we mean that Python enforces type checking at runtime and there are less implicit type conversions. When we say that it is dynamic, we mean that Python does not require you to declare the type of a variable before using it. You can assign any value to a variable, and Python will determine its type at runtime. From Python 3.5 onwards, Python also supports type hints, which allows you to annotate the types of variables and function arguments, but these are optional and do not affect the runtime behavior and performance of the code. Giving incorrect type hints will not cause any errors. The Python's type hints are primarily for static analysis tools and IDEs to help you catch potential errors before running the code, and it also helps other developers (or yourself in future) understand your code better.
 
-Python's type hints are primarily for IDE static checks and readability, and are not mandatory, having no impact on performance^[Compilers like Cython and mypyc may use type hints for partial optimization.].
+Python's type hints are primarily for IDE static checks and readability, and are **not mandatory**, having no impact on performance^[Compilers like Cython and mypyc may use type hints for partial optimization.].
 
 In contrast, Mojo is statically compiled. Therefore, data types of variables must be explicitly declared so that the compiler can allocate appropriate memory space.
 
 The syntax for type annotations in Mojo is `var name: Type`, where the type always follows the variable name with a colon `:`. This is similar to Python's type hints. Some early programming languages, like C or C++, use the syntax `Type name` to declare a variable.
 
-As mentioned above, Mojo compiler is smart enough to **infer** the type of variable based on the literals, expressions, and the returns of functions. However, it is still recommended that you provide type annotations as much as possible for clarity and to avoid ambiguity (except when you use explicit constructors of types). For example,
+### Type inference
+
+As mentioned above, Mojo compiler is smart enough to **infer** the type of variable based on the literals, expressions, and the returns of functions. Thus, you do not need to always provide type annotations when you create a variable. We will discuss this in detail in Chapter [Data types](../basic/types).
+
+Nevertheless, it is still recommended that you provide type annotations as much as you can for clarity and to avoid ambiguity, especially when you are not sure about the default types of literals or expressions.
+
+For example, the following code is good because it will lead to no ambiguity:
+
+::: code-group
 
 ```mojo
 # src/basic/variables/type_annotations.mojo
@@ -293,6 +303,8 @@ fn main():
 
     print(a, b, c, d)
 ```
+
+:::
 
 In an exercise in Section [Integer](../basic/types#integer) of Chapter [Types](../basic/types), we will see that absence of type annotations can sometimes lead to unintended behaviors.
 

@@ -1,7 +1,7 @@
 # Control flows
 
 > I shouldn't need to remind you of the same task every day.  
-> Yuhao Zhu, *Gate of Heaven*
+> -- Yuhao Zhu, *Gate of Heaven*
 
 It would be interesting to imagine a world where most of the programming languages are line-oriented where you have to write "go back to Line 10" to repeat a task, or "advance to Line 20" to skip a task. Luckily, we have control flows where you can encapsulate the logic of repeating or skipping tasks in a more human-readable way.
 
@@ -48,7 +48,7 @@ Here are some key points to note about the syntax:
 
 Let's see several examples of conditionals in both Mojo and Python. The first example is a simple program that checks if a number is positive, negative, or zero:
 
-<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
+::: code-group
 
 ```mojo
 def judge_sign(number: Int) -> None:
@@ -63,11 +63,7 @@ def main():
     judge_sign(10)
     judge_sign(-5)
     judge_sign(0)
-
-# End of the code
 ```
-
-</td><td>
 
 ```python
 def judge_sign(number: int) -> None:
@@ -86,13 +82,13 @@ def main():
 main()
 ```
 
-</td></tr></table>
+:::
 
 ---
 
 The next example is a program that checks if a string is either `a`, `b`, or `c`. If yes, then it prints the string. For this example, we need use an `if` statement and two `elif` statements, but no `else` statement:
 
-<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
+::: code-group
 
 ```mojo
 # src/basic/controls/conditional_without_else.mojo
@@ -113,8 +109,6 @@ def main():
 # End of the code
 ```
 
-</td><td>
-
 ```python
 # src/basic/controls/conditional_without_else.py
 def check_string(s: str) -> None:
@@ -134,7 +128,7 @@ def main():
 main()
 ```
 
-</td></tr></table>
+:::
 
 Running the above code will give you the output:
 
@@ -148,9 +142,9 @@ Since there is no `else` statement, the program does not print anything for the 
 
 ---
 
-The last example is a program that checks if a number is even or odd. If the number is even, it prints the number and the message "is an even number". If the number is odd, it prints the number and the message "is an odd number". In this case, we only need an `if` statement and an `else` statement, while the `elif` statement is not needed:
+The final example is a program that checks if a number is even or odd. If the number is even, it prints the number and the message "is an even number". If the number is odd, it prints the number and the message "is an odd number". In this case, we only need an `if` statement and an `else` statement, while the `elif` statement is not needed:
 
-<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
+:::code-group
 
 ```mojo
 # src/basic/controls/conditional_without_elif.mojo
@@ -168,8 +162,6 @@ def main():
 # End of the code
 ```
 
-</td><td>
-
 ```python
 # src/basic/controls/conditional_without_elif.py
 def check_even_or_odd(number: int) -> None:
@@ -186,7 +178,7 @@ def main():
 main()
 ```
 
-</td></tr></table>
+:::
 
 Running the above code will give you the output:
 
@@ -338,7 +330,7 @@ Moreover, when you use a one-liner conditional expression, you cannot use the `e
 
 Below is an example of a one-liner conditional expression in both Mojo and Python.
 
-<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
+::: code-group
 
 ```mojo
 # one_liner_conditional_expression.mojo
@@ -357,8 +349,6 @@ def main():
 # End of the code
 ```
 
-</td><td>
-
 ```python
 # one_liner_conditional_expression.py
 def main():
@@ -376,7 +366,7 @@ def main():
 main()
 ```
 
-</td></tr></table>
+:::
 
 Running the above code will give you the output:
 
@@ -431,6 +421,8 @@ Let's begin with the `for ... in ...` syntax. The `for in` syntax is used to ite
 
 For example, let's say you want to calculate the sum of all items in a list of floating-point numbers, `[1.1, 2.2, 3.3, 4.4, 5.5]`. If you do not use a for loop, you need to write the following code:
 
+::: code-group
+
 ```mojo
 # src/basic/controls/sum_of_list_of_floats_without_loop.mojo
 def main():
@@ -446,11 +438,30 @@ def main():
     print("The sum of all items = ", total)
 ```
 
+```py
+# src/basic/controls/sum_of_list_of_floats_without_loop.py
+def main():
+    total = 0.0
+    numbers = [1.1, 2.2, 3.3, 4.4, 5.5]
+
+    total += numbers[0]
+    total += numbers[1]
+    total += numbers[2]
+    total += numbers[3]
+    total += numbers[4]
+
+    print("The sum of all items = ", total)
+
+main()
+```
+
+:::
+
 This code is not very efficient and is not scalable. If you want to sum up a list with 1000 items, you will have to write 1000 lines of code, which is not practical.
 
 Since we are iterating over the list of numbers and taking out each element one by one, we can then use a for loop to simplify the code. Below is the equivalent code using a for loop in both Mojo and Python:
 
-<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
+::: code-group
 
 ```mojo
 # src/basic/controls/sum_of_list_of_floats.mojo
@@ -464,8 +475,6 @@ def main():
 # End of the code
 ```
 
-</td><td>
-
 ```python
 # src/basic/controls/sum_of_list_of_floats.py
 def main():
@@ -478,7 +487,7 @@ def main():
 main()
 ```
 
-</td></tr></table>
+:::
 
 Running the above code will give you the output: ```The sum of all items =  16.5```
 
@@ -524,7 +533,7 @@ The `break` keyword is used to exit the **current** loop early. When the `break`
 
 The `else` keyword is used to define a block of code that will be executed after the for loop **successfully** iterates over all elements of the iterable and is not exited early by a `break` statement. Let's see an example in both Mojo and Python:
 
-<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
+::: code-group
 
 ```mojo
 # src/basic/controls/break_and_else_statement_in_for_loop.mojo
@@ -545,8 +554,6 @@ def main():
 # End of the code
 ```
 
-</td><td>
-
 ```python
 # src/basic/controls/break_and_else_statement_in_for_loop.py
 def main():
@@ -566,7 +573,7 @@ def main():
 main()
 ```
 
-</td></tr></table>
+:::
 
 Running the above code will give you the output:
 
@@ -652,7 +659,7 @@ The `range()` function is a built-in function in Mojo that generates an **iterat
 
 The `range()` function is helpful when you want to count from `0` to a certain number or you want to repeat a certain task for a specific number of times. An example of the `range()` function in both Mojo and Python is as follows:
 
-<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
+::: code-group
 
 ```mojo
 # src/basic/controls/range_function.mojo
@@ -666,8 +673,6 @@ def main():
 # End of the code
 ```
 
-</td><td>
-
 ```python
 # src/basic/controls/range_function.py
 def main():
@@ -680,7 +685,7 @@ def main():
 main()
 ```
 
-</td></tr></table>
+:::
 
 Running the above code will give you the output:
 
@@ -730,7 +735,7 @@ The "condition" after the `while` keyword is a **boolean expression** that evalu
 
 Let's demonstrate the `while` loop with an example in both Mojo and Python. We will write a program that counts from `0` to `4` and prints each number:
 
-<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
+::: code-group
 
 ```mojo
 # src/basic/controls/print_integers_with_while.mojo
@@ -744,8 +749,6 @@ def main():
 # End of the code
 ```
 
-</td><td>
-
 ```python
 # src/basic/controls/print_integers_with_while.py
 def main():
@@ -758,7 +761,7 @@ def main():
 main()
 ```
 
-</td></tr></table>
+:::
 
 Yes, the syntax of the `while` loop in Mojo is identical to Python's `while` loop syntax, so it should be familiar to you. The above code will output:
 
@@ -1073,7 +1076,7 @@ Since there is a **condition** and an **internal counter**, we can then replace 
 
 Below is an example of how to replace a for loop with a while loop in Mojo.
 
-<table><tr><th>for loop</th><th>while loop</th></tr><tr><td>
+::: code-group
 
 ```mojo
 # src/basic/control/
@@ -1086,8 +1089,6 @@ def main():
     for i in iterator:
         print(i, "at", String(Pointer(to=i)))
 ```
-
-</td><td>
 
 ```mojo
 # src/basic/control/
@@ -1102,11 +1103,11 @@ def main():
     # End of the replacement
 ```
 
-</td></tr></table>
+:::
 
 This replacement is **general** and can be applied to **any for loop** that iterates over an iterable object, such as a list, a string, or a range. For example, let's do this replacement for a list:
 
-<table><tr><th>for loop</th><th>while loop</th></tr><tr><td>
+::: code-group
 
 ```mojo
 def main():
@@ -1119,8 +1120,6 @@ def main():
     for i in iterator:
         print(i, "at", String(Pointer(to=i)))
 ```
-
-</td><td>
 
 ```mojo
 def main():
@@ -1135,7 +1134,7 @@ def main():
     # End of the replacement
 ```
 
-</td></tr></table>
+:::
 
 ### Do-until logic with while loops
 
@@ -1150,7 +1149,7 @@ Mojo, however, **does not** have a built-in `do ... until` loop syntax. Neither 
 
 For example, we want to find the first Fibonacci number that is greater than `1000`. In programming languages that support repeat-until logic, we can write the following code:
 
-<table><tr><th>Ruby</th><th>Perl</th></tr><tr><td>
+::: code-group
 
 ```ruby
 # src/basic/control/repeat_until_in_ruby.rb
@@ -1167,8 +1166,6 @@ end
 
 main
 ```
-
-</td><td>
 
 ```perl
 # src/basic/control/repeat_until_in_perl.pl
@@ -1187,12 +1184,14 @@ sub main {
 main();
 ```
 
-</td></tr></table>
+:::
 
 In Mojo, we can achieve the same logic using a while loop by doing the following:
 
 1. Use a `while True:` statement to create an infinite loop.
 1. Inside the loop, we replace the `until` condition with a `if` statement and a `break` statement.
+
+::: code-group
 
 ```mojo
 # src/basic/control/repeat_until_with_while.mojo
@@ -1209,7 +1208,24 @@ def main():
     print("First Fibonacci number > ", threshold, ": ", curr, sep="")
 ```
 
-The above three code snippets will all output the same result:
+```python
+# src/basic/control/repeat_until_with_while.py
+def main():
+    prev = 0
+    curr = 1
+    threshold = 1_000_000_000
+
+    while True:
+        prev, curr = curr, prev + curr
+        if curr > threshold:
+            break
+
+    print("First Fibonacci number > ", threshold, ": ", curr, sep="")
+```
+
+:::
+
+The above code snippets will all output the same result:
 
 ```console
 First Fibonacci number > 1000000000: 1134903170
@@ -1283,8 +1299,7 @@ $$
 
 Here is a template for you to complete the `print_fibonacci()` function:
 
-
-<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
+::: code-group
 
 ```mojo
 def print_fibonacci(n: Int) -> None:
@@ -1296,8 +1311,6 @@ def main():
 # End of the code
 ```
 
-</td><td>
-
 ```python
 def print_fibonacci(n: int) -> None:
     """Prints the first n Fibonacci numbers."""
@@ -1308,13 +1321,13 @@ def main():
 main()
 ```
 
-</td></tr></table>
+:::
 
-::: details Answer
+:::::: details Answer
 
 An example of the Fibonacci sequence in both Mojo and Python is as follows:
 
-<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
+::: code-group
 
 ```mojo
 # src/basic/controls/print_fibonacci_numbers.mojo
@@ -1332,8 +1345,6 @@ def main():
 # End of the code
 ```
 
-</td><td>
-
 ```python
 # src/basic/controls/print_fibonacci_numbers.py
 def print_fibonacci(n: int) -> None:
@@ -1350,15 +1361,17 @@ def main():
 main()
 ```
 
-</td></tr></table>
+::::::
 
-::: danger Overflow
+:::::: danger Overflow
 
 Please be aware that the Fibonacci numbers grow very fast, and the maximum value of an `Int` in Mojo is `9223372036854775807` (which is $2^{63} - 1$). If you try to print more than 93 Fibonacci numbers, you will get an a wrong value for the 94-th number due to integer overflow (`-6246583658587674878`).
 
 We have discussed the integer overflow issue in Chapter [Data types](../basic/types#integer-overflow). If you really want to print more than 93 Fibonacci numbers, you can use the `BigInt` type, which is discussed in Chapter [Arbitrary-precision integers](../extend/decimojo).
 
 To properly this issue, you can raise and error or print a warning message if the input number is greater than 93. For example, you can modify the `print_fibonacci()` function as follows:
+
+::: code-group
 
 ```mojo
 def print_fibonacci(n: int) -> None:
@@ -1377,11 +1390,13 @@ def print_fibonacci(n: int) -> None:
         prev, curr = curr, prev + curr
 ```
 
+:::
+
 The `return` statement will exit the function early if the input number is greater than 93, so that the users will not get an incorrect result.
 
 Note that this problem will **not** happen in Python, because Python's `int` type can handle arbitrarily large integers.
 
-:::
+::::::
 
 ### Find prime numbers
 
@@ -1415,13 +1430,13 @@ def main():
             ...
 ```
 
-::: details Answer
+:::::: details Answer
 
 The trick is to use the `break` statement to exit the loop early once you find a divisor. If the loop completes without finding a divisor, then the `else:` block will be executed, indicating that the number is a prime number.
 
 Below is a solution to the exercises in both Mojo and Python. They will generate the same output, but Python will run much slower than Mojo. On my machine (MacBook Pro M4 Pro), the Mojo code takes 1.95 seconds to run, while the Python code takes 109.89 seconds to run.
 
-<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
+::: code-group
 
 ```mojo
 # src/basic/controls/is_prime_number.mojo
@@ -1443,8 +1458,6 @@ def main():
 # End of the code
 ```
 
-</td><td>
-
 ```python
 # src/basic/controls/is_prime_number.py
 def main():
@@ -1465,7 +1478,7 @@ def main():
 main()
 ```
 
-</td></tr></table>
+:::
 
 Running the above code will give you the output:
 
@@ -1573,7 +1586,7 @@ Running the above code will give you the output:
 1000000000000000100 is not a prime number with smallest divisor 2
 ```
 
-:::
+::::::
 
 ### Print calendar of 1991
 

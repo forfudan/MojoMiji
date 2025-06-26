@@ -3,6 +3,7 @@ import mdFootnote from "markdown-it-footnote"
 import path from "node:path"
 import tailwind from "tailwindcss"
 import autoprefixer from "autoprefixer"
+import { groupIconMdPlugin, groupIconVitePlugin } from 'vitepress-plugin-group-icons'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -17,7 +18,7 @@ export default defineConfig({
       dark: "material-theme-palenight",
     },
     config: (md) => {
-      md.use(mdFootnote)
+      md.use(mdFootnote, groupIconMdPlugin)
     }
   },
   head: [
@@ -33,7 +34,18 @@ export default defineConfig({
       alias: {
         '@': path.resolve(__dirname, '../../components'),
       }
-    }
+    },
+    plugins: [
+      groupIconVitePlugin({
+        customIcon: {
+          'mojo': 'vscode-icons:file-type-mojo',
+          'python': 'vscode-icons:file-type-python',
+          'ruby': 'vscode-icons:file-type-ruby',
+          'rust': 'vscode-icons:file-type-rust',
+          'perl': 'vscode-icons:file-type-perl',
+        }
+      })
+    ]
   },
   themeConfig: {
     logo: '/icon.png',
@@ -98,13 +110,13 @@ export default defineConfig({
               text: 'Variables', link: '/miji/basic/variables',
             },
             {
-              text: 'Functions', link: '/miji/basic/functions',
-            },
-            {
               text: 'Data types - basic', link: '/miji/basic/types',
             },
             {
               text: 'Data type - string', link: '/miji/basic/string',
+            },
+            {
+              text: 'Functions', link: '/miji/basic/functions',
             },
             {
               text: 'Operators and assignment', link: '/miji/basic/operators',
