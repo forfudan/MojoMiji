@@ -31,7 +31,7 @@ Thus, you need to always be careful when you are doing big integer calculations 
 
 ::: info More on integers
 
-We will discuss integral types in more detail in Section [Integer](../basic/types.md#integer) of Chapter [Data Types](../basic/types.md).
+We will discuss integral types in more detail in Section [Integer](../basic/types#integers) of Chapter [Data Types](../basic/types.md).
 
 :::
 
@@ -43,7 +43,7 @@ In short, Mojo's `Float64` type is almost the same as Python's `float` type. You
 
 ::: info More on floats
 
-We will discuss floating-point types in more detail in Section [Floating-point number](../basic/types#float) of Chapter [Data Types](../basic/types.md).
+We will discuss floating-point types in more detail in Section [Floating-point number](../basic/types#floating-point-numbers) of Chapter [Data Types](../basic/types.md).
 
 :::
 
@@ -166,7 +166,7 @@ def main():
 # Output: 1 2 3 4 5 
 ```
 
-We will discuss the list type in more detail in [Section List of Chapter Data Types](../basic/types.md). Chapter [Memory Layout of Mojo objects](../misc/layout.md) provides some abstract diagrams to illustrate the memory layouts of a list in Python and Mojo.
+We will discuss the list type in more detail in Chapter [Composite data types](../basic/composite#lists). Chapter [Memory Layout of Mojo objects](../misc/layout.md) provides some abstract diagrams to illustrate the memory layouts of a list in Python and Mojo.
 
 ## Other difference
 

@@ -96,7 +96,7 @@ Let's now look at a simple example, a `Complex` struct that represents a complex
 
 First, we define the struct with the name `Complex` and two fields, `real` and `imag`. We also use the docstring to describe the struct and its fields, for better documentation and understanding. The Mojo code as well as the Python equivalent are as follows:
 
-<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
+::: code-group
 
 ```mojo
 # src/basic/complex_number.mojo
@@ -109,8 +109,6 @@ struct Complex:
     """Imaginary part of the complex number."""
 ```
 
-</td><td>
-
 ```python
 # src/basic/structs/complex_number.py
 class Complex:
@@ -122,13 +120,15 @@ class Complex:
     imag: float  # Imaginary part of the complex number
 ```
 
-</td></tr></table>
+:::
 
 ### Basic methods
 
 Next, we define the `__init__()` method to enable users to use the constructor to initialize the struct instance with the given real and imaginary parts.
 
-We also define a `write_to()` method to to enable `print()` function to work on the struct. The Mojo code is as follows.
+We also define a `write_to()` method to to enable `print()` function to work on the struct. The Mojo code and Python equivalent are as follows:
+
+::: code-group
 
 ```mojo
 # src/basic/structs/complex_number.mojo
@@ -168,37 +168,6 @@ fn main():
     print("Complex number c3:", c3)
 ```
 
-Running this code will output:
-
-```console
-Complex number c1: 3.0+4.0i
-Complex number c2: 1.0-2.0i
-Complex number c3: 0.0+0.0i
-```
-
-It is expected, yet several things to note here:
-
-1. The `__init__()` method is defined with the `out` keyword before `self`, which is required in Mojo to indicate that `self` is the output of the method.
-1. We set default values for the `real` and `imag` parameters in the `__init__()` method, so that we can create a complex number without providing any arguments.
-1. The `write_to()` method is defined to enable the `print()` function to work on the struct. The `write_to()` method reads in a `Writer` instance, and writes the complex number components and necessary symbols to it. Since the `writer` object needs to be modified, we use the `mut` keyword to indicate that it is mutable.
-1. The `write_to()` method is a general method that can be used by many different structs. In Mojo, we call a behavior that can be shared among different types a **trait**. In this case, we say that the `Complex` struct conforms to the `Writable` trait, which means it has a `write_to()` method and can be printed using the `print()`.
-1. We need to explicitly declare the traits in the struct definition, i.e., `struct Complex(Writable):`. This syntax is similar to how we define a class that inherits from another class in Python. We will discuss traits in Chapter [Generic and traits](../advanced/generic.md) later.
-
-::: tip Traits and methods
-
-The concept of traits and how to use them will be covered by this Miji as an advanced topic. However, for now, you just need to remember it in the following way:
-
-Some special dunder methods, such as `write_to()`, `__str__()`, `__int__()`, etc, are corresponding to some traits, such as `Writable`, `Stringable`, `Intable`, etc. If you define these methods in your struct, you have to **explicitly** put the trait name in the struct definition, e.g., `struct Complex(Writable):`.
-
-If you forget to do so, the Mojo compiler will raise an error and remind you which trait you need to add into the parentheses of the struct definition. So, don't worry too much about it for now.
-
-If you are interested in which traits are available in Mojo, you can check Section [Dunder methods and built-in functions](../advanced/generic#dunder-methods-and-built-in-functions).
-
-:::
-
-::: info Python equivalent
-
-The major difference between Mojo and Python in this part is that Mojo uses the `write_to()` method to enable the `print()` function, while Python uses the `__str__()` method. If you only define a `__str__()` method in Mojo, you can only enable the `String()` constructor to obtain a string representation of the struct, but not the `print()` function. Thus, the Python `__str__()` method can simultaneously achieve two goals (string conversion and printing).
 
 ```python
 # src/basic/structs/complex_number.py
@@ -236,6 +205,40 @@ main()
 
 :::
 
+Running this code will output:
+
+```console
+Complex number c1: 3.0+4.0i
+Complex number c2: 1.0-2.0i
+Complex number c3: 0.0+0.0i
+```
+
+It is expected, yet several things to note here:
+
+1. The `__init__()` method is defined with the `out` keyword before `self`, which is required in Mojo to indicate that `self` is the output of the method.
+1. We set default values for the `real` and `imag` parameters in the `__init__()` method, so that we can create a complex number without providing any arguments.
+1. The `write_to()` method is defined to enable the `print()` function to work on the struct. The `write_to()` method reads in a `Writer` instance, and writes the complex number components and necessary symbols to it. Since the `writer` object needs to be modified, we use the `mut` keyword to indicate that it is mutable.
+1. The `write_to()` method is a general method that can be used by many different structs. In Mojo, we call a behavior that can be shared among different types a **trait**. In this case, we say that the `Complex` struct conforms to the `Writable` trait, which means it has a `write_to()` method and can be printed using the `print()`.
+1. We need to explicitly declare the traits in the struct definition, i.e., `struct Complex(Writable):`. This syntax is similar to how we define a class that inherits from another class in Python. We will discuss traits in Chapter [Generic and traits](../advanced/generic.md) later.
+
+::: tip Traits and methods
+
+The concept of traits and how to use them will be covered by this Miji as an advanced topic. However, for now, you just need to remember it in the following way:
+
+Some special dunder methods, such as `write_to()`, `__str__()`, `__int__()`, etc, are corresponding to some traits, such as `Writable`, `Stringable`, `Intable`, etc. If you define these methods in your struct, you have to **explicitly** put the trait name in the struct definition, e.g., `struct Complex(Writable):`.
+
+If you forget to do so, the Mojo compiler will raise an error and remind you which trait you need to add into the parentheses of the struct definition. So, don't worry too much about it for now.
+
+If you are interested in which traits are available in Mojo, you can check Section [Dunder methods and built-in functions](../advanced/generic#dunder-methods-and-built-in-functions).
+
+:::
+
+::: info Comments on the Python equivalent
+
+The major difference between Mojo and Python in this part is that Mojo uses the `write_to()` method to enable the `print()` function, while Python uses the `__str__()` method. If you only define a `__str__()` method in Mojo, you can only enable the `String()` constructor to obtain a string representation of the struct, but not the `print()` function. Thus, the Python `__str__()` method can simultaneously achieve two goals (string conversion and printing).
+
+:::
+
 ### Arithmetic operators
 
 Now we have finished the basic IO functionality of the `Complex` struct. The next step is to implement some arithmetic operators to make it more useful, for example, addition via `+` and multiplication via `*`, etc.
@@ -250,6 +253,8 @@ In Mojo, you can define the behavior of the arithmetic operators by defining spe
 It is identical to Python, and we have partially discussed this in Chapter [Operators](../basic/operators.md). For now, we just use our knowledge of Python to define these methods in the `Complex` struct. Later, we will investigate the mechanism behind definement of operators in Section [Dunder methods and operators overloading](../advanced/generic#dunder-methods-and-operators-overloading) of Chapter Generic and traits.
 
 The formulae for basic arithmetic operations on complex numbers are simple. As a Pythonista, you can try to do this yourself before looking at the code below, maybe starting with Python code and then converting it to Mojo.
+
+::: code-group
 
 ```mojo
 # src/basic/structs/complex_number.mojo
@@ -324,37 +329,6 @@ fn main() raises:
     print("c1 / c3 =:", c1 / c3)
 ```
 
-Running this code will output:
-
-```console
-Complex number c1: 3.0+4.0i
-Complex number c2: 1.0-2.0i
-Complex number c3: 0.0+0.0i
-c1 + c2 = 4.0+2.0i
-c1 - c2 = 2.0+6.0i
-c1 * c2 = 11.0-2.0i
-c1 / c2 = -1.0+2.0i
-c1 + c3 = 3.0+4.0i
-c1 - c3 = 3.0+4.0i
-c1 * c3 = 0.0+0.0i
-Unhandled exception caught during execution: Cannot divide by zero in complex division.
-/Users/ZHU/Programs/my-first-mojo-project/.magic/envs/default/bin/mojo: error: execution exited with a non-zero result: 1
-```
-
-Great, it provides the expected results for addition, subtraction, and multiplication. It also successfully raises an error when we try to divide `c1` by `c3`, which is a complex number with zero real and imaginary parts (i.e., zero).
-
-Here are some notes:
-
-1. We use `Self` in type annotations. This `Self` is a alias for the type of the struct itself, in this case, `Complex`. It is a convenient way to refer to the type of the struct without explicitly writing it out. If you rename the struct to something else, you do not need to change it everywhere in the code.
-1. Since we raise an error in the `__truediv__()` method, we need to add the `raises` keyword after the return type annotation (`-> Self`) to indicate that this method may raise an error. This is similar to Python's `raise` statement, but in Mojo, we need to explicitly declare it in the method signature.
-1. Because we used the division operator `/` in the main function, we also need to add the `raises` keyword after the `main()` function signature to indicate that the division may raise an error.
-
-::: info Python equivalent
-
-There are some differences between Mojo and Python in this part:
-
-1. In Mojo, we use `Self` to refer to the type of the struct itself. You can also use the struct name directly. In Python, however, if you want to give a type annotation for the struct, you need to use the struct name directly with quotation marks, e.g., `other: "Complex"`. From Python 3.11, you can also `from typing import Self` and use `Self` in type annotations, which is similar to Mojo's way.
-1. In Python, you can call different types of errors, such as `ZeroDivisionError`, `ValueError`, etc. In Mojo, however, you can only raise a generic `Error` type. More specific error types may be added in the future.
 
 ```python
 # src/basic/structs/complex_number.py
@@ -425,7 +399,41 @@ def main():
 main()
 ```
 
+:::
+
 Running this code will output:
+
+```console
+Complex number c1: 3.0+4.0i
+Complex number c2: 1.0-2.0i
+Complex number c3: 0.0+0.0i
+c1 + c2 = 4.0+2.0i
+c1 - c2 = 2.0+6.0i
+c1 * c2 = 11.0-2.0i
+c1 / c2 = -1.0+2.0i
+c1 + c3 = 3.0+4.0i
+c1 - c3 = 3.0+4.0i
+c1 * c3 = 0.0+0.0i
+Unhandled exception caught during execution: Cannot divide by zero in complex division.
+/Users/ZHU/Programs/my-first-mojo-project/.magic/envs/default/bin/mojo: error: execution exited with a non-zero result: 1
+```
+
+Great, it provides the expected results for addition, subtraction, and multiplication. It also successfully raises an error when we try to divide `c1` by `c3`, which is a complex number with zero real and imaginary parts (i.e., zero).
+
+Here are some notes:
+
+1. We use `Self` in type annotations. This `Self` is a alias for the type of the struct itself, in this case, `Complex`. It is a convenient way to refer to the type of the struct without explicitly writing it out. If you rename the struct to something else, you do not need to change it everywhere in the code.
+1. Since we raise an error in the `__truediv__()` method, we need to add the `raises` keyword after the return type annotation (`-> Self`) to indicate that this method may raise an error. This is similar to Python's `raise` statement, but in Mojo, we need to explicitly declare it in the method signature.
+1. Because we used the division operator `/` in the main function, we also need to add the `raises` keyword after the `main()` function signature to indicate that the division may raise an error.
+
+::: info Comments on the Python equivalent
+
+There are some differences between Mojo and Python in this part:
+
+1. In Mojo, we use `Self` to refer to the type of the struct itself. You can also use the struct name directly. In Python, however, if you want to give a type annotation for the struct, you need to use the struct name directly with quotation marks, e.g., `other: "Complex"`. From Python 3.11, you can also `from typing import Self` and use `Self` in type annotations, which is similar to Mojo's way.
+1. In Python, you can call different types of errors, such as `ZeroDivisionError`, `ValueError`, etc. In Mojo, however, you can only raise a generic `Error` type. More specific error types may be added in the future.
+
+Note that the error message in the Python's output is slightly different from Mojo's, but it is still clear that the division by zero is not allowed.
 
 ```console
 Complex Number 1: 3.0+4.0i
@@ -458,6 +466,8 @@ You may wonder how Mojo stores the struct in memory. In short, Mojo stores the f
 
 Let see a concrete example, a `Human` struct that represents a human with a name (string), an age (8-bit unsigned integer ranging from 0 to 255), a height in meter (16-bit floating number), and birth date (list of 16-bit unsigned integers representing year, month, and day). The code is as follows:
 
+::: code-group
+
 ```mojo
 # src/basic/human.mojo
 struct Human:
@@ -478,6 +488,8 @@ struct Human:
 fn main():
     var human = Human("Yuhao Zihong Xianyong Mengzexianke Zhu", 124, 1.70, List[UInt16](1901, 2, 5))
 ```
+
+:::
 
 We have four fields in the `Human` struct, and their types are fixed and known at compile time. Note that the `String` and `List` types are composite types, which means that:
 
@@ -595,7 +607,6 @@ fn main():
 Running this code will output the following, which matches the memory layout we discussed above:
 
 ```console
-(base) ZHU@MBP-Dr-Yuhao-Zhu basic % magic run mojo run -I ./src human.mojo
 Human on stack
 Byte 0x00-0x07 should be `data: UnsafePointer`: 0x3180042b0
 Byte 0x08-0x0f should be `size: Int`: 38
@@ -606,7 +617,7 @@ Byte 0x28-0x2f should be `size: Int`: 3
 Byte 0x30-0x37 should be `capacity: Int`: 3
 ========================================
 Data of `date: List[UInt16]` on heap
-1901 2 5 %  
+1901 2 5
 ```
 
 :::

@@ -6,7 +6,7 @@
         BlinkMacSystemFont, 'Segoe UI', Roboto,
         'Helvetica Neue', Helvetica, Arial, 'Noto Sans', sans-serif,
         'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-    --vp-font-family-mono: "Inconsolata", ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Monaco,
+    --vp-font-family-mono: Menlo, Monaco, ui-monospace, SFMono-Regular, 'SF Mono', "Inconsolata",
         Consolas, 'Liberation Mono', 'Courier New', monospace;
 
     /* --vp-home-hero-name-color: transparent;

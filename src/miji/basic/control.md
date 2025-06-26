@@ -493,7 +493,7 @@ Running the above code will give you the output: ```The sum of all items =  16.5
 
 Let's break down the Mojo code and see how it works in Mojo internally:
 
-1. `var total = 0.0` initializes a variable with the name `total`, the type `Float64` (default type for floating-point numbers in Mojo), and the initial value `0.0`. The [life time](../advanced/lifetime.md) (valid scope) of this variable is from this line to the last line of the main function.
+1. `var total = 0.0` initializes a variable with the name `total`, the type `Float64` (default type for floating-point numbers in Mojo), and the initial value `0.0`. The [life time](../advanced/lifetimes.md) (valid scope) of this variable is from this line to the last line of the main function.
 1. `var numbers = [1.1, 2.2, 3.3, 4.4, 5.5]` initializes a variable with the name `numbers`, the type `List[Float64]`, and the initial value `[1.1, 2.2, 3.3, 4.4, 5.5]`. The type of the list is inferred from the literal values  in the list. The life time of this variable is also from this line to the second last line of the main function because we do not use it after the for loop.
 1. `for number in numbers:` means three things:
     1. Create an **iterator** from the `numbers` list in the background. This iterator is of the `ListIterator` type. It is able to return one element of the list at a time.

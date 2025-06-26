@@ -1,4 +1,4 @@
-# Reference system of Mojo
+# Reference system and pointers
 
 [[toc]]
 
@@ -28,6 +28,8 @@ For example, if you pass `a: Int` into function `fn copyit(read some: Int)`, the
 
 If you want to use Rust-type reference, e.g., `&Type`, you should use the `Pointer` type, which is a safe pointer that will not null or dangling. Then, you need to always deference it to get access the value. The following code illustrate how to achieve similar functionality as the "Rust-type reference" in Mojo.
 
+::: code-group
+
 ```mojo
 # src/advanced/references/pointer_and_deref.mojo
 fn main():
@@ -38,6 +40,7 @@ fn main():
 ```
 
 ```rust
+// Equivalent Rust code
 fn main() {
     let val = 42;
     let ptr = &val;
@@ -45,6 +48,8 @@ fn main() {
     println!("The value at that address is {}", *ptr);
 }
 ```
+
+:::
 
 ::: info Auto-dereferencing
 

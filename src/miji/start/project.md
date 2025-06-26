@@ -37,7 +37,7 @@ cd my-first-mojo-project
 
 Or, more conveniently, you can use your VS Code to open this folder as a workspace.
 
-:::warning Use magic CLI (to be deprecated)
+::: details Use magic CLI instead (to be deprecated)
 
 If you are using the Magic CLI, you can create a Mojo project by running the following command:
 
@@ -51,15 +51,25 @@ magic init my-first-mojo-project --mojoproject
 
 If you want to create a Mojo project in an existing folder, you can run the following command:
 
+::: code-group
+
 ```bash
 pixi init -c "https://conda.modular.com/max" -c "https://repo.prefix.dev/modular-community" -c "conda-forge"
 ```
+
+```zsh
+pixi init -c "https://conda.modular.com/max" -c "https://repo.prefix.dev/modular-community" -c "conda-forge"
+```
+
+:::
 
 ## Look into `pixi.toml`
 
 When you look into the folder `my-first-mojo-project`. You may find out that there is only one non-hidden file being created in this folder[^hidden], called `pixi.toml`. Not so fancy, right? But this is the file that contains all the information about your Mojo project. Anyone want to run your Mojo code can use this file to set up the same environment as yours.
 
 Let's now open this `pixi.toml` file and take a close look.
+
+::: code-group
 
 ```toml
 [workspace]
@@ -74,6 +84,8 @@ version = "0.1.0"
 [dependencies]
 ```
 
+:::
+
 This file contains the following sections:
 
 - `[workspace]`: This section contains the information about your Mojo project, such as the name of the project, the list of authors, version, platform, and channels. The "channels" field indicate where pixi can find and download the files that are necessary to run our Mojo code. We just specified three channels when we created the Mojo project.
@@ -84,10 +96,14 @@ At the moment, let's focus on the `[dependencies]` section.
 
 You can see that there is currently nothing in the `[dependencies]` section. This is because pixi does not know that you want to run Mojo code. You have to manually add the Mojo compiler as a dependency in order to run any Mojo code. To do this, add the following line to the `[dependencies]` section:
 
+::: code-group
+
 ```toml
 [dependencies]
 max = "==25.4"
 ```
+
+:::
 
 The word on the left side of the `=` is the name of the package. In this case, it is the `max` package, which contains all necessary files to run Mojo code. This also includes the Mojo compiler.
 
@@ -102,9 +118,13 @@ The word on the right side of the `=` is the version of the package you want to 
 
 After we put `max = "==25.4"` in the dependencies field, pixi knows that we want to install the latest version of the `max` package. To finish the installation, we need to run the following command in your terminal (Use `Cmd+J` to open the terminal in VS Code):
 
+::: code-group
+
 ```bash
 pixi install
 ```
+
+:::
 
 You will see that installation immediately start: pixi downloads all the necessary files and packages from the channels. Depending on your internet connection, it may take a while to finish the installation. Finally, you will see the following message in your terminal:
 
@@ -128,4 +148,4 @@ You can always update the dependencies in `pixi.toml` file. Then, just run `pixi
 
 For more information about pixi, you can refer to the [official documentation](https://pixi.sh/latest/getting_started/).
 
-[^hidden]: There are also three hidden files: `.gitignore`, `.magic` and `.gitattributes`. These files are used for version control and package management. You can ignore them for now.
+[^hidden]: There are also three hidden files: `.gitignore`, `.pixi` and `.gitattributes`. These files are used for version control and package management. You can ignore them for now.
