@@ -5,6 +5,8 @@ import { useMediumZoomProvider } from '../hooks'
 import './style.css'
 import './fonts.css'
 import './custom.css'
+// Group icons plugin
+import 'virtual:group-icons.css'
 
 export default {
   extends: DefaultTheme,

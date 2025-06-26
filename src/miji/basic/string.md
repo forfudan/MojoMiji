@@ -2,7 +2,8 @@
 # Data type - String
 
 > There are a thousand string types in a thousand people's eyes.  
-> -- Yuhao Zhu
+> All characters are equal, but some are more equal than others.  
+> -- Yuhao Zhu, *Gate of Heaven*
 
 String is one of the most important concepts in programming languages, but also one of the most controversial ones. On the one hand, the "string" is able to store or represent the texts of almost all human languages. On the other hand, it is also a source of confusion and frustration for many programmers, especially when it comes to how to encode, decode, and manipulate strings. In a thousand people's eyes, there are a thousand different ways to implement a string type as well as its functionalities. Thus, some people even think that the string type should not be a built-in type in programming languages, but rather be in third-party libraries that can be implemented in different ways.
 
@@ -275,9 +276,6 @@ To answer these questions, let's take a look at the following two things:
 1. The internal representation of a `String` in Mojo.
 
 ### Unicode and code points
-
-> All characters are equal, but some are more equal than others.  
-> -- Yuhao Zhu, *Gate of Heaven*
 
 Characters are the building blocks of texts. They can be letters (Latin, Greek, Slavic, Sanskrit, etc., e.g, "abc", "αβγ", "абв", "अआइ"), 漢字 (Hànzì, Kanji, Hanja, e.g., "天地人"), digits ("123"), punctuation marks ("!., ?;"), symbols ("@#$"), or even emojis ("繪文字", literally, "graphic characters", e.g., "😀❤️🌍").
 

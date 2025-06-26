@@ -1,7 +1,7 @@
 # Modules, packages, and imports
 
-> Keep things in order!
-> Yuhao Zhu, *Gate of Heaven*
+> Keep things in order!  
+> -- Yuhao Zhu, *Gate of Heaven*
 
 The package system in Mojo is very similar to Python's, with modules and packages. When we want to use a module or package, we can import it into the current file using the `import` statement. This chapter will introduce the concepts of modules and packages in Mojo, how to create them, and how to use them in your code.
 
