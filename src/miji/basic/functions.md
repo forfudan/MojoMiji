@@ -19,6 +19,8 @@ Maybe in other parallelled worlds, programming and programming languages will lo
 
 To quickly demonstrate the power of functions, consider the following example:
 
+::: code-group
+
 ```mojo
 # src/basic/functions/areas_of_circles.mojo
 def main():
@@ -36,6 +38,8 @@ def main():
     print("Area of Circle 3 with radius", radius_3, "is", area_3)
 ```
 
+:::
+
 In the example code, we sequentially calculate the area of three circles with different radii. The code is working, but not elegant. We have to repeat the same code three times, which is not only verbose but also difficult to maintain: In case we want to change the formula for calculating the area of a circle, we have to change it in three places.
 
 The way to improve the code is to use functions. Functions in programming languages are similar to mathematical functions, which take some inputs and return some outputs. The very case above, if represented as a mathematical function `f(x)`, would look like this:
@@ -45,6 +49,8 @@ $y = f(x) = \pi \cdot x^2$
 It takes in the variable `x` representing radius, conducts some calculation, and returns the variable `y` representing area. When you want to calculate the area of circles with different radii, you can simply call the function `f()` with the radius as the input, e.g., `f(1.0)`, `f(2.0)`, and `f(3.0)`.
 
 In Mojo, we can similarly write a function and re-use it as follows:
+
+::: code-group
 
 ```mojo
 # src/basic/functions/areas_of_circles_with_functions.mojo
@@ -57,6 +63,8 @@ def main():
     print("Area of Circle 2 with radius 2.0 is", area_of_circle(2.0))
     print("Area of Circle 3 with radius 3.0 is", area_of_circle(3.0))
 ```
+
+:::
 
 This code is much more concise and elegant. In case you want to modify the formula for calculating the area of a circle, you only need to change it in one place, i.e., the function `area_of_circle()`.
 
@@ -72,12 +80,12 @@ To illustrate, the following is the general syntax of a function declaration in 
 
 ```mojo
 def function_name[parameter1: Type1, parameter2: Type2, ...](argmuent1, argument2, ...) -> ReturnType:
-    # function declared by `def`
+    # function defined by `def`
     ...
     return
 
 fn function_name[parameter1: Type1, parameter2: Type2, ...](argmuent1, argument2, ...) raises -> ReturnType:
-    # function declared by `fn`
+    # function defined by `fn`
     ...
     return
 ```
@@ -87,19 +95,21 @@ Note that there is something wrapped within square brackets `[]`. This is someth
 ```mojo
 ```mojo
 def function_name(argmuent1, argument2, ...) -> ReturnType:
-    # function declared by `def`
+    # function defined by `def`
     ...
     return
 
 fn function_name(argmuent1, argument2, ...) raises -> ReturnType:
-    # function declared by `fn`
+    # function defined by `fn`
     ...
     return
 ```
 
-::: info Python's functions
+:::::: info Python's functions
 
-In Python, functions are declared using the `def` keyword. For example, the following functions returns the sum of two numbers (with or without type hints.)
+In Python, functions are defined using the `def` keyword. For example, the following functions returns the sum of two numbers (with or without type hints.)
+
+::: code-group
 
 ```python
 def mysum(a, b):
@@ -111,22 +121,31 @@ def mysum(a: int, b: int) -> int:
 
 :::
 
+::::::
+
 Using functions is easy. Just like in Python, you can call a function by its name followed by parentheses containing the arguments. For example, to call the abstract `function_name()` defined above, you can write:
+
+::: code-group
 
 ```mojo
 def main():
     var result = function_name(variable1, variable2)
 ```
 
-In the following sections, we will dive into different aspects of functions in Mojo.
+```python
+def main():
+    result = function_name(variable1, variable2)
+```
+
+:::
 
 ## keyword `def` and `fn`
 
-As mentioned above, there are two keywords to declare functions in Mojo: `def` and `fn`.
+As mentioned above, there are two keywords to define functions in Mojo: `def` and `fn`.
 
 ### keyword `def`
 
-The `def` keyword is borrowed from Python. I allows you to declare functions in a way that is very similar to Python, and allow you to enjoy some freedom that Python has. For example, we can translate the Python function `mysum` above into Mojo code as follows:
+The `def` keyword is borrowed from Python. I allows you to define functions in a way that is very similar to Python, and allow you to enjoy some freedom that Python has. For example, we can translate the Python function `mysum` above into Mojo code as follows:
 
 ```mojo
 # src/basic/functions/mysum.mojo
@@ -151,7 +170,7 @@ Indicating the type of the returned value of function in can also help Mojo comp
 
 The `fn` keyword is unique to Mojo and is not present in Python. It is another way to define a function. For most functionalities (I would say 95 percent of use cases), these two keywords are interchangeable. You can safely choose either.
 
-You may then wonder why there are two keywords to declare functions in Mojo. The reason about the error handling:
+You may then wonder why there are two keywords to define functions in Mojo. The reason about the error handling:
 
 - For `fn`-functions: If there are potential exceptions that may be raised by the function, you have to explicitly indicate them using the `raises` keyword in the function declaration.
 - For `def`-functions: The `raises` keyword is **not needed**. The function will assume that it may raise some exceptions.
@@ -170,9 +189,11 @@ Interestingly, the word `fn` itself does not look Pythonic. Python usually trunc
 
 :::
 
-::: details Further reading: `def` and `fn` in early Mojo versions
+:::::: details Further reading: `def` and `fn` in early Mojo versions
 
 In early Mojo versions, the difference between `def` and `fn` was more significant. For example, in Mojo v25.3, if a function is defined with `fn`, the arguments are immutable by default (equals to the `read` modifier), and you cannot change the values of the arguments within the function. The following example will cause a compilation error:
+
+::: code-group
 
 ```mojo
 # src/basic/functions/change_value_in_fn.mojo
@@ -187,6 +208,8 @@ def main():
     print(a)
 ```
 
+:::
+
 ```console
 error: expression must be mutable in assignment
     x = 2
@@ -194,6 +217,8 @@ error: expression must be mutable in assignment
 ```
 
 However, if a function is defined with `def`, the arguments are immutable by default, but changing the values of the arguments will create a mutable copy of them. For example,
+
+::: code-group
 
 ```mojo
 # src/basic/def_read_and_modify.mojo
@@ -213,6 +238,8 @@ def main():
     change_value_in_def(a)
     print("a =", a, "at address", String(Pointer(to=a)))
 ```
+
+:::
 
 This code runs without any error, and the output is as follows:
 
@@ -235,24 +262,28 @@ So the difference between `def` and `fn` in Mojo v25.3 is that:
 
 From Mojo v25.4, the difference between `def` and `fn` is not that significant anymore. The only difference is whether the keyword `raises` is needed or not.
 
-:::
+::::::
 
-## The `main()` function
+## `main()` function and REPL
 
 You have already learned about this in your [first Mojo program](../start/hello). Let's recap it here.
 
 In order to executing the code in a Mojo file, you have to define a function named `main()`. This is similar to many other programming languages, such as C, Java, and Rust. The `main()` function serves as the entry point of the program, where the execution starts.
 
-There is only one exception: If you are in the REPL (Read-Eval-Print Loop) mode, such as in terminal or Jupyter Notebook, you do not need to define a `main()` function. You can write code directly in the cell and it will be executed immediately.
+There is only one exception: If you are in the Read-Eval-Print Loop (REPL) mode, such as in terminal or Jupyter Notebook, you do not need to define a `main()` function. You can write code directly in the cell and it will be executed immediately.
 
-To demonstrate this, you open your terminal (`Command + J` in VS Code) and type `magic run mojo`, then you will enter the REPL mode. You can write code directly in the terminal, such as:
+To demonstrate this, you open your terminal (`Command + J` in VS Code) and type `pixi run mojo`, then you will enter the REPL mode. You can write code directly in the terminal, such as:
 
-```mojo
-var day = 1
-var month = 1
-var year = 2025
-print("Today is", day, "-" , month, "-", year)
+::: code-group
+
+```sh [mojo]
+  1> var day = 1 
+  2. var month = 1 
+  3. var year = 2025 
+  4. print("Today is", day, "-" , month, "-", year) 
 ```
+
+:::
 
 Click enter, and you will see the output immediately:
 
@@ -263,9 +294,9 @@ Today is 1 - 1 - 2025
 (Int) year = 2025
 ```
 
-See that you also get a list of local variables you have defined.
+The first line is the output of the `print()` function. From the second line, you can see that the Mojo REPL will automatically print the type and value of the variable you defined.
 
-::: info The main function in Python
+:::::: info The main() function in Python
 
 In Python, the `main()` function is not needed. The interpreter will automatically run all the code in the file you run or import.
 
@@ -273,13 +304,18 @@ Notably, the Python interpreter will set the special variable `__name__` of the 
 
 Nevertheless, some Python users still define a `main()` function in their code, and then call it at the end of the file. They may find Mojo's `main()` function more comfortable. Here is a Python example with `main()` function:
 
+::: code-group
+
 ```python
 def main():
     print("Hello, world!")
+
 main()  # Run the main function
 ```
 
 :::
+
+::::::
 
 ## Arguments
 
@@ -310,6 +346,8 @@ For some arguments, you can pass in the values without writing the name of the a
 
 In the following example, the value `1` and `3.1415` are passed into the function `sumint()`. Mojo will match the first value `1` to the first argument `a`, and the second value `3.1415` to the second argument `b`. If you switch the order of the values, the result will be different.
 
+::: code-group
+
 ```mojo
 fn my_subtract(a: Float64, b: Float64) -> Float64:
     return a - b
@@ -320,11 +358,15 @@ def main():
     print(a == b)  # False
 ```
 
+:::
+
 ### Keyword arguments
 
 For other arguments, you pass in the values by also writing the name of the arguments. This is called "keyword arguments". The values will be matched to the arguments by their names, not by their positions. This allows you to pass in the values in any order, as long as you specify the names of the arguments.
 
 In the following example, the argument `b` can comes before the argument `a` if you explicitly indicate their names.
+
+::: code-group
 
 ```mojo
 fn my_subtract(a: Float64, b: Float64) -> Float64:
@@ -336,7 +378,11 @@ def main():
     print(a == b)  # True
 ```
 
+:::
+
 From the previous two examples, you can see that Mojo allows you to positional arguments and keyword arguments are not mutually exclusive. You can use both in the same function call. For example, you can pass in the first argument by its position and the second argument by its name. However, you cannot pass in the first argument by its name and the second argument by its position. See the following example:
+
+::: code-group
 
 ```mojo
 fn my_subtract(a: Float64, b: Float64) -> Float64:
@@ -346,6 +392,10 @@ def main():
     var a = my_subtract(1, b=3.1415)  # This is allowed
     var b = my_subtract(3.1415, a=1)  # This will cause an error
 ```
+
+:::
+
+This will cause the following compilation error:
 
 ```console
 error: invalid call to 'my_subtract': argument passed both as positional and keyword operand: 'a'
@@ -358,6 +408,8 @@ error: invalid call to 'my_subtract': argument passed both as positional and key
 You use the `*` symbol before the argument name to indicate that the function can accept a variable number of arguments. This is called "variadic arguments". It allows you to pass in an arbitrary number of values of the homogenous type into the function, which will be stored in a array-like structure, e.g, `VariadicList`.
 
 In the following example, by putting an `*` before `flts`, you can pass in any number of `Float64` numbers into the function and get their summation. The values you passed into the function will be stored in a `VariadicList` object.
+
+::: code-group
 
 ```mojo
 fn sum_floats(*numbers: Float64) -> Float64:
@@ -372,6 +424,8 @@ def main():
 
 # Output: 0.6000000000000001
 ```
+
+:::
 
 ## Mutability of arguments
 
@@ -395,7 +449,7 @@ From my perspective, this is a more intuitive model for users and leads to less 
 
 Note that the term "reference" means differently in Mojo compared to Rust. In Rust, a reference is a safe pointer to a value. In Mojo, however, it is an alias (body double) of the variable. For example, an argument can be a (immutable or mutable) reference of the variable being passed into the function. When accessing the value of the argument, you do not need to de-reference it.
 
-We will discuss more about the references system in Mojo in the later chapter [Reference](../advanced/references.md).
+We will discuss more about the references system in Mojo in the later chapter [Reference system](../advanced/references.md).
 
 :::
 
@@ -414,19 +468,17 @@ If an argument is declared with the keyword `read`, then a read-only reference o
 1. The argument will get the same address as the variable you passed into the function, so it can access the value at that address.
 1. The value at the address is marked as "immutable", meaning that you cannot change the it within the function. The value of the variable outside the function will thus be protected from being modified.
 
-If we apply the [four-status model of ownership](../advanced/ownership.md#four-statuses-of-ownership) introduced in Chapter [Ownership](../advanced/ownership.md) later, this means that a **immutable aliases status** is created.
+If we apply the [four-status model of ownership](../advanced/ownership.md#four-statuses-of-ownership) introduced in Chapter [Ownership](../advanced/ownership.md) later, this means that a **immutable referenced status** is created.
 
-::: info A mutable copy
+---
 
-Note that, for Item 2, although the value at the original address cannot be changed, the argument itself can still be modified when the function is declared with the `def` keyword. This is done by implicitly creating a mutable copy of the value at another address. This will be discussed in the section [def vs fn](#def-vs-fn) at the end of this chapter.
+The `read` convention is memory efficient because nothing has been copied in the function call. `read` is also safe because no changes are allowed to be made on the original address in the memory, so the variable outside the function will not be unintentionally modified. Therefore, `read` is the **default behavior** of arguments in Mojo functions.
 
-:::
+To emphasize, if you do not put any keywords before the argument, Mojo will automatically assume that the argument is modified by the  `read` keyword. This will generate a read-only reference of the value passed into the function.
 
-::: tip `read` as default keyword
+Thus, the following two functions are thus equivalent.
 
-`read` modifier is memory efficient because nothing has been copied in the function call. `read` is also safe because no changes are allowed to be made on the original address in the memory, so the variable outside the function will not be unintentionally modified. Therefore, `read` is the **default behavior** of arguments in Mojo functions. In case you do not explicitly specify the mutability modifier before the argument, Mojo will automatically assume that the argument is `read`.
-
-The following two functions are thus equivalent.
+::: code-group
 
 ```mojo
 fn foo(read some: Int) -> None:
@@ -438,11 +490,16 @@ fn foo(some: Int) -> None:  # default is `read`
 
 :::
 
-An example that read elements from a list and print them is as follows. Note that the keyword `read` can be left out.
+---
+
+Here is an example that read elements from a list and print them. Note that the keyword `read` can be omitted, as it is the default behavior of arguments.
+
+::: code-group
 
 ```mojo
 # src/basic/read_keyword.mojo
 def print_list_of_string(read a: List[String]):
+    # `a` is a read-only reference of the list passed into the function
     print("[", end="")
     for i in range(len(a)):
         if i < len(a) - 1:
@@ -450,12 +507,17 @@ def print_list_of_string(read a: List[String]):
         else:
             print(String('"{}"').format(a[i]), end="]\n")
 
+
 def main():
     var lst = List[String]("Mojo", "Miji", "is", "interesting")
     var new_lst = print_list_of_string(lst)
 ```
 
+:::
+
 If you define a function with `fn`, attempting to change the value of an argument with `read` modifier will cause an error at compile time. See the following example:
+
+::: code-group
 
 ```mojo
 # src/basic/read_keyword_change.mojo
@@ -467,6 +529,10 @@ fn main():
     changeit(a)
 ```
 
+:::
+
+This will cause the following compilation error:
+
 ```console
 error: expression must be mutable in assignment
     some[0] = 100
@@ -477,7 +543,7 @@ error: expression must be mutable in assignment
 
 ::: info `inout` vs `mut`
 
-Do you know that the keyword `mut` was named as `inout` before Mojo version 24.6.
+Do you know that the keyword `mut` was named as `inout` before Mojo version 24.6? The `inout` keyword has been gradually deprecated and faded out in the Mojo programming language.
 
 :::
 
@@ -489,6 +555,8 @@ The keyword `mut` allows you to pass a mutable reference of the value into the f
 If we apply the [four-status model of ownership](../advanced/ownership.md#four-statuses-of-ownership) introduced in Chapter [Ownership](../advanced/ownership.md) later, this means that a **mutable aliases status** is created.
 
 The following example examines the functionality of the `mut` keyword **from the memory's perspective**, so that you can understand the concepts and mechanics better. For this purpose, we need to import the `Pointer` class from the `memory` module, which allows us to print the address of a variable or an argument.
+
+::: code-group
 
 ```mojo
 # src/basic/functions/mut_keyword.mojo
@@ -516,6 +584,8 @@ def main():
         ).format(x, String(Pointer(to=x)))
     )
 ```
+
+:::
 
 When you run the code, you will see the following output:
 
@@ -579,21 +649,13 @@ Address │16b6a8fae│16b6a8faf│16b6a8fb0│16b6a8fb1│16b6a8fb2│16b6a8fb3
                           variable `x` (Int8)
 ```
 
-::: tip Compared to Rust
+:::::: tip Compared to Rust
 
-You can modify the value of passed-in variable at its original address if you use `mut` keyword. It is similar to Rust's mutable reference, e.g., `fn foo(a: &mut i8)`. But keep in mind that the reference in Mojo is more an alias than a safe pointer, which means a de-referencing is not needed. We will cover this topic in detail in Chapter [Ownership](../advanced/ownership.md).
+You can modify the value of passed-in variable at its original address if you use `mut` keyword. It is similar to Rust's mutable reference, e.g., `fn foo(a: &mut i8)`. But keep in mind that the reference in Mojo is more an alias than a safe pointer, which means a de-referencing is not needed. We will cover this topic in detail in Chapter [Ownership](../advanced/ownership) and [Reference system](../advanced/references).
 
-Let's copy the the previous example here, and re-write it in Rust for comparison.
+Let's re-write teh previous example in Rust for comparison.
 
-```mojo
-fn changeit(mut a: Int8):
-    a = 10
-
-fn main():
-    var x: Int8 = 5
-    changeit(x)
-    print("x =", x)
-```
+::: code-group
 
 ```rust
 fn changeit(a: &mut i8) {
@@ -607,7 +669,19 @@ fn main() {
 }
 ```
 
+```mojo
+fn changeit(mut a: Int8):
+    a = 10
+
+fn main():
+    var x: Int8 = 5
+    changeit(x)
+    print("x =", x)
+```
+
 :::
+
+::::::
 
 ### keyword `owned`
 
@@ -620,6 +694,8 @@ The keyword `owned` allows you to pass a **copy** of the value into the function
 If we apply the [four-status model of ownership](../advanced/ownership.md#four-statuses-of-ownership) introduced in Chapter [Ownership](../advanced/ownership.md) later, this means that a **isolated status** is created.
 
 The following example examines the functionality of the `owned` keyword **from the memory's perspective**. In the function signature of `changeit()`, we use the `owned` keyword to indicate that the argument `a` is an owned copy of the value passed in.
+
+::: code-group
 
 ```mojo
 # src/basic/functions/owned_keyword.mojo
@@ -654,6 +730,7 @@ def main():
         ).format(x, String(Pointer(to=x)))
     )
 ```
+:::
 
 When you run the code, you will see the following output:
 
@@ -730,7 +807,9 @@ Address │16bb384f5│16bb384f6│16bb384f7│16bb384f8│   ...   │16bb38509
 
 Function overloading is a cool feature of Mojo which does not appear in Python. For example, you want to implement a function called `bigger` that can either take in one or two arguments of the integral type. If one argument is passed in, then it returns the argument itself. If two arguments are passed in, then it returns the bigger one. In Python, you would probably use the following trick:
 
-```py
+::: code-group
+
+```python
 def bigger(a: int, b: int | None = None) -> int:
     """Returns the bigger of one or two integers.
     
@@ -754,9 +833,13 @@ def main():
 main()
 ```
 
+:::
+
 In the above code, we set the argument `b` to be either an integer or a `None` type. If the user only passes in one variable, `b` will be `None` and the value of `a` will be returned. If the user passes in two values, then the bigger number will be returned.
 
 However, in Mojo, this trick may not be helpful. Mojo is a statically-typed language and each variable must have a fixed type (well, you can use `Optional` type, but you have to do some de-packing and it will not be efficient). Luckily, Mojo allows function overloading. This feature allows you to define functions with the same name multiple times as long as they are with different arguments. See the following example:
+
+::: code-group
 
 ```mojo
 # src/basic/bigger.mojo
@@ -770,6 +853,8 @@ fn main():
     print(bigger(1, 2))
     print(bigger(3))
 ```
+
+:::
 
 You can run this code and see that it works as expected.
 

@@ -3,6 +3,23 @@
 > If we were to have the same ancestor with horses instead of apes, we would have been able to invent computers much earlier.  
 > -- Yuhao Zhu, *Gate of Heaven*
 
+Types of data are the foundation of programming languages. They define how one and zeros in the memory are interpreted as human-readable values. Mojo's data types are similar to Python's, but with some differences due to Mojo's static compilation nature.
+
+In the following four chapters, we will discuss the most common data types in Mojo. They can be categorized into several categories: scalar types (integer, floats), composite types (list, tuple, string, SIMD), text types (string), and others types (boolean, literal).
+
+This chapter will first focus on the scalar types and the boolean type, which are the most basic and simplest data types in Mojo. They represent single values that are stored in the memory with a fixed and relatively small size. The [composite types](../basic/composite), the [string type](../basic/string), the [literal types](../basic/literal), and the Mojo-featured [SMID type](../advanced/simd) will be further discussed in separate chapters. You can easily find the corresponding types in Python. The following table summarizes these data types:
+
+| Python type | Mojo type          | Description                                 | Be careful that                                                                |
+| ----------- | ------------------ | ------------------------------------------- | ------------------------------------------------------------------------------ |
+| `int`       | `Int`              | [Integer](#integer)                         | Integers in Mojo has ranges. Be careful of **overflow**.                       |
+| `float`     | `Float64`          | [Floating-pointing](#floating-point-number) | Almost same behaviors. You can safely use it.                                  |
+| `bool`      | `Bool`             | [Boolean](#boolean)                         | Same.                                                                          |
+| `list`      | `List`             | List                                        | Elements in `List` in Mojo must be of the same data type.                      |
+| `tuple`     | `Tuple`            | Tuple                                       | Very similar, but you cannot iterate over a `Tuple` in Mojo.                   |
+| `set`       | `collections.Set`  | Set                                         | Elements in `Set` in Mojo must be of the same data type.                       |
+| `dict`      | `collections.Dict` | Dictionary (hashmap)                        | Keys and values in `Dict` in Mojo must be of the same data type, respectively. |
+| `str`       | `String`           | String (text)                               | Similar behaviors. Note that `String` in Mojo is rapidly evolving.             |
+
 ::: info Compatible Mojo version
 
 This chapter is compatible with Mojo v25.4 (2025-06-18).
@@ -11,22 +28,7 @@ This chapter is compatible with Mojo v25.4 (2025-06-18).
 
 [[toc]]
 
-Types of data are the foundation of programming languages. They define how one and zeros in the memory are interpreted as human-readable values. Mojo's data types are similar to Python's, but with some differences due to Mojo's static compilation nature.
-
-In this chapter, we will discuss the most common data types in Mojo. They can be categorized into several categories: numeric types (integer, floats), composite types (list, tuple), and others types (boolean). The string type and the Mojo-featured SMID type will be further discussed in separate chapters [String](../basic/string.md) and [SIMD](../advanced/simd.md). You can easily find the corresponding types in Python. The following table summarizes these data types:
-
-| Python type | Default Mojo type  | Be careful that                                                                |
-| ----------- | ------------------ | ------------------------------------------------------------------------------ |
-| `int`       | `Int`              | Integers in Mojo has ranges. Be careful of **overflow**.                       |
-| `float`     | `Float64`          | Almost same behaviors. You can safely use it.                                  |
-| `bool`      | `Bool`             | Same.                                                                          |
-| `list`      | `List`             | Elements in `List` in Mojo must be of the same data type.                      |
-| `tuple`     | `Tuple`            | Very similar, but you cannot iterate over a `Tuple` in Mojo.                   |
-| `set`       | `collections.Set`  | Elements in `Set` in Mojo must be of the same data type.                       |
-| `dict`      | `collections.Dict` | Keys and values in `Dict` in Mojo must be of the same data type, respectively. |
-| `str`       | `String`           | Similar behaviors. Note that `String` in Mojo is rapidly evolving.             |
-
-## Integer
+## Integers
 
 In Mojo, the most common integer type is `Int`, which is either a 32-bit or 64-bit signed integer depending on your system. It is ensured to cover the range of addresses on your system. It is similar to the `numpy.intp` type in Python and the `isize` type in Rust. Note that it is different from the `int` type in Python, which is an arbitrary-precision integer type.
 
@@ -159,55 +161,7 @@ In Mojo, you can convert an integer to a smaller integer type with narrower rang
 
 :::
 
-### Exercises - integer types
-
-Now we want to calculate the $12345^5$. Since the result is big (around 20 digits), we use `Int128` to avoid overflow. Try to run the following code in Mojo and see what happens. Explain why the result is unexpected and how to fix it.
-
-```mojo
-def main():
-    var a: Int128 = 12345 ** 5
-    print(a)
-```
-
-::: details Answers
-
-The result is `-8429566654717360231`. It is a negative number, which is unexpected. The correct answer should be `286718338524635465625`. Usually, when we see a negative value, we know that it is probably due to an overflow.
-
-The reason is that, when we write `12345 ** 5` in the right-hand side of the assignment, we did not explicitly specify the type of the values. As mentioned above, if we do not explicitly specify the type of the integer literal, the compiler will infer it as `Int` by default. Thus, `12345` and `5` will be both saved as an `Int` type (64-bit signed integer on a 64-bit system).
-
-Since the result of `12345 ** 5` exceeds the maximum value of `Int` type (`2^63 - 1`), an overflow occurs. And value of `12345 ** 5` becomes `-8429566654717360231`. This wrong value is then assigned to the variable `a` of type `Int128`.
-
-To fix this, we need to explicitly specify the type of the integer literals in the right-hand side of the assignment. We can do this by using the `Int128` constructor, like this:
-
-```mojo
-def main():
-    var a = Int128(12345) ** Int128(5)
-    print(a)
-```
-
-Now the result will be `286718338524635465625`, which is the correct answer.
-
-:::
-
-Please fix the following code to make it work correctly, as well as to avoid potential overflow issues.
-
-```mojo
-# src/basic/types/integer_exercise_fix_operations.mojo
-def main():
-    var a: Int128 = 0x1F2D
-    var b: UInt32 = 23941
-    var c: Int8 = 3
-    var d: UInt8 = 255
-    var e: Int64 = -123456789
-    var f: Int16 = 1032512358647127389
-
-    print("a + b =", a + b)
-    print("c + d =", c + d)
-    print("d + e =", d + e)
-    print("f - d =", f - d)
-```
-
-## Float
+## Floating-point numbers
 
 Compared to integer types, floating-point numbers in Mojo share more similarities with Python. The table below summarizes the floating-point types in Mojo and corresponding types in Python:
 
@@ -225,7 +179,7 @@ To construct a floating-point number in Mojo, you can do that in three ways:
 
 See the following examples.
 
-<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
+::: code-group
 
 ```mojo
 def main():
@@ -237,10 +191,9 @@ def main():
     var c = Float16(1.414)
     
     print(a, b, c)
+
 # Output: 3.14 2.718 1.4140625
 ```
-
-</td><td>
 
 ```python
 def main():
@@ -257,7 +210,7 @@ main()
 # Output: 3.14 2.718 1.414
 ```
 
-</td></tr></table>
+:::
 
 ::: warning Floating-point values are inexact
 
@@ -284,7 +237,7 @@ The `Bool` type is saved as a single byte in the memory.
 
 Unlike Python, Mojo's Boolean values cannot be implicitly converted to integers for arithmetic operation, even though the bit representation of `True` is equivalent to `1` and `False` is equivalent to `0`. Thus, the following code will **not work** in Mojo:
 
-<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
+::: code-group
 
 ```mojo
 # This code will not compile
@@ -293,8 +246,6 @@ def main():
 # Error
 ```
 
-</td><td>
-
 ```python
 def main():
     print(True + False)
@@ -302,577 +253,82 @@ main()
 # Output: 1
 ```
 
-</td></tr></table>
+:::
 
-## List
+## Exercises
 
-In Mojo, a `List` is a mutable, variable-length sequence that can hold a collection of elements of the ***same type***. It is similar to Rust's `Vec` type, but it is different from Python's `list` type that can hold objects of **any type**. Here are some key differences between Python's `list` and Mojo's `List`:
+### Exercises - integer types
 
-| Functionality      | Mojo `List`            | Python `list`                               |
-| ------------------ | ---------------------- | ------------------------------------------- |
-| Type of elements   | Homogeneous type       | Heterogenous types                          |
-| Mutability         | Mutable                | Mutable                                     |
-| Inialization       | `List[Type]()` or `[]` | `list()` or `[]`                            |
-| Indexing           | Use brackets `[]`      | Use brackets `[]`                           |
-| Slicing            | Use brackets `[a:b:c]` | Use brackets `[a:b:c]`                      |
-| Extending by items | Use `append()`         | Use `append()`                              |
-| Concatenation      | Use `+` operator       | Use `+` operator                            |
-| Printing           | Not supported          | Use `print()`                               |
-| Iterating          | Use `for` loop         | Use `for` loop                              |
-| Iterator returns   | Reference to element   | Copy of element                             |
-| List comprehension | Partially supported    | Supported                                   |
-| Memory layout      | Metadata -> Elements   | Pointer -> metadata -> Pointers -> Elements |
-
-### Construct a list
-
-There are two ways to construct a `List` in Mojo.
-
-The first way is to use the **list literal** syntax, which is similar to Python's list syntax. You can create a `List` by using square brackets `[]` and separating the elements with commas. For example, the following code will successfully create a list of integers, floats, strings, and even lists:
-
-```mojo
-# src/basic/types/list_creation_from_literals.mojo
-def main():
-    my_list_of_integers = [1, 2, 3, 4, 5]
-    var my_list_of_floats: List[Float64] = [0.125, 12.0, 12.625, -2.0, -12.0]
-    var my_list_of_strings: List[String] = ["Mojo", "is", "awesome"]
-    var my_list_of_list_of_integers: List[List[Int]] = [[1, 2], [3, 4], [5, 6]]
-
-    print(my_list_of_integers[0])
-    print(my_list_of_floats[0])
-    print(my_list_of_strings[0])
-    print(my_list_of_list_of_integers[0][0])
-```
-
-The second way is to use the ***list constructor***, which is a special method that initializes a new instance of the `List` type. The list constructor takes a variable number of arguments, which are the elements of the list. You **must** specify the type of the elements in the list by using square brackets `[]` after the `List` keyword. For example, we can re-write the previous example using the list constructor:
-
-```mojo
-# src/basic/types/list_creation_with_constructor.mojo
-def main():
-    my_list_of_integers = List[Int](1, 2, 3, 4, 5)
-    var my_list_of_floats = List[Float64](0.125, 12.0, 12.625, -2.0, -12.0)
-    var my_list_of_strings: List[String] = List[String]("Mojo", "is", "awesome")
-    var my_list_of_list_of_integers = List[List[Int]](
-        List[Int](1, 2), List[Int](3, 4), [5, 6]
-    )
-
-    print(my_list_of_integers[0])
-    print(my_list_of_floats[0])
-    print(my_list_of_strings[0])
-    print(my_list_of_list_of_integers[0][0])
-```
-
-The first way is more concise and easier to read, while the second way is more explicit since you have to specify the type of the elements in the list. Both ways are valid and will produce the same result. You can choose either way depending on your preference.
-
-### Index or slice a list
-
-You can retrieve the elements of a `List` in Mojo using **indexing**, just like in Python. For example, you can access the first element of `my_list_of_integers` with `my_list_of_integers[0]`.
-
-You can create another `List` by **slicing** an existing `List`, just like in Python. For example, you can create a new list that contains the first three elements of `my_list_of_integers` with `my_list_of_integers[0:3]`.
+Now we want to calculate the $12345^5$. Since the result is big (around 20 digits), we use `Int128` to avoid overflow. Try to run the following code in Mojo and see what happens. Explain why the result is unexpected and how to fix it.
 
 ```mojo
 def main():
-    my_list_of_integers = List[Int](1, 2, 3, 4, 5)
-    first_element = my_list_of_integers[0]  # Accessing the first element
-    sliced_list = my_list_of_integers[0:3]  # Slicing the first three elements
+    var a: Int128 = 12345 ** 5
+    print(a)
 ```
 
-### Extend or concat a list
+::: details Answer
 
-You can **append** elements to the end of a `List` in Mojo using the `append()` method, just like in Python. For example,
+The result is `-8429566654717360231`. It is a negative number, which is unexpected. The correct answer should be `286718338524635465625`. Usually, when we see a negative value, we know that it is probably due to an overflow.
+
+The reason is that, when we write `12345 ** 5` in the right-hand side of the assignment, we did not explicitly specify the type of the values. As mentioned above, if we do not explicitly specify the type of the integer literal, the compiler will infer it as `Int` by default. Thus, `12345` and `5` will be both saved as an `Int` type (64-bit signed integer on a 64-bit system).
+
+Since the result of `12345 ** 5` exceeds the maximum value of `Int` type (`2^63 - 1`), an overflow occurs. And value of `12345 ** 5` becomes `-8429566654717360231`. This wrong value is then assigned to the variable `a` of type `Int128`.
+
+To fix this, we need to explicitly specify the type of the integer literals in the right-hand side of the assignment. We can do this by using the `Int128` constructor, like this:
 
 ```mojo
 def main():
-    my_list_of_integers = List[Int](1, 2, 3, 4, 5)
-    my_list_of_integers.append(6)  # Appending a new element
-# my_list_of_integers = [1, 2, 3, 4, 5, 6]
+    var a = Int128(12345) ** Int128(5)
+    print(a)
 ```
 
-You can use the `+` operator to concatenate two `List` objects, just like in Python. For example:
-
-```mojo
-def main():
-    first_list = List[Int](1, 2, 3)
-    second_list = List[Int](4, 5, 6)
-    concatenated_list = first_list + second_list  # Concatenating two lists
-# concatenated_list = [1, 2, 3, 4, 5, 6]
-```
-
-### Iterate over a list
-
-We can iterate over a `List` in Mojo using the `for ... in` keywords. This is similar to how we iterate over a list in Python. See the following example:
-
-<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
-
-```mojo
-# src/basic/types/list_iteration.mojo
-def main():
-    my_list = [1, 2, 3, 4, 5]
-    for i in my_list:
-        print(i, end=" ")
-# Output: 1 2 3 4 5
-```
-
-</td><td>
-
-```python
-def main():
-    my_list = [1, 2, 3, 4, 5]
-    for i in my_list:
-        print(i, end=" ")
-main()
-# Output: 1 2 3 4 5
-```
-
-</td></tr></table>
-
-As a Pythonista, you may find this syntax very familiar. Actually, the above example is **completely identical** to how we iterate over a list in Python.
-
----
-
-Still, there are some differences between Mojo's `List` and Python's `list` when it comes to iteration. The difference allows you to write some fancy code in Mojo that is not possible in Python.
-
-The trick is about the local variable `i` in the for-loop. In Mojo, `i` is a **immutable reference** to the element in the list, not a copy of the element. We have already discussed the concept of reference in Chapter [Functions](../basic/functions). In short, a reference is just an alias of the variable it refers to. They have the same type, same memory address, and share the same value. You can use the reference directly without de-referencing it. By saying "immutable", we mean that you cannot change the value of the reference. This may protect you from accidentally modifying the original element in the list.
-
-If you, however, want to change the value of the reference, you can use the `ref` keyword before `i` in the for-loop statement. This will make `i` a **mutable reference** to the element in the list, allowing you to change its value. For example, in the following code, we change the elements of the list by adding 1 to each element.
-
-```mojo
-# src/basic/types/list_iteration_with_modification.mojo
-def main():
-    my_list = [1, 2, 3, 4, 5]
-
-    # Change the elements of the list using a for loop
-    for ref i in my_list:
-        i = i + 1
-
-    # Print the modified list
-    for i in my_list:
-        print(i, end=" ")
-```
-
-The code runs successfully and prints the modified list:
-
-```console
-2 3 4 5 6
-```
-
-Note that we use `ref` before `i` in the `for ref i in my_list:` to make `i` a mutable reference to the element in the list. If you forget to use `ref`, you will get an error message because you are trying to modify the value via an immutable reference. The error message will look like this:
-
-```console
-error: expression must be mutable in assignment
-        i = i + 1
-        ^
-```
-
-Now let's translate the above code into Python. You will find that it does not work as expected:
-
-```python
-# src/basic/types/list_iteration_with_modification.py
-def main():
-    my_list = [1, 2, 3, 4, 5]
-
-    # Change teh variable i inside the loop
-    for i in my_list:
-        i = i + 1
-
-    # Print the list
-    for i in my_list:
-        print(i, end=" ")  # Output: 1 2 3 4 5
-
-main()
-```
-
-The output is still `1 2 3 4 5`, which is the original list. This is because in Python, `i` is a copy of the element in the list, not a reference to it. When you change `i`, you are only changing the copy, not the original element in the list. Thus, the original list remains unchanged.
-
----
-
-Returning a reference instead of a copy of the value makes Mojo's iteration more memory-efficient. Imagine that you want to read a list of books in a library. You can either:
-
-- Ask the administrator to copy these books and give your the copies.
-- Ask the administrator to give you the locations of these books, and you go to the corresponding shelves to read them.
-
-In the first case, you will have to pay for the cost of copying the books and you have to wait for the copies to be made. In the second case, you can read the books directly without any extra cost.
-
-The same applies to when you want to write something new into the books. In Python, you have to copy the book, make changes to the copy, and the replace the original book with the modified copy. In contrast, in Mojo, you can directly modify the book on the shelf without copying it. This is more efficient in terms of memory usage and performance.
-
-As a Pythonista, I always try to avoid using iteration in Python because it is too slow. Some third-party libraries, such as NumPy, provide optimized functions to perform operations on arrays or matrices without using Python's built-in iteration. Nevertheless, the gain in performance can still be neutralized by the overhead of Python's loop if you still have to iterate over some objects in your code. In Mojo, however, we will never need to worry about the performance of iteration. Just be brave to iterate!
-
-::: info List iteration before Mojo v25.4
-
-Before Mojo v25.4, the iteration over a `List` in Mojo would return **a pointer to the address of the element** instead of the reference to the element. You have to de-reference it to get the actual value of the element. The de-referencing is done by using the `[]` operator. See the following example:
-
-```mojo
-# src/basic/types/list_iteration_before_mojo_v25d4.mojo
-# This code is valid until Mojo v25.3
-# It will not compile in Mojo v25.4 and later versions.
-def main():
-    my_list = List[Int](1, 2, 3, 4, 5)
-    for i in my_list:  # `i` is a safe pointer to the element
-        print(i[], end=" ")  # De-referencing the element to get its value
-```
-
-If you forget the `[]` operator, you will get an error message because you are trying to print the pointer to the element instead of the element itself.
-
-```console
-error: invalid call to 'print': could not deduce parameter 'Ts' of callee 'print'
-        print(i,  end=" ")
-        ~~~~~^~~~~~~~~~~~~
-```
-
-From Mojo v25.4 onwards, the iteration over a `List` will return a reference to the element instead of a pointer. You can directly use the element without de-referencing it.
-
-For the difference between a pointer and a reference, please refer to Chapter [Reference system](../advanced/references#references-are-not-pointers) and Chapter [Ownership](../advanced/ownership#four-statuses-of-ownership).
+Now the result will be `286718338524635465625`, which is the correct answer.
 
 :::
 
-### Print a list
-
-You cannot print the `List` object directly in Mojo (at least at the moment). This is because the `List` type does not implement the `Writable` trait, which is required for printing. To print a `List`, you have to write your own auxiliary function.
+Please fix the following code to make it work correctly, as well as to avoid potential overflow issues.
 
 ```mojo
-# src/basic/types/list_printing.mojo
-def print_list_of_floats(array: List[Float64]):
-    print("[", end="")
-    for i in range(len(array)):
-        if i < len(array) - 1:
-            print(array[i], end=", ")
-        else:
-            print(array[i], end="]\n")
-
-def print_list_of_strings(array: List[String]):
-    print("[", end="")
-    for i in range(len(array)):
-        if i < len(array) - 1:
-            print(array[i], end=", ")
-        else:
-            print(array[i], end="]\n")
-
+# src/basic/types/integer_exercise_fix_operations.mojo
 def main():
-    var my_list_of_floats = List[Float64](0.125, 12.0, 12.625, -2.0, -12.0)
-    var my_list_of_strings = List[String]("Mojo", "is", "awesome")
-    print_list_of_floats(my_list_of_floats)
-    print_list_of_strings(my_list_of_strings)
+    var a: Int128 = 0x1F2D
+    var b: UInt32 = -23941
+    var c: Int8 = 3
+    var d: UInt8 = 256
+    var e: Int64 = -123456789
+    var f: Int16 = 1032512358647127389
+
+    print("a + b =", a + b)
+    print("c + d =", c + d)
+    print("d + e =", d + e)
+    print("f - d =", f - d)
 ```
 
-::: info `print_lists()` function
-
-We have already seen this auxiliary function in Chapter [Convert Python code into Mojo](../move/examples.md). We will use this kinds of functions to print lists in the following chapters as well.
-
-:::
-
-### Memory layout of List type
-
-A Mojo `List` is actually a structure that contains three fields:
-
-- A pointer type `data` that points to a continuous block of memory on the heap that stores the elements of the list contiguously.
-- A integer type `_len` which stores the number of elements in the list.
-- A integer type `capacity` which represents the maximum number of elements that can be stored in the list without reallocating memory. When `capacity` is larger than `_len`, it means that the memory space is allocated but is fully used. This enable you to append a few new elements to the list without reallocating memory. If you append more elements than the current capacity, the list will request another block of memory on the heap with a larger capacity, copy the existing elements to the new block, and then append the new elements.
-
-Let's take a closer look at how a Mojo `List` is stored in the memory with a simple example: The code below creates a `List` of `UInt8` numbers representing the ASCII code of 5 letters. We can use the `chr()` function to convert them into characters and print them out to see what they mean.
+::: details Answer
 
 ```mojo
+# src/basic/types/integer_exercise_fix_operations_corrected.mojo
 def main():
-    var me = List[UInt8](89, 117, 104, 97, 111)
-    print(me.capacity)
-    for i in me:
-        print(chr(Int(i[])), end="")
-# Output: Yuhao
-```
+    var a: Int128 = 0x1F2D  # This is okay
+    # var b: UInt32 = -23941
+    var b: Int32 = -23941  # Corrected to signed integer
+    var c: Int8 = 3  # This is okay
+    # var d: UInt8 = 256
+    var d: UInt16 = 256  # Corrected to avoid overflow
+    var e: Int64 = -123456789
+    # var f: Int16 = 1032512358647127389
+    var f: Int128 = 1032512358647127389  # Corrected to avoid overflow
 
-When you create a `List` with `List[UInt8](89, 117, 104, 97, 111)`, Mojo will first allocate a continuous block of memory on **stack** to store the three fields (`data: Pointer`, `_len: Int` and `capacity: Int`, each of which is 8 bytes long on a 64-bit system. Because we passed 5 elements to the `List` constructor, the `_len` field will be set to 5, and the `capacity` field will also be set to 5 (default setting, `capacity = _len`).
-
-Then Mojo will allocate a continuous block of memory on **heap** to store the actual values of the elements of the list, which is 1 bytes (8 bits) for each `UInt8` element, equaling to 5 bytes in total for 5 elements. The `data` field will then store the address of the first byte in this block of memory.
-
-The following figure illustrates how the `List` is stored in the memory. You can see that a continuous block of memory on the heap (from the address `17ca81f8` to `17ca81a2`) stores the actual values of the elements of the list. Each element is a `UInt8` value, and thus is of 1 byte long. The data field on the stack store the address of the first byte of the block of memory on the heap, which is `17ca81f8`.
-
-```console
-# Mojo Miji - Data types - List in memory
-
-        local variable `me = List[UInt8](89, 117, 104, 97, 111)`
-            ↓  (meta data on stack)
-        ┌────────────────┬────────────┬────────────┐
-Field   │ data           │ _len       │ capacity   │
-        ├────────────────┼────────────┼────────────┤
-Type    │ Pointer[UInt8] │  Int       │     Int    │
-        ├────────────────┼────────────┼────────────┤
-Value   │   17ca81f8     │     5      │     5      │
-        ├────────────────┼────────────┼────────────┤
-Address │   26c6a89a     │  26c6a8a2  │  26c6a8aa  │
-        └────────────────┴────────────┴────────────┘
-            │
-            ↓ (points to a continuous memory block on heap that stores the list elements)
-        ┌────────┬────────┬────────┬────────┬────────┐
-Element │  89    │  117   │  104   │  97    │  111   │
-        ├────────┼────────┼────────┼────────┼────────┤
-Type    │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │
-        ├────────┼────────┼────────┼────────┼────────┤
-Value   │01011001│01110101│01101000│01100001│01101111│
-        ├────────┼────────┼────────┼────────┼────────┤
-Address │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│
-        └────────┴────────┴────────┴────────┴────────┘
-```
-
-Now we try to see what happens when we use list indexing to get a specific element from the list, for example, `me[0]`. Mojo will first check the `_len` field to see if the index is valid (i.e., `0 <= index < me._len`). If it is valid, Mojo will then calculate the address of the element by adding the index to the address stored in the `data` field. In this case, it will return the address of the first byte of the block of memory on the heap, which is `17ca81f8`. Then Mojo will de-reference this address to get the value of the element, which is `89` in this case.
-
-If we try `me[2]`, Mojo will calculate address by adding `2` to the address stored in the `data` field, which is `17ca81f8 + 2 = 17ca81fa`. Then Mojo will de-reference this address to get the value of the element, which is `104` in this case.
-
-::: info Index or offset?
-
-You may find that the index starting from `0` in Python or Mojo is a little bit strange. But it will be intuitive if you look at the example above: The index of an element in a list is actually the offset from the address of the first element. When you think of the index as an offset, it will make more sense. Thus, in this Miji, I will sometimes use the term "offset" to refer to the index within the brackets `[]`.
-
-:::
-
-::: tip Memory layout of a list in Python and Mojo
-
-In Mojo, the values of the elements of a list is stored consecutively on the heap. In Python, the pointers to the elements of a list is stored consecutively on the heap, while the actual values of the elements are stored in separate memory locations. This means that a Mojo's list is more memory-efficient than a Python's list, as it does not require additional dereferencing to access the values of the elements.
-
-If you are interested in the difference between the the memory layout of a list in Python and Mojo, you can refer to Chapter [Memory Layout of Mojo objects](../misc/layout.md) for more details, where I use abstract diagrams to compare the memory layouts of a list in Python and Mojo.
-
-:::
-
-## Literal and type inference
-
-Note that we use the term "literal" in the previous sections. Literals are values that you write in the source code, *as it is*, such as `0x1F2D`, `1234567890`, `3.14`, or `"I am a sentence."` in the following example:
-
-::: code-group
-
-```mojo
-def main():
-    var a = 0x1F2D  # 0x1F2D is a literal
-    var b = 1234567890  # 1234567890 is a literal
-    abs(3.14)  # 3.14 is a literal
-    print("I am a sentence.")  # "I am a sentence." is a literal
-```
-
-:::
-
-When can see that a literal has some features:
-
-1. It usually appears in the **right-hand side** of an assignment, or as an argument to a function.
-1. It is not linked to a name, so you are not able to re-use it in other parts of the code, nor can you modify it.
-
-Thus, the literal can be seen as a temporary value and is only used once. They are used to construct variables or pass arguments to functions.
-
-::: tip R-value and L-value
-
-Literals are usually **R-values** that does not have a memory address and you cannot use any address-related operations on it. The name "R-value" comes from the fact that they usually appear on the right-hand side of an assignment. On contrary, **L-values** are values that have a memory address and can be assigned to a variable. Although being called "L-value", they can appear on both sides of an assignment.
-
-For example, `var a = 123` is an assignment where `a` is an L-value and `123` is an R-value (as you can use `Pointer(to=a)` to get the address of `a` but you cannot do that for the literal `123`). In the expression `var c = a + b`, `a`, `b`, `c` are all L-values (as you can find the addresses of these variables).
-
-Back to literals again. As said before, literals are usually R-values. However, some literals can be L-values, e.g., string literals. This is because string literals are stored in a memory location at runtime and can be referenced by their address.
-
-:::
-
-### Literal types
-
-What happens to literal values when you run the code?
-
-Mojo will first store these literal values into specific **literal types** according to their values and contexts. For example, `12` will be stored with the type `IntLiteral`, `3.14` will be stored with the type `FloatLiteral` (because there is a decimal point), and `"I am a sentence."` will be stored as a `StringLiteral` (because there are quotation marks), etc.
-
-These literal types are primitive types that are built into the Mojo language or in the standard library and they are **not directly exposed** to users. The instances of these literal types are usually pointing to some locations in the memory where the compiled source code is stored, and thus, they are immutable.
-
-If you follow the correct patterns, prefixes, or formats, your input iterals will always be correctly inferred by the Mojo compiler and transferred into the corresponding literal types.
-
-During compilation, these literals will also be evaluated by the compiler, with some optimizations if possible. For example, in the following code, the string literal is split into multiple lines for better readability. During compilation, the compiler will automatically concatenate these lines into a single string literal:
-
-::: code-group
-
-```mojo
-def main():
+    print("a + b =", a + Int128(b))  # Ensure type consistency
     print(
-        "This is a very long string that will be split into multiple lines for"
-        " better readability. But it is still one string literal."
+        "c + d =",
+        Int32(c) + Int32(d)
+        # Int32 is superset of Int8 and UInt16
     )
+    print("d + e =", Int64(d) + e)  # Ensure type consistency
+    print("f - d =", f - Int128(d))  # Ensure type consistency
 ```
-
-### Type inference
-
-The Mojo compiler will infer the type of the literal based on its value and context, including **patterns**, **prefixes**, and **formats**. This is called **type inference**.
-
-The table below summarizes the literal types and their corresponding patterns, prefixes, or formats:
-
-| Literal Type    | Pattern, prefix, or format                                             | Example                            |
-| --------------- | ---------------------------------------------------------------------- | ---------------------------------- |
-| `IntLiteral`    | Starts with a digit or `0b` (binary), `0o` (octal), `0x` (hexadecimal) | `123`, `0b1010`, `0o755`, `0x1F2D` |
-| `FloatLiteral`  | Contains a decimal point or in scientific notation                     | `3.14`, `2.71828e-10`, `1.0`       |
-| `StringLiteral` | Enclosed in single quotes, double quotes, or triple quotes             | `"Hello"`, `'World'`, `"""Mojo"""` |
-| `ListLiteral`   | Enclosed in square brackets with elements separated by commas          | `[1, 2, 3]`, `["a", "b", "c"]`     |
-
-If your literal does not match any of the patterns, prefixes, or formats, you will get an error message during compilation.
-
-### Conversion of literal types at declaration
-
-When you run the code, these literal types will be converted into common data types depending on the context of the code. There are three scenarios:
-
-#### No type annotation
-
-If you **do not explicitly annotate the data type** during variable declaration, the literal types will be **automatically converted** into the default data types shown in the table below.
-
-| Literal Type    | Default Data Type<br>to be converted into | Description                            |
-| --------------- | ----------------------------------------- | -------------------------------------- |
-| `IntLiteral`    | `Int`                                     | 32-bit or 64-bit signed integer        |
-| `FloatLiteral`  | `Float64`                                 | 64-bit double-precision floating-point |
-| `ListLiteral`   | `List`                                    | List of elements of the same type      |
-| `StringLiteral` | `StringLiteral`                           | No convertion is made automatically    |
-
-Note that `StringLiteral` is a special case, where it is not automatically converted to a `String` type for memory efficiency. For example, the following code will automatically convert the `IntLiteral`, `FloatLiteral`, and `ListLiteral` into `Int`, `Float64`, and `List` respectively, while the `StringLiteral` will remain as `StringLiteral`:
-
-::: code-group
-
-```mojo
-def main():
-    var a = 42  # `42` is inferred as `IntLiteral` and is converted to `Int` by default
-    var b = 0x1F2D  # `0x1F2D` is inferred as `IntLiteral` and is converted to `Int` by default
-    var c = 3.14  # `3.14` is inferred as `FloatLiteral` and is converted to `Float64` by default
-    var d = 2.71828e-10  # `2.71828e-10` is inferred as `FloatLiteral` and is converted to `Float64` by default
-    var e = [1, 2, 3]
-    # `e` is inferred as `ListLiteral[IntLiteral]` and is converted to `List[Int]` by default
-    var f = [[1.0, 1.1, 1.2], [2.0, 2.1, 2.2]]
-    # `f` is inferred as `ListLiteral[ListLiteral[FloatLiteral]]` and
-    # is converted to `List[List[Float64]]` by default
-    var h = "Hello, World!"  # `e` is inferred as `StringLiteral` and is not converted by default
-```
-
-If the literal is too big or too small to fit into the default data type, you will also get an error message. For example, if you try to assign a very large integer literal to a variable without type annotation, you will get an error message like this:
-
-::: code-group
-
-```mojo
-def main():
-    var a = 10000000000000000000000000000000
-    print(a)
-```
-
-:::
-
-```console
-error: integer value 10000000000000000000000000000000 requires 104 bits to store, but the destination bit width is only 64 bits wide
-    print(a)
-         ^
-```
-
-This is because the default data type for integer literals is `Int`, which is a 64-bit signed integer. The literal `10000000000000000000000000000000` requires 104 bits to store, which exceeds the maximum size of `Int`. This causes an error.
-
-#### With type annotation
-
-If you annotate the data type during variable declaration, the literal types will be converted into the **specified** data types.
-
-In the following example, we use type annotations to specify the data type of each variable. The literal types will be converted into the specified data types even though these types are not the default data types.
-
-::: code-group
-
-```mojo
-def main():
-    var a: UInt8 = 42  # IntLiteral `42` is converted to `UInt8`
-    var b: UInt32 = 0x1F2D  # IntLiteral `0x1F2D` is converted to `UInt32`
-    var c: Float16 = 3.14  # FloatLiteral `3.14` is converted to `Float16`
-    var d: Float32 = (
-        2.71828e-10  # FloatLiteral `2.71828e-10` is converted to `Float32`
-    )
-    var e: List[Float32] = [1, 2, 3]
-    # `ListLiteral[IntLiteral]` is converted to `List[Float32]`
-    var f: String = "Hello, World!"  # `StringLiteral` is converted to `String`
-```
-
-:::
-
-Notably, the variable `e` is annotated as a list of floating-point numbers; even though the literal is a list of integers, it will still be successfully converted to a list of `Float32` numbers. This is because a integer literal is **compatible** with a floating-point type.
-
-If your type annotation is **incompatible** with the type of the literal, things will be different: you will get an error message. For example, you try to assign a float literal to an `Int` variable:
-
-::: code-group
-
-```mojo
-# src/basic/types/incompatible_literal_type_and_annotation.mojo
-# This code will not compile
-def main():
-    var a: Int = 42.5
-    print(a)
-```
-
-:::
-
-Running the code will give you an error message like this:
-
-```console
-error: cannot implicitly convert 'FloatLiteral[42.5]' value to 'Int'
-    var a: Int = 42.5
-                 ^~~~
-```
-
-::: tip Incompatible type annotation in Python
-
-Note that the error above will not happen in Python. The type annotation in Python is just a **hint** for users and type checkers, but it does not affect the runtime behavior of the code. In other words, when there are conflicts between the type annotation and the literal type of the value, Python will take the literal type of the value and ignore the type annotation.
-
-If you want to ensure that the type annotation is compatible with the literal type, you can use a type checker like `mypy` to check your code before running it.
-
-:::
-
-#### With constructor
-
-The last scenario is when you use a **constructor** to create a variable. In this case, the literal types will be converted into the data types specified in the constructor.
-
-To call a constructor, we can simply use the name of the type followed by parentheses `()`, and then pass the literal into it. The above code can be re-written with constructors as follows:
-
-::: code-group
-
-```mojo
-def main():
-    var a = UInt8(42)  # IntLiteral `42` is converted to `UInt8`
-    var b = UInt32(0x1F2D)  # IntLiteral `0x1F2D` is converted to `UInt32`
-    var c = Float16(3.14)  # FloatLiteral `3.14` is converted to `Float16`
-    var d = Float32(
-        2.71828e-10  # FloatLiteral `2.71828e-10` is converted to `Float32`
-    )
-    var e = List[Float32](1, 2, 3)
-    # `ListLiteral[IntLiteral]` is converted to `List[Float32]`
-    var f = String("Hello, World!")  # `StringLiteral` is converted to `String`
-```
-
-:::
-
-In Mojo as well as in Python, a constructor is a special method of the corresponding type that initializes a new instance of the type, defined by the method `__init__()`. Calling a constructor by its type name is just a shortcut for calling the `__init__()` method of the type.
-
-For example, the built-in `Int` type has a `__init__()` method that takes a single argument `IntLiteral` and initializes a new instance of `Int`. See the following code from the standard library of Mojo:
-
-```mojo
-# mojo/stdlib/src/builtin/int.mojo
-# Mojo standard library
-struct Int:
-    ...
-
-    fn __init__(out self, value: IntLiteral):
-    """Construct Int from the given IntLiteral value.
-
-    Args:
-        value: The init value.
-    """
-    self = value.__int__()
-```
-
-This allows you to create a new instance of `Int` by passing using the syntax `Int(value)`, where `value` is an `IntLiteral`.
-
-You can also define such a `__init__()` method in **your own types** to allow users to create instances from any literal types.
-
-::: tip type coercion
-
-In the code above, `var a: Int = 42.5` will not compile successfully because the literal type `FloatLiteral` is not compatible with the type annotation `Int`. A deeper reason is that the `Int` type does not have a `__init__(out self, value: FloatLiteral)` method defined, so the compiler cannot convert the `FloatLiteral` into `Int` automatically.
-
-However, if you use a constructor to create a variable, such as `var a = Int(42.5)`, it will compile successfully.
-
-```mojo
-def main():
-    var a = Int(42.5)  # This will compile successfully
-    print(a)  # Output: 42
-```
-
-Why? This is because, when being passed into a function, the literal type `FloatLiteral` will be **coerced** (automatically converted) into the corresponding default type `Float64`. This means that the following steps will be performed:
-
-1. `42.5` is inferred as `FloatLiteral`.
-1. The `FloatLiteral` is coerced into `Float64` by the Mojo compiler.
-1. The `Float64` value is passed to the `Int.__init__()` method as an argument.
-1. There is a method `__init__[T: Intable](out self, value: T)` defined in the `Int` type. Since `Float64` conforms to the `Intable` [trait](../advanced/generic), the program will compile successfully.
-
-On the contrary, this type coercion will not happen when you use a type annotation during variable declaration. This is why you get an error message when you try to assign a `FloatLiteral` to an `Int` variable with type annotation.
 
 :::
 
@@ -880,3 +336,4 @@ On the contrary, this type coercion will not happen when you use a type annotati
 
 - 2025-06-21: Update to accommodate to the changes in Mojo v24.5.
 - 2025-06-22: Add a section about the literal types and type inference.
+- 2025-06-26: Move the sections of list and literals to standalone chapters.

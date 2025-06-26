@@ -27,7 +27,7 @@ export default defineConfig({
   vite: {
     css: {
       postcss: {
-        plugins: [tailwind(), autoprefixer()],
+        // plugins: [tailwind(), autoprefixer()],
       },
     },
     resolve: {
@@ -43,6 +43,10 @@ export default defineConfig({
           'ruby': 'vscode-icons:file-type-ruby',
           'rust': 'vscode-icons:file-type-rust',
           'perl': 'vscode-icons:file-type-perl',
+          'toml': 'vscode-icons:file-type-toml',
+          'yaml': 'vscode-icons:file-type-yaml',
+          'json': 'vscode-icons:file-type-json',
+          'md': 'vscode-icons:file-type-markdown',
         }
       })
     ]
@@ -113,7 +117,13 @@ export default defineConfig({
               text: 'Data types - basic', link: '/miji/basic/types',
             },
             {
+              text: 'Data types - composite', link: '/miji/basic/composite',
+            },
+            {
               text: 'Data type - string', link: '/miji/basic/string',
+            },
+            {
+              text: 'Literals and type inference', link: '/miji/basic/literal',
             },
             {
               text: 'Functions', link: '/miji/basic/functions',
@@ -149,12 +159,12 @@ export default defineConfig({
               link: '/miji/advanced/ownership'
             },
             {
-              text: 'References',
+              text: 'References and pointers',
               link: '/miji/advanced/references'
             },
             {
-              text: 'Lifetime',
-              link: '/miji/advanced/lifetime'
+              text: 'Lifetimes and origins',
+              link: '/miji/advanced/lifetimes'
             }
           ]
         },

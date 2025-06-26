@@ -1,6 +1,6 @@
 # Arbitrary-precision numbers
 
-As discussed in Chapter [What are different](../move/different.md) and Chapter [Data Types](../basic/types#integer), Mojo's built-in integer types are fixed-width integers, while Python's built-in `int` type is an arbitrary-precision integer. This means that you need to be careful when using Mojo's built-in integer types, as they can overflow and lead to unexpected results.
+As discussed in Chapter [What are different](../move/different.md) and Chapter [Data Types](../basic/types#integers), Mojo's built-in integer types are fixed-width integers, while Python's built-in `int` type is an arbitrary-precision integer. This means that you need to be careful when using Mojo's built-in integer types, as they can overflow and lead to unexpected results.
 
 Sometimes, you may still need to use arbitrary-precision integers or decimals in Mojo, especially for financial calculations or scientific computing where precision is crucial. During migrating my Python code to Mojo, I found that I need such numeric types, so I implemented them in the `decimojo` package. The `decimojo` package provides a comprehensive library for arbitrary-precision decimal and integer mathematics in Mojo.
 

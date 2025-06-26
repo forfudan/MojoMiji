@@ -1,4 +1,4 @@
-# Lifetime system
+# Lifetimes and origin
 
 > I do not fear death. I fear only you dying after me.  
 > -- Yuhao Zhu, *Gate of Heaven*
@@ -28,7 +28,7 @@ To start with, let's first discuss the start and the end of a lifetime.
 The lifetime of a variable is the period during which its value is valid and can be safely assessed (directly or indirectly). In Mojo, the lifetime of a variable starts when it is declared and initialized, and ends when it goes out of scope, is explicitly transferring out its ownership, or all its references (and itself) are lastly used. Let's illustrate the scenarios with an example. Consider the following code:
 
 ```mojo
-# src/advanced/lifetime/lifetime_scenarios.mojo
+# src/advanced/lifetimes/lifetime_scenarios.mojo
 def main():
     var a = List[Int](1, 2, 3)
     var x = String("I am a string.")
@@ -102,7 +102,7 @@ Note that, although `x` is last used in the fifth-to-last line, it is not destro
 We will use comments to denote the start and end of lifetime in the above code.
 
 ```mojo
-# src/advanced/lifetime/lifetime_scenarios_with_comments.mojo
+# src/advanced/lifetimes/lifetime_scenarios_with_comments.mojo
 def main():
     var a = List[Int](1, 2, 3)                     # Lifetime of `a` starts here
     var x = String("I am a string.")               # Lifetime of `x` starts here
@@ -143,7 +143,7 @@ This policy is both safe and efficient:
 
 :::
 
-## Tracking lifetime information
+## Tracking lifetimes of origins
 
 How does Mojo ensure, in the last example, that the lifetime of `x` is extended until all its references are lastly used? The answer is **to track the lifetime of the original owner in its references and safe pointers**.
 
@@ -186,7 +186,7 @@ I am owned by `a` at 0x16d43cc90
 I am owned by `a` at 0x16d43cc90
 ```
 
-Because `b`, `c`, and `d` are all references or safe pointers to `a`, they all contain the information on the lifetime of `a`. This means that Mojo compiler will extend the lifetime of `a` until all these references are lastly used.
+Because `b`, `c`, and `d` are all references or safe pointers to `a`, they all contain the information on the original owner `a`. This means that Mojo compiler will extend the lifetime of `a` until all these references are lastly used.
 
 In the VS Code editor, you can hover over the variables to see their lifetime information:
 
@@ -201,31 +201,49 @@ Here, the `[a]` in `ref [a] String` means that the values of `b` and `c` are ori
 
 `Pointer[String, a]` means that the pointer instance `d` carries the information on the origin as a **parameter**.
 
-::: tip `Origin` and `__origin_of()`
+## `Origin` and `__origin_of()`
 
-In the previous example, the pointer `d` is of the type `Pointer[String, a]`. The `String` is the type of the value it points to, and `a` is the origin of the value.
+In the previous example, the pointer `d` is of the type `Pointer[String, a]`. We can see there are two items in the square brackets: `String` and `a`.
+
+- `String` is the type of the value it points to.
+- `a` is the name of the original owner of the value, which is where the value originates from.
 
 If you investigate how the `Pointer` type is defined in Mojo's standard library, you will find that it is defined as follows:
 
 ```mojo
+# Mojo standard library
+# https://github.com/modular/modular/blob/main/mojo/stdlib/stdlib/memory/pointer.mojo
+
 struct Pointer[
     mut: Bool, //,
     type: AnyType,
     origin: Origin[mut],
     address_space: AddressSpace = AddressSpace.GENERIC,
 ](ExplicitlyCopyable, Stringable, Copyable, Movable):
+    ...
 ```
 
-Thus, the `a` in `Pointer[String, a]` corresponds to the `origin` parameter of the `Pointer` type. This `origin` parameter is of the type `Origin[mut]`, which is a special type that carries the information on the origin reference including the mutability of the value.
+Matched by the position of the parameters, we can see that `a` in `Pointer[String, a]` corresponds to the parameter `origin`.
 
-This parameter can be inferred by the compiler when you create a pointer, or you can explicitly specify it when you create a pointer. You can also use the `__origin_of()` function to get the origin reference of a variable pass this value to the function. For example, the following two lines are equivalent:
+What is this `origin` parameter, which is of the type `Origin[mut]`?
+
+Well, it is a special primitive type that carries the information on two things:
+
+1. The owner of the value, in other words, the ultimate object where the value originates from.
+1. The mutability of the value.
+
+The `origin` parameter can be automatically **inferred** by the compiler when you create a pointer. You can also explicitly **specify** it when you create a pointer. In other words, you can define the origin of a pointer a specific owner.
+
+To do this, you need to use the `__origin_of()` function. This function takes the owner variable(s) as arguments and returns an `Origin` object that contains the information on the original owner(s) of the value. Then, you can pass this `Origin` object to the constructor of the `Pointer` type. See the following examples:
 
 ```mojo
 var d = Pointer(to=c)
-var e = Pointer[type=String, origin=__origin_of(a)](to=a)
-```
+# The compiler will automatically infer the origin of `d` as `a`
 
-:::
+var e = Pointer[type=String, origin=__origin_of(a)](to=a)
+# You manually specify that the origin of the variable `e` is the variable `a`
+# by using the `__origin_of()` function
+```
 
 ## Manual lifetime management
 
@@ -234,7 +252,7 @@ Mojo will automatically track the lifetime of variables and their references, as
 Let's illustrate this with an example: The user is asked to input two integers, then the program will create a pointer that points to the smaller of the two integers (the if-statement), finally, the program will print the values of the two integers and the smaller one. The code is as follows:
 
 ```mojo
-# src/advanced/lifetime/combined_lifetime_wrong.mojo
+# src/advanced/lifetimes/combined_lifetime_wrong.mojo
 # This code will not compile
 def main():
     var a: Int = Int(input("Type the first integer `a`: "))
@@ -293,7 +311,7 @@ The answer is to **prepare for both cases beforehand**. We can put the informati
 To do this, we can use the `__origin_of()` function. This function returns an object (of `Origin` type) that records the original owner(s). Then you can pass this object to the constructor of the `Pointer` type. Let's rewrite the code as follows:
 
 ```mojo
-# src/advanced/lifetime/combined_lifetime.mojo
+# src/advanced/lifetimes/combined_lifetime.mojo
 def main():
     var a: Int = Int(input("Type the first integer `a`: "))
     var b: Int = Int(input("Type the second integer `b`: "))
@@ -344,7 +362,7 @@ In the previous example, we create a pointer `c` in the local scope of the `main
 In the following example, we want to create a function `shorter()` that takes two strings (words) as input, and returns a pointer to the shorter one. We then call this function in the `main()` function. The code is as follows.
 
 ```mojo
-# src/advanced/lifetime/lifetime_function_pointer.mojo
+# src/advanced/lifetimes/lifetime_function_pointer.mojo
 def shorter(
     word1: String, word2: String
 ) -> Pointer[String, __origin_of(word1, word2)]:
@@ -523,7 +541,7 @@ The design philosophy of Mojo and Rust lifetime systems is different. Different 
 In the previous example, we used `Pointer` type to return the pointer to the shorter string. However, we can also use `ref` type to achieve the same goal. The code will look like this:
 
 ```mojo
-# src/advanced/lifetime/lifetime_function_ref.mojo
+# src/advanced/lifetimes/lifetime_function_ref.mojo
 def shorter(a: String, b: String) -> ref [a, b] String:
     if len(a) < len(b):
         return a

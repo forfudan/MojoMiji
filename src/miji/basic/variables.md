@@ -212,9 +212,11 @@ error: invalid redefinition of 'a'
     ^
 ```
 
-:::info variable shadowing
+::::::info Variable shadowing
 
-Though not possible in Mojo, redefining a variable with the same name (even with a different type) is allowed in some other languages. This is called **variable shadowing**. For example, in Rust and Python, the following code is legal:
+Though not possible in Mojo, redefining a variable with the same name (even with a different type) is allowed in some other languages. This is called **variable shadowing** (or "redefinition"). For example, in Rust and Python, the following code is legal:
+
+::: code-group
 
 ```rust
 fn main() {
@@ -230,9 +232,11 @@ def main():
 main()
 ```
 
+:::
+
 But in Mojo, it is not allowed. I find this a good design choice, as it helps to avoid confusion and potential bugs caused by variable shadowing. If you want to change the type of a variable, please instead use a different name for the new variable.
 
-:::
+::::::
 
 ### Skip definition with `var`
 
@@ -306,7 +310,7 @@ fn main():
 
 :::
 
-In an exercise in Section [Integer](../basic/types#integer) of Chapter [Types](../basic/types), we will see that absence of type annotations can sometimes lead to unintended behaviors.
+In an exercise in Section [Integer](../basic/types#integers) of Chapter [Types](../basic/types), we will see that absence of type annotations can sometimes lead to unintended behaviors.
 
 ::: tip Inlay hints
 
@@ -667,7 +671,7 @@ def main():
         print(a)  # Access the variable `a` in the child scope is valid
 ```
 
-The scope of a variable is also called its **lifetime**, which is a very important concept in Mojo. We will discuss it in detail in Chapter[Lifetime system](../advanced/lifetime) of this Miji, which is about advanced features of Mojo.
+The scope of a variable is also called its **lifetime**, which is a very important concept in Mojo. We will discuss it in detail in Chapter[Lifetime system](../advanced/lifetimes) of this Miji, which is about advanced features of Mojo.
 
 ## Re-declaring variables in nested scopes
 

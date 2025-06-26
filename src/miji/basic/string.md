@@ -2,7 +2,6 @@
 # Data type - String
 
 > There are a thousand string types in a thousand people's eyes.  
-> All characters are equal, but some are more equal than others.  
 > -- Yuhao Zhu, *Gate of Heaven*
 
 String is one of the most important concepts in programming languages, but also one of the most controversial ones. On the one hand, the "string" is able to store or represent the texts of almost all human languages. On the other hand, it is also a source of confusion and frustration for many programmers, especially when it comes to how to encode, decode, and manipulate strings. In a thousand people's eyes, there are a thousand different ways to implement a string type as well as its functionalities. Thus, some people even think that the string type should not be a built-in type in programming languages, but rather be in third-party libraries that can be implemented in different ways.
@@ -54,7 +53,7 @@ In Mojo, you can create a `String` instance in two ways:
 
 The methods are similar to Python. Let's take a look at the following examples:
 
-<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
+::: code-group
 
 ```mojo
 def main():
@@ -63,8 +62,6 @@ def main():
     print(s1)
     print(s2)
 ```
-
-</td><td>
 
 ```python
 def main():
@@ -75,7 +72,7 @@ def main():
 main()
 ```
 
-</td></tr></table>
+:::
 
 If we run the above code, we will get the following output for both Mojo and Python:
 
@@ -187,6 +184,8 @@ However, the following features are not supported in Mojo:
 
 For example, the following code will not work in Mojo:
 
+::: code-group
+
 ```mojo
 # src/basic/string/f_string.mojo
 # This code will not compile
@@ -197,9 +196,19 @@ print(a)  # Not working in Mojo
 print(b)  # Not working in Mojo
 ```
 
+:::
+
+This code will generate the following error:
+
+```console
+error: invalid call to 'format': unknown keyword arguments: 'day', 'month', 'year'
+    var a = String("Today is {day} {month} {year}").format(
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+```
+
 ::: tip Formatting in Python
 
-The above code will work in Python.
+Note that the above code will work in Python.
 
 ```python
 def main():
@@ -225,7 +234,7 @@ In Mojo, you can iterate over the valid characters (code points) of a `String` u
 
 The following examples compares the iteration of strings in Mojo and Python:
 
-<table><tr><th>Mojo</th><th>Python</th></tr><tr><td>
+::: code-group
 
 ```mojo
 def main():
@@ -234,17 +243,15 @@ def main():
         print(String(char), end="")
 ```
 
-</td><td>
-
 ```python
 def main():
-    my_string: str = "Hello, world! 你好，世界！"
+    my_string = str("Hello, world! 你好，世界！")
     for char in my_string:
         print(char, end="")
 main()
 ```
 
-</td></tr></table>
+:::
 
 Let me explain the Mojo code in detail:
 
@@ -401,6 +408,8 @@ So, you can see that there are multiple layers of representation for a `String` 
 
 We can examine its exact `UInt8` sequence in the memory with the following code:
 
+::: code-group
+
 ```mojo
 # src/basic/string/string_internal_representation.mojo
 fn main():
@@ -414,6 +423,8 @@ fn main():
         print(idx, "    | ", byte_bin, " | ", byte_dec, "   | ", byte_hex)
         idx += 1
 ```
+
+:::
 
 If we run the above code, we will get the following output:
 

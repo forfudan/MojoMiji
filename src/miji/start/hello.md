@@ -18,18 +18,26 @@ my-first-mojo-project
 
 We open the `hello.mojo` file and type the following code:
 
+::: code-group
+
 ```mojo
 def main():
     print("Hello, world!")
 ```
 
+:::
+
 You may be surprised (or even a little bit disappointed) to see that the code is 100% identical to Python code. But yes, it is just the design philosophy of Mojo. It is designed to similar to Python, so that a Python user, like you, can learn it easily.
 
 Now, let's run this code. You can type the following command in your terminal:
 
+::: code-group
+
 ```bash
 pixi run mojo src/start/hello.mojo
 ```
+
+:::
 
 And you will see the output:
 
@@ -101,11 +109,15 @@ You can copy this "hello" file to another computer (same OS) and run it without 
 
 Now you have successfully run your first Mojo program. I believe that you cannot wait to write another mojo script. For example, something like this:
 
+::: code-group
+
 ```mojo
 def main():
     a = 1
     b = 2.0
     print(a + b)
 ```
+
+:::
 
 Then, let's go to the next Part of the Miji, where we try two find out a quick path for you to migrate from the Pythonic world to the Magician world.

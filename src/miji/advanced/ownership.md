@@ -699,7 +699,7 @@ Compared to Rust, Mojo is more aggressive in destroying variables. Rust variable
 
 You may then wonder, in the previous example, why the pointer `ptr` is still valid after the last use of `a`, i.e., `var b = a`?
 
-This is because the Mojo compiler will also check whether there are any safe pointers or references to the value of `a`, if so, the `a` is still regarded as **in use** and will not be destroyed immediately. In other words, **the lifetime of a variable is extended if there are still safe pointers or references to the value it owns**, unless you explicitly make it invalid by using the `^` operator. We will discuss this in more detail in Chapter [Lifetime](../advanced/lifetime).
+This is because the Mojo compiler will also check whether there are any safe pointers or references to the value of `a`, if so, the `a` is still regarded as **in use** and will not be destroyed immediately. In other words, **the lifetime of a variable is extended if there are still safe pointers or references to the value it owns**, unless you explicitly make it invalid by using the `^` operator. We will discuss this in more detail in Chapter [Lifetime](../advanced/lifetimes).
 
 Nevertheless, it is only valid for safe pointers. The immediate destruction rule may bring troubles if you are using unsafe code: for example, `B` is an unsafe pointer to data in the structure `A`, but the Mojo compiler cannot infer this. `A` is destroyed immediately after its last use, resulting in `B` being a dangling pointer pointing to already freed memory.
 
@@ -737,7 +737,7 @@ The answer is that the Mojo's design ensures that:
 
 The information above will form a chained graph of ownership and lifetime, which is used by the Mojo compiler to check the ownership rules and ensure memory safety.
 
-We will discuss more about how these features are implemented in the following chapters [Reference system](../advanced/references) and [Lifetime system](../advanced/lifetime).
+We will discuss more about how these features are implemented in the following chapters [Reference system](../advanced/references) and [Lifetime system](../advanced/lifetimes).
 
 ## A metaphor for ownership
 

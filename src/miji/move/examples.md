@@ -63,6 +63,34 @@ For now, to fix the error, we have to explicitly convert the string literal to a
 
 Now you run the code again. You will see the same output as in Python.
 
+For your comparison, I put the complete Mojo code as well as the Python code below:
+
+::: code-group
+
+```mojo
+# src/move/multiplication_table.mojo
+def main():
+    print("Nine-nine Multiplication Table")
+    for i in range(1, 10):
+        for j in range(i, 10):
+            print(String("{} * {} = {}").format(i, j, i * j), end="\t")
+        print()
+```
+
+```python
+# src/move/multiplication_table.py
+def main():
+    print("Nine-nine Multiplication Table")
+    for i in range(1, 10):
+        for j in range(i, 10):
+            print("{} * {} = {}".format(i, j, i*j), end="\t")
+        print()
+
+main()
+```
+
+:::
+
 Great! We see that we can migrate our Python code to Mojo easily with very little modification. But we enjoy the performance of Mojo. How big is the performance gain? Let's check it out using the next example.
 
 ::: tip Difference between Python and Mojo
@@ -115,7 +143,9 @@ Let's migrate the code to Mojo and see how fast it is.
 
 Just like what we did in the previous example, we copy the above Python file and change the file extension to `.mojo`. Then we remove the last line `main()`.
 
-Now you will see that your IDE is complaining about the first line of the code. It highlights the type hints `int` and tells you `use of unknown declaration 'int'`. Running the code will also give your the same error. This is because Mojo's built-in integral type is called `Int` (with capital "I") which is different from Python. So we need to change the type hints from `int` to `Int`.
+Now you will see that your IDE is complaining about the first line of the code. It highlights the type hints `int` and tells you `use of unknown declaration 'int'`. Running the code will also give your the same error. This is because Mojo's built-in integral type is called `Int` (with capital "I") which is different from Python. So we need to change the type hints from `int` to `Int`. The modified code is as follows:
+
+::: code-group
 
 ```mojo
 # src/move/fibonacci.mojo
@@ -128,6 +158,22 @@ def main():
     for i in range(40):
         print(fib(i), end=", ")
 ```
+
+```python
+# src/move/fibonacci.py
+def fib(n: int) -> int:
+    if n <= 1:
+        return n
+    return fib(n - 1) + fib(n - 2)
+
+def main():
+    for i in range(40):
+        print(fib(i), end=", ")
+
+main()
+```
+
+:::
 
 Let's run the code again with `pixi run mojo src/move/fibonacci.mojo`. On my machine, it takes around ***0.35*** seconds only.
 
@@ -157,13 +203,15 @@ There are some other reasons why Mojo is much faster. In this example. One reaso
 
 :::
 
-::: info Speed comparison with C and Rust
+:::::: info Speed comparison with C and Rust
 
 Now you know that Mojo is much faster than Python. You may wonder how the performance of Mojo is compared to C and Rust. So I also implement the same code in C and Rust.
 
 To give some stress to these languages, I increase the number of Fibonacci numbers to ***50*** (Do not do this in Python unless you want to take a long shower 😉).
 
-The C code is as follows:
+The C, Rust, Mojo, and Python codes are as follows:
+
+::: code-group
 
 ```c
 #include <stdint.h>
@@ -183,8 +231,6 @@ int main() {
 }
 ```
 
-The Rust code is as follows:
-
 ```rust
 fn fib (n: i64) -> i64 {
     if n <= 1 {
@@ -200,8 +246,6 @@ fn main() {
 }
 ```
 
-The Mojo code is as follows:
-
 ```mojo
 def fib(n: Int) -> Int:
     if n <= 1:
@@ -212,6 +256,21 @@ def main():
     for i in range(50):
         print(fib(i), end=", ")
 ```
+
+```python
+def fib(n: int) -> int:
+    if n <= 1:
+        return n
+    return fib(n - 1) + fib(n - 2)
+
+def main():
+    for i in range(50):
+        print(fib(i), end=", ")
+
+main()
+```
+
+:::
 
 Let's compile the scripts into executables and run them. Here are the results:
 
@@ -230,7 +289,7 @@ The time taken to run the code is as follows:
 
 To be frank, I am also surprised by the performance of Mojo in this case. Maybe it is not always faster, but at least a good sign.
 
-:::
+::::::
 
 ## Case 3: Sort numbers
 
@@ -324,8 +383,9 @@ error: invalid call to 'print': could not deduce parameter 'Ts' of callee 'print
 
 Oops! This seems quite annoying! We cannot use the `print()` function to print lists in Mojo, at least not possible at the moment (v25.3). Maybe in future we can do that. For now, we have to work around a little bit. Let's define a helper function to print the list. After all changes, we have our final Mojo code as follows:
 
+::: code-group
+
 ```mojo
-# src/move/sort.mojo
 def bubble_sort(mut array: List[Float64]):
     n = len(array)
     for i in range(n):
@@ -349,6 +409,35 @@ def main():
     print("After sorting:", end=" ")
     print_list(array)
 ```
+
+```python
+def bubble_sort(array: list[float]):
+    n = len(array)
+    for i in range(n):
+        for j in range(0, n-1-i):
+            if array[j] > array[j+1]:
+                array[j], array[j+1] = array[j+1], array[j]
+
+def print_list(array: list[float]):
+    print("[", end="")
+    for i in range(len(array)):
+        if i < len(array) - 1:
+            print(array[i], end=", ")
+        else:
+            print(array[i], end="]\n")
+
+def main():
+    array = [64.1, 34.523, 25.1, -12.3, 22.0, -11.5, 90.49]
+    print("Input array:", end=" ")
+    print_list(array)
+    bubble_sort(array)
+    print("After sorting:", end=" ")
+    print_list(array)
+
+main()
+```
+
+:::
 
 Running the code with `magic run mojo src/sort.mojo` will give you the same output as in Python:
 
@@ -736,6 +825,8 @@ except e:
 
 After all these changes, we have our final Mojo code as follows:
 
+::: code-group
+
 ```mojo
 # src/move/triangle.mojo
 struct Triangle(StringableRaising):
@@ -815,6 +906,89 @@ def main():
     except e:
         print("Error:", e)
 ```
+
+```python
+# src/move/triangle.py
+class Triangle:
+    """A class to represent a triangle."""
+
+    # Declare attributes
+    a: float
+    b: float
+    c: float
+
+    def __init__(self, a: float, b: float, c: float):
+        """Initializes a triangle with three sides.
+
+        Parameters:
+            a (float): Length of side a.
+            b (float): Length of side b.
+            c (float): Length of side c.
+
+        Raises:
+            ValueError: If the lengths do not form a valid triangle.
+        """
+        self.a = a
+        self.b = b
+        self.c = c
+
+        if (
+            (self.a + self.b <= self.c)
+            or (self.a + self.c <= self.b)
+            or (self.b + self.c <= self.a)
+        ):
+            raise ValueError("The lengths of sides do not form a valid triangle.")
+
+    def area(self) -> float:
+        """Calculates the area of the triangle using Heron's formula.
+
+        Returns:
+            float: The area of the triangle.
+        """
+        s = (self.a + self.b + self.c) / 2
+        return (s * (s - self.a) * (s - self.b) * (s - self.c)) ** 0.5
+
+    def perimeter(self) -> float:
+        """Calculates the perimeter of the triangle.
+
+        Returns:
+            float: The perimeter of the triangle.
+        """
+        return self.a + self.b + self.c
+
+    def __str__(self) -> str:
+        """Returns a string representation of the triangle.
+
+        Returns:
+            A string representation of the triangle.
+
+        Notes:
+            You can use the `str()` or `print()` to call this method.
+        """
+        return f"Triangle(a={self.a}, b={self.b}, c={self.c})"
+
+
+def main():
+    # A valid triangle with sides 3, 4, and 5
+    print("Creating a valid triangle with sides 3, 4, and 5:")
+    triangle = Triangle(3, 4, 5)
+    print(triangle)
+    print(f"Area: {triangle.area()}")
+    print(f"Perimeter: {triangle.perimeter()}")
+
+    # An invalid triangle with sides 1, 2, and 3
+    print("\nCreating an invalid triangle with sides 1, 2, and 3:")
+    try:
+        invalid_triangle = Triangle(1, 2, 3)
+        print(invalid_triangle)
+    except ValueError as e:
+        print(f"Error: {e}")
+
+
+main()
+```
+
+:::
 
 Compiling and running the code with `magic run mojo src/move/triangle.mojo` generates no error messages and gives the expected output:
 
