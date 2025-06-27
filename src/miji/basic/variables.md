@@ -289,7 +289,7 @@ The syntax for type annotations in Mojo is `var name: Type`, where the type alwa
 
 ### Type inference
 
-As mentioned above, Mojo compiler is smart enough to **infer** the type of variable based on the literals, expressions, and the returns of functions. Thus, you do not need to always provide type annotations when you create a variable. We will discuss this in detail in Chapter [Data types](../basic/types).
+As mentioned above, Mojo compiler is smart enough to **infer** the type of variable based on the literals, expressions, and the returns of functions. Thus, you do not need to always provide type annotations when you create a variable. We will discuss this in detail in Chapter [Literals and type inference](../basic/literal.md).
 
 Nevertheless, it is still recommended that you provide type annotations as much as you can for clarity and to avoid ambiguity, especially when you are not sure about the default types of literals or expressions.
 

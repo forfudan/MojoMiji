@@ -77,17 +77,25 @@ As a "archaeologist", I always like to track the history of the changes in the l
 | v25.2      | `borrowed` deprecated         | `inout` deprecated                       |                            |                    |                  |
 | v25.4      |                               |                                          | `ref` introduced           |                    |                  |
 
-We will discuss each keyword of conventions in the following sections.
+We will discuss each keyword of conventions in the following sub-sections.
 
-## Mutable reference in local scope:  `ref`
+### Reference in local scope:  `ref`
 
-The keyword `ref` allows you to create a **mutable shared reference** of a value in the **local scope**. At the same time, a mutable [**referenced status**](../advanced/ownership.md#four-statuses-of-ownership) is created. At the same time, a mutable [**referenced status**](../advanced/ownership.md#four-statuses-of-ownership) is created.
+The keyword `ref` allows you to create a **shared reference** of a value in the **local scope**. The mutability of the reference is determined by the **mutatbility of the origin** of the value. After the declaration, a [**referenced status**](../advanced/ownership.md#four-statuses-of-ownership) is created.
+
+A general syntax of the `ref` keyword is as follows:
+
+```mojo
+var ref <name> = <variable>
+ref <name> = <variable>  # shorthand syntax
+```
 
 If we apply our [conceptual model of variables](../basic/variables.md#conceptual-model-of-variable), the following things will happen when you use `var ref y = x` (or equivalently `ref y = x`):
 
 1. The variable `y` will get the same address as the variable `x`, so it can access the value at that address.
-1. The variable `y` is marked as "mutable", meaning that you can change the value at the **address** of the argument `x`.
+1. The variable `y` is marked as "mutable" or "immutable", depending on whether `x` is mutable or not.
 1. If you change the value of `y`, the value of `x` will also be modified, since they share the same address in the memory.
+1. The variable `x` will not be destroyed as long as `y` is still in use.
 
 Let's look at the following example to see how the `ref` keyword works in the local scope:
 
@@ -150,14 +158,17 @@ You can make the code correct if you change `var c = b^` to `var c = a^`, since 
 
 If you hover your mouse over the `b` in the line `var ref b = a`, you will see that the type of `b` is `(variable) var b: ref [a] String`. On contrary, if you hover your mouse over `a`, you will see that the type of `a` is `(variable) var a: String`.
 
-This means that `b` is reference to `a` of the type `String`. The square brackets `[a]` in the type of `b` is the very same syntax for [**parameterization**](../advanced/parameterization). It stores the **lifetime information** of `a` as a parameter of `b`.
+There are two more components in the type of `b`:
 
-In this way, the lifetime of `b` is tied to the lifetime of `a`. Mojo will ensure that:
+1. A keyword `ref`: This means that `b` is reference to `a` of the type `String`.
+1. A contation `[a]`: The square backets are used to stand for [**parameterization**](../advanced/parameterization). `[a]` means that the origin of the value of `b`, which is the variable `a`, is stored as a parameter of `b`.
 
-- `a` is alive as long as `b` is still in use.
-- `b` will not be used after `a` is destroyed.
+These two pieces of information are important. They ensure that the reference `b` is tied to the lifetime of `a`, and this information will be used by the Mojo compiler to check the ownership rules, which are:
 
-This is the "[Lifetime of the owner is longer than reference](../advanced/ownership#lifetime-of-owner-longer-than-reference)" rule of the ownership. We have already discussed this rule in the chapter [Ownership](../advanced/ownership#rules-of-ownership).
+- `a` should be kept alive as long as `b` is still in use.
+- After `a` and `b` are used for the last time, `a` and `b` can be destroyed.
+
+This is the so-called "[Lifetime of the owner is longer than reference](../advanced/ownership#lifetime-of-owner-longer-than-reference)" rule of the ownership that is already discussed in the chapter [Ownership](../advanced/ownership#rules-of-ownership).
 
 :::
 
@@ -173,7 +184,7 @@ The main difference is that you have to de-reference the `Pointer` to access the
 
 :::
 
-## Immutable reference in sub-scope: `read`
+### Immutable reference in sub-scope: `read`
 
 `read` is the keyword used to define an **immutable shared reference** of a value in the **sub-function scope**. In other words, It creates a read-only reference of the value passed into the function. At the same time, an immutable [**referenced status**](../advanced/ownership.md#four-statuses-of-ownership) is created.
 
@@ -201,7 +212,7 @@ def main():
     print(y)
 ```
 
-## Mutable reference in sub-scope: `mut`
+### Mutable reference in sub-scope: `mut`
 
 The keyword `mut` allows you to pass a **mutable shared reference** of a value in the **sub-function scope**. In other words, it creates a mutable reference of the value passed into the function. At the same time, a mutable [**referenced status**](../advanced/ownership.md#four-statuses-of-ownership) is created.
 
@@ -320,7 +331,7 @@ Address │16b6a8fae│16b6a8faf│16b6a8fb0│16b6a8fb1│16b6a8fb2│16b6a8fb3
                           variable `x` (Int8)
 ```
 
-## Owned value in sub-scope: `owned`
+### Copied value in sub-scope: `owned`
 
 The keyword `owned` allows you to pass a **copy** of the value into the function. Not that it is a copy, not a reference. Therefore, an [**isolated status**](../advanced/ownership.md#four-statuses-of-ownership) is created.
 
@@ -461,6 +472,94 @@ I am owned by `a` at 0x16d43cc90
 ```
 
 In this example, we create a variable `a` with the value `I am owned by a`, and then create a mutable reference (alias) `b` of `a` using the `ref` keyword. Then we create another mutable reference (alias) `c` of `b`. As a result, `b` and `c` are both aliases of `a`, which means that they share the same address in the memory (`0x16d43cc90`). The value of `a`, `b`, and `c` are all the same.
+
+The chained references can also happen in function calls, where an argument of a function is passed into another function. The references will continue as the function calls continue.
+
+## Mutability of chained references
+
+The mutability of the chained references (or pointers) is determined by the mutability of the origin of the value. Two rules are applied:
+
+1. If a value is immutable, then all the references that are originated from it are also immutable.
+1. If a value is mutable, then all the references that are originated from it can either be mutable or immutable, depending on which keyword you use to define the reference.
+
+To summarize: **A mutable status can be changed in to a immutable status in the chained references, but not the other way around**. Once the mutability is changed from mutable to immutable, all the references that are originated from it will also become immutable.
+
+Let's summarize in the below table, when we use different conventional keywords, the mutability of the reference given the mutability of the origin.
+
+| Keyword | Origin is *mutable*              | Origin is *immutable* |
+| ------- | -------------------------------- | --------------------- |
+| `read`  | immutable reference (`muttoimm`) | immutable reference   |
+| `mut`   | mutable reference                | **Not allowed**       |
+| `owned` | owned value (mutable)            | owned value (mutable) |
+
+For example, the following code illustrates such a chained references with different mutability:  
+owner `a` -> mutable reference `b` -> immutable reference `c` -> immutable reference `d`.
+
+```mojo
+def main():
+    var a = 10
+    print("Before function call (mutable):", a)
+    first_reference(a)
+
+def first_reference(mut b: Int):
+    b = 20
+    print("First reference made with `mut`:", b)
+    second_reference(b)
+
+def second_reference(read c: Int):
+    print("Second reference made with `read`:", c)
+    third_reference(c)
+
+def third_reference(read d: Int):
+    print("Third reference made with `read`:", d)
+```
+
+The code will compile and run successfully, producing the following output:
+
+```console
+Before function call (mutable): 10
+First reference made with `mut`: 20
+Second reference made with `read`: 20
+Third reference made with `read`: 20
+```
+
+---
+
+The following code illustrates another scenario where the chained references will not work:  
+owner `a` -> mutable reference `b` -> immutable reference `c` -> ~~mutable reference `d`~~.
+
+Note that the last reference `d` is not allowed: since `c` is an immutable reference, it cannot be changed to a mutable reference by using the `mut` keyword. This will result in a compilation error.
+
+```mojo
+# The code will not compile
+def first_reference(mut b: Int):
+    b = 20
+    print("First reference made with `mut`:", b)
+    second_reference(b)
+
+
+def second_reference(read c: Int):
+    print("Second reference made with `read`:", c)
+    third_reference(c)
+
+
+def third_reference(mut d: Int):
+    print("Third reference made with `mut`:", d)
+
+
+def main():
+    var a = 10
+    print("Before function call (mutable):", a)
+    first_reference(a)
+```
+
+The code will not compile, producing the following error:
+
+```console
+error: invalid call to 'third_reference': argument #0 must be mutable in order to pass to a mutating argument
+    third_reference(c)
+    ~~~~~~~~~~~~~~~^~~
+```
 
 ## Major changes in this chapter
 
