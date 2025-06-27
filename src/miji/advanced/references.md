@@ -57,11 +57,11 @@ Auto-dereferencing is convenient, but it also increase the complexity of the syn
 
 :::
 
-## Keywords of conventions
+## Conventions of references
 
-Currently, there are three keywords that are related to references in Mojo: `read`, `mut`, and `owned`. Moreover, a `out` keyword is also used to define a named result of a function. In v25.5, there will be a new keyword `ref` to create an reference (alias) in the local scope.
+In Mojo, the keywords `read`, `mut`, and `owned`, are the main keywords defining the conventions of arguments. The keyword `out` is used to define a named result of a function. The keyword `ref` to create an reference in the local scope or to return a reference from a function.
 
-The keywords `read`, `mut`, and `owned`, were not always the ones used to define the ownership and mutability of function arguments (*aka* argument conventions). In the early days of Mojo, there were other keywords. The current keywords system is discussed in the following discussion thread on GitHub:
+In the early days of Mojo, there used to be other keywords. As time went by, the keywords were deprecated or replaced by the current ones. You can find the discussion about why these new names were selected in the following thread on GitHub:
 
 - [[Proposal] New ref convention for returning references #2874](https://github.com/modular/modular/discussions/2874)
 
@@ -81,7 +81,7 @@ We will discuss each keyword of conventions in the following sub-sections.
 
 ### Reference in local scope:  `ref`
 
-The keyword `ref` allows you to create a **shared reference** of a value in the **local scope**. The mutability of the reference is determined by the **mutatbility of the origin** of the value. After the declaration, a [**referenced status**](../advanced/ownership.md#four-statuses-of-ownership) is created.
+The keyword `ref` allows you to create a **shared reference** of a value in the **local scope**. The mutability of the reference is determined by the **mutability of the origin** of the value. After the declaration, a [**referenced status**](../advanced/ownership.md#four-statuses-of-ownership) is created.
 
 A general syntax of the `ref` keyword is as follows:
 
@@ -448,34 +448,248 @@ Address │16bb384f5│16bb384f6│16bb384f7│16bb384f8│   ...   │16bb38509
                           variable `x` (Int8)
 ```
 
+### Reference as returned value: `ref`
+
+The `ref` keyword can also be used to **return a reference** of a value from a function. This is useful when you do not want to copy the value, nor do you want to create a pointer to the value. The general syntax of the `ref` keyword in the return type is as follows:
+
+```mojo
+def function_name(arg: TypeOfArg, ...) -> ref [arg] TypeOfReturn:
+def function_name(arg: TypeOfArg, ...) -> ref [__origin_of(...)] TypeOfReturn:
+```
+
+Before we explain what the syntax means, let's first look at an example where we define a function to return the first element of a list. Then we modify this value in the main function and see how it affects the original list. There are three approaches to achieve this: (1) return a copy of the value, (2) return a pointer to the value, and (3) return a reference to the value.
+
+The first piece of code illustrates how to return the first element of a list as a copy:
+
+::: code-group
+
+```mojo
+# src/advanced/references/return_as_copy.mojo
+def return_first_element_as_copy(mut a: List[String]) -> String:
+    if len(a) == 0:
+        raise Error("List is empty.")
+    else:
+        return a[0]
+
+
+def main():
+    var lst = List[String]("Mojo", "is", "interesting")
+    print("The 1st item of the list is '", lst[0], "'", sep="")
+    var val = return_first_element_as_copy(lst)
+    val = String("Miji")
+    print("The 1st item of the list is now '", lst[0], "'", sep="")
+```
+
+:::
+
+Executing the code will produce the following output:
+
+```console
+The 1st item of the list is 'Mojo'
+The 1st item of the list is 'Mojo' now
+```
+
+This is because the function `return_first_element_as_copy()` returns a copy of the first element of the list. An additional memory space is allocated for the returned value, *i.e.*, an **isolated status** is created. If you change the value of `val`, it does not affect the original list.
+
+---
+
+The second piece of code illustrates how to return a safe pointer to the first element of a list:
+
+::: code-group
+
+```mojo
+# src/advanced/references/return_as_pointer.mojo
+def return_first_element_as_pointer(
+    mut a: List[String],
+) -> Pointer[String, __origin_of(a)]:
+    if len(a) == 0:
+        raise Error("List is empty.")
+    else:
+        return Pointer(to=a[0])
+
+
+def main():
+    var lst = List[String]("Mojo", "is", "interesting")
+    print("The 1st item of the list is '", lst[0], "'", sep="")
+    var ptr = return_first_element_as_pointer(lst)
+    ptr[] = String("Miji")
+    print("The 1st item of the list is '", lst[0], "' now", sep="")
+```
+
+:::
+
+Executing the code will produce the following output:
+
+```console
+The 1st item of the list is 'Mojo'
+The 1st item of the list is 'Miji' now
+```
+
+This is because the function `return_first_element_as_pointer()` returns a **safe pointer** to the first element of the list (`mut` is to indicate that the `str` argument is mutable, so as the returned pointer), *i.e.*, a **pointed status** is created. If you change the value of `ptr[]` in the main function, it will modify the original list, since `ptr` is a pointer to the address of the first element of the list. The value of `lst[0]` is changed to `Miji`.
+
+---
+
+These two approaches are sometimes not ideal:
+
+1. If you return a copy of the value, you will allocate an additional memory space for the returned value. Moreover, you cannot use it to modify the original value.
+1. If you return a pointer to the value, you also need to allocate an additional memory space for the pointer itself (32-bit or 64-bit based on your system), and you need to dereference the pointer to access the value. This can be cumbersome.
+
+Thus, we can try to use the third approach, which is to return a **mutable reference** of the value. This allows you to modify the original value without allocating additional memory space for the pointer. The code is as follows:
+
+::: code-group
+
+```mojo
+# src/advanced/references/return_as_reference.mojo
+def return_first_element_as_reference(
+    mut a: List[String],
+) -> ref [a] String:
+    if len(a) == 0:
+        raise Error("List is empty.")
+    else:
+        return ref a[0]
+
+
+def main():
+    var lst = List[String]("Mojo", "is", "interesting")
+    print("The 1st item of the list is '", lst[0], "'", sep="")
+    ref first = return_first_element_as_reference(lst)
+    first = String("Miji")
+    print("The 1st item of the list is '", lst[0], "' now", sep="")
+```
+
+:::
+
+Executing the code will produce the following output:
+
+```console
+The 1st item of the list is 'Mojo'
+The 1st item of the list is 'Miji' now
+```
+
+This generates the same result as the code where we return a pointer to the value. Let's dissect the code to see how it works:
+
+```mojo
+def return_first_element_as_reference(
+    mut a: List[String],
+) -> ref [a] String:
+    ...
+```
+
+In the function signature:
+
+- We use the `mut` keyword to indicate that the argument `a` is a mutable reference to the original list in the caller function.
+- The return type is `ref [a] String`, where,
+- `ref` means that we are returning a **reference** to a value, not a copy.
+- `String` means that the type of the returned value is `String`.
+- `[str]` is a [**parameterization**](../advanced/parameterization.md)). It indicates that the reference is tied to the lifetime and mutability of the argument `str` (the origin).
+- Recall that the mutability of the reference is determined by the mutability of the origin, which is `str` in this case. Since `str` is mutable, the reference returned by the function is also **mutable**.
+
+```mojo
+...
+    if len(str) == 0:
+        raise Error("List is empty.")
+    else:
+        return ref str[0]
+```
+
+In the function body, we return the first element of the list if the list is not empty (`return ref str[0]`). Because we explicitly specify the return type as `ref [str] String` in the function signature, Mojo will mark this returned value as a reference instead of a copy.
+
+You can also write `return str[0]` without the `ref` keyword, and Mojo will automatically infer that it is a reference based on the return type.
+
+```mojo
+def main():
+    var lst = List[String]("Mojo", "is", "interesting")
+    print("The 1st item of the list is '", lst[0], "'", sep="")
+    ref first = return_first_element_as_reference(lst)
+    first = String("Miji")
+    print("The 1st item of the list is '", lst[0], "' now", sep="")
+```
+
+In the main function, we call the function `return_first_element_as_reference(lst)` and assign the returned reference to the another reference called `first`. Now, `first` is a mutable reference to the first element of the list `lst`. When we change the value of `first` to `String("Miji")`, it modifies the original list `lst`.
+
+Note that we have a chained reference here:  
+
+1. Variable `lst` is the owner of the value.
+2. -> Argument `a` is a mutable reference of `lst`.
+3. -> Return value is a mutable reference of `a[0]` and thus a mutable reference of `lst[0]`.
+4. -> Variable `first` is a mutable reference of the return value and thus a mutable reference of `lst[0]`.
+
+We will discuss the chained references in more detail in the [next section](#chained-references).
+
+---
+
+Back to the syntax of the `ref` keyword in the return type. You can now understand it more easily:
+
+```mojo
+def function_name(arg: TypeOfArg, ...) -> ref [arg] TypeOfReturn:
+def function_name(arg: TypeOfArg, ...) -> ref [__origin_of(arg)] TypeOfReturn:
+```
+
+Here:
+
+- `ref` means that the returned value is a **mutable reference**.
+- `TypeOfReturn` is the type of the returned value.
+- `[arg]` is a parameterization that indicates the reference is tied to the lifetime and mutability of the argument `arg` (the origin). The mutability information stored as a parameter is called **parametric mutability**. This suggests that the information is known at compile time.
+- `[arg]` is a shortcut for `[__origin_of(arg)]`, which is the complete syntax to indicate that the lifetime and mutability of the reference originates from the argument `arg` (the `__origin_of` function is a built-in function that returns an object with the information of the origin of the value).
+- You can also put multiple arguments in the parameterization, such as `[arg1, arg2, ...]`, to indicate that the reference is tied to the lifetime and mutability of multiple arguments.
+
+We will discuss lifetimes and origins in more detail in the chapter [Lifetimes and Origins](../advanced/lifetimes).
+
 ## Chained references
 
-In Mojo, the references (aliases) or safe pointers can be chained through the ownership system. This means that you can create an reference (or a pointer) to a variable that is already an reference of (or a pointer to) another variable. Then the two references (or pointers) will both be tied to the original owner of the value, and they will share the same address in the memory. For example, see the following code:
+### reference to reference
+
+In Mojo, the references (aliases) or safe pointers can be chained through the ownership system. This means that you can create an reference (or a pointer) to a variable that is already an reference of (or a pointer to) another variable. Then the two references (or pointers) will both be tied to the original owner of the value, and they will share the same address in the memory.
+
+We have already seen the chained references in the previous section. Here is a quick recap:
 
 ```mojo
 # src/advanced/references/chained_references.mojo
+
+
+def return_as_reference(mut x: String) -> ref [x] String:
+    var ref y = x
+    return y
+
+
 def main():
-    var a = String("I am owned by `a`")
+    var a = String("I am owned by 'a'")
     var ref b = a
     var ref c = b
-    print(a, "at", String(Pointer(to=a)))
-    print(b, "at", String(Pointer(to=b)))
-    print(c, "at", String(Pointer(to=c)))
+    var ref d = return_as_reference(c)
+    print("a:", a, "at", String(Pointer(to=a)))
+    print("b:", b, "at", String(Pointer(to=b)))
+    print("c:", c, "at", String(Pointer(to=c)))
+    print("d:", d, "at", String(Pointer(to=d)))
+
+    print("Changing `d`...")
+    d = String("I am still owned by 'a' but I am longer now")
+    print("a:", a, "at", String(Pointer(to=a)))
 ```
 
 If we run it, we will see the following output:
 
 ```console
-I am owned by `a` at 0x16d43cc90
-I am owned by `a` at 0x16d43cc90
-I am owned by `a` at 0x16d43cc90
+a: I am owned by 'a' at 0x16ee243e0
+b: I am owned by 'a' at 0x16ee243e0
+c: I am owned by 'a' at 0x16ee243e0
+d: I am owned by 'a' at 0x16ee243e0
+Changing `d`...
+a: I am still owned by 'a' but I am longer now at 0x16ee243e0
 ```
 
-In this example, we create a variable `a` with the value `I am owned by a`, and then create a mutable reference (alias) `b` of `a` using the `ref` keyword. Then we create another mutable reference (alias) `c` of `b`. As a result, `b` and `c` are both aliases of `a`, which means that they share the same address in the memory (`0x16d43cc90`). The value of `a`, `b`, and `c` are all the same.
+In this example, we create a variable `a` with the value `I am owned by 'a'`, and then create a mutable reference `b` of `a` using the `ref` keyword. Then we create another mutable reference `c` of `b`. Then we pass `c` into the function `return_as_reference()`, which returns a mutable reference `d` of `c`. As a result, `b`, `c`, `d` are all references of `a`, which means that they share the same value at the same address in the memory (`0x16d43cc90`). If you change the value of `d`, it will also impact the value of `a`.
 
-The chained references can also happen in function calls, where an argument of a function is passed into another function. The references will continue as the function calls continue.
+The chained references can be summarized as follows:
 
-## Mutability of chained references
+- Variable `a` is the owner of the value.
+- -> Variable `b` is a mutable reference of `a`.
+- -> Variable `c` is a mutable reference of `b`.
+- -> Argument `x` in the function `return_as_reference()` is a mutable reference of `c`.
+- -> Variable `y` in the function `return_as_reference()` is a mutable reference of `x`.
+- -> Variable `d` is a mutable reference of `y`, which is the return value of the function `return_as_reference()`.
+
+### Mutability of chained references
 
 The mutability of the chained references (or pointers) is determined by the mutability of the origin of the value. Two rules are applied:
 
@@ -492,8 +706,9 @@ Let's summarize in the below table, when we use different conventional keywords,
 | `mut`   | mutable reference                | **Not allowed**       |
 | `owned` | owned value (mutable)            | owned value (mutable) |
 
-For example, the following code illustrates such a chained references with different mutability:  
-owner `a` -> mutable reference `b` -> immutable reference `c` -> immutable reference `d`.
+For example, the following code illustrates such a chained references with different mutability:
+
+- owner `a` -> mutable reference `b` -> immutable reference `c` -> immutable reference `d`.
 
 ```mojo
 def main():

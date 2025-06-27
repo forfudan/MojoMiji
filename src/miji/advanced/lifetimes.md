@@ -572,7 +572,7 @@ def main():
     )
 ```
 
-In this code, we use `ref [a, b] String` as the return type of the function `shorter()`. This means that the returned reference will point to either `a` or `b`, and it will carry the information on both `a` and `b` as the possible original owners of the value. The lifetime information is expressed in the square brackets `[]` after the `ref` keyword and before the type.
+In this code, we use `ref [a, b] String` as the return type of the function `shorter()`. This means that the returned value will be either a reference of `a` or a reference of `b`, and it will carry the information on both `a` and `b` as the possible origins.
 
 ## Major changes in this chapter
 

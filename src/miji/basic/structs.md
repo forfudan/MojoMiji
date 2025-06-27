@@ -493,7 +493,7 @@ fn main():
 
 We have four fields in the `Human` struct, and their types are fixed and known at compile time. Note that the `String` and `List` types are composite types, which means that:
 
-1. Their actual data is stored on heap, and the struct only contains a pointer to the data (i.e., `UnsafePointer`).
+1. Their actual data is stored on contiguous memory blocks (on heap or on stack), and the struct only contains a pointer to the data (i.e., `UnsafePointer`).
 1. They contain additional metadata (like size and capacity) in addition to the actual data.
 1. The size of the unsafe pointer, the size and the capacity are 8 bytes each.
 1. Since `String` and `List` are also structs, according to the rule mentioned above, the size of the `String` and `List` fields takes 24 bytes each (summation of the sizes of their own fields).
@@ -624,7 +624,7 @@ Data of `date: List[UInt16]` on heap
 
 ::: tip Why I use such a long name?
 
-The name of the human in the previous example, "Yuhao Zihong Xianyong Mengzexianke Zhu", is quite long. Why I choose this long name? Because the `String` type in Mojo will optimize the memory layout for short strings (less than 24 bytes) by simply storing the string data in the 24-bit memory block of the `String` struct, without allocating additional memory on heap. To force a heap allocation, I used such a long name.
+The name of the human in the previous example, "Yuhao Zihong Xianyong Mengzexianke Zhu", is quite long. Why I choose this long name? Because the `String` type in Mojo will optimize the memory layout for short strings (less than 24 bytes) by simply storing the string data in the 24-bit memory block of the `String` struct, without pointing to a memory block (on stack or on heap). To force generating a pointer, I used such a long name.
 
 Actually, this long name is not random. It consists my given name, my courtesy name(s), my art name, and my family name.
 
