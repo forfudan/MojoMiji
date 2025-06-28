@@ -31,6 +31,7 @@ This Miji is compatible with Mojo v25.4 (2025-06-18).
   - [Control flows](./basic/control) (Loops, conditionals, and some about iterables)
   - [Structs](./basic/structs) (Structs in Mojo, similar to classes in Python)
   - [Modules and packages](./basic/packages) (Modular programming)
+  - [Error handling and raises](./basic/errors) (Errors are implicitly returned)
 - [PART IV: ADVANCED MOJO](./advanced/advanced)
   - [Data type - SIMD](./advanced/simd) (The first-class `SIMD` type)
   <!-- - [Error handling (Yuhao is working on this)](./advanced/error_handling) -->

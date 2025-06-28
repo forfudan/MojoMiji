@@ -268,6 +268,119 @@ We have already seen this auxiliary function in Chapter [Convert Python code int
 
 :::
 
+### List comprehension
+
+Mojo supports list comprehension syntax, which allows you to create a new list by iterating over an iterator in a single line. The syntax is similar to Python's list comprehension syntax. For example, you can create a list containing the squares of the numbers from 0 to 9 using list comprehension:
+
+```mojo
+def main():
+    var my_list = [i**2 for i in range(10)]
+    for i in my_list:
+        print(i, end=", ")
+```
+
+This will output:
+
+```console
+0, 1, 4, 9, 16, 25, 36, 49, 64, 81,
+```
+
+A general syntax of list comprehension in Mojo is
+
+```mojo
+[expression(item) for item in iterable if condition]
+```
+
+where `expression(item)` is an expression computed for an `item` that is sequentially taken out from an iterable. You can also add an optional `if condition` to filter the items in the iterable. In fact, such a list comprehension is the shortened version (a syntax sugar) of the following code:
+
+```mojo
+lst = List[Type]()
+for item in iterable:
+    if condition:
+        lst.append(expression(item))
+```
+
+For example, the following code creates the same lists from a list comprehension and a full syntax:
+
+```mojo
+def main():
+    var lst1 = [i * 2 for i in range(10) if i % 2 == 0]
+
+    var lst2 = List[Int]()
+    for i in range(10):
+        if i % 2 == 0:
+            lst2.append(i * 2)
+
+    print("List Comprehension:")
+    for i in lst1:
+        print(i, end=", ")
+    print("\nFull Syntax:")
+    for i in lst2:
+        print(i, end=", ")
+```
+
+This will output:
+
+```console
+List Comprehension:
+0, 4, 8, 12, 16, 
+Full Syntax:
+0, 4, 8, 12, 16, 
+```
+
+---
+
+You can also use list comprehension with multiple iterations. For example, you can generate a list of concatenated strings by permuting three lists:
+
+::: code-group
+
+```mojo
+# src/basic/composite/list_comprehension_permutations.mojo
+def main():
+    var lst1 = ["a", "b", "c"]
+    var lst2 = ["i", "j", "k"]
+    var lst3 = ["x", "y", "z"]
+
+    var lst4 = [i + j + k for i in lst1 for j in lst2 for k in lst3]
+
+    for item in lst4:
+        print(item, end=", ")
+```
+
+```python
+# src/basic/composite/list_comprehension_permutations.py
+def main():
+    lst1 = ["a", "b", "c"]
+    lst2 = ["i", "j", "k"]
+    lst3 = ["x", "y", "z"]
+
+    lst4 = [i + j + k for i in lst1 for j in lst2 for k in lst3]
+
+    for item in lst4:
+        print(item, end=", ")
+
+
+main()
+```
+
+:::
+
+Running the above code will output:
+
+```console
+aix, aiy, aiz, ajx, ajy, ajz, akx, aky, akz, bix, biy, biz, bjx, bjy, bjz, bkx, bky, bkz, cix, ciy, ciz, cjx, cjy, cjz, ckx, cky, ckz, 
+```
+
+---
+
+In Python, list comprehension is also helpful when you want to print items of a iterable in a simpler way. However, this is not yet supported in Mojo.
+
+<!-- 
+Recall that `print()` function implicitly returns a `None` value, which means that the function is also a valid expression. Thus, you can very well put the `print()` function inside the list comprehension.
+
+For example, you can print the third power of the numbers from 0 to 9 using list comprehension: 
+-->
+
 ### Memory layout of List type
 
 A Mojo `List` is actually a structure that contains three fields:

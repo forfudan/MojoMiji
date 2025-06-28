@@ -139,6 +139,9 @@ export default defineConfig({
             },
             {
               text: "Modules and packages", link: '/miji/basic/packages',
+            },
+            {
+              text: "Error handling and raises", link: '/miji/basic/errors',
             }
           ],
         },
