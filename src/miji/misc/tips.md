@@ -28,6 +28,8 @@ This chapter summarizes the information, tips, and warnings that are scattered t
 
 [Visual checks of valid UTF-8 code points](../basic/string#utf-8-encoding): Do you know that, in the first byte of a valid UTF-8 code point, the number of leading ones is equal to the number of bytes for non-single-byte code point.
 
+[Boundary checks on lists are not on by default](../basic/composite#index-or-slice-a-list): Do you know that Mojo does not perform boundary checks on lists by default? This means that if you try to access an index that is out of bounds, the program will not raise an error. This might be very dangerous. Check this section for more details.
+
 [Chained comparison: Syntax sugar or poison?](../basic/operators.md): Are you aware that chained comparison can lead to confusion and unintended behavior?
 
 [Non-exhaustive conditionals - Mojo vs Python](../basic/control#non-exhaustive-conditionals): Do you know that non-exhaustive conditionals would lead to compile-time errors in Mojo if you do not handle all possible cases for functions that return a value? This is different from Python, where non-exhaustive conditionals would not lead to errors.

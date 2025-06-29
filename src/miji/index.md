@@ -1,3 +1,8 @@
+---
+layout: doc
+nav: false
+---
+
 # Mojo Miji - A Guide to Mojo Programming Language from A Pythonista's Perspective
 
 by ***Yuhao Zhu 朱宇浩***
@@ -7,8 +12,6 @@ by ***Yuhao Zhu 朱宇浩***
 This Miji is compatible with Mojo v25.4 (2025-06-18).
 
 :::
-
-## Table of Contents
 
 - [INTRODUCTION](./intro)
 - [PART I: START WITH MOJO](./start/start)
@@ -22,16 +25,16 @@ This Miji is compatible with Mojo v25.4 (2025-06-18).
   - [Things that are different](./move/different) (Differences between Python and Mojo)
 - [PART III: BASIC MOJO](./basic/basic)
   - [Variables](./basic/variables) (Declare and use variables in Mojo)
-  - [Data types - basic](./basic/types) (Int, float, bool, list, literals, etc.)
-  - [Data types - composite](./basic/composite) (List, etc)
-  - [Data type - string](./basic/string) (`String` in Mojo, similar to `str` in Python)
+  - [Data types - basic](./basic/types) (Int, float, bool, etc.)
+  - [Data types - composite](./basic/composite) (List et al.)
+  - [Data type - string](./basic/string) (similar to `str` in Python)
   - [Literals and type inference](./basic/literal) (Mojo is smart enough to infer types)
   - [Functions](./basic/functions) (Define and use functions in Mojo)
   - [Operators and assignment](./basic/operators) (Operators and assignment expressions)
   - [Control flows](./basic/control) (Loops, conditionals, and some about iterables)
-  - [Structs](./basic/structs) (Structs in Mojo, similar to classes in Python)
+  - [Structs](./basic/structs) (Similar to classes in Python)
   - [Modules and packages](./basic/packages) (Modular programming)
-  - [Error handling and raises](./basic/errors) (Errors are implicitly returned)
+  - [Error handling and raises](./basic/errors) (Function results are blind boxes)
 - [PART IV: ADVANCED MOJO](./advanced/advanced)
   - [Data type - SIMD](./advanced/simd) (The first-class `SIMD` type)
   <!-- - [Error handling (Yuhao is working on this)](./advanced/error_handling) -->

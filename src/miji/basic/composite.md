@@ -79,6 +79,33 @@ def main():
     sliced_list = my_list_of_integers[0:3]  # Slicing the first three elements
 ```
 
+::: danger Boundary checks on lists are not on by default
+
+In the current Mojo version, boundary checks are not on by default. That is to say that the following **unsafe** code would be executed without any error:
+
+```mojo
+def main():
+    var lst = List[Int](1, 2, 3, 4, 5)
+    ref item = lst[10]
+    print("Item at index 10:", item)
+    item += 100  # DANGEROUS! DO NOT DO THIS!
+    print("Modified item at index 10:", item)
+```
+
+This code tries to get and modify the element at index 10 of the list `lst`, which only has 5 elements. Without boundary checks, Mojo will go to the address (10 * size of `Int`) bytes away from the first element of the list and modify the value there. We do not know what is stored at that address, nor do we know which program/application/software is using that memory. So this could lead to **severe memory corruption** and unpredictable behavior.
+
+To enable boundary checks, you should use the `-D ASSERT=all` flag when running the Mojo code:
+
+```bash
+mojo -D ASSERT=all file.mojo
+```
+
+In the future, this flag will be enabled by default, and Mojo will raise an error if you try to access an index that is out of bounds. Please refer to the following forum post for more information:
+
+- [Boundary checks on lists do not work ](https://forum.modular.com/t/boundary-checks-on-lists-do-not-work/1797)
+
+:::
+
 ### Extend or concat a list
 
 You can **append** elements to the end of a `List` in Mojo using the `append()` method, just like in Python. For example,
