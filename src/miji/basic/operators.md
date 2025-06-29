@@ -1,4 +1,4 @@
-# Operators and assignment
+# Operators and assignment expressions
 
 > Sugar is good, but bad.  
 > -- Yuhao Zhu, *Gate of Heaven*

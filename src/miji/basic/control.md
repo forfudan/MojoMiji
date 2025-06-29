@@ -5,7 +5,7 @@
 
 It would be interesting to imagine a world where most of the programming languages are line-oriented where you have to write "go back to Line 10" to repeat a task, or "advance to Line 20" to skip a task. Luckily, we have control flows where you can encapsulate the logic of repeating or skipping tasks in a more human-readable way.
 
-There are three main types of control flows in Python: loops, conditionals, and exceptions. Mojo, being a Python-like language, also supports these control flows with almost the same logic and syntax. In this section, we will cover the first two types of control flows: loops and conditionals. Exceptions will be covered in a later chapter.
+There are three main types of control flows in Python: loops, conditionals, and exceptions. Mojo, being a Python-like language, also supports these control flows with almost the same logic and syntax. In this section, we will cover the first two types of control flows: loops and conditionals. Exceptions will be covered in a [later chapter](../basic/errors).
 
 For Pythonistas, you can quickly scan this chapter and jump to the exercises because the concepts in this chapter are very similar to Python's control flows. You may still need to pay attention to some blocks marked in yellow or red colors, which indicate the differences between Mojo and Python.
 
@@ -19,7 +19,7 @@ This chapter is compatible with Mojo v25.4 (2025-06-18).
 
 ## Conditionals
 
-### if-elif-else syntax
+### if-elif-else statement
 
 Conditionals are used to execute a block of code only if a certain condition is met. In Mojo, conditionals are implemented with the `if ... elif ... else ...` syntax, which is **identical** to Python's syntax. The complete syntax of a conditional in Mojo is as follows:
 

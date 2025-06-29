@@ -7,8 +7,8 @@ It is not uncommon to encounter errors in programming. Errors are not necessaril
 
 Mojo, as a Python-like language, inherits the error handling mechanism from Python but makes it stricter. This chapter will introduce you to the error handling mechanism in Mojo, including:
 
-- How to understand errors in Mojo
-- A conceptual model of function results as a blind box
+- How to understand "errors" in Mojo
+- A conceptual model that regards function results as blind boxes
 - How to use the `raises` keyword in function signatures
 - How to raise an error using the `raise` keyword
 - How to handle errors using the `try` and `except` keywords
@@ -135,7 +135,7 @@ If the `raise` keyword is used in the `except` block, the error is **temporarily
 
 ---
 
-Since `Error` is a also a valid Mojo type, you can also return an `Error` type using the `return` keyword. However, when you do so, Mojo will not treat it as an error, but rather as a normal return value. If you do not handle it, the program will not abort. See the following example:
+Since `Error` is a also a valid Mojo type, you can also return an `Error` type using the `return` keyword. However, when you do so, Mojo will not treat it as an error, but rather as a normal return value. If you do not handle it, the program will **not abort**. See the following example:
 
 ```mojo
 fn return_error() -> Error:
@@ -150,6 +150,17 @@ fn main():
         print("Caught an error:", e)
 ```
 
+Running the above code will produce the following output:
+
+```console
+This is an error message
+No exception raised
+```
+
+In this example, the `try` block does not catch any exception because the `return_error` function does not **raise** an error, but rather **returns** an `Error` type as a normal return value. The program continues to run and prints "No exception raised".
+
+Note that the Mojo compiler will also find out that no error is raised by the `return_error` function, and it will print some warning messages that the `except` block is unreachable:
+
 ```console
 warning: 'except' logic is unreachable, try doesn't raise an exception
         print("Caught an error:", e)
@@ -157,13 +168,7 @@ warning: 'except' logic is unreachable, try doesn't raise an exception
 warning: variable 'e' was never used, remove it?
     except e:
            ^
-This is an error message
-No exception raised
 ```
-
-In this example, the `try` block does not catch any exception because the `return_error` function does not **raise** an error, but rather **returns** an `Error` type as a normal return value. The program continues to run and prints "No exception raised".
-
-Note that the Mojo compiler will also find out that no error is raised by the `return_error` function, and it will issue a warning that the `except` block is unreachable.
 
 ---
 

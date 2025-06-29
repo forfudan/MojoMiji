@@ -135,14 +135,14 @@ export default defineConfig({
               text: 'Control flows', link: '/miji/basic/control',
             },
             {
+              text: "Error handling and raises", link: '/miji/basic/errors',
+            },
+            {
               text: 'Structs', link: '/miji/basic/structs',
             },
             {
               text: "Modules and packages", link: '/miji/basic/packages',
             },
-            {
-              text: "Error handling and raises", link: '/miji/basic/errors',
-            }
           ],
         },
         {
