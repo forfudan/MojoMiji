@@ -3,9 +3,40 @@
 > Human beings are merely containers of atoms.  
 > -- Yuhao Zhu, *Gate of Heaven*
 
-In this chapter, we continue to learn about the composite data types in Mojo. Composite data types are data types that can hold multiple values of the same or different types. They are also known as **compound types** or **collection types**.
+In this chapter, we continue to learn about the composite data types in Mojo. Composite data types are data types that can hold multiple values of the same or different types. They are also known as **compound types** or **collection types**. We will cover the following topics:
 
-[[toc]]
+- How to create a list and access to its elements
+- How to iterate over a list
+- List comprehension syntax
+- The memory layout of a list in Mojo
+
+::: danger List is unsafe by default!
+
+I have to warn you at the beginning of this chapter that current Mojo version does not perform **boundary checks** on lists by default. For example, the following code will run without any error, but it will modify memory that is not allocated for the list:
+
+```mojo
+# DANGEROUS! DO NOT RUN THIS CODE!
+def main():
+    var lst = List[Int](1, 2, 3, 4, 5)
+    ref item = lst[10]
+    print("Item at index 10:", item)
+    item += 100
+    print("Modified item at index 10:", item)
+```
+
+This code tries to get and modify the element at index 10 of the list `lst`, which only has 5 elements. Without boundary checks, Mojo will go to the address (10 * size of `Int`) bytes away from the first element of the list and modify the value there. We do not know what is stored at that address, nor do we know which program/application/software is using that memory. So this could lead to **severe memory corruption** and unpredictable behavior.
+
+To enable boundary checks, you should use the `-D ASSERT=all` flag when running the Mojo code:
+
+```bash
+mojo -D ASSERT=all file.mojo
+```
+
+In the future, this flag will be enabled by default, and Mojo will raise an error if you try to access an index that is out of bounds. Please refer to the following forum post for more information:
+
+- [Boundary checks on lists do not work ](https://forum.modular.com/t/boundary-checks-on-lists-do-not-work/1797)
+
+:::
 
 ## Lists
 
@@ -78,33 +109,6 @@ def main():
     first_element = my_list_of_integers[0]  # Accessing the first element
     sliced_list = my_list_of_integers[0:3]  # Slicing the first three elements
 ```
-
-::: danger Boundary checks on lists are not on by default
-
-In the current Mojo version, boundary checks are not on by default. That is to say that the following **unsafe** code would be executed without any error:
-
-```mojo
-def main():
-    var lst = List[Int](1, 2, 3, 4, 5)
-    ref item = lst[10]
-    print("Item at index 10:", item)
-    item += 100  # DANGEROUS! DO NOT DO THIS!
-    print("Modified item at index 10:", item)
-```
-
-This code tries to get and modify the element at index 10 of the list `lst`, which only has 5 elements. Without boundary checks, Mojo will go to the address (10 * size of `Int`) bytes away from the first element of the list and modify the value there. We do not know what is stored at that address, nor do we know which program/application/software is using that memory. So this could lead to **severe memory corruption** and unpredictable behavior.
-
-To enable boundary checks, you should use the `-D ASSERT=all` flag when running the Mojo code:
-
-```bash
-mojo -D ASSERT=all file.mojo
-```
-
-In the future, this flag will be enabled by default, and Mojo will raise an error if you try to access an index that is out of bounds. Please refer to the following forum post for more information:
-
-- [Boundary checks on lists do not work ](https://forum.modular.com/t/boundary-checks-on-lists-do-not-work/1797)
-
-:::
 
 ### Extend or concat a list
 

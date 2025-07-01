@@ -556,7 +556,7 @@ Address │ 0x2000-0x2001 │ 0x2002-0x2003 │ 0x2004-0x2005 │
         └───────────────┴───────────────┴───────────────┘
 ```
 
-::: tip Fetch value of a field in a struct
+<!-- ::: tip Fetch value of a field in a struct
 
 This may be beyond the scope of this Miji, but you may wonder how Mojo fetches the value of a field in a struct, e.g., `print(human.name)`. 
 
@@ -564,7 +564,7 @@ The answer is that Mojo fetches this value at the correct address and with the c
 
 Mojo always remembers the first address of the struct of `human` in memory, which is `0x00` in the above example. It then uses the above memory layout to calculate the distance of the field `name` from the start of the struct's memory block, which is 24 bytes (8 bytes for `data`, 8 bytes for `size`, and 8 bytes for `capacity`). Such distance is called the **offset** of the field. Mojo calculates the address of the `name` field as `0x00 + 24 = 0x18`, and reads the value from this address.
 
-:::
+::: -->
 
 ::: danger Verify the memory layout of a struct
 
@@ -573,7 +573,7 @@ You can easily (but not safely) verify whether the above memory layout is correc
 But be warned that this is an unsafe operation! You should not touch this unless you are sure about what you are doing.
 
 ```mojo
-# src/basic/human.mojo
+# src/basic/structs/human.mojo
 from memory import UnsafePointer
 
 struct Human:

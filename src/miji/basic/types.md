@@ -257,7 +257,7 @@ main()
 
 ## Exercises
 
-### Exercises - integer types
+### Exercises on integer types
 
 Now we want to calculate the $12345^5$. Since the result is big (around 20 digits), we use `Int128` to avoid overflow. Try to run the following code in Mojo and see what happens. Explain why the result is unexpected and how to fix it.
 

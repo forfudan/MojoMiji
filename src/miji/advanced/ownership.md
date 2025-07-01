@@ -333,70 +333,120 @@ When you **transfer** a value, you are transferring the ownership of the value f
 
 The transfer of (the ownership of) a value is **usually** done with the `^` operator, e.g., `var b = a^`. It reads as "transfer the ownership of the value from the variable `a` to the variable `b`, and then remove the variable `a` from the scope".
 
-In the following example, we create a list `a` of type `List[Float64]` with four elements. We then transfer the ownership of the value from `a` to `b`. After the transfer, variable `b` now owns the value and can access the element. `a` is no longer valid and cannot be used anymore.
+In the following example, we create a list `a` of type `List[Float64]` with four elements. We then transfer the ownership of the value (4 numbers) from `a` to `b`. After the transfer, variable `b` now owns the value (4 numbers). `a` is no longer valid and cannot be used anymore.
 
 ```mojo
-# src/advanced/transfer_value.mojo
-from memory import Pointer
-
+# src/advanced/ownership/transfer_value_explicitly.mojo
 def main():
     var a = List[Float64](1.0, 2.0, 3.0, 4.0)
-    print("a at address", String(Pointer(to=a)), "with values:")
+    print(
+        "The meta data of the list `a` is stored at address",
+        String(Pointer(to=a)),
+        "\nThe first element of the list `a` is stored at address",
+        a.data,
+        "\nThe list `a` contains ",
+        end="",
+    )
     for i in a:
-        print(i[], end=", ")
+        print(i, end="  ")
     print()
 
     # Transfer ownership from `a` to `b`
     var b = a^
-    print("b at address", String(Pointer(to=b)), "with values:")
+    print(
+        "The meta data of the list `b` is stored at address",
+        String(Pointer(to=b)),
+        "\nThe first element of the list `b` is stored at address",
+        b.data,
+        "\nThe list `b` contains ",
+        end="",
+    )
     for i in b:
-        print(i[], end=", ")
+        print(i, end="  ")
+    print()
 ```
 
-When you run the above code, we can see that the variable `b` now owns the value that was previously owned by `a`, and can access the elements of the value.
+When you run the above code, we can see that the variable `b` now owns the value (4 numbers) that was previously owned by `a`. You can then use variable name `b` to to access the elements of the value.
 
 ```console
-a at address 0x16f350988 with values:
-1.0, 2.0, 3.0, 4.0, 
-b at address 0x16f350970 with values:
-1.0, 2.0, 3.0, 4.0,
+The meta data of the list `a` is stored at address 0x16bb183d8 
+The first element of the list `a` is stored at address 0x10b4bc000 
+The list `a` contains 1.0  2.0  3.0  4.0  
+The meta data of the list `b` is stored at address 0x16bb183c0 
+The first element of the list `b` is stored at address 0x10b4bc000 
+The list `b` contains 1.0  2.0  3.0  4.0  
 ```
 
 Since `a` is no longer valid after the transfer, if you try to access `a` after the transfer, the Mojo compiler will raise an error. For example, if you add the following code after the transfer:
 
 ```mojo
+# src/advanced/ownership/transfer_value_and_use_again.mojo
+# This code will not compile
 def main():
     var a = List[Float64](1.0, 2.0, 3.0, 4.0)
-    print("a at address", String(Pointer(to=a)), "with values:")
-    for i in a:
-        print(i[], end=", ")
-    print()
 
     # Transfer ownership from `a` to `b`
     var b = a^
 
     # After transferring ownership, `a` is no longer valid.
-    print("a at address", String(Pointer(to=a)), "with values:")
     for i in a:
-        print(i[], end=", ")
-    print()
+        print(i, end="  ")
 ```
 
 You will get an error like this:
 
 ```console
 error: use of uninitialized value 'a'
-    print("a at address", String(Pointer(to=a)), "with values:")
-                                        ^
+    for i in a:
+             ^
 ```
 
-::: info Address may change
+::: info No copy made on list elements during ownership transfer
 
-For lists with millions of elements, it is no point to move the values to a new address when being transferred. The moving of values in the memory is costly and inefficient. Since `a` will no longer be used after the transfer, we can simply let `b` to own the value at the same address as `a`. In other words, transferring the ownership is just like renaming the variable (while the type, the value, and the address are unchanged).
+As we have discussed in Chapter [Composite data types](../basic/composite#memory-layout-of-list-type), a list is stored in the memory with two layers:
 
-However, this is not guaranteed. In some cases, the address of the value may change after the transfer. For example, in the output above, we can see that the address of `a` is `0x16f350988`, while the address of `b` is `0x16f350970`.
+- The first layer is the meta data of the list, which contains the information about the list, *i.e.*, the **address of the first element**, the length of the list, and the capacity of the list. This meta data is stored on the stack. You can use `Pointer(to=a)` to get the address of the meta data.
+- The second layer is the real data of the list (the elements of the list). This is dynamically stored on the heap. The address of the first element is stored in the meta data of the list with the name "data" (`UnsafePointer` type). You can use `a.data` to get the address of the first element of the list.
 
-Whether the values are kept in the same address depends on how compiler optimizes the code.
+After transferring the ownership using `var b = a^`, Mojo compiler will first allocate some space to store the meta data of `b` on the stack, and then let `b` point to the same address as `a` for the actual data of the list elements. In other words, the actual data of the list elements are never copied to a new address. They just have **another owner** now.
+
+This operation is very efficient since it does not involve any memory copying. For very large lists, this is a great advantage.
+
+The following diagram shows the memory layout of the list `a` and `b` before and after the transfer:
+
+```console
+# Mojo Miji - Ownership - List in memory
+
+        local variable `a: List[Float64] = [1.0, 2.0, 3.0, 4.0]`
+        (meta data stored on stack from address `0x16bb183d8`)
+            ↓  
+        ┌───────────────┬────────────┬────────────┐
+Field   │ data          │ _len       │ capacity   │
+        ├───────────────┼────────────┼────────────┤
+Type    │ UnsafePointer │  Int       │     Int    │
+        ├───────────────┼────────────┼────────────┤
+Value   │ 0x10b4bc000   │     4      │     4      │
+        └───────────────┴────────────┴────────────┘
+            │ (Valid BEFORE transfer ownership)
+            ↓ 
+        ┌─────────┬─────────┬─────────┬─────────┐
+Type    │ Float64 │ Float64 │ Float64 │ Float64 │ List elements stored on heap
+        ├─────────┼─────────┼─────────┼─────────┤ (from address `0x10b4bc000`)
+Value   │  1.0    │  2.0    │  3.0    │  4.0    │ 
+        └─────────┴─────────┴─────────┴─────────┘
+            ↑
+            │ (Valid AFTER transfer ownership)
+        ┌───────────────┬────────────┬────────────┐
+Field   │ data          │ _len       │ capacity   │
+        ├───────────────┼────────────┼────────────┤
+Type    │ UnsafePointer │  Int       │     Int    │
+        ├───────────────┼────────────┼────────────┤
+Value   │ 0x10b4bc000   │     4      │     4      │
+        └───────────────┴────────────┴────────────┘
+            ↑
+        local variable `b`
+        (meta data stored on stack from address `0x16bb183c0`)
+```
 
 :::
 
@@ -409,21 +459,22 @@ The copy of a value (and the ownership) is **usually** done with the `=` operato
 We use the previous example, but this time we will copy the value instead of transferring it:
 
 ```mojo
-# src/advanced/copy_value.mojo
+# src/advanced/ownership/copy_value.mojo
 from memory import Pointer
+
 
 def main():
     var a = List[Float64](1.0, 2.0, 3.0, 4.0)
     print("a at address", String(Pointer(to=a)), "with values:")
     for i in a:
-        print(i[], end=", ")
+        print(i, end=", ")
     print()
 
     # Copy the value of `a` and let `b` to own it.
     var b = a
     print("b at address", String(Pointer(to=b)), "with values:")
     for i in b:
-        print(i[], end=", ")
+        print(i, end=", ")
     print()
 
     # Modify `b` to show that it is a copy.
@@ -431,13 +482,13 @@ def main():
     b.append(5.0)
     print("b at address", String(Pointer(to=b)), "with values:")
     for i in b:
-        print(i[], end=", ")
+        print(i, end=", ")
     print()
 
     # After copy the value, `a` is still valid.
     print("a at address", String(Pointer(to=a)), "with values:")
     for i in a:
-        print(i[], end=", ")
+        print(i, end=", ")
     print()
 ```
 
@@ -540,7 +591,7 @@ The same applies `x = y`, which may also call `__moveint__()` instead of `__copy
 The second exception, though improving the performance and efficiency, may lead to some potential issues, especially when the behaviors of `copy` and `move` are inconsistent. Here is an example to illustrate this issue:
 
 ```mojo
-# src/advanced/copy_move_inconsistency.mojo
+# src/advanced/ownership/copy_move_inconsistency.mojo
 struct Team:
     var names: List[String]
 
@@ -563,7 +614,7 @@ def main():
 
     print("New team `b` contains the following people: ")
     for i in b.names:
-        print(i[], end=", ")
+        print(i, end=", ")
 ```
 
 In this example, we define a struct `Team` that has a list of names (representing the team members). The `__copyinit__()` method copies the names from one `Team` object to another. The `__moveinit__()` method transfers the ownership of the names from one `Team` object to another, but also adds a new name "Yuhao" to the list.
@@ -579,17 +630,18 @@ A new person is added into the list. Why? Because the second exception mentioned
 If you want to achieve a true "copy" instead of a "move", you need use the variable `a` after the assignment `var b = a`. For example, you can change the main function to:
 
 ```mojo
+# src/advanced/ownership/copy_move_inconsistency_more.mojo
 def main():
     var a = Team("Akari", "Bob", "Coco", "David")
     var b = a
 
     print("New team `b` contains the following people: ")
     for i in b.names:
-        print(i[], end=", ")
+        print(i, end=", ")
 
     print("\nOld team `a` contains the following people: ")
     for i in a.names:
-        print(i[], end=", ")
+        print(i, end=", ")
 ```
 
 When you run the code, you will get the following output:
@@ -617,10 +669,11 @@ Which cause is more severe? I would say the second one. The first one is just an
 When the lifetime of the owner of a value ends, the value will also be destroyed. This is to ensure that the memory is freed in time and would not be leaked. You can hand over this task to the Mojo compiler, which will automatically destroy the value when the owner goes out of scope. For example,
 
 ```mojo
-# src/advanced/destroy_value.mojo
+# src/advanced/ownership/destroy_value.mojo
+# This code will not compile
 def main():
     var a: Int = 1
-    
+
     if True:
         var b: Int = 100
         print("b =", b)
@@ -633,7 +686,7 @@ This generates the following output:
 
 ```console
 error: use of unknown declaration 'b'
-    print("b= ", b)
+    print("b= ", b)  # Lifetime of b ends, the value is destroyed too
                  ^
 ```
 
@@ -646,7 +699,8 @@ The lifetime of the owner must be at least as long as the lifetime of the third-
 The following example shows how the Mojo compiler checks the lifetime of the owner and the reference:
 
 ```mojo
-# src/advanced/lifetime_owner_reference.mojo
+# src/advanced/ownership/lifetime_owner_reference.mojo
+# This code will not compile
 def main():
     var a = String("Hello, Mojo!")
     var ptr = Pointer(to=a)
@@ -655,7 +709,7 @@ def main():
 
     var b = a^  # Lifetime of `a` ends here
     print("The ownership is transferred to `b` with value: ", b)
-    
+
     print(ptr[])
 ```
 
@@ -672,6 +726,7 @@ This is because the lifetime of the owner `a` ends after the transfer, but the l
 To fix this issue, we can either remove the `^` operator to keep the ownership of `a`, or we remove the last line that accesses the pointer `ptr` after the transfer. For example, we can change the code to:
 
 ```mojo
+# src/advanced/ownership/lifetime_owner_reference_fixed.mojo
 def main():
     var a = String("Hello, Mojo!")
     var ptr = Pointer(to=a)
@@ -680,7 +735,7 @@ def main():
 
     var b = a  # A copy is made, a is still valid
     print("The value of `a` is copied to `b`. `b` is with value:", b)
-    
+
     # Dereferencing the pointer still gives the value of `a`
     print("a is at address", String(ptr), "with de-referenced value:", ptr[])
 ```

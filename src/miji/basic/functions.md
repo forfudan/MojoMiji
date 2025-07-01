@@ -497,7 +497,7 @@ Here is an example that read elements from a list and print them. Note that the 
 ::: code-group
 
 ```mojo
-# src/basic/read_keyword.mojo
+# src/basic/functions/read_keyword.mojo
 def print_list_of_string(read a: List[String]):
     # `a` is a read-only reference of the list passed into the function
     print("[", end="")
@@ -520,9 +520,11 @@ If you define a function with `fn`, attempting to change the value of an argumen
 ::: code-group
 
 ```mojo
-# src/basic/read_keyword_change.mojo
+# src/basic/functions/read_keyword_change.mojo
+# This code will not compile
 fn changeit(read some: List[Int]) -> List[Int]:
     some[0] = 100
+
 
 fn main():
     var a = List[Int](1, 2, 3, 4, 5)
@@ -810,6 +812,7 @@ Function overloading is a cool feature of Mojo which does not appear in Python. 
 ::: code-group
 
 ```python
+# src/basic/functions/bigger.mojo
 def bigger(a: int, b: int | None = None) -> int:
     """Returns the bigger of one or two integers.
     
@@ -842,7 +845,7 @@ However, in Mojo, this trick may not be helpful. Mojo is a statically-typed lang
 ::: code-group
 
 ```mojo
-# src/basic/bigger.mojo
+# src/basic/functions/bigger.mojo
 fn bigger(a: Int) -> Int:
     return a
 

@@ -32,17 +32,19 @@ Let's take a look at a concrete example of a variable in Mojo. The variable is o
 
 ```console
 # Mojo Miji - Basic - Variables
-        local variable `a` (Int type, 64 bits or 8 bytes)
-            ↓  (stored on stack at address 0x26c6a89a in little-endian format)
-        ┌───────────────────────────────────────────────────────────────────────────────────────┐
-Name    │                                           a                                           │
-        ├───────────────────────────────────────────────────────────────────────────────────────┤
-Type    │                                          Int                                          │
-        ├──────────┬──────────┬──────────┬──────────┬──────────┬──────────┬──────────┬──────────┤
-Value   │ 00000000 │ 00000000 │ 00000000 │ 00000000 │ 00000111 │ 01011011 │ 11001101 │ 00010101 │
-        ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
-Address │0x26c6a89a│0x26c6a89b│0x26c6a89c│0x26c6a89d│0x26c6a89e│0x26c6a89f│0x26c6a8a0│0x26c6a8a1│
-        └──────────┴──────────┴──────────┴──────────┴──────────┴──────────┴──────────┴──────────┘
+                  local variable `a` (Int type, 64 bits or 8 bytes)
+                    ↓  (stored on stack at address 0x26c6a89a in little-endian format)
+               ┌───────────────────────────────────────────────────────────────────────────────────────┐
+Name           │                                           a                                           │
+               ├───────────────────────────────────────────────────────────────────────────────────────┤
+Type           │                                          Int                                          │
+               ├───────────────────────────────────────────────────────────────────────────────────────┤
+Value          │                                       123456789                                       │
+               ├──────────┬──────────┬──────────┬──────────┬──────────┬──────────┬──────────┬──────────┤
+Value (binary) │ 00000000 │ 00000000 │ 00000000 │ 00000000 │ 00000111 │ 01011011 │ 11001101 │ 00010101 │
+               ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
+Address        │0x26c6a89a│0x26c6a89b│0x26c6a89c│0x26c6a89d│0x26c6a89e│0x26c6a89f│0x26c6a8a0│0x26c6a8a1│
+               └──────────┴──────────┴──────────┴──────────┴──────────┴──────────┴──────────┴──────────┘
 ```
 
 More intuitively, the variable `a` can be visualized as the following vault:
@@ -109,7 +111,7 @@ Mojo has the exactly the same rules for identifiers as Python does. You can alwa
 - Identifiers cannot be a keyword (reserved word), e.g, `if`, `for`, `while`, `def`, etc. are not valid identifiers.
 - Identifiers are case-sensitive.
 
-There is one feature that is new in Mojo. You can use the grave accent (``) to create an identifier that does not follow the rules above. For example, the following code is valid in Mojo:
+There is one feature that is **new in Mojo**. You can use the grave accent (``) to create an identifier that does not follow the rules above. For example, the following code is valid in Mojo:
 
 ```mojo
 # src/basic/variables/identifiers.mojo
@@ -142,6 +144,8 @@ In the syntaxes of these two steps:
 
 Some examples are as follows:
 
+::: code-group
+
 ```mojo
 # src/basic/variables/variable_definition_assignment.mojo
 def main():
@@ -158,7 +162,46 @@ def main():
     d = [1, 2, 3]
 ```
 
+```python
+# Python also allows you to give type hints to variables in separate lines
+def main():
+    # Give type hints first (these lines are ignored by Python interpreter)
+    a: int
+    b: float
+    c: str
+    d: list[int]
+
+    # Assign values to the variable names in separate lines
+    a = 1
+    b = 2.5
+    c = str("Hello, world!")  # c = "Hello, world!" is also valid
+    d = [1, 2, 3]
+
+main()
+```
+
+```rust
+// This is similar in Rust
+fn main() {
+    // Define variables first
+    let a: i64;
+    let b: f64;
+    let c: String;
+    let d: Vec<i64>;
+
+    // Assign values to the variable names in separate lines
+    a = 1;
+    b = 2.5;
+    c = "Hello, world!".to_string();
+    d = vec![1, 2, 3];
+}
+```
+
+:::
+
 The above two steps can be combined into one line, *i.e.*, `var name: Type = value`. This means that the declaration and initialization take place at the same time. Let's re-write the above examples in this way:
+
+::: code-group
 
 ```mojo
 # src/basic/variables/variable_creation.mojo
@@ -169,6 +212,29 @@ def main():
     var d: List[Int] = [1, 2, 3]
 ```
 
+```python
+# Python also allows you to give type hints in the same line
+def main():
+    a: int = 1
+    b: float = 2.5
+    c: str = "Hello, world!"
+    d: list[int] = [1, 2, 3]
+
+main()
+```
+
+```rust
+// This is similar in Rust
+fn main() {
+    let a: i64 = 1;
+    let b: f64 = 2.5;
+    let c: String = "Hello, world!".to_string();
+    let d: Vec<i64> = vec![1, 2, 3];
+}
+```
+
+:::
+
 The two ways of creating variables are equivalent. The second example is more concise and Pythonic. The first example is also useful when you want to show other people which variables will be used later. Which one is better depends on your personal preference and the purpose of the code.
 
 :::tip Too verbose
@@ -177,7 +243,7 @@ You may find that the complete syntax of variable creation is still verbose, com
 
 The only exception, where you can omit the type annotation, is when you use the explicit constructors of types, such as `var l = List[Int](1, 2, 3)`, `var s = String("Hello")`, or `var i = Int128(100)`. In this case, the Mojo compiler can infer the type of the variable from the constructor.
 
-If you still want to chill a bit, luckily, Mojo is more than "clever" to allow you to omit the `var` keyword as well as the type annotation and use a **simplified** syntax: `name = value`, just like Python. This will be discussed in details in the next sections.
+If you still want to chill a bit, luckily, Mojo is more than "clever" to allow you to omit the `var` keyword as well as the type annotation and use a **simplified** syntax: `name = value`, just like Python. This will be discussed in details in a later section.
 
 :::
 
@@ -212,7 +278,7 @@ error: invalid redefinition of 'a'
     ^
 ```
 
-::::::info Variable shadowing
+:::::: info Variable shadowing
 
 Though not possible in Mojo, redefining a variable with the same name (even with a different type) is allowed in some other languages. This is called **variable shadowing** (or "redefinition"). For example, in Rust and Python, the following code is legal:
 
@@ -242,6 +308,8 @@ But in Mojo, it is not allowed. I find this a good design choice, as it helps to
 
 When creating a new variable, you can optionally skip the definition part of the variable creation syntax, i.e., you can omit the `var` keyword and the type annotation, and directly assign a value to a variable. By doing so, Mojo will automatically define the variable for you. This is similar to how you do it in Python. For example, the following simplified syntax is valid in Mojo.
 
+::: code-group
+
 ```mojo
 # src/basic/variables/variable_creation_without_var.mojo
 def main():
@@ -250,6 +318,17 @@ def main():
     c = "Hello, world!"
     d = [1, 2, 3]
 ```
+
+```python
+# src/basic/variables/variable_creation_without_var.py
+def main():
+    a = 1
+    b = 2.5
+    c = "Hello, world!"
+    d = [1, 2, 3]
+```
+
+:::
 
 In this example, Mojo sees that you are assigning a value `1` to a undeclared variable `a` (Mojo sees this name for the first time). It knows that you want to create a new variable. So it will automatically declare the variable `a` with the type `Int` for you. The same applies to the other variables `b`, `c`, and `d`.
 
@@ -310,7 +389,7 @@ fn main():
 
 :::
 
-In an exercise in Section [Integer](../basic/types#integers) of Chapter [Types](../basic/types), we will see that absence of type annotations can sometimes lead to unintended behaviors.
+In an exercise in Chapter [Types](../basic/types#exercises-on-integer-types), we will see that absence of type annotations can sometimes lead to unintended behaviors.
 
 ::: tip Inlay hints
 
@@ -432,7 +511,7 @@ lst1 = 1, 2, 3,
 lst2 = 1, 2, 3,
 ```
 
-### Value or reference (py vs mojo)
+### Copy value or reference (python vs mojo)
 
 At the very early lessons that you learned Python, you may have been told that Python variables are **references to objects** but not directly linked with a space in the memory. When you create a variable, e.g., `a = 10.0`, Mojo actually does the following things:
 
@@ -578,7 +657,7 @@ lst2 = -1, 2, 3,
 
 We will discuss more about "copy at assignment" in Chapter [Ownership](../advanced/ownership#four-statuses-of-ownership), and we will also see how the reference system works in Mojo in Chapter [References](../advanced/references).
 
-### Copy or transfer (rust vs mojo)
+### Copy or transfer value (rust vs mojo)
 
 If you are familiar with Rust, you may notice that the behavior of variable assignment in Mojo is different from that in Rust. In Mojo, when you assign a value from one variable to another, it copies the value by default. This means that both variables will have their own copies of the value, and changing one will not affect the other.
 
