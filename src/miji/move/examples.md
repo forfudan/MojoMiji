@@ -205,11 +205,11 @@ There are some other reasons why Mojo is much faster. In this example. One reaso
 
 :::::: info Speed comparison with C and Rust
 
-Now you know that Mojo is much faster than Python. You may wonder how the performance of Mojo is compared to C and Rust. So I also implement the same code in C and Rust.
+Now you know that Mojo is much faster than Python. You may wonder how the performance of Mojo is compared to C, Rust, and other static-typed languages. To answer this question, I will implement the same Fibonacci sequence code in C, Rust, Go, Swift and Zig.
 
-To give some stress to these languages, I increase the number of Fibonacci numbers to ***50*** (Do not do this in Python unless you want to take a long shower 😉).
+To give some stress to these languages, I also increase the number of Fibonacci numbers to ***50*** (Do not do this in Python unless you want to take a long shower 😉).
 
-The C, Rust, Mojo, and Python codes are as follows:
+The C, Rust, Go, Swift, Zig, Mojo, and Python codes are as follows:
 
 ::: code-group
 
@@ -246,11 +246,66 @@ fn main() {
 }
 ```
 
+```go
+package main
+
+import "fmt"
+
+func fib(n int64) int64 {
+    if n <= 1 {
+        return n
+    }
+    return fib(n-1) + fib(n-2)
+}
+
+func main() {
+    for i := int64(0); i < 50; i++ {
+        fmt.Printf("%d, ", fib(i))
+    }
+}
+```
+
+```swift
+func fib(_ n: Int64) -> Int64 {
+    if n <= 1 {
+        return n
+    }
+    return fib(n - 1) + fib(n - 2)
+}
+
+func main() {
+    for i in 0..<50 {
+        print("\(fib(Int64(i))), ", terminator: "")
+    }
+}
+
+main()
+```
+
+```zig
+const std = @import("std");
+
+fn fib(n: i32) i64 {
+    if (n <= 1) {
+        return n;
+    }
+    return fib(n - 1) + fib(n - 2);
+}
+
+pub fn main() void {
+    var i: i32 = 0;
+    while (i < 50) : (i += 1) {
+        std.debug.print("{}, ", .{fib(i)});
+    }
+}
+```
+
 ```mojo
-def fib(n: Int) -> Int:
+def fib(n: Int64) -> Int64:
     if n <= 1:
         return n
     return fib(n - 1) + fib(n - 2)
+
 
 def main():
     for i in range(50):
@@ -272,7 +327,7 @@ main()
 
 :::
 
-Let's compile the scripts into executables and run them. Here are the results:
+Let's compile the scripts into executables with the maximum level of optimization and and run them. Here are the results:
 
 ```console
 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181, 6765, 10946, 17711, 28657, 46368, 75025, 121393, 196418, 317811, 514229, 832040, 1346269, 2178309, 3524578, 5702887, 9227465, 14930352, 24157817, 39088169, 63245986, 102334155, 165580141, 267914296, 433494437, 701408733, 1134903170, 1836311903, 2971215073, 4807526976, 7778742049,
@@ -280,14 +335,17 @@ Let's compile the scripts into executables and run them. Here are the results:
 
 The time taken to run the code is as follows:
 
-| Language | Time (seconds) |
-| -------- | -------------- |
-| C        | 72             |
-| Rust     | 94             |
-| Mojo     | 42             |
-| Python   | 3440           |
+| Language | Time (seconds) | Command                                    | Size of executable |
+| -------- | -------------- | ------------------------------------------ | ------------------ |
+| C        | 31             | gcc -O3 fibonacci.c                        | 33 KB              |
+| Rust     | 35             | rustc -O fibonacci.rs                      | 450 KB             |
+| Go       | 43             | go build -ldflags="-s -w" fibonacci.go     | 1.4 MB             |
+| Swift    | 42             | swiftc -O fibonacci.swift                  | 51 KB              |
+| Zig      | 32             | zig build-exe -O ReleaseFast fibonacci.zig | 51 KB              |
+| Mojo     | 42             | mojo build fibonacci.mojo                  | 50 KB              |
+| Python   | 3440           | -                                          | -                  |
 
-To be frank, I am also surprised by the performance of Mojo in this case. Maybe it is not always faster, but at least a good sign.
+To be frank, I am quite satisfied with the performance of Mojo in this case. It is not the fastest, but it is promising.
 
 ::::::
 
