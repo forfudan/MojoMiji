@@ -46,7 +46,7 @@ In Mojo, a `List` is a mutable, variable-length sequence that can hold a collect
 | ------------------ | ---------------------- | ------------------------------------------- |
 | Type of elements   | Homogeneous type       | Heterogenous types                          |
 | Mutability         | Mutable                | Mutable                                     |
-| Inialization       | `List[Type]()` or `[]` | `list()` or `[]`                            |
+| Initialization     | `List[Type]()` or `[]` | `list()` or `[]`                            |
 | Indexing           | Use brackets `[]`      | Use brackets `[]`                           |
 | Slicing            | Use brackets `[a:b:c]` | Use brackets `[a:b:c]`                      |
 | Extending by items | Use `append()`         | Use `append()`                              |
@@ -481,3 +481,28 @@ In Mojo, the values of the elements of a list is stored consecutively on the hea
 If you are interested in the difference between the the memory layout of a list in Python and Mojo, you can refer to Chapter [Memory Layout of Mojo objects](../misc/layout.md) for more details, where I use abstract diagrams to compare the memory layouts of a list in Python and Mojo.
 
 :::
+
+## Dictionaries
+
+A `Dict` (dictionary) is a mutable, variable-length composite data type that is used to store a collection of key-value pairs. You can think of it as a real-world dictionary, where each key is a word and each value is the definition of that word. You can use the word (key) to look up the definition (value) in the dictionary. In a real-world dictionary, the words are unique, and each word has only one definition. Similarly, in a `Dict`, the keys are unique, and each key has only one value associated with it.
+
+Mojo's `Dict` type is similar to Python's `dict` type, Rust's `HashMap` type, C#'s `HashTable` type, or C++'s `std::unordered_map` type. Compared to Python's `dict`, the keys and values in a Mojo's `Dict` must be **of the same type**. In Python, the keys can be of any type as long as they can be hashable, while the values can also be of any type.
+
+The table below compares Mojo's `Dict` with Python's `dict`:
+
+| Functionality      | Mojo `Dict`                | Python `dict`                         |
+| ------------------ | -------------------------- | ------------------------------------- |
+| Type of elements   | Homogeneous type           | Heterogenous types                    |
+| Mutability         | Mutable                    | Mutable                               |
+| Initialization     | `Dict[Type, Type]()`       | `dict()` or `{}`                      |
+| Unique keys        | Yes                        | Yes                                   |
+| Unique values      | No                         | No                                    |
+| Key-value mapping  | Many-to-one mapping        | Many-to-one mapping                   |
+| Ordered            | No                         | Yes (>= Python 3.7)                   |
+| Indexing           | Use brackets `[key]`       | Use brackets `[key]`                  |
+| Slicing            | No                         | No                                    |
+| Extending by items | Use `update()`             | Use `update()`                        |
+| Extending by dicts | Use `update()`             | Use `update()`                        |
+| Printing           | Not supported              | Use `print()`                         |
+| Iterating          | Use `for` loop to get keys | Use `for` loop to get key-value pairs |
+| Iterator returns   | Reference to element       | Copy of element                       |
