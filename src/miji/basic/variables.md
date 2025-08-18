@@ -876,4 +876,4 @@ def main():
 ## Major changes in this chapter
 
 - 2025-06-18: Add some graphs for variables.
-- 2025-06-21: Update to accommodate to the changes in Mojo v24.5 (fcaa01b2).
+- 2025-06-21: Update to accommodate to the changes in Mojo v25.4 (fcaa01b2).

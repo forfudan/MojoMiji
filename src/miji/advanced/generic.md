@@ -829,4 +829,4 @@ Below is a table summarizing the most common dunder methods, the operators they 
 
 ## Major changes in this chapter
 
-- 2025-06-23: Update to accommodate to the changes in Mojo v24.5.
+- 2025-06-23: Update to accommodate to the changes in Mojo v25.4.

@@ -640,4 +640,4 @@ Actually, this long name is not random. It consists my given name, my courtesy n
 
 ## Major changes in this chapter
 
-- 2025-06-23: Update to accommodate to the changes in Mojo v24.5.
+- 2025-06-23: Update to accommodate to the changes in Mojo v25.4.

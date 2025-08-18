@@ -576,4 +576,4 @@ In this code, we use `ref [a, b] String` as the return type of the function `sho
 
 ## Major changes in this chapter
 
-- 2025-06-23: Update to accommodate to the changes in Mojo v24.5.
+- 2025-06-23: Update to accommodate to the changes in Mojo v25.4.
