@@ -39,7 +39,6 @@ For the example programs in this Miji, you can find them in the [GitHub reposito
   - [Modules and packages](./basic/packages) (Modular programming)
 - [PART IV: ADVANCED MOJO](./advanced/advanced)
   - [Data type - SIMD](./advanced/simd) (The first-class `SIMD` type)
-  <!-- - [Error handling (Yuhao is working on this)](./advanced/error_handling) -->
   - [Parameterization](./advanced/parameterization)
   - [Generic and traits](./advanced/generic)
   - [Ownership](./advanced/ownership) (The ownership system)
@@ -57,6 +56,6 @@ For the example programs in this Miji, you can find them in the [GitHub reposito
   - [Glossary of Mojo terms](./misc/glossary) (Find explanations of key terms and concepts)
   - [Tips and warnings](./misc/tips) (Do not fall into the pits I fell into)
   - [Useful resources and links](./misc/resources) (Online resources and links related to Mojo)
-  - [Wishes for extra features](./misc/wishes) (Some features I wish Mojo could have)
+  <!-- - [Wishes for extra features](./misc/wishes) (Some features I wish Mojo could have) -->
   - [About the author](./misc/author) (A brief introduction of the author)
   <!-- - [Further readings] -->
