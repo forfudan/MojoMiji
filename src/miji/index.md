@@ -7,9 +7,11 @@ nav: false
 
 by ***Yuhao Zhu 朱宇浩***
 
-::: warning Compatible Mojo versions
+::: warning Notes
 
 This Miji is compatible with Mojo v25.5 (2025-08-05).
+
+For the example programs in this Miji, you can find them in the [GitHub repository](https://github.com/forfudan/my-first-mojo-project).
 
 :::
 

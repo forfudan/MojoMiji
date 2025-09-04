@@ -18,6 +18,12 @@ Since the Python versions are project-specific and are located in different fold
 
 ## Create new Mojo project
 
+::: tip Repository of the project
+
+You can find the example programs in this Miji in the [GitHub repository](https://github.com/forfudan/my-first-mojo-project).
+
+:::
+
 Mojo relies on the concept of virtual environment. Each mojo project contains a folder with specific Mojo version and packages.
 When you run a Mojo script, it will use the Mojo compiler and packages only in this folder.
 
