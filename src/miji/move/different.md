@@ -177,8 +177,8 @@ In addition to the differences in data types, there are some other differences (
 | Variable definition                         | No keyword                      | `var` (in some cases optional)                     |
 | Variable re-definition possible?            | Yes                             | No                                                 |
 | Function definition                         | `def`                           | `def` (looser) or `fn` (stricter)                  |
-| Argument behavior depends on?               | Type                            | Modifiers, e.g., `read`, `mut`, `owned`            |
-| Argument passed by?                         | Reference                       | Value (`owned`) or reference (`read`, `mut`)       |
+| Argument behavior depends on?               | Type                            | Modifiers, e.g., `read`, `mut`, `var`              |
+| Argument passed by?                         | Reference                       | Value (`var`) or reference (`read`, `mut`)         |
 | Default argument mutability                 | Mutable or a new copy           | Immutable (default to `read` modifier)             |
 | Raises in the function signature            | No need                         | No need for `def` function, need for `fn` function |
 | A main function is needed                   | No                              | Yes                                                |

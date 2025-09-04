@@ -7,12 +7,6 @@ The package system in Mojo is very similar to Python's, with modules and package
 
 For Pythonistas, you can quickly scan this chapter and skip some sections because the concepts in this chapter are very similar to Python's modules and packages.
 
-::: info Compatible Mojo version
-
-This chapter is compatible with Mojo v25.4 (2025-06-18).
-
-:::
-
 [[toc]]
 
 ## Modular programming

@@ -10,12 +10,6 @@ Luckily, you do not need to know the ownership model if you just want to write s
 
 I have to say that it is difficult. You may find that you are still at a loss after reading this chapter. Don't worry. You are not alone. What you need is just to code more and think more. As you accumulated sufficient experience after a while, you can back to this chapter again or read other materials, and will eventually manage it.
 
-::: info Compatible Mojo version
-
-This chapter is compatible with Mojo v25.4 (2025-06-18).
-
-:::
-
 [[toc]]
 
 ## An intuitive example of ownership
@@ -83,7 +77,7 @@ If there is only one variable and one value, we do not need ownership at all. We
 
 There are many ways to introduce the concept of "ownership". I thought about it for a long time and finally decided to build a conceptual model of ownership based on the **statuses possible statuses of ownership**. This model can help you understand the relationship between variables and values, and then we will discuss how the ownership rules are related to these statuses. The statuses are:
 
-1. **isolated**: each variable owns its own value. It can be created by a copy of the value or the `owned` keyword.
+1. **isolated**: each variable owns its own value. It can be created by a copy of the value or the `var` keyword.
 2. **referenced**: one variable owns a value, while another variable is an alias (body double) of the first variable. It can be created by the `read` or `mut` keyword in the sub-function scope. From v25.4, it can also be created by the `ref` keyword in the local scope.
 3. **pointed**: one variable owns a value, while another variable is a safe pointer to the value. It can be created by the `Pointer` type.
 4. **unsafe**: one variable is an unsafe pointer to the address of a value, but does not track the status of the owner of the value. It can be created by the `UnsafePointer` type.
@@ -595,14 +589,14 @@ The second exception, though improving the performance and efficiency, may lead 
 struct Team:
     var names: List[String]
 
-    def __init__(out self, owned *names: String):
+    def __init__(out self, var *names: String):
         # Copy the incoming names into the List
         self.names = List[String](elements=names^)
 
     fn __copyinit__(out self, other: Self):
         self.names = other.names
 
-    fn __moveinit__(out self, owned other: Self):
+    fn __moveinit__(out self, var other: Self):
         self.names = other.names^
         # When move, add another person
         self.names.append("Yuhao")
@@ -965,3 +959,7 @@ Then, the rule of planning can be translated into the language ownership model i
 :::
 
 These rules of ownership are checked at compile time, and ensure that Mojo is safe at execution.
+
+## Major changes in this chapter
+
+- 2025-09-4: Update to accommodate to the changes in Mojo v25.5.

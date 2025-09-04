@@ -4,13 +4,13 @@
 
 In Chapter [Ownership](../advanced/ownership), we introduced the ownership system of Mojo, as well as four statuses of ownership: **isolated**, **referenced**, **pointed**, and **unsafely pointed**. In the **referenced** status, a variable is defined as the **reference** of another variable, which means that it shares the same value and behaviors of the variable it refers to, but does not have the ownership of the value. Moreover, the lifetime of the reference is tied to the lifetime of the value it refers to. The Mojo compiler will ensure that the reference is valid by checking the ownership rules at compile time. Thus, we can say that the reference is a kind of **alias**.
 
-In Chapter [Functions](../basic/functions) earlier, we introduced the keywords `read`, `mut`, and `owned` as modifiers for function arguments. These keywords are used to define the ownership and mutability of the arguments, and they also relate to the concept of references in Mojo.
+In Chapter [Functions](../basic/functions) earlier, we introduced the keywords `read`, `mut`, and `var` as modifiers for function arguments. These keywords are used to define the ownership and mutability of the arguments, and they also relate to the concept of references in Mojo.
 
 In this chapter, we will re-visit the concept of **reference** in Mojo again, but focuses more on different keywords and behaviors of references.
 
-::: info Compatible Mojo version
+::: info Future changes expected
 
-This chapter is compatible with Mojo v25.4 (2025-06-18).
+The reference system in Mojo is still evolving. The syntax and semantics described in this document are subject to change in future versions of Mojo.
 
 :::
 
@@ -59,7 +59,7 @@ Auto-dereferencing is convenient, but it also increase the complexity of the syn
 
 ## Conventions of references
 
-In Mojo, the keywords `read`, `mut`, and `owned`, are the main keywords defining the conventions of arguments. The keyword `out` is used to define a named result of a function. The keyword `ref` to create an reference in the local scope or to return a reference from a function.
+In Mojo, the keywords `read`, `mut`, and `var`, are the main keywords defining the conventions of arguments. The keyword `out` is used to define a named result of a function. The keyword `ref` to create an reference in the local scope or to return a reference from a function.
 
 In the early days of Mojo, there used to be other keywords. As time went by, the keywords were deprecated or replaced by the current ones. You can find the discussion about why these new names were selected in the following thread on GitHub:
 
@@ -76,6 +76,7 @@ As a "archaeologist", I always like to track the history of the changes in the l
 | v25.1      | `borrowed` generating warning | `inout` generating warning               |                            |                    |                  |
 | v25.2      | `borrowed` deprecated         | `inout` deprecated                       |                            |                    |                  |
 | v25.4      |                               |                                          | `ref` introduced           |                    |                  |
+| v25.5      |                               |                                          |                            | `var` introduced   |                  |
 
 We will discuss each keyword of conventions in the following sub-sections.
 
@@ -331,9 +332,9 @@ Address │16b6a8fae│16b6a8faf│16b6a8fb0│16b6a8fb1│16b6a8fb2│16b6a8fb3
                           variable `x` (Int8)
 ```
 
-### Copied value in sub-scope: `owned`
+### Copied value in sub-scope: `var`
 
-The keyword `owned` allows you to pass a **copy** of the value into the function. Not that it is a copy, not a reference. Therefore, an [**isolated status**](../advanced/ownership.md#four-statuses-of-ownership) is created.
+The keyword `var` allows you to pass a **copy** of the value into the function. Not that it is a copy, not a reference. Therefore, an [**isolated status**](../advanced/ownership.md#four-statuses-of-ownership) is created.
 
 If we apply our [conceptual model of variables](../basic/variables.md#conceptual-model-of-variable), the following things will happen:
 
@@ -341,14 +342,14 @@ If we apply our [conceptual model of variables](../basic/variables.md#conceptual
 1. The argument **owns** the value at the new address. It can modify the value at the address.
 1. Since the address of the argument in the function is different from that of the variable you passed into the function, the value of the variable outside the function will not be modified.
 
-The following example examines the functionality of the `owned` keyword **from the memory's perspective**. In the function signature of `changeit()`, we use the `owned` keyword to indicate that the argument `a` is an owned copy of the value passed in.
+The following example examines the functionality of the `var` keyword **from the memory's perspective**. In the function signature of `changeit()`, we use the `var` keyword to indicate that the argument `a` is an owned copy of the value passed in.
 
 ```mojo
-# src/basic/functions/owned_keyword.mojo
+# src/basic/functions/var_keyword.mojo
 from memory import Pointer
 
 
-def changeit(owned a: Int8):
+def changeit(var a: Int8):
     print(
         String(
             "Within function call: argument `a` is of the value {} and the address {}"
@@ -406,7 +407,7 @@ Address │16bb384f5│16bb384f6│16bb384f7│16bb384f8│
                           variable `x` (Int8)
 ```
 
-Next, you pass this variable `x` into the function `changeit()` with the `owned` keyword. Mojo will then copy the value (`0b00000100`) to a new address `0x16bb38510`, and let the argument `a` to own this new value and the address. These two variables are completely isolated from each other. See the following illustration.
+Next, you pass this variable `x` into the function `changeit()` with the `var` keyword. Mojo will then copy the value (`0b00000100`) to a new address `0x16bb38510`, and let the argument `a` to own this new value and the address. These two variables are completely isolated from each other. See the following illustration.
 
 ```console
                                                                 argument `a` (Int8)

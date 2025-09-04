@@ -5,12 +5,6 @@
 
 A variable is a fundamental concept in programming which allows you to store, read, and manipulate data. It can be seen as a container of data, enabling you to refer to the data by a symbolic name rather than the value in the memory directly. This is essential for writing readable and maintainable code.
 
-::: info Compatible Mojo version
-
-This chapter is compatible with Mojo v25.4 (2025-06-18).
-
-:::
-
 [[toc]]
 
 ## Conceptual model of variables

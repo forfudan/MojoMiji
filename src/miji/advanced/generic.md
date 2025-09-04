@@ -4,12 +4,6 @@ Parametrization is about setting the value of a certain type to be fixed at run 
 
 **Generic** is a model that allows you to write code that can operate on different types, improving maintainability, readability, and extensibility of your code.
 
-::: info Compatible Mojo version
-
-This chapter is compatible with Mojo v25.4 (2025-06-18).
-
-:::
-
 [[toc]]
 
 ## Generic

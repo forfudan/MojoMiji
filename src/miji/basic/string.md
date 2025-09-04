@@ -7,9 +7,7 @@ String is one of the most important concepts in programming languages, but also 
 
 Nevertheless, most programming languages do have a built-in string type. Mojo is no exception. However, the design of `String` in Mojo is, inevitably, changing rapidly, due to the reasons we mentioned above. Even within the development team, there are different opinions on how to design the `String` type. This is why we put string in this standalone chapter.
 
-::: warning Compatible Mojo version
-
-This chapter is compatible with Mojo v25.5 (2025-08-05).
+::: warning Future changes expected
 
 The behavior of `String` has been changing rapidly. Some of the features described here may not be applicable to the latest versions of Mojo, and some of the features may still be changing in future versions.
 

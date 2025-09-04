@@ -7,9 +7,9 @@ nav: false
 
 by ***Yuhao Zhu 朱宇浩***
 
-::: warning Compatible Mojo version
+::: warning Compatible Mojo versions
 
-This Miji is compatible with Mojo v25.4 (2025-06-18).
+This Miji is compatible with Mojo v25.5 (2025-08-05).
 
 :::
 
