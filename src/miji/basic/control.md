@@ -9,12 +9,6 @@ There are three main types of control flows in Python: loops, conditionals, and 
 
 For Pythonistas, you can quickly scan this chapter and jump to the exercises because the concepts in this chapter are very similar to Python's control flows. You may still need to pay attention to some blocks marked in yellow or red colors, which indicate the differences between Mojo and Python.
 
-::: info Compatible Mojo version
-
-This chapter is compatible with Mojo v25.4 (2025-06-18).
-
-:::
-
 [[toc]]
 
 ## Conditionals
@@ -834,7 +828,7 @@ The next example is to write a program that continuously calculate $x_i = \frac{
 ```mojo
 # src/basic/controls/value_convergence.mojo
 fn value_convergence(
-    owned value: Float64,
+    var value: Float64,
     tolerance: Float64 = 0.01,
 ) -> Float64:
     while abs(value - 1) >= tolerance:
@@ -995,13 +989,12 @@ For example, if we write a code to continuously calculate $x_i = \frac{x_{i-1} +
 
 ```mojo
 # src/basic/control/value_not_converging.mojo
-fn value_convergence(
-    owned value: Float64, tolerance: Float64 = 0.01
-) -> Float64:
+fn value_convergence(var value: Float64, tolerance: Float64 = 0.01) -> Float64:
     while value >= tolerance:
         value = (value + 1) / 2.0
         print("Current value:", value)
     return value
+
 
 fn main():
     print("Converged value:", value_convergence(100.0, tolerance=0.0001))
@@ -1019,9 +1012,7 @@ In practice, we can use a variable to keep track of the number of iterations and
 
 ```mojo
 # src/basic/control/value_not_converging_but_break_after_some_steps.mojo
-fn value_convergence(
-    owned value: Float64, tolerance: Float64 = 0.01
-) -> Float64:
+fn value_convergence(var value: Float64, tolerance: Float64 = 0.01) -> Float64:
     var counter = 0
     var max_steps = 100
     while value >= tolerance:

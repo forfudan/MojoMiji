@@ -14,7 +14,7 @@ This chapter summarizes the information, tips, and warnings that are scattered t
 
 [Do not abuse function overloading](../basic/functions.md#function-overloading): Functional overloading is powerful, but it can lead to confusion if you use it as a general container for anything. You should always make the function names self-explanatory.
 
-[Graph: `read` and `owned` arguments in memory](../basic/functions#mutability-of-arguments): These graphs illustrate how `read` and `owned` arguments are laid out in memory and how they are interacted with the variables you pass to the function.
+[Graph: `read` and `var` arguments in memory](../basic/functions#mutability-of-arguments): These graphs illustrate how `read` and `var` arguments are laid out in memory and how they are interacted with the variables you pass to the function.
 
 [Arguments and reference - Mojo vs Rust](../basic/functions.md): Do you know that the term "reference" means different things in Mojo and Rust?
 
@@ -60,4 +60,4 @@ This chapter summarizes the information, tips, and warnings that are scattered t
 
 [Inconsistent behaviors of copy and move](../advanced/ownership.md): If you define different behaviors for `__copyinit__()` and `__moveinit__` in a struct, you may encounter unexpected behaviors when you use the assignment operator `=`. This is because the Mojo compiler will call the `__moveinit__()` method if the variable is not used after the assignment. So, you should always define the same behavior for both methods.
 
-[Historical keywords of references conventions](../advanced/references#keywords-of-conventions): Do you know that the keywords `read`, `mut`, and `owned` were not always the keywords used to define the ownership and mutability of function arguments? You can find the historical keywords and the versions of Mojo when they were introduced and deprecated.
+[Historical keywords of references conventions](../advanced/references#keywords-of-conventions): Do you know that the keywords `read`, `mut`, and `var` were not always the keywords used to define the ownership and mutability of function arguments? You can find the historical keywords and the versions of Mojo when they were introduced and deprecated.

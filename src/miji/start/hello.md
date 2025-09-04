@@ -1,6 +1,6 @@
 # My first Mojo program
 
-Now we have set up everything (finally). In this chapter, let's write our first Mojo program and run it.
+Now we have set up everything, finally. In this chapter, let's write our first Mojo program and run it.
 
 [[toc]]
 

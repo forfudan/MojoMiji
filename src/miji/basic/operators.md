@@ -7,12 +7,6 @@ Operators are symbols that perform operations on one or more operands. They are 
 
 The Mojo's operators and assignment expressions are very similar to Python's. If you are already familiar with Python, just scan through this chapter and focus on the differences.
 
-::: info Compatible Mojo version
-
-This chapter is compatible with Mojo v25.4 (2025-06-18).
-
-:::
-
 [[toc]]
 
 ## Operators

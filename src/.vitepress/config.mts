@@ -58,10 +58,8 @@ export default defineConfig({
   themeConfig: {
     logo: '/icon.png',
     nav: [
-      // {
-      //   text: 'Open Miji', link: '/miji/'
-      // },
       { text: 'List of Mojo resources', link: '/miji/misc/resources' },
+      { text: 'Repo of programs in this Miji', link: 'https://github.com/forfudan/my-first-mojo-project' },
     ],
     logoLink: {
       link: 'https://mojo-lang.com/miji',

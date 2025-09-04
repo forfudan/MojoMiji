@@ -7,9 +7,7 @@ Lifetime is a concept that describes how long a value (of a variable) exists in 
 
 Many people think that lifetime is a complex concept, as well as how to denote it in your code. Indeed, in Rust, lifetime annotation seems to be complex, and failing to understand it can lead to many compiler errors. In Mojo, however, the syntax related to lifetime is much simpler and more intuitive.
 
-::: warning Compatible Mojo version
-
-This chapter is compatible with Mojo v25.4 (2025-06-18).
+::: warning Future changes expected
 
 The lifetime system in Mojo is still evolving. The syntax and semantics described in this document are subject to change in future versions of Mojo.
 
@@ -576,4 +574,4 @@ In this code, we use `ref [a, b] String` as the return type of the function `sho
 
 ## Major changes in this chapter
 
-- 2025-06-23: Update to accommodate to the changes in Mojo v24.5.
+- 2025-06-23: Update to accommodate to the changes in Mojo v25.4.

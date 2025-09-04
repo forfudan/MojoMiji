@@ -11,11 +11,13 @@ The array view is particularly helpful if you want to obtain the sliced array wi
 ## Data structure
 
 Recall that `NDArray` is defined as
+
 ```mojo
 struct NDArray[dtype: DType = DType.float64, Buffer: Bufferable = OwnedData](Stringable, Writable):
 ```
 
 The array view is actually:
+
 ```mojo
 NDArray[dtype, Buffer = RefData[__origin_of(existing_array)]
 ```
@@ -23,6 +25,7 @@ NDArray[dtype, Buffer = RefData[__origin_of(existing_array)]
 The underlying data buffer of `NDArray` is `OwnedData`, which is a wrapper of owned `UnsafePointer`. The underlying data buffer of view of data is `RefData`, which is a wrapper of referenced `UnsafePointer` of another array.
 
 Both `OwnedData` and `RefData` are of the `Bufferable` trait. You can always obtain the pointer to the underying buffer of array `a`, no matter it is a view or not, by:
+
 ```mojo
 a._buf.get_ptr()  # UnsafePointer
 ```
@@ -30,6 +33,7 @@ a._buf.get_ptr()  # UnsafePointer
 ## Constructing view
 
 Constructing a view is simple: Passing a reference to the underlying data buffer, and specify the shape and strides information of the view. No copying of data happens in this process.
+
 ```mojo
 fn __init__(
     out self,
@@ -43,6 +47,7 @@ fn __init__(
     self.size = self.shape.size
     self._buf = Buffer(ptr=ptr+offset)
 ```
+
 See, the array view will simply re-use the data buffer of an existing array (mutable reference), but with some offset in pointer, new shape, and new strides information.
 
 ## Offset, shape, and strides of view
@@ -53,6 +58,7 @@ The shape and strides of the view can be determined based on:
 - The start, end, and step of the slices.
 
 Here is an example, an 6x8 array with 48 items. The values in the box can be seen as both the addresses of vitual memory and the values stored there.
+
 ```console
 a 
 ┌──┬──┬──┬──┬──┬──┬──┬──┐
@@ -115,6 +121,7 @@ So, item `(1, 1)` of array view `b` has the adress `10 + 1*16 + 1*2 = 28`. item 
 ## Slice of whole axis
 
 Sometimes we want to retrieve a whole axis of an array (row of matrix, plain of ndarray, etc). For example, `a[1]` or `a[1, :]` returns the second row of the matrix `a` above, which would be:
+
 ```console
 a[1]:
 ┌──┬──┬──┬──┬──┬──┬──┬──┐
@@ -152,7 +159,7 @@ $$
 offset_b = \overrightarrow{start} \cdot \overrightarrow{strides_a}
 $$
 
-For instance, `a` has shape `(6, 8)` and strides `(8, 1)`. 
+For instance, `a` has shape `(6, 8)` and strides `(8, 1)`.
 
 Then, `b = a[1]` has shape `(8)`, strides `(1)`, and offset `8`.
 $$
@@ -174,6 +181,6 @@ To perform SIMD operations on view of array, we need to verify whether the items
 - If `strides[0] = 1`, then it is continous on the first axis (F-continuous).
 - For 1darray, it can both be C-continous and F-continuous.
 
-If the checks pass, we can still load and store more than one items via SIMD. Otherwise, we should load the values individually with their indices. 
+If the checks pass, we can still load and store more than one items via SIMD. Otherwise, we should load the values individually with their indices.
 
 (Notes: `order=="F"` should be replaced by `strides[0]==1` in future.)

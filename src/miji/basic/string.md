@@ -1,23 +1,19 @@
-
 # Data type - String
 
-> There are a thousand string types in a thousand people's eyes.  
-> -- Yuhao Zhu, *Gate of Heaven*
+> There are a thousand string types in a thousand people's eyes.
+> -- Yuhao Zhu, _Gate of Heaven_
 
 String is one of the most important concepts in programming languages, but also one of the most controversial ones. On the one hand, the "string" is able to store or represent the texts of almost all human languages. On the other hand, it is also a source of confusion and frustration for many programmers, especially when it comes to how to encode, decode, and manipulate strings. In a thousand people's eyes, there are a thousand different ways to implement a string type as well as its functionalities. Thus, some people even think that the string type should not be a built-in type in programming languages, but rather be in third-party libraries that can be implemented in different ways.
 
 Nevertheless, most programming languages do have a built-in string type. Mojo is no exception. However, the design of `String` in Mojo is, inevitably, changing rapidly, due to the reasons we mentioned above. Even within the development team, there are different opinions on how to design the `String` type. This is why we put string in this standalone chapter.
 
-::: warning Compatible Mojo version
-
-This chapter is compatible with Mojo v25.4 (2025-06-18).
+::: warning Future changes expected
 
 The behavior of `String` has been changing rapidly. Some of the features described here may not be applicable to the latest versions of Mojo, and some of the features may still be changing in future versions.
 
 There are many ongoing discussions about the design of `String` in Mojo. The official team is still working on it. Here are some nice references that we can refer to:
 
-- [Proposal on String Design](https://github.com/modular/modular/blob/main/mojo/proposals/string-design.md
-) in the Mojo official repo for more up-to-date information.
+- [Proposal on String Design](https://github.com/modular/modular/blob/main/mojo/proposals/string-design.md) in the Mojo official repo for more up-to-date information.
 - [PR #3984: Un-deprecate `String.__iter__()`](https://github.com/modular/modular/pull/3984).
 - [PR #3988: String, ASCII, Unicode, UTF, Graphemes](https://github.com/modular/modular/pull/3988).
 
@@ -31,44 +27,51 @@ String is an important type of Mojo and Python, which represents a sequence of U
 
 The following table summarizes the differences between `String` in Mojo and `str` in Python. Note that some features are still under development in Mojo, so they may not be available in the current version. This table is also referred in Chapter [Differences between Python and Mojo](../move/different#string).
 
-| Functionality                           | Python string                             | Mojo string                                            |
-| --------------------------------------- | ----------------------------------------- | ------------------------------------------------------ |
-| Type of string literals                 | `Literal`                                 | `StringLiteral`                                        |
-| String literal auto converted to string | No                                        | No                                                     |
-| Constructed string from string literals | Use `str()` constructor                   | Use `String()` constructor                             |
-| Use string methods on string literals   | Yes, string literals are coerced to `str` | No, some methods are not applicable to string literals |
-| Print string with `print()`             | Yes                                       | Yes                                                    |
-| Format string with `format()`           | Yes, use `{}`                             | Yes, but you cannot specify formatting, e.g, `.2f`     |
-| f-strings                               | Supported                                 | Not supported (yet)                                    |
-| formatted values                        | Supported, e.g., `{:0.2f}`, `{:0.3%}`     | Not supported (yet)                                    |
-| Iteration over UTF-8 code points        | Yes, use `for i in s:` directly           | Yes, but more complicated                              |
-| UTF8-assured indexing and slicing       | Yes, use `s[i]` or `s[i:j]` directly      | Not supported                                          |
+| Functionality                           | Python string                             | Mojo string                                           |
+| --------------------------------------- | ----------------------------------------- | ----------------------------------------------------- |
+| Type of string literals                 | `Literal`                                 | `StringLiteral`                                       |
+| String literal auto converted to string | Yes                                       | Yes                                                   |
+| Constructed string from string literals | Use `str()` constructor                   | Use `String()` constructor                            |
+| Use string methods on string literals   | Yes, string literals are coerced to `str` | Yes, string literals are coerced to string at changes |
+| Print string with `print()`             | Yes                                       | Yes                                                   |
+| Format string with `format()`           | Yes, use `{}`                             | Yes, but you cannot specify formatting, e.g, `.2f`    |
+| f-strings                               | Supported                                 | Not supported (yet)                                   |
+| formatted values                        | Supported, e.g., `{:0.2f}`, `{:0.3%}`     | Not supported (yet)                                   |
+| Iteration over UTF-8 code points        | Yes, use `for i in s:` directly           | Yes, but more complicated                             |
+| UTF8-assured indexing and slicing       | Yes, use `s[i]` or `s[i:j]` directly      | Not supported                                         |
 
 ## String construction
 
-In Mojo, you can create a `String` instance in two ways:
+In Mojo, you can create a `String` instance in three ways:
 
-1. Explicitly declare a variable with the `String` type and assign a string literal to it.
 1. Wrapping a **string literal** with the `String()` constructor.
+1. Explicitly declare a variable with the `String` type and assign a string literal to it.
+1. Simply assign a string literal to a variable.
 
 The methods are similar to Python. Let's take a look at the following examples:
 
 ::: code-group
 
 ```mojo
+# src/basic/string/create_a_string.mojo
 def main():
     var s1 = String("Hello, world!")
     var s2: String = "Hello, Mojo!"
+    var s3 = "Hello, Mojo v25.5!"
     print(s1)
     print(s2)
+    print(s3)
 ```
 
 ```python
 def main():
     s1: str = "Hello, world!"
     s2 = str("Hello, world!")
+    s3 = "Hello, Mojo v25.5!"
     print(s1)
     print(s2)
+    print(s3)
+
 main()
 ```
 
@@ -79,6 +82,7 @@ If we run the above code, we will get the following output for both Mojo and Pyt
 ```console
 Hello, world!
 Hello, Mojo!
+Hello, Mojo v25.5!
 ```
 
 ## String literals and String
@@ -98,9 +102,16 @@ def main():
 # This is a string literal that spans multiple lines.
 ```
 
-If you **do not** explicitly declare a variable as a `String` type or use the `String()` constructor, Mojo compiler will keep the string literal as a `StringLiteral` instance and **will not** automatically materialize it into a `String` instance at run time. That is to say that the `str1`, `str2`, `str3` variables in the following code snippet are of different types:
+When you run the code, the `StringLiteral` type will be automatically materialized to a `String` type. This `String` instance is immutable until you modify it for the first time: the content of the `String` instance is copied to the heap and `String` instance becomes mutable.
+
+As a user, you do not need to worry about these details. Mojo does everything for you.
+
+::: details String literals not materialized to String before Mojo v25.5
+
+Before Mojo v25.5, string literals are not automatically converted to `String` type at run time. If you **do not** explicitly declare a variable as a `String` type or use the `String()` constructor, Mojo compiler will keep the string literal as a `StringLiteral` instance and **will not** automatically materialize it into a `String` instance at run time. That is to say that the `str1`, `str2`, `str3` variables in the following code snippet are of different types:
 
 ```mojo
+# This is only relevant for Mojo v25.4 and earlier.
 def main():
     var str1 = "Hello"          # StringLiteral
     var str2: String = "Hello"  # String
@@ -111,10 +122,11 @@ def main():
 
 Mojo does not automatically convert the `StringLiteral` type into the `String` type because it avoids creating a `String` instance that is dynamically allocated on the heap, and thus improves performance. The disadvantage is that you cannot modify the string literal, and you cannot apply some string methods on it, such as `format()`.
 
-The following code snippet illustrates the difference between `StringLiteral` and `String` in Mojo. The first variable `s1` is a `StringLiteral` instance because we did not explicitly declare it as a `String` type. The second variable `s2` is a `String` instance because we used the `String()` constructor to wrap the string literal. Nevertheless, both `s1` and `s2` can be printed with the `print()` function. You can also get the address the location of the string literal or string in memory, as well as the address of the first letters of them.
+The following code snippet illustrates the difference between `StringLiteral` and `String` in Mojo v25.4 and earlier. The first variable `s1` is a `StringLiteral` instance because we did not explicitly declare it as a `String` type. The second variable `s2` is a `String` instance because we used the `String()` constructor to wrap the string literal. Nevertheless, both `s1` and `s2` can be printed with the `print()` function. You can also get the address the location of the string literal or string in memory, as well as the address of the first letters of them.
 
 ```mojo
 # src/basic/string/string_literal_vs_string.mojo
+# This is only relevant for Mojo v25.4 and earlier.
 def main():
     var s1 = (
         "I am of the string literal type with the type name `StringLiteral`"
@@ -146,7 +158,7 @@ If we run the above code, we will get the following output:
 I am of the string literal type with the type name `StringLiteral`
 My meta data is store at the address 0x16f200408
 My first letter is stored at the address  0x3100040b0
-I   a m   o f   t h e   s t r i n g   l i t e r a l   t y p e   w i t h   t h e   t y p e   n a m e   ` S t r i n g L i t e r a l ` 
+I   a m   o f   t h e   s t r i n g   l i t e r a l   t y p e   w i t h   t h e   t y p e   n a m e   ` S t r i n g L i t e r a l `
 ================================================================================
 I am of the string type with the type name `String`
 My meta data is stored at the address 0x16f200390
@@ -156,7 +168,11 @@ I   a m   o f   t h e   s t r i n g   t y p e   w i t h   t h e   t y p e   n a 
 
 ---
 
-Usually, you do not need to worry about the difference between `StringLiteral` and `String` if you just want to print some sentences. If you later want to use some string-specific methods, such as `format()`, you can simply wrap the string literal with the `String()` constructor to convert it to a `String` instance.
+Nevertheless, in Mojo v25.4 and earlier, you do not need to worry about the difference between `StringLiteral` and `String` if you just want to print some sentences. If you later want to use some string-specific methods, such as `format()`, you can simply wrap the string literal with the `String()` constructor to convert it to a `String` instance.
+
+After Mojo v25.5, this distinction is no longer relevant, as all string literals are automatically converted to `String` instances at run time.
+
+:::
 
 ## String printing and formatting
 
@@ -169,11 +185,16 @@ String formatting is partially supported in Mojo. You can use curly brackets `{}
 def main():
     var a = String("Today is {} {} {}").format(1, "Janurary", 2023)
     var b = String("{0} plus {1} equals {2}").format(1.1, 2.34, 3.45)
+    var c = "{0} apples plus {1} oranges is {2}".format(3, 2, "nonsense")
     print(a)
     print(b)
+    print(c)
+
+
 # Output:
 # Today is 1 Janurary 2023
 # 1.1 plus 2.34 equals 3.45
+# 3 apples plus 2 oranges is nonsense
 ```
 
 However, the following features are not supported in Mojo:
@@ -237,6 +258,7 @@ The following examples compares the iteration of strings in Mojo and Python:
 ::: code-group
 
 ```mojo
+# src/basic/string/string_iteration.mojo
 def main():
     my_string = String("Hello, world! 你好，世界！")
     for char in my_string.codepoints():
@@ -244,10 +266,13 @@ def main():
 ```
 
 ```python
+# src/basic/string/string_iteration.py
 def main():
     my_string = str("Hello, world! 你好，世界！")
     for char in my_string:
         print(char, end="")
+
+
 main()
 ```
 
@@ -336,7 +361,7 @@ For example, the letter "a" (U+0061) will take 4 bytes in UTF-32, while it only 
 
 The advantage of UTF-8 is obvious, the only technical question is **segmentation**. We need some unique patterns to allow us, as well as computers, to quickly determine whether a byte is the start of a character or not. Here are the rules:
 
-- A valid UTF-8 character must starts with `0` (1-byte character), `110` (2-byte character), `1110` (3-byte character), `11110` (4-byte character). 
+- A valid UTF-8 character must starts with `0` (1-byte character), `110` (2-byte character), `1110` (3-byte character), `11110` (4-byte character).
 - The non-first bytes of a string must be `10`.
 
 This means that not all slices of 1 bytes to 4 bytes are valid UTF-8 characters. For more about the encoding schema, you can refer to the [UTF-8 Wikipedia page](https://en.wikipedia.org/wiki/UTF-8).
@@ -460,4 +485,5 @@ Index | Binary       | Decimal | Hexadecimal
 
 ## Main changes in this chapter
 
-- 2025-06-21: Update to accommodate to the changes in Mojo v24.5.
+- 2025-06-21: Update to accommodate to the changes in Mojo v25.4.
+- 2025-08-18: Update to accommodate to the changes in Mojo v25.5.

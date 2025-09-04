@@ -2,12 +2,6 @@
 
 Parametrization is not difficult, as you can see in this chapter soon. But it is a very powerful tool that allows us to improve the performance of our programs during execution. We do not have this feature in Python and, I have to say, it is not something that is mandatory to write a program to solve daily problems. So I put this topic in the advanced section of the Miji.
 
-::: info Compatible Mojo version
-
-This chapter is compatible with Mojo v25.4 (2025-06-18).
-
-:::
-
 [[toc]]
 
 ## Compile time vs runtime

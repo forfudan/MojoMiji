@@ -5,12 +5,6 @@
 
 Now we are familiar with variables in Mojo. This chapter continue with functions.
 
-::: info Compatible Mojo version
-
-This chapter is compatible with Mojo v25.4 (2025-06-18).
-
-:::
-
 [[toc]]
 
 ## Code re-use
@@ -431,7 +425,7 @@ def main():
 
 If an argument is mutable, it means that the function can modify the value of the argument, i.e., the value (belonging to a variable outside the function) that passed into the function. In Python, this mutability is determined by the type of the value. In Mojo, however, you have more control over the mutability of the arguments. Although there is a default behavior, you can always explicitly define the mutability of the arguments in the function declaration.
 
-The mutability of the arguments is defined by several keywords, namely, `read`, `mut`, and `owned`. I will also call them "mutability modifiers" in this Miji. Let's discuss them here one by one. Later, after we have introduced the concept of ownership, **we will revisit these keywords** and discuss more about the references system of Mojo in Chapter [Reference](../advanced/references.md).
+The mutability of the arguments is defined by several keywords, namely, `read`, `mut`, and `var`. I will also call them "mutability modifiers" in this Miji. Let's discuss them here one by one. Later, after we have introduced the concept of ownership, **we will revisit these keywords** and discuss more about the references system of Mojo in Chapter [Reference](../advanced/references.md).
 
 ::: warning Arguments and reference - Mojo vs Rust
 
@@ -685,9 +679,9 @@ fn main():
 
 ::::::
 
-### keyword `owned`
+### keyword `var`
 
-The keyword `owned` allows you to pass a **copy** of the value into the function. In other words, the following things will happen:
+The keyword `var` allows you to pass a **copy** of the value into the function. In other words, the following things will happen:
 
 1. The value of the variable you passed into the function will be copied to a new address in the memory, and the argument of the function will get this new address and the value at that address.
 1. The argument **owns** the value at the new address. It can modify the value at the address.
@@ -695,16 +689,24 @@ The keyword `owned` allows you to pass a **copy** of the value into the function
 
 If we apply the [four-status model of ownership](../advanced/ownership.md#four-statuses-of-ownership) introduced in Chapter [Ownership](../advanced/ownership.md) later, this means that a **isolated status** is created.
 
-The following example examines the functionality of the `owned` keyword **from the memory's perspective**. In the function signature of `changeit()`, we use the `owned` keyword to indicate that the argument `a` is an owned copy of the value passed in.
+::: info the very same `var` keyword
+
+You may notice that the keyword `var` is also used to declare a variable. Yes, they are the very same keyword. When using `var` in the function declaration, it indicates that the argument is an **owned copy** of the value passed in, just like that you declare a new variable in the function scope that owns its value.
+
+Simplicity is good. That is why Mojo reuses the same keyword here.
+
+:::
+
+The following example examines the functionality of the `var` keyword **from the memory's perspective**. In the function signature of `changeit()`, we use the `var` keyword to indicate that the argument `a` is an owned copy of the value passed in.
 
 ::: code-group
 
 ```mojo
-# src/basic/functions/owned_keyword.mojo
+# src/basic/functions/var_keyword.mojo
 from memory import Pointer
 
 
-def changeit(owned a: Int8):
+def changeit(var a: Int8):
     print(
         String(
             "Within function call: argument `a` is of the value {} and the address {}"
@@ -732,6 +734,7 @@ def main():
         ).format(x, String(Pointer(to=x)))
     )
 ```
+
 :::
 
 When you run the code, you will see the following output:
@@ -763,7 +766,7 @@ Address │16bb384f5│16bb384f6│16bb384f7│16bb384f8│
                           variable `x` (Int8)
 ```
 
-Next, you pass this variable `x` into the function `changeit()` with the `owned` keyword. Mojo will then copy the value (`0b00000100`) to a new address `0x16bb38510`, and let the argument `a` to own this new value and the address. These two variables are completely isolated from each other. See the following illustration.
+Next, you pass this variable `x` into the function `changeit()` with the `var` keyword. Mojo will then copy the value (`0b00000100`) to a new address `0x16bb38510`, and let the argument `a` to own this new value and the address. These two variables are completely isolated from each other. See the following illustration.
 
 ```console
                                                                 argument `a` (Int8)
@@ -913,4 +916,5 @@ def from_pyobject(a: PyObject) -> Matrix:
 
 ## Major changes in this chapter
 
-- 2025-06-20: Update to accommodate to the changes in Mojo v24.5 (2de7fcb0).
+- 2025-06-20: Update to accommodate to the changes in Mojo v25.4.
+- 2025-09-04: Update to accommodate to the changes in Mojo v25.5.

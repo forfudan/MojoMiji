@@ -5,12 +5,6 @@
 
 Although SIMD is considered a "small" struct and is, perhaps, the most fundamental data type in Mojo, I still make a separate chapter for it and put it in the "advanced" part. This is because there is not a counterpart of SIMD in Python and it is even not a built-in type for many other programming languages. Luckily, Mojo includes this type as a fundamental numerical type and makes it built-in. This type helps Mojo to achieve high performance in numerical computing, especially in vectorized operations.
 
-::: info Compatible Mojo version
-
-This chapter is compatible with Mojo v25.4 (2025-06-18).
-
-:::
-
 [[toc]]
 
 ## Why SIMD?
@@ -547,4 +541,4 @@ The vectorized operation is about 56 times faster than the plain iteration. This
 
 ## Major changes in this chapter
 
-- 2025-06-23: Update to accommodate to the changes in Mojo v24.5.
+- 2025-06-23: Update to accommodate to the changes in Mojo v25.4.

@@ -1,6 +1,6 @@
 # Initiate Mojo project
 
-Now we have installed the magic CLI. In this chapter, we will cover how to create a Mojo project and install the Mojo compiler.
+Now we have installed the pixi CLI. In this chapter, we will cover how to create a Mojo project and install the Mojo compiler.
 
 [[toc]]
 
@@ -17,6 +17,12 @@ This brings us to the concept of virtual environment, which is actually an isola
 Since the Python versions are project-specific and are located in different folders, you can working on multiple projects with different dependencies without any conflicts.
 
 ## Create new Mojo project
+
+::: tip Repository of the project
+
+You can find the example programs in this Miji in the [GitHub repository](https://github.com/forfudan/my-first-mojo-project).
+
+:::
 
 Mojo relies on the concept of virtual environment. Each mojo project contains a folder with specific Mojo version and packages.
 When you run a Mojo script, it will use the Mojo compiler and packages only in this folder.
@@ -36,16 +42,6 @@ cd my-first-mojo-project
 ```
 
 Or, more conveniently, you can use your VS Code to open this folder as a workspace.
-
-::: details Use magic CLI instead (to be deprecated)
-
-If you are using the Magic CLI, you can create a Mojo project by running the following command:
-
-```bash
-magic init my-first-mojo-project --mojoproject
-```
-
-:::
 
 ## Transfer existing folder into Mojo project
 
@@ -100,23 +96,23 @@ You can see that there is currently nothing in the `[dependencies]` section. Thi
 
 ```toml
 [dependencies]
-max = "==25.4"
+mojo = "==25.5"
 ```
 
 :::
 
-The word on the left side of the `=` is the name of the package. In this case, it is the `max` package, which contains all necessary files to run Mojo code. This also includes the Mojo compiler.
+The word on the left side of the `=` is the name of the package. In this case, it is the `mojo` package, which contains all necessary files to run Mojo code. This also includes the Mojo compiler.
 
 The word on the right side of the `=` is the version of the package you want to install. Here are some examples:
 
-- `max = "==25.4"`: This means to install a specific version of the package, e.g., version 25.4.
-- `max = ">=25.4"`: This means to install any version from 25.4 and later.
-- `max = ">=25.1, <25.5"`: This means to install version 25.1 or later, but less than 25.5.
-- `max = "*"`: This means to install the latest version of the package (as available in the channels specified in the "channels" field).
+- `mojo = "==25.5"`: This means to install a specific version of the package, e.g., version 25.5.
+- `mojo = ">=25.5"`: This means to install any version from 25.5 and later.
+- `mojo = ">=25.5, <25.7"`: This means to install version 25.5 or later, but less than 25.7.
+- `mojo = "*"`: This means to install the latest version of the package (as available in the channels specified in the "channels" field).
 
 ## Install Mojo compiler
 
-After we put `max = "==25.4"` in the dependencies field, pixi knows that we want to install the latest version of the `max` package. To finish the installation, we need to run the following command in your terminal (Use `Cmd+J` to open the terminal in VS Code):
+After we put `mojo = "==25.5"` in the dependencies field, pixi knows that we want to install the latest version of the `mojo` package. To finish the installation, we need to run the following command in your terminal (Use `Cmd + J` to open the terminal in VS Code):
 
 ::: code-group
 

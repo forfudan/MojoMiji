@@ -31,7 +31,7 @@ You may be confused by the names of Modular's products. Here is a brief introduc
 | pixi    | Package and virtual environment manager (to replace magic) | [https://pixi.sh/latest/](https://pixi.sh/latest/)                             |
 | modular | Company, platform, suite of AI libraries and tools         | [https://www.modular.com/](https://www.modular.com/)                           |
 | max     | GenAI graph compiler                                       | [https://docs.modular.com/max/intro](https://docs.modular.com/max/intro)       |
-| mojo    | Programming language                                       | [https://docs.modular.com/mojo/manual/](https://docs.modular.com/mojo/manual/) |
+| mojo    | Programming language, mojo compiler                        | [https://docs.modular.com/mojo/manual/](https://docs.modular.com/mojo/manual/) |
 
 :::
 

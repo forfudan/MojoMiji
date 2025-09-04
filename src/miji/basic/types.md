@@ -20,12 +20,6 @@ This chapter will first focus on the scalar types and the boolean type, which ar
 | `dict`      | `collections.Dict` | Dictionary (hashmap)                        | Keys and values in `Dict` in Mojo must be of the same data type, respectively. |
 | `str`       | `String`           | String (text)                               | Similar behaviors. Note that `String` in Mojo is rapidly evolving.             |
 
-::: info Compatible Mojo version
-
-This chapter is compatible with Mojo v25.4 (2025-06-18).
-
-:::
-
 [[toc]]
 
 ## Integers
@@ -334,6 +328,6 @@ def main():
 
 ## Major changes in this chapter
 
-- 2025-06-21: Update to accommodate to the changes in Mojo v24.5.
+- 2025-06-21: Update to accommodate to the changes in Mojo v25.4.
 - 2025-06-22: Add a section about the literal types and type inference.
 - 2025-06-26: Move the sections of list and literals to standalone chapters.

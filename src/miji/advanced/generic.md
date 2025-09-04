@@ -4,12 +4,6 @@ Parametrization is about setting the value of a certain type to be fixed at run 
 
 **Generic** is a model that allows you to write code that can operate on different types, improving maintainability, readability, and extensibility of your code.
 
-::: info Compatible Mojo version
-
-This chapter is compatible with Mojo v25.4 (2025-06-18).
-
-:::
-
 [[toc]]
 
 ## Generic
@@ -829,4 +823,4 @@ Below is a table summarizing the most common dunder methods, the operators they 
 
 ## Major changes in this chapter
 
-- 2025-06-23: Update to accommodate to the changes in Mojo v24.5.
+- 2025-06-23: Update to accommodate to the changes in Mojo v25.4.
