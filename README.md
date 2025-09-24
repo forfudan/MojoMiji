@@ -2,6 +2,11 @@
 
 This is the repository of the [Mojo Miji, a guide to Mojo programming language from a Pythonista's perspective](https://mojo-lang.com), written by Yuhao Zhu.
 
+The example programs featured in the book can be found in [this repo](https://github.com/forfudan/my-first-mojo-project).
+
+> [!NOTE]
+>Please considering raising an issue or start a discussion if you find any errors or inaccuracies in this Miji. Because the book is constantly updated to keep up with the fast-evolving Mojo language, direct PR is not encouraged, as it may cause conflicts. Thank you for your understanding and support!
+
 Mojo is a new programming language developed by Modular, a company founded by Chris Lattner, the creator of Swift and LLVM. The language was made known to the public in 2023 and it has been open-sourcing its [standard library](https://github.com/modular/modular) gradually since early 2024. Mojo is initially designed to be a superset of the Python programming language, incorporating modern features such as static typing, ownership, traits, and meta-programming. These enhancements allow Python users to transition easily while benefiting from increased execution speed and enhanced safety. Mojo’s long-term goal is to be fully compatible with Python syntax and ecosystem.
 
 I started to use Mojo at the early stage of its development in early 2024. Later, I participated in the development of the [NuMojo library](https://github.com/Mojo-Numerics-and-Algorithms-group/NuMojo), which is a library for numerical computing similar to NumPy, SciPy in Python. During this process, Mojo is growing, so do I. I learned a lot about Mojo and found it to be a powerful, promising, attractive, and fun programming language. I also encountered many challenges and pitfalls that I had to overcome. Mojo's syntax and features were quite similar to Python, but there were also significant differences that required careful attention.
