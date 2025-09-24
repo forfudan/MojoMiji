@@ -27,6 +27,7 @@ For the example programs in this Miji, you can find them in the [GitHub reposito
   - [Things that are different](./move/different) (Differences between Python and Mojo)
 - [PART III: BASIC MOJO](./basic/basic)
   - [Variables](./basic/variables)
+  - [Copy and move](./basic/copy)
   - [Data types - basic](./basic/types) (Int, float, bool, etc.)
   - [Data types - composite](./basic/composite) (List et al.)
   - [Data type - string](./basic/string) (similar to `str` in Python)

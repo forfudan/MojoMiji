@@ -3,9 +3,15 @@
 > Taiji (☯) generates two Yi's (⚊ ⚋); the two Yi's generate four Xiang's (⚌ ⚍ ⚎ ⚏); the four Xiang's generate eight Gua's (☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷).  
 > -- *Yi-Jing (I Ching)*
 
-A variable is a fundamental concept in programming which allows you to store, read, and manipulate data. It can be seen as a container of data, enabling you to refer to the data by a symbolic name rather than the value in the memory directly. This is essential for writing readable and maintainable code.
+A variable is a fundamental concept in programming which allows you to store, read, and manipulate data. It can be seen as a container of data, enabling you to refer to the data by a symbolic name rather than the value in the memory directly. This is essential for writing readable and maintainable code. In this chapter, we will explore the following topics:
 
-[[toc]]
+- Conceptual model of Mojo variables
+- Python variables vs Mojo variables
+- Identifiers
+- Creation of variables
+- Re-assignment of variables
+- Assignment of values between variables
+- Scope of variables
 
 ## Conceptual model of variables
 
@@ -500,7 +506,9 @@ It is in the middle of the first row. The Mojo compiler opens the vault and retr
 
 ## Assign values between variables
 
-In Python, we can use the syntax `variable_b = variable_a` to assign the value (or a reference) of `variable_a` to `variable_b`. For example,
+Recall that, in section [Conceptual model of Python variables](#conceptual-model-of-python-variables), we have discussed how variables in Python are fundamentally different from those in Mojo. This difference also affects how we assign values between variables.
+
+In Python, we can use the syntax `variable_b = variable_a` to assign bind the name `variable_b` to the object that `variable_a` is referring to. In another word, if an object with ID `140703303123456` is referred to by the name `variable_a`, then after the assignment, it will be referred to by both names `variable_a` and `variable_b`. Thus, both names refer to the **same object** in memory. For example,
 
 ```python
 # src/basic/variables/assign_values_between_variables.py
@@ -509,17 +517,21 @@ def main():
     b = a  # `b` is now referring to an int object with value 1
     print("a =", a)
     print("b =", b)
+    print("id(a) = id(b):", id(a) == id(b))
 
     str1 = "Hello"  # `str1` is now referring to a string object with value "Hello"
     str2 = str1  # `str2` is now referring to the same string object as `str1`
     print("str1 =", str1)
     print("str2 =", str2)
+    print("id(str1) = id(str2):", id(str1) == id(str2))
 
     lst1: list[int] = [1, 2, 3]
     # `lst1` is now referring to a list object with three integers
     lst2: list[int] = lst1  # `lst2` is now referring to the same list object as `lst1`
     print("lst1 =", lst1)
     print("lst2 =", lst2)
+    print("id(lst1) = id(lst2):", id(lst1) == id(lst2))
+
 
 main()
 ```
@@ -529,38 +541,41 @@ The code will produce the following output:
 ```console
 a = 1
 b = 1
+id(a) = id(b): True
 str1 = Hello
 str2 = Hello
+id(str1) = id(str2): True
 lst1 = [1, 2, 3]
 lst2 = [1, 2, 3]
+id(lst1) = id(lst2): True
 ```
 
-In Mojo, we can do the same thing, but with a slightly different syntax: copying the value of `variable_a` to `variable_b` using the syntax `variable_b = variable_a`. For example, the following code is valid in Mojo:
+In Mojo, the syntax `variable_b = variable_a` would lead to a **copy** operation if the types are implicitly copyable. For now, you may think of implicitly copyable types as simple data types like integers, floating-point numbers, and strings.
+
+Do note the difference here: in Python, both `variable_a` and `variable_b` refer to the same object in memory; in Mojo, the value of `variable_a` is copied to the memory location of `variable_b`. Thus, after the assignment, `variable_a` and `variable_b` refer to **different memory locations** with the **same value**.
+
+For example:
 
 ```mojo
-# src/basic/variables/assign_values_between_variables.mojo
 # src/basic/variables/assign_values_between_variables.mojo
 def main():
     var a = 1  # Put the value 1 into the variable with name `a` and type `Int`
     var b = a  # Copy the value of `a` into the variable with name `b` and type `Int`
     print("a =", a)
     print("b =", b)
+    print(
+        "a and b has the same address:",
+        Pointer(to=a) == Pointer(to=b),
+    )
 
     var str1: String = "Hello"
     var str2 = str1
     print("str1 =", str1)
     print("str2 =", str2)
-
-    var lst1: List[Int] = [1, 2, 3]
-    # Put the value [1, 2, 3] into the variable with name `lst1` and type `List[Int]`
-    var lst2 = lst1
-    # Copy the value of `lst1` into the variable with name `lst2` and type `List[Int]`
-    print("lst1 =", end=" ")
-    for i in lst1:
-        print(i, end=", ")
-    print("\nlst2 =", end=" ")
-    for i in lst2:
-        print(i, end=", ")
+    print(
+        "str1 and str2 has the same address:",
+        Pointer(to=str1) == Pointer(to=str2),
+    )
 ```
 
 The code will produce the following output:
@@ -568,213 +583,20 @@ The code will produce the following output:
 ```console
 a = 1
 b = 1
+a and b has the same address: False
 str1 = Hello
 str2 = Hello
-lst1 = 1, 2, 3, 
-lst2 = 1, 2, 3,
+str1 and str2 has the same address: False
 ```
 
-### Copy value or reference (python vs mojo)
+As you can see, even though `a` and `b` have the same value, they are stored in different memory locations. The same applies to `str1` and `str2`.
 
-At the very early lessons that you learned Python, you may have been told that Python variables are **references to objects** but not directly linked with a space in the memory. When you create a variable, e.g., `a = 10.0`, Mojo actually does the following things:
+When in Mojo, do as Magicians do: be aware of the underground differences between Python and Mojo variables, and always remember that `variable_b = variable_a` means copying the value of `variable_a` into `variable_b`, not making them refer to the same object in memory.
 
-1. Create a new object in the memory with the value `10.0` and type `Float64`.
-1. Put a sticker with the name `a` onto the object.
+::: info Explicit copyable types
 
-When you do `a = 20.0`, Python does the following things:
+You may wonder why I did not mention lists in the above example. This is because lists are not implicitly copyable in Mojo. If you want to copy a list, you have to use the `copy()` method explicitly, like `list_b = list_a.copy()`. We will discuss this in detail in Chapter [Copy, implicit copy, and move](../basic/copy) later.
 
-1. Create a new object in the memory with the value `20.0` and type `Float64`.
-1. Remove the sticker with the name `a` from the old object.
-1. Put a sticker with the name `a` onto the new object.
-
-When you do `b = a`, Python does the following things:
-
-1. Find the object with the name `a` in the memory.
-1. Put another sticker with the name `b` onto the same object.
-
-This means that, for simple or immutable data types, changing the value of a variable always **creates a new object**. Thus, if you change the value of `a` after `b = a`, `b` will not be affected because `b` is still pointing to the old object.
-
-However, for some complex data types like lists, dictionaries, or custom classes, this can lead to some unexpected behaviors. For example,
-
-```python
-# src/basic/variables/copy_values_or_references.py
-def main():
-    lst1 = [1, 2, 3]  # `lst1` is now referring to a list object with three integers
-    lst2 = lst1  # `lst2` is now referring to the same list object as `lst1`
-    print("lst1 =", lst1)
-    print("lst2 =", lst2)
-    print("Changing lst1[0] to -1")
-    lst1[0] = -1  # This modifies the list object that both `lst1` and `lst2` refer to
-    print("lst1 =", lst1)
-    print("lst2 =", lst2)
-
-main()
-```
-
-The code will produce the following output:
-
-```console
-lst1 = [1, 2, 3]
-lst2 = [1, 2, 3]
-Changing lst1[0] to -1
-lst1 = [-1, 2, 3]
-lst2 = [-1, 2, 3]
-```
-
-We see that when we change the first element of `lst1`, `lst2` is also changed. This is because both `lst1` and `lst2` are referring to the same list object in the memory. Let's see what Python does when you run the code above:
-
-1. `lst1 = [1, 2, 3]`: Create a new list object in the memory with the value `[1, 2, 3]` and type `list[int]`. Put a sticker with the name `lst1` onto the object.
-1. `lst2 = lst1`: Find the object with the name `lst1` in the memory. Put another sticker with the name `lst2` onto the same object.
-1. `lst1[0] = -1`: Find the object with the name `lst1` in the memory. Modify the first element of the object to `-1`.
-
-Note that in the third step, Python does not create a new object. Instead, it just modifies the existing object that `lst1` is referring to, since the list type is mutable. Because `lst2` is also referring to the same object, it is also affected by the change.
-
-The behavior introduced above is called **reference assignment**. It has advantages and disadvantages. The advantage is that it saves memory space, as you do not need to create a new object every time you change the value of a variable. The disadvantage is that it can lead to unexpected behaviors, as shown in the example above.
-
-If you want to copy the values of the list instead of the reference, you can use the `copy()` method, e.g., `lst3 = lst1.copy()`. This will create a new list object with the same values as `lst1` and put a sticker with the name `lst3` onto the new object. Now, if you change `lst1`, `lst3` will not be affected, as they are referring to different objects in the memory.
-
----
-
-Mojo, on the other hand, does not have this reference assignment behavior. When you do `var lst2: List[Int] = lst1`, Mojo will do the following things:
-
-1. Allocate a new memory space with the type `List[Int]` at a new address, and link it with the variable name `lst2`.
-1. Copy the values of `lst1` into the new memory space for `lst2`.
-
-This means that `lst1` and `lst2` are now referring to completely different memory spaces. If you change the value of `lst1`, `lst2` will not be affected, and vice versa. The code below illustrates this:
-
-```mojo
-# src/basic/variables/copy_values_or_references.mojo
-def main():
-    var lst1: List[Int] = [1, 2, 3]
-    # `lst1` is a variable of type `List[Int]` at Address 1
-    var lst2: List[Int] = lst1
-    # `lst2` is a variable of type `List[Int]` at Address 2
-
-    print("lst1 =", end=" ")
-    for i in lst1:
-        print(i, end=", ")
-    print("\nlst2 =", end=" ")
-    for i in lst2:
-        print(i, end=", ")
-
-    print("\nChanging lst1[0] to -1")
-    lst1[0] = -1
-
-    print("lst1 =", end=" ")
-    for i in lst1:
-        print(i, end=", ")
-    print("\nlst2 =", end=" ")
-    for i in lst2:
-        print(i, end=", ")
-```
-
-The code will produce the following output:
-
-```console
-lst1 = 1, 2, 3, 
-lst2 = 1, 2, 3, 
-Changing lst1[0] to -1
-lst1 = -1, 2, 3, 
-lst2 = 1, 2, 3,
-```
-
-To summarize, in Mojo, when you assign a value from one variable to another, it always copies the value, not the reference. This means that an **isolated status** is created and the two variables are independent of each other, changing one will not affect the other.
-
-If you still want to create a reference to an existing variable, you can use the `ref` keyword. This is similar to Python's reference assignment. For example, the following code will create a reference to the variable `lst1`.
-
-```mojo
-# src/basic/variables/create_reference_of_a_variable.mojo
-def main():
-    var lst1: List[Int] = [1, 2, 3]
-    # `lst1` is a variable of type `List[Int]` at Address 1
-    var ref lst2: List[Int] = lst1
-    # `lst2` is a reference to the variable `lst1` of type `List[Int]` at Address 1
-
-    print("lst1 =", end=" ")
-    for i in lst1:
-        print(i, end=", ")
-    print("\nlst2 =", end=" ")
-    for i in lst2:
-        print(i, end=", ")
-
-    print("\nChanging lst1[0] to -1")
-    lst1[0] = -1
-
-    print("lst1 =", end=" ")
-    for i in lst1:
-        print(i, end=", ")
-    print("\nlst2 =", end=" ")
-    for i in lst2:
-        print(i, end=", ")
-```
-
-The code will produce the following output:
-
-```console
-lst1 = 1, 2, 3, 
-lst2 = 1, 2, 3, 
-Changing lst1[0] to -1
-lst1 = -1, 2, 3, 
-lst2 = -1, 2, 3,
-```
-
-We will discuss more about "copy at assignment" in Chapter [Ownership](../advanced/ownership#four-statuses-of-ownership), and we will also see how the reference system works in Mojo in Chapter [References](../advanced/references).
-
-### Copy or transfer value (rust vs mojo)
-
-If you are familiar with Rust, you may notice that the behavior of variable assignment in Mojo is different from that in Rust. In Mojo, when you assign a value from one variable to another, it copies the value by default. This means that both variables will have their own copies of the value, and changing one will not affect the other.
-
-In Rust, however, the default behavior of assignment (for complex data types) is to transfer ownership of the value from one variable to another. This means that the original variable will no longer be usable after the assignment. As an example, the following code in Rust will not compile:
-
-```rust
-fn main() {
-    let a = "Hello".to_string();
-    let b = a;
-    println!("{a}");
-    println!("{b}");
-}
-```
-
-It will produce the following compilation error:
-
-```console
-2 |     let a = "Hello".to_string();
-  |         - move occurs because `a` has type `String`, which does not implement the `Copy` trait
-3 |     let b = a;
-  |             - value moved here
-4 |     println!("{a}");
-  |               ^^^ value borrowed here after move
-```
-
-The compilation error occurs because, in Rust, for heap-based data structures, assignment defaults to ownership transfer. This means that the identifier `a` transfers its ownership of the string value to the identifier `b`, making a unusable.
-
----
-
-In Mojo, assignment defaults to copying. This means that the value of `a` is first copied, and then `b` gains ownership of this copied value. `a` retains ownership of the original value and can continue to be used.
-
-If you still want to enforce an ownership transfer in Mojo, you can use the transfer operator `^`. The code is as follows:
-
-```mojo
-fn main():
-    var a: String = "Hello"
-    var b = a^
-    print(a)
-    print(b)
-```
-
-```console
-error: use of uninitialized value 'a'
-print(a)
-```
-
-Here, we use the transfer operator to inform the compiler to transfer the ownership of the string value from `a` to `b`. After this, a returns to an uninitialized state and cannot be used.
-
-::: info
-Compared to Rust, this approach in Mojo reduces the mental burden during programming, especially when passing parameters, as you don’t have to worry about functions acquiring ownership and invalidating the original variable name. The downside is that the default copying behavior (`__copyinit__`) can lead to additional memory consumption. The compiler optimizes this by using `__moveinit__` to transfer ownership if the original variable name is no longer used after assignment.
-
-Of course, certain small, stack-based data types in Mojo are always copied, including SIMD types. This can make Mojo faster than Rust in some computations (Pass-by-ref consumes more than direct copying, as detailed in this article: [Should Small Rust Structs be Passed by-copy or by-borrow?](https://www.forrestthewoods.com/blog/should-small-rust-structs-be-passed-by-copy-or-by-borrow/)).
-
-The topic of ownership will be further explained in Chapter [Ownership](../advanced/ownership#transfer-a-value).
 :::
 
 ## Scope of variables
@@ -799,8 +621,7 @@ error: use of unknown declaration 'a'
           ^
 ```
 
-This is because the variable `a` is declared inside the `if` statement and only accessible within that `if` statement. When the program 
-goes out of the `if` statement, the variable `a` (name, type, address, and value) is **dead**, or **destroyed**. Therefore, when you try to access `a` in the second `print(a)`, it cannot find the variable `a` anymore.
+This is because the variable `a` is declared inside the `if` statement and only accessible within that `if` statement. When the program goes out of the `if` statement, the variable `a` (name, type, address, and value) is **dead**, or **destroyed**. Therefore, when you try to access `a` in the second `print(a)`, it cannot find the variable `a` anymore.
 
 On the other hand, variables declared in the parent scope can be accessed in the child scope. For example, if you define a variable in a function, you can always assess this variable in a nested for loop inside that function. The code below will work:
 

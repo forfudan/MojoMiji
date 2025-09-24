@@ -119,6 +119,9 @@ export default defineConfig({
               text: 'Variables', link: '/miji/basic/variables',
             },
             {
+              text: 'Copy and move', link: '/miji/basic/copy',
+            },
+            {
               text: 'Data types - basic', link: '/miji/basic/types',
             },
             {
@@ -220,10 +223,6 @@ export default defineConfig({
             {
               text: 'Useful resources and links',
               link: '/miji/misc/resources'
-            },
-            {
-              text: 'Wishes for extra features',
-              link: '/miji/misc/wishes'
             },
             {
               text: 'About the author',
