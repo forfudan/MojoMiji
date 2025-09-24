@@ -67,30 +67,99 @@ In short, the type of a variable is very important as it defines how the program
 
 ## Python variables vs Mojo variables
 
-The conceptual model of variables in Mojo is different from that in Python. In Python, a variable is a **name** that refers to an object in memory. The object itself contains the type information and the value. The address of the object is not directly accessible in Python, as it is abstracted away from the user.
+### Conceptual model of Python variables
 
-Thus, the conceptual model of a variable in Python can be simplified as a tertiary structure consisting a name, a type, and a value. The name is a sticker that can be attached to a vault (object) which contains the type and value information. You can stick the name on any object (assignment), you can remove it from the object (deletion), and you can move it from one object onto another object (re-assignment).
+The conceptual model of variables in Mojo is **fundamentally** different from that in Python.
+
+In Python, a variable is a **name** that refers to an object in memory. The object itself contains the type information and the value. The memory layout and the location of the object are not directly accessible, but are abstracted away from the user. Each object has a unique identifier (which can be obtained using the built-in `id()` function), but this identifier is not the same as a memory address and should not be relied upon for memory management.
+
+Thus, the conceptual model of a variable in Python can be simplified as a binary structure consisting:
+
+1. a name
+1. an object (which further contains type, value, and a unique identifier)
+
+Let me use some concrete examples for you to understand:
+
+*1984 by George Orwell* can be seen as an **object**. It has a **type** (book), a **value** (the content of the book), and a unique **identifier** (ISBN number). The variable name in Python is like a sticker with the name "my favorite book" that you stick onto the book cover. You can then use the name "my favorite book" to refer to the book object. As such, the binary system of the name "my favorite book" and the book object is a variable in Python.
+
+You can also stick another sticker with the name "best_seller" onto the same book. Now you have two names referring to the same object.
+
+*Macbook Pro 2025* can be seen as another object. It has a **type** (laptop), a **value** (the hardware and software configuration of the laptop), and a unique **identifier** (serial number). You can stick a sticker with the name "my laptop" onto the laptop cover. Now you have a variable in Python consisting of the name "my laptop" and the laptop object.
+
+Of course, you can also stick other stickers with different names onto the same laptop object.
 
 See the following abstract representation of a variable in Python:
 
 ```console
 # Mojo Miji - Basic - Variables - Python variables
-            object in memory
+            variable name
                  ↓
-          ┌──────┬───────┐
-name ->   │ type │ value │
-          └──────┴───────┘
+          ┌──────┬───────┬─────┐
+Object    │ type │ value │ ID  │
+          └──────┴───────┴─────┘
 ```
 
-For example, in the following code, the variable `a` is firstly sticked onto an object with type `int` and value `1`. Later, it is removed from the first object and sticked onto another object with type `int` and value `2`. Finally, it is removed from the second object and sticked onto a string object with value `"Hello world!"`. All these objects are stored in different locations in the memory (and users do not need to know).
+### Construction, re-assignment, and use of Python variables
+
+Now, let's apply this conceptual model to understand how Python variables are created, re-assigned, and used. A sample code is as follows:
 
 ```python
-a = 1  # `a` is sticked onto an int object with value `1`
-a = 2  # `a` is sticked onto another int object with value `2`
+a = 1
+b = a
+c = b
+print(a is b)
+
 a = "Hello world!"  # `a` is sticked onto a string object with value `"Hello world!"`
+print(a, b, c)
+
+del b
+print(c)
 ```
 
-This does not applies to Mojo. As I said before, a Mojo's variables is associated with an address. When you do `a = 1`, the variable `a` will be associated with a type `Int`, an address in the memory, and a value `1`. When you do `a = 2`, the variable `a` will still be associated with the same address in the memory, but the value will be changed to `2` (physically, the status of the electrons at that location changed). You can never do `a = "Hello world!"` because the type of `a` is `Int`, and you cannot insert a string value into that address.
+Let's analyze the code line by line.
+
+When you create a variable in Python, e.g., `a = 1`, Python actually does the following things:
+
+1. Internally create an object in the memory with the value `1`, type `int`, and a unique identifier (let's say, `140703303123456`).
+1. Create a label with the name `a` and stick it onto the object.
+
+When you do `b = a`, Python does the following things:
+
+1. Find the object with the name `a` in the memory.
+1. Create another label with the name `b` and stick it onto the same object. Note that there are now two labels (`a` and `b`) on the same object.
+
+When you do `c = b`, Python does the following things:
+
+1. Find the object with the name `b` in the memory.
+1. Create another label with the name `c` and stick it onto the same object. Note that there are now three labels (`a`, `b`, and `c`) on the same object.
+
+When you do `print(a is b)`, Python checks whether the two labels `a` and `b` refer to the same object in memory. Since they do, it prints `True`.
+
+When you do `a = "Hello world!"`, Python does the following things:
+
+1. Internally create a new object in the memory with the value `"Hello world!"`, type `str`, and a unique identifier (let's say, `140703303654321`).
+1. Remove the label `a` from the first object (with type `int` and value `1`) and stick it onto the new object (with value `"Hello world!"`). Note that the labels `b` and `c` are still sticked onto the first object.
+
+When you do `print(a, b, c)`, Python retrieves the values of the objects that the labels `a`, `b`, and `c` refer to, and prints them. It prints `"Hello world!" 1 1`.
+
+When you do `del b`, Python removes the label `b` from the first object. Now only the label `c` is sticked onto the first object.
+
+When you do `print(c)`, Python retrieves the value of the object that the label `c` refers to, and prints it. It prints `1`.
+
+What do we learn from this example?
+
+1. In Python, we do not directly manipulate the objects in memory. We only manipulate the labels (variable names) and the relationship between labels and objects.
+1. The objects themselves are hidden from us. We do not need to know where they are stored in memory, how much space they occupy, or how they are represented in binary format.
+1. Change the value of a variable (re-assignment) does not necessarily change the object itself. It may create a new object and change the label to refer to the new object.
+1. `del` statement only removes the label from the object but does not delete the object itself. The object will be automatically deleted by Python's garbage collector when there are no more labels sticked onto it.
+
+### Mojo objects are directly manipulated
+
+Now we can see the fundamental difference between Python variables and Mojo variables: Mojo can directly manipulate the value of the variable at the a specific memory location, while Python only manipulates the labels (variable names) and the relationship between labels and objects.
+
+As I said before, a Mojo's variables is associated with a memory address. When you do `a = 1`, the variable `a` will be associated with a type `Int`, a value `1`, and an address in the memory. When you do `a = 2`, the variable `a` will still be associated with the **same address** in the memory, but the value will be changed to `2` (physically, the status of the electrons at that location changed). You can never do `a = "Hello world!"` because the type of `a` is `Int`, and you cannot insert a string value into that address.
+
+In other words, the Mojo's variable name is a sticker sticked onto a physical memory address directly, while the Python's variable name is a sticker sticked onto an abstract object in memory.
 
 In the later section [Assign values between variables](#assign-values-between-variables), we will continue to see how the difference between Python and Mojo variables affects the way we assign values between variables.
 

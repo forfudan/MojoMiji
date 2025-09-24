@@ -9,16 +9,16 @@ In the following four chapters, we will discuss the most common data types in Mo
 
 This chapter will first focus on the scalar types and the boolean type, which are the most basic and simplest data types in Mojo. They represent single values that are stored in the memory with a fixed and relatively small size. The [composite types](../basic/composite), the [string type](../basic/string), the [literal types](../basic/literal), and the Mojo-featured [SMID type](../advanced/simd) will be further discussed in separate chapters. You can easily find the corresponding types in Python. The following table summarizes these data types:
 
-| Python type | Mojo type          | Description                                 | Be careful that                                                                |
-| ----------- | ------------------ | ------------------------------------------- | ------------------------------------------------------------------------------ |
-| `int`       | `Int`              | [Integer](#integer)                         | Integers in Mojo has ranges. Be careful of **overflow**.                       |
-| `float`     | `Float64`          | [Floating-pointing](#floating-point-number) | Almost same behaviors. You can safely use it.                                  |
-| `bool`      | `Bool`             | [Boolean](#boolean)                         | Same.                                                                          |
-| `list`      | `List`             | List                                        | Elements in `List` in Mojo must be of the same data type.                      |
-| `tuple`     | `Tuple`            | Tuple                                       | Very similar, but you cannot iterate over a `Tuple` in Mojo.                   |
-| `set`       | `collections.Set`  | Set                                         | Elements in `Set` in Mojo must be of the same data type.                       |
-| `dict`      | `collections.Dict` | Dictionary (hashmap)                        | Keys and values in `Dict` in Mojo must be of the same data type, respectively. |
-| `str`       | `String`           | String (text)                               | Similar behaviors. Note that `String` in Mojo is rapidly evolving.             |
+| Python type | Mojo type          | Description                                  | Be careful that                                                                |
+| ----------- | ------------------ | -------------------------------------------- | ------------------------------------------------------------------------------ |
+| `int`       | `Int`              | [Integer](#integers)                         | Integers in Mojo has ranges. Be careful of **overflow**.                       |
+| `float`     | `Float64`          | [Floating-pointing](#floating-point-numbers) | Almost same behaviors. You can safely use it.                                  |
+| `bool`      | `Bool`             | [Boolean](#boolean)                          | Same.                                                                          |
+| `list`      | `List`             | List                                         | Elements in `List` in Mojo must be of the same data type.                      |
+| `tuple`     | `Tuple`            | Tuple                                        | Very similar, but you cannot iterate over a `Tuple` in Mojo.                   |
+| `set`       | `collections.Set`  | Set                                          | Elements in `Set` in Mojo must be of the same data type.                       |
+| `dict`      | `collections.Dict` | Dictionary (hashmap)                         | Keys and values in `Dict` in Mojo must be of the same data type, respectively. |
+| `str`       | `String`           | String (text)                                | Similar behaviors. Note that `String` in Mojo is rapidly evolving.             |
 
 [[toc]]
 
