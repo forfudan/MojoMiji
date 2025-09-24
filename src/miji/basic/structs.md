@@ -11,18 +11,18 @@ Though Python does not has the concept of "struct", it has a similar concept cal
 
 A struct is a composite data structure which contains multiple variables (fields) and functions (methods). The values of the fields are stored in a contiguous block of memory, and the methods are used to manipulate the data of the struct. All types in Mojo are structs, including the built-in types like `Int`, `Float64`, `String`, etc. By defining a struct, you can create your own data types.
 
-Structs are used to represent (with some abstraction) the real-world entities or concepts. For example, a point with two coordinates can be represented two numerical variables, `x` and `y`. But this is not convenient to use. We want a way to access these values with in single namespace (or, we want to access these values with a single pointer). Thus, we group these two variables into a struct, which is called `Pointer`. We can then access the values by means of `Pointer.x` and `Pointer.y`.
+Structs are used to represent (with some abstraction) the real-world entities or concepts. For example, a point with two coordinates can be represented two numerical variables, `x` and `y`. But this is not convenient to use. We want a way to access these values with in single namespace (or, we want to access these values with a single pointer). Thus, we group these two variables into a struct, which is called `Point`. We can then access the values by means of `Point.x` and `Point.y`.
 
-These idea of grouping multiple variables into a single namespace can also be extended to functions. For example, if we want to calculate the distance between a point and the origin `(0, 0)`, we can define a function `distance_from_zero()` that takes a `Pointer` as an argument and returns the distance:
+These idea of grouping multiple variables into a single namespace can also be extended to functions. For example, if we want to calculate the distance between a point and the origin `(0, 0)`, we can define a function `distance_from_zero()` that takes a `Point` as an argument and returns the distance:
 
 ```mojo
-def distance_from_zero(p: Pointer) -> Float:
+def distance_from_zero(p: Point) -> Float:
     return (p.x ** 2 + p.y ** 2) ** 0.5
 ```
 
-However, the formulae to calculate the distance can vary among multiple types of arguments, e.g. a pointer, a vector, a complex number, etc. Thus, it is more convenient bind this function to the `Pointer` struct, so that we can access it from a more explicit entry point.
+However, the formulae to calculate the distance can vary among multiple types of arguments, e.g. a point, a vector, a complex number, etc. Thus, it is more convenient bind this function to the `Point` struct, so that we can access it from a more explicit entry point.
 
-What we do is simply move the function into the `Pointer` struct and take the point itself as the first argument. Then we can use the function with `Pointer.distance_from_zero()`.
+What we do is simply move the function into the `Point` struct and take the point itself as the first argument. Then we can use the function with `Point.distance_from_zero()`.
 
 You can see that the thing above are very similar to how fields and methods are defined in a Python class. It can also implement the basic philosophy of object-oriented programming (OOP), e.g., encapsulation, abstraction, and polymorphism.
 
