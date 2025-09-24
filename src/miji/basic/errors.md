@@ -242,6 +242,10 @@ finally:  # Optional                                  │   │
     <statements>  # ←─────────────────────────────────┴───┘
 ```
 
+::: danger
+
+Unlike Python, currenly Mojo does not support filtering exceptions by specifying an exception type in the `except` clause.
+
 Let's see a concrete example of how to use the `try`-`except`-`else`-`finally` statements to handle the division-by-zero error in the `divide()` function we defined earlier. If the second argument is zero, we will use `0` as the result. The code looks like this:
 
 ::: code-group
