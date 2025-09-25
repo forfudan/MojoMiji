@@ -17,7 +17,7 @@ In Mojo, you can explicitly copy the value of a variable to another variable usi
 var b = a.copy()
 ```
 
-The `copy()` method in Mojo creates a new object in memory with the same value as the original object. This means that after copying, the two variables will refer to different memory locations, and changing one will not affect the other.
+The `copy()` method in Mojo creates a new object in memory with the same value as the original object. This means that after copying, the two variables will refer to different memory locations (different objects), and changing one will not affect the other.
 
 Mojo's `copy()` method is similar to Python's `copy.deepcopy()` function, `copy.copy()` function, or the `copy()` method for **composite** types. For primitive types like integers, floats, and booleans, Python does not necessarily create a new object.
 
@@ -263,13 +263,13 @@ warning: 'List' is no longer implicitly copyable, because it is O(n) expensive; 
 
 ## Move values
 
-As a Python user, you may be unfamiliar with the concept of "move" in programming. In Mojo, "move" means transferring everything about a variable (its value, type, and memory location) to another variable. After the move, the original variable becomes uninitialized and cannot be used anymore. This is different from copying, where both variables remain valid and independent of each other.
+As a Python user, you may be unfamiliar with the concept of "move" in programming. In Mojo, "move" means transferring the object (its value, type, and memory location) of a variable to another variable. After the move, the original variable becomes uninitialized and cannot be used anymore. This is different from copying, where both variables remain valid and independent of each other.
 
 Just like **implicit copy** only works on types that are "cheap" to copy, **move** operations in Mojo only work on types that are "expensive" to copy. These types include composite types (e.g., lists, dictionaries, structs) and user-defined types. They are usually large in size and are stored on the heap. Moving these types avoids the overhead of copying large amounts of data.
 
 After a move operation, the new variable name is referring to the same memory location as the original variable, no new memory allocation or copying of values is needed. This makes move operations very efficient, especially for large data structures.
 
-Based on the effect of the move operation, at this stage, you can very well think that "move" is a way to **rename the variable**.
+Based on the effect of the move operation, at this stage, you can very well think that "move" is a way to **rename the object**.
 
 To perform a move operation in Mojo, you can use the transfer operator `^` after the variable name. The syntax is as follows:
 
@@ -374,16 +374,26 @@ Based on what we have learnt in the previous sections, a quick conclusion may im
 | Set     | ❌ Error           | ✅ Copy         | ✅ Move           |
 | Dict    | ❌ Error           | ✅ Copy         | ✅ Move           |
 
+`String` is somewhat special because it allows both implicit copy and move operations. This is because `String` is so common used while can both be allocated on the stack (small strings) or on the heap (large strings). Thus, it is designed to be both implicitly copyable and movable.
+
+::: SIMD is implicitly copyable
+
+Small, stack-based data types in Mojo are always implicitly copied, including SIMD types. This can make Mojo faster than Rust in some computations (Pass-by-ref consumes more than direct copying, as detailed in this article: [Should Small Rust Structs be Passed by-copy or by-borrow?](https://www.forrestthewoods.com/blog/should-small-rust-structs-be-passed-by-copy-or-by-borrow/)).
+
+The topic of ownership will be further explained in Chapter [Ownership](../advanced/ownership#transfer-a-value).
+
+:::
+
 ## Copy or reference (Python vs Mojo)
 
-At the very early lessons that you learned Python, you may have been told that Python variables are **references to objects** but not directly linked with a space in the memory. When you create a variable, e.g., `a = 10.0`, Mojo actually does the following things:
+As discussed in Chapter [Variables](./variables), Python variables are **references to objects** but not directly linked with a space in the memory. When you create a variable, e.g., `a = 10.0`, Mojo actually does the following things:
 
-1. Create a new object in the memory with the value `10.0` and type `Float64`.
+1. Create a new object in the memory with the value `10.0`, the type `Float64`, and a unique ID.
 1. Put a sticker with the name `a` onto the object.
 
 When you do `a = 20.0`, Python does the following things:
 
-1. Create a new object in the memory with the value `20.0` and type `Float64`.
+1. Create a new object in the memory with the value `20.0`, the type `Float64`, and a unique ID.
 1. Remove the sticker with the name `a` from the old object.
 1. Put a sticker with the name `a` onto the new object.
 
@@ -394,10 +404,10 @@ When you do `b = a`, Python does the following things:
 
 This means that, for simple or immutable data types, changing the value of a variable always **creates a new object**. Thus, if you change the value of `a` after `b = a`, `b` will not be affected because `b` is still pointing to the old object.
 
-However, for some complex data types like lists, dictionaries, or custom classes, this can lead to some unexpected behaviors. For example,
+However, for some complex data types like lists, dictionaries, or custom classes, if you try to change the element, this can lead to some unexpected behaviors. For example,
 
 ```python
-# src/basic/variables/copy_values_or_references.py
+# src/basic/copy/copy_values_or_references.py
 def main():
     lst1 = [1, 2, 3]  # `lst1` is now referring to a list object with three integers
     lst2 = lst1  # `lst2` is now referring to the same list object as `lst1`
@@ -435,7 +445,7 @@ If you want to copy the values of the list instead of the reference, you can use
 
 ---
 
-Mojo, on the other hand, does not have this reference assignment behavior. When you do `var lst2: List[Int] = lst1`, Mojo will do the following things:
+Mojo, on the other hand, does not have this reference assignment behavior. When you do `var lst2: List[Int] = lst1.copy()`, Mojo will do the following things:
 
 1. Allocate a new memory space with the type `List[Int]` at a new address, and link it with the variable name `lst2`.
 1. Copy the values of `lst1` into the new memory space for `lst2`.
@@ -443,11 +453,11 @@ Mojo, on the other hand, does not have this reference assignment behavior. When 
 This means that `lst1` and `lst2` are now referring to completely different memory spaces. If you change the value of `lst1`, `lst2` will not be affected, and vice versa. The code below illustrates this:
 
 ```mojo
-# src/basic/variables/copy_values_or_references.mojo
+# src/basic/copy/copy_values_or_references.mojo
 def main():
     var lst1: List[Int] = [1, 2, 3]
     # `lst1` is a variable of type `List[Int]` at Address 1
-    var lst2: List[Int] = lst1
+    var lst2: List[Int] = lst1.copy()
     # `lst2` is a variable of type `List[Int]` at Address 2
 
     print("lst1 =", end=" ")
@@ -483,11 +493,11 @@ To summarize, in Mojo, when you assign a value from one variable to another, it 
 If you still want to create a reference to an existing variable, you can use the `ref` keyword. This is similar to Python's reference assignment. For example, the following code will create a reference to the variable `lst1`.
 
 ```mojo
-# src/basic/variables/create_reference_of_a_variable.mojo
+# src/basic/copy/create_reference_of_a_variable.mojo
 def main():
     var lst1: List[Int] = [1, 2, 3]
     # `lst1` is a variable of type `List[Int]` at Address 1
-    var ref lst2: List[Int] = lst1
+    ref lst2: List[Int] = lst1
     # `lst2` is a reference to the variable `lst1` of type `List[Int]` at Address 1
 
     print("lst1 =", end=" ")
@@ -522,9 +532,10 @@ We will discuss more about "copy at assignment" in Chapter [Ownership](../advanc
 
 ## Copy or move value (Rust vs Mojo)
 
-If you are familiar with Rust, you may notice that the behavior of variable assignment in Mojo is different from that in Rust. In Mojo, when you assign a value from one variable to another, it copies the value by default. This means that both variables will have their own copies of the value, and changing one will not affect the other.
+If you are familiar with Rust, you may notice immediately that the behavior of variable assignment with `b = a` in Mojo is different from that in Rust, when it comes to **complex data types** like lists (vectors in Rust), dictionaries (hash maps in Rust), and user-defined structs.
 
-In Rust, however, the default behavior of assignment (for complex data types) is to transfer ownership of the value from one variable to another. This means that the original variable will no longer be usable after the assignment. As an example, the following code in Rust will not compile:
+- In Mojo, `b = a` would lead to an error message during compilation. You have to either explicitly copy the value using `b = a.copy()` or move the value using `b = a^`.
+- In Rust, however, a move operation will be performed by default, and the original variable will become unusable. As an example, the following code in Rust will not compile:
 
 ```rust
 fn main() {
@@ -546,33 +557,24 @@ It will produce the following compilation error:
   |               ^^^ value borrowed here after move
 ```
 
-The compilation error occurs because, in Rust, for heap-based data structures, assignment defaults to ownership transfer. This means that the identifier `a` transfers its ownership of the string value to the identifier `b`, making a unusable.
+The compilation error occurs because the identifier `a` transfers its ownership of the string value to the identifier `b`, making a unusable.
 
----
+The following table summarizes the differences between common data types in Rust and Mojo when it comes to value assignment `b = a`:
 
-In Mojo, assignment defaults to copying. This means that the value of `a` is first copied, and then `b` gains ownership of this copied value. `a` retains ownership of the original value and can continue to be used.
+| Mojo type               | Rust type    | `b = a` behavior in Mojo | `b = a` behavior in Rust |
+| ----------------------- | ------------ | ------------------------ | ------------------------ |
+| `Int`, `Int32`, `Int64` | `i32`, `i64` | 🟢 Copy                   | 🟢 Copy                   |
+| `Float32`, `Float64`    | `f32`, `f64` | 🟢 Copy                   | 🟢 Copy                   |
+| `Bool`                  | `bool`       | 🟢 Copy                   | 🟢 Copy                   |
+| `String`                | `String`     | 🟢 Copy                   | 🟡 Move                   |
+| `List[...]`             | `Vec<...>`   | 🔴 Error                  | 🟡 Move                   |
 
-If you still want to enforce an ownership transfer in Mojo, you can use the transfer operator `^`. The code is as follows:
+::: info Is explicit copy and move better?
 
-```mojo
-fn main():
-    var a: String = "Hello"
-    var b = a^
-    print(a)
-    print(b)
-```
+In Rust, when it comes to `b = a`, whether a copy or move is performed depends on whether the type implements the `Copy` trait. It may be confusing to know whether a copy or move operation is performed, especially for beginners. This would cause extra mental burden during programming.
 
-```console
-error: use of uninitialized value 'a'
-print(a)
-```
+Compared to Rust, the copy and move operations in Mojo are more explicit. If `b = a` is always a copy if it is allowed. Otherwise, you have to explicitly choose between copy and move. This makes the behavior of variable assignment more predictable and easier to understand.
 
-Here, we use the transfer operator to inform the compiler to transfer the ownership of the string value from `a` to `b`. After this, a returns to an uninitialized state and cannot be used.
+The downside of Mojo's semantic is that you have to use an extra `^` sigil every time for move operations.
 
-::: info
-Compared to Rust, this approach in Mojo reduces the mental burden during programming, especially when passing parameters, as you don’t have to worry about functions acquiring ownership and invalidating the original variable name. The downside is that the default copying behavior (`__copyinit__`) can lead to additional memory consumption. The compiler optimizes this by using `__moveinit__` to transfer ownership if the original variable name is no longer used after assignment.
-
-Of course, certain small, stack-based data types in Mojo are always copied, including SIMD types. This can make Mojo faster than Rust in some computations (Pass-by-ref consumes more than direct copying, as detailed in this article: [Should Small Rust Structs be Passed by-copy or by-borrow?](https://www.forrestthewoods.com/blog/should-small-rust-structs-be-passed-by-copy-or-by-borrow/)).
-
-The topic of ownership will be further explained in Chapter [Ownership](../advanced/ownership#transfer-a-value).
 :::
