@@ -6,8 +6,8 @@
 A variable is a fundamental concept in programming which allows you to store, read, and manipulate data. It can be seen as a container of data, enabling you to refer to the data by a symbolic name rather than the value in the memory directly. This is essential for writing readable and maintainable code. In this chapter, we will explore the following topics:
 
 - Conceptual model of Mojo variables
+- Variables from an object-oriented perspective
 - Python variables vs Mojo variables
-- Identifiers
 - Creation of variables
 - Re-assignment of variables
 - Assignment of values between variables
@@ -28,7 +28,35 @@ You can think of a variable as a safe vault, on whose door is printed a name, a 
 
 ![Variable as a vault](/graphs/variable_as_vault.jpg)
 
-Let's take a look at a concrete example of a variable in Mojo. The variable is of name `a`, of type `Int`, of address `0x26c6a89a`, and of value `123456789`. Since the `Int` type is 64-bit (8-byte) long, it actually occupies the space from `0x26c6a89a` to `0x26c6a89a + 7` = `0x26c6a8a1`. The value `123456789` is stored in the memory space in a binary format, which is `00000000 00000000 00000000 00000000 00000000 00000000 00000101 00000101` (in little-endian format).
+## Variables from a object-oriented perspective
+
+As a Pythonista, you may also think from the "object"-oriented perspective. In this case, let's define a **Mojo object** as an abstract object in memory with three attributes:
+
+1. type
+1. value
+1. address.
+
+For example, the integer `1` is a Mojo object with type `Int`, value `1`, and an address in memory (let's say, `0x26c6a89a`). The string `"Hello, world!"` is another Mojo object with type `String`, value `"Hello, world!"`, and another address in memory (let's say, `0x26c6b00f`).
+
+From this perspective, a variable in Mojo is **a name that refers to a Mojo object in memory**. More intuitively, you can see variable name as a label that is sticked onto the object. See the following illustration:
+
+```console
+# Mojo Miji - Basic - Variables - Mojo variables and objects
+
+             variable name
+                  ↓
+   ┌────────────────────────────────┐
+   │       Object (abstract)        │
+   ├──────────┬─────────┬───────────┤
+   │   type   │  value  │  address  │
+   └──────────┴─────────┴───────────┘
+```
+
+This conceptual model is consistent with the quaternary system introduced above. The only difference is that we view the type, value, and address as attributes of an abstract object, which is an extra layer of abstraction.
+
+## A concrete example of a variable
+
+Let's take a look at a concrete example of a variable in Mojo. The variable is of name `a`, of type `Int`, of address `0x26c6a89a`, and of value `123456789`. Since the `Int` type is 64-bit (8-byte) long, it actually occupies the space from `0x26c6a89a` to `0x26c6a8a1`. The value `123456789` is stored in the memory space in a binary format, which is `00000000 00000000 00000000 00000000 00000000 00000000 00000101 00000101` (in little-endian format).
 
 ```console
 # Mojo Miji - Basic - Variables
@@ -51,11 +79,22 @@ More intuitively, the variable `a` can be visualized as the following vault:
 
 ![Variable a as a vault](/graphs/variable_vault_a_int_123456789.jpg)
 
-When you program in Mojo, you should always view a variable as a system consisting of four aspects, a name, a type, an address, and a value. You should not only regard it as a name or a label. In this way, you can better understand **how variables are interacted with each other**. When you step into the concept "[ownership](../advanced/ownership.md)", it will save you a lot of effort to understand it.
+---
 
-For example, when you initialize a variable, you are doing the following things: (1) Select an **name** for the variable, (2) Specify the **type** of the variable, (3) Ask for an **address**, a memory space, to store the date, and (4) Store the **value** in the memory space in a binary format.
+When you program in Mojo, you should always view a variable as a system consisting of four aspects, a name, a type, an address, and a value. You should not regard it as merely a "name". In this way, you can better understand **how variables are interacted with each other**. When you step into the concept "[ownership](../advanced/ownership.md)", it will save you a lot of effort to understand it.
 
-When you use a variable via its name, you are doing the following four things: (1) Find out the information of the variable in the symbol table, which includes its name, type, and address in the memory, (2) Go to the memory address to retrieve the value stored there, and (3) Interpret the value according to its type.
+For example, when you initialize a variable, you are doing the following things:
+
+1. Specify the **type** of the variable.
+1. Ask for an **address**, a memory space, to properly store the date.
+1. Store the **value** in the memory space in a binary format.
+1. Select an **name** for the variable.
+
+When you use a variable via its name, you are doing the following four things:
+
+1. Find out the information of the variable in the symbol table, which includes its name, type, and address in the memory.
+1. Go to the memory address to retrieve the value stored there.
+1. Interpret the value according to its type.
 
 There can be many, many variables in a program. They will be stored in different locations in the memory, each with its own name, type, address, and value. The following figure shows a few variables (as safe vaults) in a program. Note that some vaults are bigger than others and occupy more space in the memory. Some addresses are not yet occupied by any vaults.
 
@@ -75,16 +114,37 @@ In short, the type of a variable is very important as it defines how the program
 
 ### Conceptual model of Python variables
 
-The conceptual model of variables in Mojo is **fundamentally** different from that in Python.
-
 In Python, a variable is a **name** that refers to an object in memory. The object itself contains the type information and the value. The memory layout and the location of the object are not directly accessible, but are abstracted away from the user. Each object has a unique identifier (which can be obtained using the built-in `id()` function), but this identifier is not the same as a memory address and should not be relied upon for memory management.
 
-Thus, the conceptual model of a variable in Python can be simplified as a binary structure consisting:
+Thus, the conceptual model of a variable in Python can be simplified as the following system:
 
-1. a name
-1. an object (which further contains type, value, and a unique identifier)
+1. **name**: a human readable name that is associated with the object
+1. **object**: an abstract object in memory with three attributes:
+   - **type** of the object
+   - **value** of the object
+   - **unique ID** of the object
 
-Let me use some concrete examples for you to understand:
+See the following abstract representation of a variable in Python:
+
+```console
+# Mojo Miji - Basic - Variables - Python variables
+
+       variable name
+            ↓
+   ┌─────────────────────────────┐
+   │      Object (abstract)      │
+   ├──────────┬─────────┬────────┤
+   │   type   │  value  │   ID   │
+   └──────────┴─────────┴────────┘
+```
+
+At a glance, this quaternary system is very similar to that of Mojo's variable, except for that the "address" in Mojo is replaced by "unique ID".
+
+However, in Python, the **type**, **value**, and **unique ID** are so tightly coupled together as an object that they **cannot** be separated. And, in most cases, you **cannot** directly manipulate the values of the object and you **cannot** even destroy an object manually. You can only manipulate the name and the relationship between the name and the object.
+
+The fact that Python's object is a well-encapsulated black box is the key to understand the **fundamental** difference between the behavior of Python variables and Mojo variables that we will encounter in the future throughout this Miji.
+
+Okay, let me first use some concrete examples for you to understand Python variables more intuitively.
 
 *1984 by George Orwell* can be seen as an **object**. It has a **type** (book), a **value** (the content of the book), and a unique **identifier** (ISBN number). The variable name in Python is like a sticker with the name "my favorite book" that you stick onto the book cover. You can then use the name "my favorite book" to refer to the book object. As such, the binary system of the name "my favorite book" and the book object is a variable in Python.
 
@@ -94,20 +154,9 @@ You can also stick another sticker with the name "best_seller" onto the same boo
 
 Of course, you can also stick other stickers with different names onto the same laptop object.
 
-See the following abstract representation of a variable in Python:
-
-```console
-# Mojo Miji - Basic - Variables - Python variables
-            variable name
-                 ↓
-          ┌──────┬───────┬─────┐
-Object    │ type │ value │ ID  │
-          └──────┴───────┴─────┘
-```
-
 ### Construction, re-assignment, and use of Python variables
 
-Now, let's apply this conceptual model to understand how Python variables are created, re-assigned, and used. A sample code is as follows:
+Now, let's apply the conceptual model to understand how Python variables are created, re-assigned, and used. A sample code is as follows:
 
 ```python
 a = 1
@@ -168,6 +217,21 @@ As I said before, a Mojo's variables is associated with a memory address. When y
 In other words, the Mojo's variable name is a sticker sticked onto a physical memory address directly, while the Python's variable name is a sticker sticked onto an abstract object in memory.
 
 In the later section [Assign values between variables](#assign-values-between-variables), we will continue to see how the difference between Python and Mojo variables affects the way we assign values between variables.
+
+::: tip Major difference between Python variables and Mojo variables
+
+Here is a quick glance of some major differences between Python variables and Mojo variables that are resulted from the different conceptual models. I will elaborate these differences in details later in this Miji.
+
+- In Python, you can stick multiple stickers (variable names) onto the same object (of the same ID). Thus, multiple variable names can refer to the same object.
+- In Mojo, you can only stick one sticker (variable name) onto a one object (at a specific emory address). Thus, one variable name can only refer to one memory address.
+- In Python, you cannot manually destroy an object. You can only remove the sticker (variable name) from the object. The object will be automatically destroyed by Python's garbage collector when there are no more stickers (variable names) sticked onto it.
+- In Mojo, you can manually destroy a variable, which will free up the memory space occupied by the variable.
+- In Python, you cannot directly manipulate the value of the object. If you re-assign a variable name to a new value, you are actually creating a new object and changing the sticker (variable name) to refer to the new object.
+- In Mojo, you can directly manipulate the value of the variable at a specific memory location. If you re-assign a variable to a new value, you are changing the value stored at the same memory address.
+- In Python, `b = a` means that you are creating a new sticker (variable name `b`) and stick it onto the same object that variable name `a` is sticked onto. Thus, both `a` and `b` refer to the same object.
+- In Mojo, `b = a` means that you are copying the value of variable `a` into variable `b`. Thus, `a` and `b` refer to different memory addresses and thus different objects.
+
+:::
 
 ## Identifiers
 

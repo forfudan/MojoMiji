@@ -1,6 +1,8 @@
 # Copy and move
 
-We have briefly touched the topic of value assignment between variables in Chapter [Variables](./variables). In this chapter, we will take a deeper look into how values are transferred between variables in Mojo. The following topics will be covered:
+We have briefly touched the topic of value assignment between variables in Chapter [Variables](./variables). In this chapter, we will take a deeper look into how values are transferred between variables in Mojo. More advanced topics such as ownership and borrowing will be covered in later chapters.
+
+This chapter focuses on the following topics:
 
 - Explicit copy of values
 - Implicit copy of values
