@@ -578,3 +578,7 @@ Compared to Rust, the copy and move operations in Mojo are more explicit. If `b 
 The downside of Mojo's semantic is that you have to use an extra `^` sigil every time for move operations.
 
 :::
+
+## Major changes in this chapter
+
+- 2025-09-25: Add this chapter to accommodate to the changes in Mojo v0.25.6.

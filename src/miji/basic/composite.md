@@ -633,3 +633,7 @@ The table below compares Mojo's `Dict` with Python's `dict`:
 | Deep copy          | `dct.copy()`               | `copy.deepcopy(dct)`                  |
 | Reference          | `ref` keyword              | `dct2 = dct1`                         |
 | Transfer ownership | `^` operator               | N.A.                                  |
+
+## Main changes in this chapter
+
+- 2025-09-25: Update to accommodate to the changes in Mojo v0.25.6.

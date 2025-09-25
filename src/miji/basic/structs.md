@@ -38,7 +38,7 @@ The following table summarizes the similarities and differences between Mojo str
 | Static methods             | `@staticmethod`                         | `@staticmethod`                                                 |
 | Initializer method         | `def __init__(out self):` or `fn...`    | `def __init__(self):`                                           |
 | Parametrization            | Yes, define parameters in `[]`          | No                                                              |
-| Inheritance                | No inheritance                          | Supports hierarchical inheritance.                              |
+| Inheritance                | Limited (via default method of trait)   | Supports hierarchical inheritance                               |
 | Composition                | Yes, via traits                         | Possible                                                        |
 | Constructor                | `var obj = StructName(arg1, arg2, ...)` | `var obj = ClassName(arg1, arg2, ...)`                          |
 | Call fields (attributes)   | `obj.name`                              | `obj.name`                                                      |

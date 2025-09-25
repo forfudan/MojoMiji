@@ -18,9 +18,11 @@ Mojo, as a Python-like language, inherits the error handling mechanism from Pyth
 
 Errors in Mojo are merely messages that the programmer want to convey to the users when a certain condition is met. They are not necessarily "wrong" or "bad", but rather a way to indicate that some operations are not allowed or undefined. The programmer will not make a decision for the users, but rather let them know that they need to handle the situation themselves. In this sense, errors are recoverable.
 
-A common example is division-by-zero error. Dividing a number by zero is mathematically **undefined**, but not necessarily "wrong". Depending on the use cases, you may want to use a certain number to replace the result, you may want to return a "infinity" value, or you may want to just abort the program. In this sense, the programmer should not make a decision for the users, but pass a message to the users that "this operation is undefined mathematically, please handle it and pick a solution that fits your use case".
+Since errors are not necessarily "wrong", some programmers may use the term "exceptions" instead of "errors". This word is semantically more neutral and does not imply any judgment about the situation. It simply indicates that something unexpected happened, and the users need to handle it. In this Miji, I use the term "errors", but these two terms can be used interchangeably.
 
-This is also about the error handling mechanism in Mojo. It is not about "catching" errors and "fixing" them, but rather about letting the users know that something is not right and they need to handle it themselves. If they do not handle it, the program will abort with the message that the programmer has provided.
+One of the most common examples of errors is the "division-by-zero error". Dividing a number by zero is mathematically **undefined**, but not necessarily "wrong". Depending on the use cases, you may want to use a certain number to replace the result, you may want to return a "infinity" value, or you may want to just abort the program. In this sense, the programmer should not make a decision for the users, but pass a message to the users that "this operation is undefined mathematically, please handle it and pick a solution that fits your use case".
+
+This is the core philosophy of error handling in Mojo: not about "catching" errors and "fixing" them, but rather about letting the users know that something is not right and they need to handle it themselves. If they do not handle it, the program will abort with the message that the programmer has provided.
 
 **The error messages in Mojo are represented by the built-in `Error` type**, which is actually composed of a pointer to a **string** and the length of it. If you are interested, you can check the source code of the `Error` struct in the [Mojo standard library](https://github.com/modular/modular/blob/main/mojo/stdlib/stdlib/builtin/error.mojo).
 
@@ -388,6 +390,16 @@ The program successfully run without aborting, and the result is calculated corr
 ---
 
 You can see from the example that the `try`-`except`-`else`-`finally` statements provide a powerful way to handle errors in Mojo. Let's use the metaphor of the blind box again. The `try` block is where you open the box and take a look inside. If you find an okay **value** of the expected type, you continue with the remaining `try` block, the `else` block, and the `finally` block. If you find an **error**, you jump to the `except` block to handle it, and then continue with the `finally` block.
+
+::: warning Mojo does not support multiple types of errors yet
+
+You may have noticed that in the above examples, the syntax of `except` block in Mojo is slightly different from that in Python. In Python, you can specify the type of error you want to catch in the `except` block, such as `except ValueError as e:`, `except OverflowError as e:`, `except ZeroDivisionError as e:`, etc. This allows you to handle different types of errors differently.
+
+On contrary, in Mojo, you cannot specify the type of error in the `except` block. This is because Mojo only has **one built-in error type**, which is the `Error` type. All errors raised in Mojo are of this type.
+
+In the future, Mojo may support different types of errors and allow your to define your own error types. This will allow you to specify the type of error in the `except` block, just like in Python.
+
+:::
 
 ## Raise an error in the `except` block
 

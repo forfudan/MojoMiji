@@ -2,9 +2,17 @@
 
 Parametrization is about setting the value of a certain type to be fixed at run time. We can also extend this idea to set a **type with a certain feature** to be fixed at run time. This is about **generic**.
 
-**Generic** is a model that allows you to write code that can operate on different types, improving maintainability, readability, and extensibility of your code.
+**Generic** is a model that allows you to write code that can operate on different types, improving maintainability, readability, and extensibility of your code. This is particularly useful when you want to write functions or data structures that can work with any type that meets certain requirements, rather than being limited to a specific type.
 
-[[toc]]
+This chapter will discuss the following topics:
+
+- What is generic?
+- What is traits?
+- How to use multiple traits in one struct or in one function?
+- Default implementation of methods in traits
+- Python versus Mojo in terms of generic
+- Build-in traits in Mojo
+- Double-underscore methods that conform to certain traits
 
 ## Generic
 
@@ -172,7 +180,7 @@ It looks very similar to a struct. The main difference is that:
 
 - We do not need to define any fields but only methods.
 - We do not need to provide an implementation for the methods. We only need to define the method signature, including the method name, the input arguments, and the return type.
-- We use `...` to indicate that we do not provide a concrete implementation for the method. It is just a **placeholder**. The code  will be provided by the types that implement the trait.
+- We use `...` to indicate that we do not provide a concrete implementation for the method. It is just a **placeholder**. The code will be provided by the types that implement the trait.
 
 Thus, you can think of **a trait as a prototype, a template, or a placeholder for types** that implement the trait.
 
@@ -602,6 +610,129 @@ alias Comparable = EqualityComparable & LessThanComparable & GreaterThanComparab
 
 :::
 
+## Default implementation for methods in traits
+
+In the examples above, we defined the methods in the traits without providing any implementation, but just using `...` as a placeholder:
+
+```mojo
+trait Animal:
+    def get_name(self) -> String:
+        ...
+```
+
+Later, we implemented these methods in each struct that conforms the trait:
+
+```mojo
+struct Cat(Animal, Measurable):
+    # Some code omitted for brevity
+    def get_name(self) -> String:
+        return self.name
+    # Some code omitted for brevity
+
+struct Bird(Animal, Measurable):
+    # Some code omitted for brevity
+    def get_name(self) -> String:
+        return self.name
+    # Some code omitted for brevity
+
+struct Human(Animal, Measurable):
+    # Some code omitted for brevity
+    def get_name(self) -> String:
+        return self.name
+    # Some code omitted for brevity
+```
+
+You may notice that the implementation of the `get_name()` method is identical in all structs. It is a bit redundant to write the same code again and again. Luckily, Mojo allows you to provide a **default implementation** for methods in traits. This means that you can define the method in the trait (already) with a concrete implementation, and the types that conform to the trait can choose to use the default implementation or override it with their own implementation.
+
+To demonstrate, let's amend the previous example with a new trait `Talkative` that has a method `greet()` with a default implementation:
+
+```mojo
+# src/advanced/generic/default_implementation_of_methods.mojo
+trait Talkative:
+    def greet(self) -> None:
+        print("Hello!")
+
+
+struct Cat(Talkative):
+    var name: String
+    var food: String
+
+    def __init__(out self, name: String, food: String):
+        self.name = name
+        self.food = food
+
+
+struct Bird(Talkative):
+    var name: String
+    var food: String
+
+    def __init__(out self, name: String, food: String):
+        self.name = name
+        self.food = food
+
+    def greet(self) -> None:
+        print("Hello! Bugu, bugu, bugu, bugu, bugu!")
+
+
+struct Human(Talkative):
+    var name: String
+    var food: String
+
+    def __init__(out self, name: String, food: String):
+        self.name = name
+        self.food = food
+
+    def greet(self) -> None:
+        print(
+            "Hello! I am {}, I am a talkative person. I can say more than just"
+            " hello and I love talking about food and weather. My favorite food"
+            " is {}, a pan-fried baozi which is popular in Shanghai and Suzhou."
+            .format(self.name, self.food)
+        )
+
+
+def main():
+    saku = Cat("Saku", "chicken")
+    bili = Bird("Bili", "worms")
+    yuhao = Human(
+        "Yuhao",
+        "生煎包 (sanci moedeu)",
+    )
+
+    saku.greet()
+    bili.greet()
+    yuhao.greet()
+```
+
+If we run this code, we will get the following output:
+
+```console
+Hello!
+Hello! Bugu, bugu, bugu, bugu, bugu!
+Hello! I am Yuhao, I am a talkative person. I can say more than just hello and I love talking about food and weather. My favorite food is 生煎包 (sanci moedeu), a pan-fried baozi which is popular in Shanghai and Suzhou.
+```
+
+Let's analyze the code above carefully.
+
+1. We define a trait `Talkative` with a method `greet()` that has a default implementation. The default implementation simply prints "Hello!".
+1. We define a struct `Cat` that conforms to the `Talkative` trait but **does not** provide its own implementation of the `greet()` method. Thus, when we call `saku.greet()`, it uses the default implementation from the `Talkative` trait and simply prints "Hello!".
+1. We define a struct `Bird` that conforms to the `Talkative` trait and **overrides** the default implementation of the `greet()` method with its own implementation. Thus, when we call `bili.greet()`, it uses the implementation from the `Bird` struct and prints "Hello! Bugu, bugu, bugu, bugu, bugu!".
+1. We define a struct `Human` that conforms to the `Talkative` trait and **overrides** the default implementation of the `greet()` method with its own implementation. This time, the `greet()` method prints a more detailed greeting message that includes both the **name** field and the **food** field of the human type. Thus, when we call `yuhao.greet()`, it uses the implementation from the `Human` struct and prints the detailed greeting message.
+
+---
+
+This feature is straitforward but powerful. When you write your own structs, for some common functionalities, e.g., life cycle management, copy and move operations, etc, you can just declare the corresponding built-in traits at the top of the struct. Then Mojo will automatically provide the default implementation for you.
+
+::: tip Before Mojo v0.25.6
+
+Before Mojo v0.25.6 (2025-09-22), default methods in traits were not supported. Thus, you have to implement all the methods defined in a trait in each struct that conforms to the trait, even if the implementation is identical.
+
+From Mojo v0.25.6, default methods in traits are supported. You can provide a default implementation for a method in a trait, and the types that conform to the trait can choose to use the default implementation or override it with their own implementation.
+
+This change significantly reduces the amount of boilerplate code you need to write, especially when many types share the same implementation for certain methods. It also improves code maintainability and has some spirit of "inheritance". You may think that the trait is like a **base class**, and the structs that conform to the trait are like **derived classes**.
+
+:::
+
 ## Python vs Mojo in generic
 
 As a Pythonista, you may have heard about a concept called "duck typing", which means that:
@@ -801,26 +932,27 @@ Pixel(45088, 175082)
 
 Below is a table summarizing the most common dunder methods, the operators they overload, and the built-in traits they conform to.
 
-| Dunder method    | Built-in trait | Built-in operator | Description                        |
-| ---------------- | -------------- | ----------------- | ---------------------------------- |
-| `__add__()`      |                | `+`               | Addition                           |
-| `__sub__()`      |                | `-`               | Subtraction                        |
-| `__mul__()`      |                | `*`               | Multiplication                     |
-| `__truediv__()`  |                | `/`               | Division                           |
-| `__floordiv__()` |                | `//`              | Floor division                     |
-| `__mod__()`      |                | `%`               | Modulus                            |
-| `__pow__()`      | `Powable`      | `**`              | Power                              |
-| `__gt__()`       | `Comparable`   | `>`               | Greater than                       |
-| `__ge__()`       | `Comparable`   | `>=`              | Greater than or equal to           |
-| `__lt__()`       | `Comparable`   | `<`               | Less than                          |
-| `__le__()`       | `Comparable`   | `<=`              | Less than or equal to              |
-| `__eq__()`       | `Comparable`   | `==`              | Equal                              |
-| `__ne__()`       | `Comparable`   | `!=`              | Not equal                          |
-| `__getitem__()`  |                | `a[]`             | Indexing and slicing               |
-| `__setitem__()`  |                | `a[] = b`         | Assignment by index or slice       |
-| `__copyinit__()` | `Copyable`     | Mostly `y = x`    | Copy the value to another variable |
-| `__moveinit__()` | `Movable`      | Mostly `y = x^`   | Move the value to another variable |
+| Dunder method    | Built-in trait | Built-in operator       | Description                        |
+| ---------------- | -------------- | ----------------------- | ---------------------------------- |
+| `__add__()`      |                | `+`                     | Addition                           |
+| `__sub__()`      |                | `-`                     | Subtraction                        |
+| `__mul__()`      |                | `*`                     | Multiplication                     |
+| `__truediv__()`  |                | `/`                     | Division                           |
+| `__floordiv__()` |                | `//`                    | Floor division                     |
+| `__mod__()`      |                | `%`                     | Modulus                            |
+| `__pow__()`      | `Powable`      | `**`                    | Power                              |
+| `__gt__()`       | `Comparable`   | `>`                     | Greater than                       |
+| `__ge__()`       | `Comparable`   | `>=`                    | Greater than or equal to           |
+| `__lt__()`       | `Comparable`   | `<`                     | Less than                          |
+| `__le__()`       | `Comparable`   | `<=`                    | Less than or equal to              |
+| `__eq__()`       | `Comparable`   | `==`                    | Equal                              |
+| `__ne__()`       | `Comparable`   | `!=`                    | Not equal                          |
+| `__getitem__()`  |                | `a[]`                   | Indexing and slicing               |
+| `__setitem__()`  |                | `a[] = b`               | Assignment by index or slice       |
+| `__copyinit__()` | `Copyable`     | `y = x`, `y = x.copy()` | Copy the value to another variable |
+| `__moveinit__()` | `Movable`      | `y = x^`                | Move the value to another variable |
 
 ## Major changes in this chapter
 
 - 2025-06-23: Update to accommodate to the changes in Mojo v25.4.
+- 2025-09-25: Include a section on default implementation of methods to accommodate to the changes in Mojo v0.25.6.
