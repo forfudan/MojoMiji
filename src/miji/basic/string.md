@@ -7,6 +7,15 @@ String is one of the most important concepts in programming languages, but also 
 
 Nevertheless, most programming languages do have a built-in string type. Mojo is no exception. However, the design of `String` in Mojo is, inevitably, changing rapidly, due to the reasons we mentioned above. Even within the development team, there are different opinions on how to design the `String` type. This is why we put string in this standalone chapter.
 
+This chapter will cover the following topics:
+
+- Nature of string
+- String construction
+- String printing and formatting
+- String iteration
+- String indexing and slicing
+- Internal representation of string
+
 ::: warning Future changes expected
 
 The behavior of `String` has been changing rapidly. Some of the features described here may not be applicable to the latest versions of Mojo, and some of the features may still be changing in future versions.
@@ -18,8 +27,6 @@ There are many ongoing discussions about the design of `String` in Mojo. The off
 - [PR #3988: String, ASCII, Unicode, UTF, Graphemes](https://github.com/modular/modular/pull/3988).
 
 :::
-
-[[toc]]
 
 ## What is a string?
 
@@ -39,6 +46,9 @@ The following table summarizes the differences between `String` in Mojo and `str
 | formatted values                        | Supported, e.g., `{:0.2f}`, `{:0.3%}`     | Not supported (yet)                                   |
 | Iteration over UTF-8 code points        | Yes, use `for i in s:` directly           | Yes, but more complicated                             |
 | UTF8-assured indexing and slicing       | Yes, use `s[i]` or `s[i:j]` directly      | Not supported                                         |
+| Copy                                    | `copy()` or `lst2 = lst1`                 | `lst2 = lst1`                                         |
+| Reference                               | `ref` keyword                             | N.A.                                                  |
+| Transfer ownership                      | `^` operator                              | N.A.                                                  |
 
 ## String construction
 

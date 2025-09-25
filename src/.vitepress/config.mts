@@ -255,10 +255,10 @@ export default defineConfig({
     darkModeSwitchLabel: "Dark mode",
     langMenuLabel: "Select Language",
     returnToTopLabel: "Back to top",
-    sidebarMenuLabel: "Table of content",
+    sidebarMenuLabel: "Table of content - Miji",
     outline: {
       level: "deep",
-      label: "Headings"
+      label: "Sections of this chapter"
     },
     search: {
       provider: "local",

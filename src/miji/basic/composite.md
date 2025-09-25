@@ -56,6 +56,10 @@ In Mojo, a `List` is a mutable, variable-length sequence that can hold a collect
 | Iterator returns   | Reference to element   | Copy of element                             |
 | List comprehension | Partially supported    | Supported                                   |
 | Memory layout      | Metadata -> Elements   | Pointer -> metadata -> Pointers -> Elements |
+| Shadow copy        | N.A.                   | `list.copy()` or `copy.copy(lst)`           |
+| Deep copy          | `lst.copy()`           | `copy.deepcopy(lst)`                        |
+| Reference          | `ref` keyword          | `lst2 = lst1`                               |
+| Transfer ownership | `^` operator           | N.A.                                        |
 
 ### Construct a list
 
@@ -96,6 +100,125 @@ def main():
 ```
 
 The first way is more concise and easier to read, while the second way is more explicit since you have to specify the type of the elements in the list. Both ways are valid and will produce the same result. You can choose either way depending on your preference.
+
+### Copy and move a list
+
+You can **deep copy** a `List` in Mojo by using the `copy()` method. This will create a new `List` that contains the same elements as the original list. However, all the elements in the new list are **independent copies** of the elements in the original list. Thus, modifying an element in the new list will not affect the corresponding element in the original list, and vice versa. For example:
+
+```mojo
+# src/basic/composite/list_copy.mojo
+def main():
+    lst1: List[List[Int]] = [[1]]
+    lst2 = lst1.copy()
+    print("Before modifying the copied list:")
+    print("lst1[0][0] =", lst1[0][0])
+    print("lst2[0][0] =", lst2[0][0])
+
+    lst2[0][0] = 100
+    print("After modifying the copied list:")
+    print("lst1[0][0] =", lst1[0][0])
+    print("lst2[0][0] =", lst2[0][0])
+```
+
+This prints the following output:
+
+```console
+Before modifying the copied list:
+lst1[0][0] = 1
+lst2[0][0] = 1
+After modifying the copied list:
+lst1[0][0] = 1
+lst2[0][0] = 100
+```
+
+This is different from Python, where `lst1.copy()` creates a shallow copy of the list. In a shallow copy, the new list contains references to the same elements as the original list. Thus, modifying an element in the new list will also affect the corresponding element in the original list, and vice versa. For example:
+
+```python
+# src/basic/composite/list_copy.py
+def main():
+    lst1 = [[1]]
+    lst2 = lst1.copy()
+    print("Before modifying the copied list:")
+    print("lst1[0][0] =", lst1[0][0])
+    print("lst2[0][0] =", lst2[0][0])
+
+    lst2[0][0] = 100
+    print("After modifying the copied list:")
+    print("lst1[0][0] =", lst1[0][0])
+    print("lst2[0][0] =", lst2[0][0])
+
+
+main()
+```
+
+This prints the following output:
+
+```console
+Before modifying the copied list:
+lst1[0][0] = 1
+lst2[0][0] = 1
+After modifying the copied list:
+lst1[0][0] = 100
+lst2[0][0] = 100
+```
+
+Thus, Mojo's `copy()` method creates a deep copy of the list, just like Python's `copy.deepcopy()` function. Be aware of this difference.
+
+---
+
+You can **transfer the ownership** of a `List` in Mojo by using the `^` operator. This will move the object (type, address, and value) from one variable to another, leaving the original variable name in an invalid state. After the transfer, you can only use the new variable name to access and modify the list. Attempting to use the original variable name will result in a compile-time error. For example:
+
+```mojo
+# src/basic/composite/list_move.mojo
+def main():
+    lst1: List[List[Int]] = [[1]]
+    print("Before moving the list:")
+    print("lst1[0][0] =", lst1[0][0])
+
+    lst2 = lst1^
+    print("After moving the list:")
+    print("lst2[0][0] =", lst2[0][0])    
+```
+
+This prints the following output:
+
+```console
+Before moving the list:
+lst1[0][0] = 1
+After moving the list:
+lst2[0][0] = 1
+```
+
+Attempting to access `lst1` after the move (`print("lst1[0][0] =", lst1[0][0])`) will generate a compile-time error:
+
+```console
+error: use of uninitialized value 'lst1'
+    print("lst1[0][0] =", lst1[0][0])
+                              ^
+```
+
+---
+
+As learnt in Chapter [Copy and move](../basic/copy), `List` is not implicitly copyable in Mojo. This means that you cannot just use an equal sign `=` to assign a `List` to another variable. For example, the following code will not compile:
+
+```mojo
+# src/basic/composite/list_assignment_with_only_equal_sign.mojo
+def main():
+    lst1 = [[1]]
+    lst2 = lst1
+    print("lst1[0][0] =", lst1[0][0])
+    print("lst2[0][0] =", lst2[0][0])
+```
+
+This will generate a compile-time error:
+
+```console
+warning: 'List' is no longer implicitly copyable, because it is O(n) expensive; this warning will be an error in the next release of Mojo
+    lst2 = lst1
+           ^~~~
+```
+
+To fix this, you can either use the `copy()` method to create a deep copy of the list, or use the `^` operator to transfer the ownership of the list.
 
 ### Index or slice a list
 
@@ -506,3 +629,7 @@ The table below compares Mojo's `Dict` with Python's `dict`:
 | Printing           | Not supported              | Use `print()`                         |
 | Iterating          | Use `for` loop to get keys | Use `for` loop to get key-value pairs |
 | Iterator returns   | Reference to element       | Copy of element                       |
+| Shadow copy        | N.A.                       | `dct.copy()` or `copy.copy(dct)`      |
+| Deep copy          | `dct.copy()`               | `copy.deepcopy(dct)`                  |
+| Reference          | `ref` keyword              | `dct2 = dct1`                         |
+| Transfer ownership | `^` operator               | N.A.                                  |
