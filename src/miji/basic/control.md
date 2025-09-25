@@ -5,11 +5,18 @@
 
 It would be interesting to imagine a world where most of the programming languages are line-oriented where you have to write "go back to Line 10" to repeat a task, or "advance to Line 20" to skip a task. Luckily, we have control flows where you can encapsulate the logic of repeating or skipping tasks in a more human-readable way.
 
-There are three main types of control flows in Python: loops, conditionals, and exceptions. Mojo, being a Python-like language, also supports these control flows with almost the same logic and syntax. In this section, we will cover the first two types of control flows: loops and conditionals. Exceptions will be covered in a [later chapter](../basic/errors).
+There are three main types of control flows in Python: loops, conditionals, and exceptions. Mojo, being a Python-like language, also supports these control flows with almost the same logic and syntax. In this section, we will cover the first two types of control flows: conditionals and loops. Exceptions will be covered in a [later chapter](../basic/errors).
 
 For Pythonistas, you can quickly scan this chapter and jump to the exercises because the concepts in this chapter are very similar to Python's control flows. You may still need to pay attention to some blocks marked in yellow or red colors, which indicate the differences between Mojo and Python.
 
-[[toc]]
+This chapter covers the following topics:
+
+- The conditionals: `if`-`else` statement
+- The `for` loops
+- The `while` loops
+- Other keywords: `break`, `continue`, etc
+- Iteration, iterables, and iterators
+- Exercises
 
 ## Conditionals
 
@@ -1229,6 +1236,22 @@ First Fibonacci number > 1000000000: 1134903170
 This section may be moved to a standalone chapter in the advanced part of the Miji. That chapter may also cover the concept of generators and comprehensions in case Mojo **fully** supports them in the future.
 
 :::
+
+### A quick overview
+
+Before we dive into the formal definitions, let's first rewind what we have learned so far about iteration, iterables, and iterators.
+
+1. **Iterate** means to go through each element of something one by one.
+1. **Iterable** is an object that is able to be iterated. Usually, it contains a finite number of elements and can be sequentially accessed, such as a list, tuple, or string.
+1. When you iterate over an iterable, an **iterator** is created behind the scenes. This iterator will give you one element at a time from the iterable until there are no more elements left.
+
+| Term     | Description                                                  | Metaphor                                                   |
+| -------- | ------------------------------------------------------------ | ---------------------------------------------------------- |
+| Iterate  | Go through each element of an object one by one              | **Inspecting** each product as it arrives at your location |
+| Iterable | An object with some elements that is able to be gone through | The **warehouse** of products waiting to be processed      |
+| Iterator | A tool that give you one element at a time from the iterable | The **conveyor belt** that delivers one item at a time     |
+
+### Formal definitions
 
 An object is an **iterable** if it implements a `__iter__()` method that returns an **iterator**.
 
