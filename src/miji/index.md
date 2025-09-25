@@ -9,9 +9,9 @@ by ***Yuhao Zhu 朱宇浩***
 
 ::: warning Notes
 
-This Miji is compatible with Mojo v25.5 (2025-08-05).
+This Miji is compatible with Mojo v0.25.6 (2025-09-22).
 
-For the example programs in this Miji, you can find them in the [GitHub repository](https://github.com/forfudan/my-first-mojo-project).
+For the example programs featured in this Miji, you can find them in the [GitHub repository](https://github.com/forfudan/my-first-mojo-project).
 
 :::
 

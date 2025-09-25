@@ -148,9 +148,9 @@ lst1 and lst2 are the same object: False
 
 Note that Python does not necessarily create a new object for primitive types like integers and strings. This is because Python caches small integers and short strings for performance reasons. However, for composite types like lists, Python always creates a new object when using the `copy()` method.
 
-::: tip Before Mojo v25.5
+::: tip Before Mojo v0.25.6
 
-Before (inclusive) Mojo v25.5, the assignment operator `=` always performed a copy operation, regardless of the type of the variable. This means that `b = a` was equivalent to `b = a.copy()` and we do not need to call the `copy()` method for explicit copy.
+Before Mojo v0.25.6 (2025-09-22), the assignment operator `=` always performed a copy operation, regardless of the type of the variable. This means that `b = a` was equivalent to `b = a.copy()` and we do not need to call the `copy()` method for explicit copy.
 
 However, this behavior has been changed from Mojo v0.25.6 where explicit copy and implicit copy are distinguished. Now, you have to use the `copy()` method for explicit copy, and the assignment operator `=` only performs implicit copy for types that are "cheap" to copy. We will discuss implicit copy in the next section.
 
