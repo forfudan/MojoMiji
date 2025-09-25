@@ -1,7 +1,28 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@layer utilities {
-
+/* Override VitePress code block styles with exact selectors */
+.vp-doc [class*='language-'] code,
+.vp-doc [class*='language-'] pre,
+.vp-doc :not(pre)>code,
+.line-numbers-wrapper,
+pre,
+code,
+kbd,
+samp {
+    font-family: "Inconsolata", monospace !important;
+    font-weight: 400 !important;
+    font-variant-ligatures: none !important;
+    font-feature-settings: "liga" 0, "clig" 0, "kern" 0, "calt" 0 !important;
 }
+
+/* Set line height to 1.4 for code blocks */
+.vp-doc [class*='language-'] code {
+    line-height: 1.4 !important;
+}
+
+/* Make code font size same as normal text (16px instead of default 14px) */
+.vp-doc [class*='language-'] code,
+.vp-doc :not(pre)>code {
+    font-size: 1em !important;
+    /* Same as normal text instead of 0.875em */
+}
+
+@layer utilities {}

@@ -1,4 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&family=Noto+Serif+Khitan+Small+Script&display=swap');
+/* Keep Noto Serif Khitan Small Script from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+Khitan+Small+Script&display=swap');
+
+/* Self-hosted Inconsolata font - same version as local system */
+@font-face {
+    font-family: 'Inconsolata';
+    src: url('/fonts/Inconsolata-Variable.ttf') format('truetype-variations');
+    font-weight: 200 900;
+    font-stretch: 50% 200%;
+    font-display: swap;
+}
 
 :root {
 
@@ -6,8 +16,7 @@
         BlinkMacSystemFont, 'Segoe UI', Roboto,
         'Helvetica Neue', Helvetica, Arial, 'Noto Sans', sans-serif,
         'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-    --vp-font-family-mono: Menlo, Monaco, ui-monospace, SFMono-Regular, 'SF Mono', "Inconsolata",
-        Consolas, 'Liberation Mono', 'Courier New', monospace;
+    --vp-font-family-mono: "Inconsolata", "SF Mono", "Menlo", "Monaco", "Cascadia Code", "Roboto Mono", ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', 'Courier New', monospace;
 
     /* --vp-home-hero-name-color: transparent;
     --vp-home-hero-name-background: -webkit-linear-gradient(120deg,
