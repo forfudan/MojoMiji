@@ -636,7 +636,7 @@ First, it provides a built-in trait called `Absable`, which requires the type to
 # Mojo v25.4 standard library
 # mojo/stdlib/stdlib/builtin/math.mojo
 # Some code omitted for brevity
-struct Absable():
+trait Absable():
     def __abs__(self) -> Self:
         ...
 ```
@@ -647,7 +647,7 @@ Then, it provides a built-in function `abs()` that takes any type that implement
 # Mojo v25.4 standard library
 # mojo/stdlib/stdlib/builtin/math.mojo
 # Some code omitted for brevity
-struct Absable():
+trait Absable():
 fn abs[T: Absable](value: T) -> T:
     return value.__abs__()
 ```
