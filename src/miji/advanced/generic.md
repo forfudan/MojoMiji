@@ -764,21 +764,20 @@ The Mojo developer cannot write `abs()` function for every type of number, such 
 First, it provides a built-in trait called `Absable`, which requires the type to implement the dunder method `__abs__()` that returns the absolute value (or magnitude, distance from zero) of the number. A simple illustration of the `Absable` trait is as follows:
 
 ```mojo
-# Mojo v25.4 standard library
+# Mojo v0.25.6 Standard Library
 # mojo/stdlib/stdlib/builtin/math.mojo
 # Some code omitted for brevity
-struct Absable():
-    def __abs__(self) -> Self:
+trait Absable():
+    fn __abs__(self) -> Self:
         ...
 ```
 
 Then, it provides a built-in function `abs()` that takes any type that implements the `Absable` trait and calls the `__abs__()` method to get the absolute value. A simple illustration of the `abs()` function is as follows:
 
 ```mojo
-# Mojo v25.4 standard library
+# Mojo v0.25.6 Standard Library
 # mojo/stdlib/stdlib/builtin/math.mojo
 # Some code omitted for brevity
-struct Absable():
 fn abs[T: Absable](value: T) -> T:
     return value.__abs__()
 ```
@@ -786,7 +785,7 @@ fn abs[T: Absable](value: T) -> T:
 Finally, define the dunder method `__abs__()` in each type that support a model of absolute value, such as `Int`, `Float`, `Complex`, etc. For example, the `Int` type implements the `Absable` trait as follows:
 
 ```mojo
-# Mojo v25.4 standard library
+# Mojo v0.25.6 standard library
 # mojo/stdlib/stdlib/builtin/int.mojo
 # Some code omitted for brevity
 struct Int(
@@ -884,7 +883,7 @@ Below is a summary of the most common dunder methods, the built-in traits they c
 
 Not only are the behaviors of built-in functions impacted by the dunder methods, but also the behaviors of operators. However, **not all dunder methods that overload operators conform to a trait**. We will summarize this at the end of this section.
 
-For example, we want to add two `Complex` objects together using our own rules, let's say, the sum of two pixels being the summed squares of each coordinate:
+For example, we want to add two `Pixel` objects together using our own rules, let's say, the sum of two pixels being the summed squares of each coordinate:
 
 $$
 (x_1, y_1) + (x_2, y_2) = (x_1^2 + x_2^2, y_1^2 + y_2^2)
