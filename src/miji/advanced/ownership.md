@@ -962,4 +962,4 @@ These rules of ownership are checked at compile time, and ensure that Mojo is sa
 
 ## Major changes in this chapter
 
-- 2025-09-4: Update to accommodate to the changes in Mojo v25.5.
+- 2025-09-04: Update to accommodate the changes in Mojo v25.5.

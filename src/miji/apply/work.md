@@ -276,7 +276,7 @@ You can try yourself first. Below is my implementation of the two methods.
                 writer.write("]")
 ```
 
-Let's updated our test file and see if it works:
+Let's update our test file and see if it works:
 
 ```mojo
 # tests/test.mojo

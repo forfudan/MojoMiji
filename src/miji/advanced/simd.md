@@ -541,4 +541,4 @@ The vectorized operation is about 56 times faster than the plain iteration. This
 
 ## Major changes in this chapter
 
-- 2025-06-23: Update to accommodate to the changes in Mojo v25.4.
+- 2025-06-23: Update to accommodate the changes in Mojo v25.4.

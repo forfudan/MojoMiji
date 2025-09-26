@@ -780,5 +780,5 @@ error: invalid call to 'third_reference': argument #0 must be mutable in order t
 
 ## Major changes in this chapter
 
-- 2025-06-23: Update to accommodate to the changes in Mojo v25.4.
-- 2025-09-04: Update to accommodate to the changes in Mojo v25.5.
+- 2025-06-23: Update to accommodate the changes in Mojo v25.4.
+- 2025-09-04: Update to accommodate the changes in Mojo v25.5.

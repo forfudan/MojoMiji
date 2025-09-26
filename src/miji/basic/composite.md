@@ -636,4 +636,4 @@ The table below compares Mojo's `Dict` with Python's `dict`:
 
 ## Main changes in this chapter
 
-- 2025-09-25: Update to accommodate to the changes in Mojo v0.25.6.
+- 2025-09-25: Update to accommodate the changes in Mojo v0.25.6.

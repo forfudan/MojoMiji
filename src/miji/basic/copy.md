@@ -581,4 +581,4 @@ The downside of Mojo's semantic is that you have to use an extra `^` sigil every
 
 ## Major changes in this chapter
 
-- 2025-09-25: Add this chapter to accommodate to the changes in Mojo v0.25.6.
+- 2025-09-25: Add this chapter to accommodate the changes in Mojo v0.25.6.

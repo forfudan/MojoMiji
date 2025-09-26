@@ -11,12 +11,12 @@ This chapter will discuss the following topics:
 - How to use multiple traits in one struct or in one function?
 - Default implementation of methods in traits
 - Python versus Mojo in terms of generic
-- Build-in traits in Mojo
+- Built-in traits in Mojo
 - Double-underscore methods that conform to certain traits
 
 ## Generic
 
-What is generic? What is generic good? Let's answer these questions with a simple example.
+What is generic? What is generic good for? Let's answer these questions with a simple example.
 
 In `src/advanced/generic/favorite_food.mojo`, we define three different types of animals: `Cat`, `Bird`, and `Human`. Each animal type has a `name` property,  a `food` property, a `get_name()` method that returns the name of the animal as a string, and a `speech()` method that returns a string representing what they have said about their favorite food (note that different animal has different way of greetings).
 
@@ -143,18 +143,18 @@ In order to solve this problem, Mojo introduces the powerful tool, "**generic**"
 The core idea behind generic is to allow you pass any type into a function, as long as the types meet certain requirements. In our example, the types should at least have (1) a `get_name()` method that returns a string and (2) a `speech()` method that returns a string. The generic function can be written in the following format:
 
 ```mojo
-# Psuedo code
+# Pseudo code
 def who_say_what(animal: CertainType):  where the CertainType must have a `name` field and a `speech()` method
     print(animal.name, "says:", animal.speech())
 ```
 
-Then you can call this function with anu type that meets the requirements, `who_say_what(cat)`, `who_say_what(bird)`, `who_say_what(human)`, and `who_say_what(dog)`.
+Then you can call this function with any type that meets the requirements: `who_say_what(cat)`, `who_say_what(bird)`, `who_say_what(human)`, and `who_say_what(dog)`.
 
 But in the code above, the requirements are specified in **English**, which is not understandable by the compiler. We have to use a more formal way to do this, which is called **traits**.
 
 ## Traits
 
-**Traits** to types are just like types to values. They are a way to specify and regulates the behavior of types, e.g., what fields are required, what methods are needed. If a type meets the requirements of a trait, we say that the type **conforms** to the trait.
+**Traits** to types are just like types to values. They are a way to specify and regulate the behavior of types, e.g., what fields are required and what methods are needed. If a type meets the requirements of a trait, we say that the type **conforms** to the trait.
 
 ::: warning
 
@@ -953,5 +953,5 @@ Below is a table summarizing the most common dunder methods, the operators they 
 
 ## Major changes in this chapter
 
-- 2025-06-23: Update to accommodate to the changes in Mojo v25.4.
-- 2025-09-25: Include a section on default implementation of methods to accommodate to the changes in Mojo v0.25.6.
+- 2025-06-23: Update to accommodate the changes in Mojo v25.4.
+- 2025-09-25: Include a section on default implementation of methods to accommodate the changes in Mojo v0.25.6.

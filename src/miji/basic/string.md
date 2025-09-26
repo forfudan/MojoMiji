@@ -495,5 +495,5 @@ Index | Binary       | Decimal | Hexadecimal
 
 ## Main changes in this chapter
 
-- 2025-06-21: Update to accommodate to the changes in Mojo v25.4.
-- 2025-08-18: Update to accommodate to the changes in Mojo v25.5.
+- 2025-06-21: Update to accommodate the changes in Mojo v25.4.
+- 2025-08-18: Update to accommodate the changes in Mojo v25.5.
