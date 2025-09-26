@@ -753,7 +753,7 @@ Below is a summary of the most common dunder methods, the built-in traits they c
 
 Not only are the behaviors of built-in functions impacted by the dunder methods, but also the behaviors of operators. However, **not all dunder methods that overload operators conform to a trait**. We will summarize this at the end of this section.
 
-For example, we want to add two `Complex` objects together using our own rules, let's say, the sum of two pixels being the summed squares of each coordinate:
+For example, we want to add two `Pixel` objects together using our own rules, let's say, the sum of two pixels being the summed squares of each coordinate:
 
 $$
 (x_1, y_1) + (x_2, y_2) = (x_1^2 + x_2^2, y_1^2 + y_2^2)
