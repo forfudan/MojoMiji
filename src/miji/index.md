@@ -9,9 +9,9 @@ by ***Yuhao Zhu 朱宇浩***
 
 ::: warning Notes
 
-This Miji is compatible with Mojo v25.5 (2025-08-05).
+This Miji is compatible with Mojo v0.25.6 (2025-09-22).
 
-For the example programs in this Miji, you can find them in the [GitHub repository](https://github.com/forfudan/my-first-mojo-project).
+For the example programs featured in this Miji, you can find them in the [GitHub repository](https://github.com/forfudan/my-first-mojo-project).
 
 :::
 
@@ -27,6 +27,7 @@ For the example programs in this Miji, you can find them in the [GitHub reposito
   - [Things that are different](./move/different) (Differences between Python and Mojo)
 - [PART III: BASIC MOJO](./basic/basic)
   - [Variables](./basic/variables)
+  - [Copy and move](./basic/copy)
   - [Data types - basic](./basic/types) (Int, float, bool, etc.)
   - [Data types - composite](./basic/composite) (List et al.)
   - [Data type - string](./basic/string) (similar to `str` in Python)

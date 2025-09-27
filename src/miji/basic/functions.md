@@ -216,6 +216,7 @@ However, if a function is defined with `def`, the arguments are immutable by def
 
 ```mojo
 # src/basic/def_read_and_modify.mojo
+# This code will not compile after Mojo v25.3
 def change_value_in_def(read x: Int):
     print("===============================")
     print("Calling `change_value_in_def()`")
@@ -916,5 +917,5 @@ def from_pyobject(a: PyObject) -> Matrix:
 
 ## Major changes in this chapter
 
-- 2025-06-20: Update to accommodate to the changes in Mojo v25.4.
-- 2025-09-04: Update to accommodate to the changes in Mojo v25.5.
+- 2025-06-20: Update to accommodate the changes in Mojo v25.4.
+- 2025-09-04: Update to accommodate the changes in Mojo v25.5.

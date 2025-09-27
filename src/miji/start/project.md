@@ -96,7 +96,7 @@ You can see that there is currently nothing in the `[dependencies]` section. Thi
 
 ```toml
 [dependencies]
-mojo = "==25.5"
+mojo = "==0.25.6"
 ```
 
 :::
@@ -105,14 +105,14 @@ The word on the left side of the `=` is the name of the package. In this case, i
 
 The word on the right side of the `=` is the version of the package you want to install. Here are some examples:
 
-- `mojo = "==25.5"`: This means to install a specific version of the package, e.g., version 25.5.
-- `mojo = ">=25.5"`: This means to install any version from 25.5 and later.
-- `mojo = ">=25.5, <25.7"`: This means to install version 25.5 or later, but less than 25.7.
+- `mojo = "==0.25.6"`: This means to install a specific version of the package, e.g., version 0.25.6[^versioning].
+- `mojo = ">=0.25.6"`: This means to install any version from 0.25.6 and later.
+- `mojo = ">=0.25.6, <0.25.7"`: This means to install version 0.25.6 or later, but less than 0.25.7.
 - `mojo = "*"`: This means to install the latest version of the package (as available in the channels specified in the "channels" field).
 
 ## Install Mojo compiler
 
-After we put `mojo = "==25.5"` in the dependencies field, pixi knows that we want to install the latest version of the `mojo` package. To finish the installation, we need to run the following command in your terminal (Use `Cmd + J` to open the terminal in VS Code):
+After we put `mojo = "==0.25.6"` in the dependencies field, pixi knows that we want to install the latest version of the `mojo` package. To finish the installation, we need to run the following command in your terminal (Use `Cmd + J` to open the terminal in VS Code):
 
 ::: code-group
 
@@ -145,3 +145,4 @@ You can always update the dependencies in `pixi.toml` file. Then, just run `pixi
 For more information about pixi, you can refer to the [official documentation](https://pixi.sh/latest/getting_started/).
 
 [^hidden]: There are also three hidden files: `.gitignore`, `.pixi` and `.gitattributes`. These files are used for version control and package management. You can ignore them for now.
+[^versioning]: Before Mojo v0.25.6 (2025-09-22), the versioning scheme was different. It was like Mojo v25.1 for the release in January 2025. From v0.25.6, a extra `0.` is added in front of the version number to be more consistent with semantic versioning.

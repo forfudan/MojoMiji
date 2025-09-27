@@ -119,6 +119,9 @@ export default defineConfig({
               text: 'Variables', link: '/miji/basic/variables',
             },
             {
+              text: 'Copy and move', link: '/miji/basic/copy',
+            },
+            {
               text: 'Data types - basic', link: '/miji/basic/types',
             },
             {
@@ -222,10 +225,6 @@ export default defineConfig({
               link: '/miji/misc/resources'
             },
             {
-              text: 'Wishes for extra features',
-              link: '/miji/misc/wishes'
-            },
-            {
               text: 'About the author',
               link: '/miji/misc/author'
             }
@@ -256,10 +255,10 @@ export default defineConfig({
     darkModeSwitchLabel: "Dark mode",
     langMenuLabel: "Select Language",
     returnToTopLabel: "Back to top",
-    sidebarMenuLabel: "Table of content",
+    sidebarMenuLabel: "Table of content - Miji",
     outline: {
       level: "deep",
-      label: "Headings"
+      label: "Sections of this chapter"
     },
     search: {
       provider: "local",

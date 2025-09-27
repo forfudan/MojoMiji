@@ -38,7 +38,7 @@ The following table summarizes the similarities and differences between Mojo str
 | Static methods             | `@staticmethod`                         | `@staticmethod`                                                 |
 | Initializer method         | `def __init__(out self):` or `fn...`    | `def __init__(self):`                                           |
 | Parametrization            | Yes, define parameters in `[]`          | No                                                              |
-| Inheritance                | No inheritance                          | Supports hierarchical inheritance.                              |
+| Inheritance                | Limited (via default method of trait)   | Supports hierarchical inheritance                               |
 | Composition                | Yes, via traits                         | Possible                                                        |
 | Constructor                | `var obj = StructName(arg1, arg2, ...)` | `var obj = ClassName(arg1, arg2, ...)`                          |
 | Call fields (attributes)   | `obj.name`                              | `obj.name`                                                      |
@@ -458,7 +458,7 @@ After implementing this simple `Complex` struct, I hope that, at this moment, yo
 
 You may wonder how Mojo stores the struct in memory. In short, Mojo stores the fields of a struct in a **contiguous block of memory** on stack, and the size of the struct is the **sum of the sizes of all its fields** up to the nearest multiple of 8 bytes. The block of memory on stack is **fixed in size** during the runtime, although it may further point to other blocks of memory on heap for some fields that are composite types, e.g., `List`, `String`, etc (refer to [Memory layout of Mojo objects](../misc/layout.md) for more details).
 
-Let see a concrete example, a `Human` struct that represents a human with a name (string), an age (8-bit unsigned integer ranging from 0 to 255), a height in meter (16-bit floating number), and birth date (list of 16-bit unsigned integers representing year, month, and day). The code is as follows:
+Let's see a concrete example: a `Human` struct that represents a human with a name (string), an age (8-bit unsigned integer ranging from 0 to 255), a height in meters (16-bit floating number), and a birth date (list of 16-bit unsigned integers representing year, month, and day). The code is as follows:
 
 ::: code-group
 
@@ -634,4 +634,4 @@ Actually, this long name is not random. It consists my given name, my courtesy n
 
 ## Major changes in this chapter
 
-- 2025-06-23: Update to accommodate to the changes in Mojo v25.4.
+- 2025-06-23: Update to accommodate the changes in Mojo v25.4.

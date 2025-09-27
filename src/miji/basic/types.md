@@ -7,20 +7,45 @@ Types of data are the foundation of programming languages. They define how one a
 
 In the following four chapters, we will discuss the most common data types in Mojo. They can be categorized into several categories: scalar types (integer, floats), composite types (list, tuple, string, SIMD), text types (string), and others types (boolean, literal).
 
-This chapter will first focus on the scalar types and the boolean type, which are the most basic and simplest data types in Mojo. They represent single values that are stored in the memory with a fixed and relatively small size. The [composite types](../basic/composite), the [string type](../basic/string), the [literal types](../basic/literal), and the Mojo-featured [SMID type](../advanced/simd) will be further discussed in separate chapters. You can easily find the corresponding types in Python. The following table summarizes these data types:
+This chapter starts with the scalar types and the boolean type, which are the most basic and simplest data types in Mojo. They represent single values that are stored in the memory with a fixed and relatively small size. The [composite types](../basic/composite), the [string type](../basic/string), the [literal types](../basic/literal), and the Mojo-featured [SMID type](../advanced/simd) will be further discussed in separate chapters.
 
-| Python type | Mojo type          | Description                                 | Be careful that                                                                |
-| ----------- | ------------------ | ------------------------------------------- | ------------------------------------------------------------------------------ |
-| `int`       | `Int`              | [Integer](#integer)                         | Integers in Mojo has ranges. Be careful of **overflow**.                       |
-| `float`     | `Float64`          | [Floating-pointing](#floating-point-number) | Almost same behaviors. You can safely use it.                                  |
-| `bool`      | `Bool`             | [Boolean](#boolean)                         | Same.                                                                          |
-| `list`      | `List`             | List                                        | Elements in `List` in Mojo must be of the same data type.                      |
-| `tuple`     | `Tuple`            | Tuple                                       | Very similar, but you cannot iterate over a `Tuple` in Mojo.                   |
-| `set`       | `collections.Set`  | Set                                         | Elements in `Set` in Mojo must be of the same data type.                       |
-| `dict`      | `collections.Dict` | Dictionary (hashmap)                        | Keys and values in `Dict` in Mojo must be of the same data type, respectively. |
-| `str`       | `String`           | String (text)                               | Similar behaviors. Note that `String` in Mojo is rapidly evolving.             |
+The following topics will be covered in this chapter:
 
-[[toc]]
+- Glance of data types in Mojo and their differences from Python
+- Integers
+- Floating-point numbers
+- Boolean
+- Exercises
+
+## Glance of data types in Mojo
+
+The following table summarizes the most common data types in Mojo and their corresponding types in Python:
+
+| Python type | Mojo type          | Description                                  | Be careful that                                                                |
+| ----------- | ------------------ | -------------------------------------------- | ------------------------------------------------------------------------------ |
+| `int`       | `Int`              | [Integer](#integers)                         | Integers in Mojo has ranges. Be careful of **overflow**.                       |
+| `float`     | `Float64`          | [Floating-pointing](#floating-point-numbers) | Almost same behaviors. You can safely use it.                                  |
+| `bool`      | `Bool`             | [Boolean](#boolean)                          | Same.                                                                          |
+| `list`      | `List`             | List                                         | Elements in `List` in Mojo must be of the same data type.                      |
+| `tuple`     | `Tuple`            | Tuple                                        | Very similar, but you cannot iterate over a `Tuple` in Mojo.                   |
+| `set`       | `collections.Set`  | Set                                          | Elements in `Set` in Mojo must be of the same data type.                       |
+| `dict`      | `collections.Dict` | Dictionary (hashmap)                         | Keys and values in `Dict` in Mojo must be of the same data type, respectively. |
+| `str`       | `String`           | String (text)                                | Similar behaviors. Note that `String` in Mojo is rapidly evolving.             |
+
+The following table summarizes the behaviors of different types in Mojo when it comes to value assignment between variables.
+
+| Type    | `b = a`           | `b = a.copy()` | `b = a^`         |
+| ------- | ----------------- | -------------- | ---------------- |
+| Int     | ✅ (Implicit) copy | ✅ Copy         | ⚠️ Copy (warning) |
+| Float64 | ✅ (Implicit) copy | ✅ Copy         | ⚠️ Copy (warning) |
+| Bool    | ✅ (Implicit) copy | ✅ Copy         | ⚠️ Copy (warning) |
+| SIMD    | ✅ (Implicit) copy | ✅ Copy         | ⚠️ Copy (warning) |
+| String  | ✅ (Implicit) copy | ✅ Copy         | ✅ Move           |
+| List    | ❌ Error           | ✅ Copy         | ✅ Move           |
+| Set     | ❌ Error           | ✅ Copy         | ✅ Move           |
+| Dict    | ❌ Error           | ✅ Copy         | ✅ Move           |
+
+`String` is somewhat special because it allows both implicit copy and move operations. This is because `String` is so common used while can both be allocated on the stack (small strings) or on the heap (large strings). Thus, it is designed to be both implicitly copyable and movable.
 
 ## Integers
 
@@ -328,6 +353,7 @@ def main():
 
 ## Major changes in this chapter
 
-- 2025-06-21: Update to accommodate to the changes in Mojo v25.4.
+- 2025-06-21: Update to accommodate the changes in Mojo v25.4.
 - 2025-06-22: Add a section about the literal types and type inference.
 - 2025-06-26: Move the sections of list and literals to standalone chapters.
+- 2025-09-25: Update to accommodate the changes in Mojo v0.25.6.
