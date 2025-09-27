@@ -539,7 +539,7 @@ For example, you can print the third power of the numbers from 0 to 9 using list
 
 A Mojo `List` is actually a structure that contains three fields:
 
-- A pointer type `data` that points to a continuous block of memory on the heap that stores the elements of the list contiguously.
+- A pointer type `_data` that points to a continuous block of memory on the heap that stores the elements of the list contiguously.
 - A integer type `_len` which stores the number of elements in the list.
 - A integer type `capacity` which represents the maximum number of elements that can be stored in the list without reallocating memory. When `capacity` is larger than `_len`, it means that the memory space is allocated but is fully used. This enable you to append a few new elements to the list without reallocating memory. If you append more elements than the current capacity, the list will request another block of memory on the heap with a larger capacity, copy the existing elements to the new block, and then append the new elements.
 
@@ -554,9 +554,9 @@ def main():
 # Output: Yuhao
 ```
 
-When you create a `List` with `List[UInt8](89, 117, 104, 97, 111)`, Mojo will first allocate a continuous block of memory on **stack** to store the three fields (`data: Pointer`, `_len: Int` and `capacity: Int`, each of which is 8 bytes long on a 64-bit system. Because we passed 5 elements to the `List` constructor, the `_len` field will be set to 5, and the `capacity` field will also be set to 5 (default setting, `capacity = _len`).
+When you create a `List` with `List[UInt8](89, 117, 104, 97, 111)`, Mojo will first allocate a continuous block of memory on **stack** to store the three fields (`_data: Pointer`, `_len: Int` and `capacity: Int`, each of which is 8 bytes long on a 64-bit system. Because we passed 5 elements to the `List` constructor, the `_len` field will be set to 5, and the `capacity` field will also be set to 5 (default setting, `capacity = _len`).
 
-Then Mojo will allocate a continuous block of memory on **heap** to store the actual values of the elements of the list, which is 1 bytes (8 bits) for each `UInt8` element, equaling to 5 bytes in total for 5 elements. The `data` field will then store the address of the first byte in this block of memory.
+Then Mojo will allocate a continuous block of memory on **heap** to store the actual values of the elements of the list, which is 1 bytes (8 bits) for each `UInt8` element, equaling to 5 bytes in total for 5 elements. The `_data` field will then store the address of the first byte in this block of memory.
 
 The following figure illustrates how the `List` is stored in the memory. You can see that a continuous block of memory on the heap (from the address `17ca81f8` to `17ca81a2`) stores the actual values of the elements of the list. Each element is a `UInt8` value, and thus is of 1 byte long. The data field on the stack store the address of the first byte of the block of memory on the heap, which is `17ca81f8`.
 
@@ -566,7 +566,7 @@ The following figure illustrates how the `List` is stored in the memory. You can
         local variable `me = List[UInt8](89, 117, 104, 97, 111)`
             ↓  (meta data on stack)
         ┌────────────────┬────────────┬────────────┐
-Field   │ data           │ _len       │ capacity   │
+Field   │ _data          │ _len       │ capacity   │
         ├────────────────┼────────────┼────────────┤
 Type    │ Pointer[UInt8] │  Int       │     Int    │
         ├────────────────┼────────────┼────────────┤
@@ -587,9 +587,9 @@ Address │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│
         └────────┴────────┴────────┴────────┴────────┘
 ```
 
-Now we try to see what happens when we use list indexing to get a specific element from the list, for example, `me[0]`. Mojo will first check the `_len` field to see if the index is valid (i.e., `0 <= index < me._len`). If it is valid, Mojo will then calculate the address of the element by adding the index to the address stored in the `data` field. In this case, it will return the address of the first byte of the block of memory on the heap, which is `17ca81f8`. Then Mojo will de-reference this address to get the value of the element, which is `89` in this case.
+Now we try to see what happens when we use list indexing to get a specific element from the list, for example, `me[0]`. Mojo will first check the `_len` field to see if the index is valid (i.e., `0 <= index < me._len`). If it is valid, Mojo will then calculate the address of the element by adding the index to the address stored in the `_data` field. In this case, it will return the address of the first byte of the block of memory on the heap, which is `17ca81f8`. Then Mojo will de-reference this address to get the value of the element, which is `89` in this case.
 
-If we try `me[2]`, Mojo will calculate address by adding `2` to the address stored in the `data` field, which is `17ca81f8 + 2 = 17ca81fa`. Then Mojo will de-reference this address to get the value of the element, which is `104` in this case.
+If we try `me[2]`, Mojo will calculate address by adding `2` to the address stored in the `_data` field, which is `17ca81f8 + 2 = 17ca81fa`. Then Mojo will de-reference this address to get the value of the element, which is `104` in this case.
 
 ::: info Index or offset?
 

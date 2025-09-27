@@ -144,6 +144,7 @@ To avoid these issues, we can use arbitrary-precision decimal types that can rep
 In Python, this decimal type is provided by the built-in `decimal` module as the `Decimal` type. In Mojo, you can use the `BigDecimal` type from the `decimojo` package, which is an arbitrary-precision decimal type that can represent decimal numbers exactly without rounding errors. For example, the above example can be rewritten using the `decimojo.BigDecimal` type as follows:
 
 ```mojo
+# src/extend/decimojo/decimal_type.mojo
 from decimojo import BigDecimal
 
 

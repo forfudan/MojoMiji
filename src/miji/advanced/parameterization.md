@@ -159,13 +159,11 @@ def main():
     var a = SIMD[DType.float64, 4](1.0, 2.0, 3.0, 4.0)
     var b = SIMD[DType.int64, 8](89, 117, 104, 97, 111, 90, 104, 117)
     var c = SIMD[DType.bool, 2](True, False)
-    var d = SIMD[DType.uint8, 8](1, 2, 3, 4)
-    var e = SIMD[DType.float32](1.0)
+    var d = SIMD[DType.float32](1.0)
     print("a =", a)
     print("b =", b)
     print("c =", c)
     print("d =", d)
-    print("e =", e)
 ```
 
 Actually the data type and the numbers we put in the square brackets `[]` of the `SIMD` constructor are just "parameters". They indicate the data types and sizes of the SIMD instances. The compiler will replace it with the value you provide at compile time, and then generate the code for that specific size. When you run the executable, SIMD instances of fixed datatype and fixed sizes are created on the stack.
@@ -180,14 +178,12 @@ def main():
         89, 117, 104, 97, 111, 90, 104, 117
     )
     var c = SIMD[dtype = DType.bool, size=2](True, False)
-    var d = SIMD[dtype = DType.uint8, size=8](1, 2, 3, 4)
-    var e = SIMD[dtype = DType.float32, size=1](1.0)
+    var d = SIMD[dtype = DType.float32, size=1](1.0)
 
     print("a =", a)
     print("b =", b)
     print("c =", c)
     print("d =", d)
-    print("e =", e)
 ```
 
 ## Next step

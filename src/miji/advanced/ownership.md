@@ -337,7 +337,7 @@ def main():
         "The meta data of the list `a` is stored at address",
         String(Pointer(to=a)),
         "\nThe first element of the list `a` is stored at address",
-        a.data,
+        a._data,
         "\nThe list `a` contains ",
         end="",
     )
@@ -351,7 +351,7 @@ def main():
         "The meta data of the list `b` is stored at address",
         String(Pointer(to=b)),
         "\nThe first element of the list `b` is stored at address",
-        b.data,
+        b._data,
         "\nThe list `b` contains ",
         end="",
     )
@@ -448,7 +448,7 @@ Value   │ 0x10b4bc000   │     4      │     4      │
 
 When you copy a value, you are creating a new value that is equal but independent of the original value, and then let `b` to own this new value. After the copy, `a` will still be valid and can be used as before.If you change the value of `a`, it will not affect the value of `b`, and vice versa. In other words, copying is to create an **isolated status**.
 
-The copy of a value (and the ownership) is **usually** done with the `=` operator, e.g., `var b = a`. You may find that it is just like value assignment. Yes, it because **assignment creates a copy of the value by default** in Mojo.
+The copy of a value (and the ownership) is done with the syntax `b = a.copy()` and, sometimes, implicitly done with the `=` operator, e.g., `b = a`. We have covered this before in Chapter [Copy and move](../basic/copy.md).
 
 We use the previous example, but this time we will copy the value instead of transferring it:
 
@@ -465,7 +465,7 @@ def main():
     print()
 
     # Copy the value of `a` and let `b` to own it.
-    var b = a
+    var b = a.copy()
     print("b at address", String(Pointer(to=b)), "with values:")
     for i in b:
         print(i, end=", ")
@@ -529,6 +529,8 @@ In Rust, however, you have to think about ownership and lifetime from the very b
 
 ::: warning non-transferable values
 
+We have covered this in Chapter [Copy and move](../basic/copy.md), but let's rewind a bit here.
+
 Some types of values are not transferable, which means they can only be copied. For example, the built-in types like `Int`, `Float`, `Bool`, that are small struct and allocated on the stack, are not transferable. If you try to use `^` on these types, e.g., `var b = a^`, the Mojo compiler will give you a warning as is in the following example:
 
 ```mojo
@@ -554,10 +556,10 @@ This is because the value is small enough to be copied efficiently, and transfer
 
 ### "copyinit" vs "moveinit"
 
-We have discussed about the assignment expressions in Chapter [Operators](../basic/operators.md). You may remember that each assignment expression is implemented as a dunder-method call, such as `__copyinit__()` or `__moveinit__()`. The former is used to copy the value, while the latter is used to transfer the ownership of the value. For example, the following code illustrate how these methods are defined in a struct `MyType` (Note that you have to use `fn` keywords to define these methods, not `def`):
+We have discussed about the assignment expressions in Chapter [Copy and move](../basic/copy.md) and Chapter [Operators](../basic/operators.md). You may remember that each assignment expression is implemented as a dunder-method call, such as `__copyinit__()` or `__moveinit__()`. The former is used to copy the value, while the latter is used to transfer the ownership of the value. For example, the following code illustrate how these methods are defined in a struct `MyType` (Note that you have to use `fn` keywords to define these methods, not `def`):
 
 ```mojo
-struct MyType:
+struct MyType(ImplicitlyCopyable):
     ...
 
     # Use `fn` keywords
@@ -570,11 +572,11 @@ struct MyType:
         ...
 ```
 
-When you do `var y = x`, the Mojo compiler will call `__copyinit__()` to copy the value from `x` to `y`, i.e., `MyType.__copyinit__(y, x)`.
+`ImplictlyCopyable` is a built-in trait that indicates that the struct can be copied without calling the `copy()` method. When you do `var y = x`, the Mojo compiler will call `__copyinit__()` to copy the value from `x` to `y`, i.e., `MyType.__copyinit__(y, x)`.
 
 When you do `var y = x^`, the Mojo compiler will call `__moveinit__()` to transfer the ownership of the value from `x` to `y`, i.e., `MyType.__moveinit__(y, x)`. After that, `x` will no longer be valid and cannot be used anymore.
 
-Nevertheless, there are some exceptions. You **do not need to memorize them**, but it is good to know that they exist:
+Nevertheless, there are some exceptions. You **do not need to memorize them**, but it is good to be aware that they exist:
 
 1. **Non-transferable types**: For some structs that are small enough to be copied efficiently, the `__moveinit__()` method is not necessary. In this case, the Mojo compiler will ignore the `^` operator and call `__copyinit__()` instead. Moreover, you will also receive a message from the compiler that a copy is made instead of a move.
 1. **Internal optimization**: In some situations, the value does not need to be copied. For example, in the following code, after the the assignment `y = x`, the variable `x` is never used again. In this case, "move" is more efficient than "copy". The Mojo compiler will then try to use `__moveinit__()` instead of `__copyinit__()`, even if you do not use the `^` operator.
@@ -582,11 +584,16 @@ The same applies `x = y`, which may also call `__moveint__()` instead of `__copy
 
 ::: danger Inconsistent behaviors of copy and move
 
-The second exception, though improving the performance and efficiency, may lead to some potential issues, especially when the behaviors of `copy` and `move` are inconsistent. Here is an example to illustrate this issue:
+The second exception, though improving the performance and efficiency, may lead to some potential issues, especially when the following two conditions are met:
+
+1. The struct is implicitly-copyable (i.e., it implements the `ImplictlyCopyable` trait).
+2. The behaviors of `copy` and `move` are inconsistent.
+
+Here is an example to illustrate this issue:
 
 ```mojo
 # src/advanced/ownership/copy_move_inconsistency.mojo
-struct Team:
+struct Team(ImplicitlyCopyable):
     var names: List[String]
 
     def __init__(out self, var *names: String):
@@ -594,9 +601,9 @@ struct Team:
         self.names = List[String](elements=names^)
 
     fn __copyinit__(out self, other: Self):
-        self.names = other.names
+        self.names = other.names.copy()
 
-    fn __moveinit__(out self, var other: Self):
+    fn __moveinit__(out self, deinit other: Self):
         self.names = other.names^
         # When move, add another person
         self.names.append("Yuhao")
@@ -611,7 +618,7 @@ def main():
         print(i, end=", ")
 ```
 
-In this example, we define a struct `Team` that has a list of names (representing the team members). The `__copyinit__()` method copies the names from one `Team` object to another. The `__moveinit__()` method transfers the ownership of the names from one `Team` object to another, but also adds a new name "Yuhao" to the list.
+In this example, we define a implicitly-copyable struct `Team` that has a list of names (representing the team members). The `__copyinit__()` method copies the names from one `Team` object to another. The `__moveinit__()` method transfers the ownership of the names from one `Team` object to another, but also adds a new name "Yuhao" to the list.
 
 In the main function, we create a `Team` object `a` with four names. We then assign the value of `a` to variable `b`. Since there is no transfer operator `^`, you may think that a copy is made. So you run the code and want to see four names printed. However, the output is:
 
@@ -619,12 +626,39 @@ In the main function, we create a `Team` object `a` with four names. We then ass
 Akari, Bob, Coco, David, Yuhao,
 ```
 
-A new person is added into the list. Why? Because the second exception mentioned above applies here. The Mojo compiler optimizes the assignment `var b = a` to a move operation, i.e., `Team.__moveinit__(b, a)`, instead of a copy operation. This is because the variable `a` is not used after the assignment, so it is more efficient to move the value instead of copying it.
+A new person is added into the list. Why? Because the second exception mentioned above applies here. The Mojo compiler optimizes the assignment `var b = a` to a move operation, i.e., `Team.__moveinit__(b, a)`, instead of an implicit copy operation!
 
-If you want to achieve a true "copy" instead of a "move", you need use the variable `a` after the assignment `var b = a`. For example, you can change the main function to:
+You may wonder why the Mojo compiler does this. This is because the variable `a` is not used after the assignment, so it is more efficient to move the value instead of copying it.
+
+Although this optimization improves the performance, it leads to unexpected behaviors in this case. The behaviors of `copy` and `move` are inconsistent. The `__copyinit__()` method does not add a new person, while the `__moveinit__()` method does. In other words, the value is changed after the move.
+
+If you want to achieve a true "copy" instead of a "move", you have two options:
+
+The first option is to use the `copy()` method to make an **explicit copy**. For example, you can change the main function to:
+
+```mojo
+# src/advanced/ownership/copy_move_inconsistency_explicit_copy.mojo
+# The struct definition is the same as above
+def main():
+    var a = Team("Akari", "Bob", "Coco", "David")
+    var b = a.copy()  # Make an explicit copy of `a`
+
+    print("New team `b` contains the following people: ")
+    for i in b.names:
+        print(i, end=", ")
+```
+
+When you run the code, you will get the following output:
+
+```console
+Akari, Bob, Coco, David,
+```
+
+The second option is to ensure that the variable `a` is still used after the assignment, so that the Mojo compiler cannot optimize the assignment to a move operation. For example, you can change the main function to:
 
 ```mojo
 # src/advanced/ownership/copy_move_inconsistency_more.mojo
+# The struct definition is the same as above
 def main():
     var a = Team("Akari", "Bob", "Coco", "David")
     var b = a
@@ -649,12 +683,18 @@ Akari, Bob, Coco, David,
 
 This time, the output is as expected. The `__copyinit__()` method is called, and there are only four people in the team `b`.
 
-Why we have this issue? There are two causes:
+---
+
+Let's recap the two reasons that lead to the unexpected behavior:
 
 1. The Mojo compiler optimizes the assignment `var b = a` to a move operation, by assuming that the value of `a` is not modified during the assignment.
 1. There is inconsistency of the behaviors defined by `copy` and `move`. The `__copyinit__()` method does not add a new person, while the `__moveinit__()` method does. In other words, the value is changed after the move.
 
-Which cause is more severe? I would say the second one. The first one is just an optimization, but the second one is a design flaw that can lead to unexpected behaviors. It is better to keep the behaviors of `copy` and `move` consistent, so that you can avoid such issues.
+Which cause is more severe? I would say the second one. The first one is just an optimization, but the second one is a design flaw that can lead to unexpected behaviors. It is better to keep the behaviors of `copy` and `move` of your own structs consistent, so that you can avoid such issues.
+
+---
+
+Luckily, most of the composite data types provided by Mojo, such as `List`, `Dict`, `Set`, `String`, etc, are designed to be explicitly-copyable and have consistent behaviors for `copy` and `move`. Thus, you may not encounter this issue often in practice. Maybe only pay attention when you define your own structs and when you are using third-party libraries.
 
 :::
 
@@ -963,3 +1003,4 @@ These rules of ownership are checked at compile time, and ensure that Mojo is sa
 ## Major changes in this chapter
 
 - 2025-09-04: Update to accommodate the changes in Mojo v25.5.
+- 2025-09-27: Update to accommodate the changes in Mojo v0.25.6.

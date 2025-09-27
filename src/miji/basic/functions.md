@@ -216,6 +216,7 @@ However, if a function is defined with `def`, the arguments are immutable by def
 
 ```mojo
 # src/basic/def_read_and_modify.mojo
+# This code will not compile after Mojo v25.3
 def change_value_in_def(read x: Int):
     print("===============================")
     print("Calling `change_value_in_def()`")

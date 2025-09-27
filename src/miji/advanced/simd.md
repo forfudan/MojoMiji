@@ -17,7 +17,7 @@ def add_lists(a: List[Float64], b: List[Float64]) -> List[Float64]:
     result = List[Float64]()
     for i in range(len(a)):
         result.append(a[i] + b[i])
-    return result
+    return result^
 
 
 def main():
@@ -180,7 +180,6 @@ To create a `SIMD` object, you can use the general syntax `SIMD[DType, size]()`,
 1. An SIMD of `DType.float64` with 4 elements.
 1. An SIMD of `DType.uint8` with 8 elements.
 1. An SIMD of `DType.bool` with 1 element.
-1. An SIMD of `DType.int32` with 8 elements. However, we only provide 4 elements as input.
 1. An SIMD of `DType.float32` with 1 element. However, we do not explicitly specify the size.
 
 ```mojo
@@ -189,13 +188,11 @@ def main():
     var a = SIMD[DType.float64, 4](1.0, 2.0, 3.0, 4.0)
     var b = SIMD[DType.int64, 8](89, 117, 104, 97, 111, 90, 104, 117)
     var c = SIMD[DType.bool, 2](True, False)
-    var d = SIMD[DType.uint8, 8](1, 2, 3, 4)
-    var e = SIMD[DType.float32](1.0)
+    var d = SIMD[DType.float32](1.0)
     print("a =", a)
     print("b =", b)
     print("c =", c)
     print("d =", d)
-    print("e =", e)
 ```
 
 When you run this code, you will see the output:
@@ -204,8 +201,7 @@ When you run this code, you will see the output:
 a = [1.0, 2.0, 3.0, 4.0]
 b = [89, 117, 104, 97, 111, 90, 104, 117]
 c = [True, False]
-d = [1, 2, 3, 4, 0, 12, 89, 0]
-e = 1.0
+d = 1.0
 ```
 
 No error message is raised, but you may notice something intriguing:
@@ -218,93 +214,26 @@ No error message is raised, but you may notice something intriguing:
 
 If you do, then you can find out the answer by continuing reading this chapter.
 
-## Size of SIMD
+:::::: tip Uninitialized values - before Mojo v0.25.6
 
-For a `List` type, you do not need to specify a size at the time of creation. This is because `List` is a dynamic data structure, being created at the runtime, that can grow and shrink as needed. In contrast, `SIMD` is a fixed-size data structure whose size in memory is determined at the compile time. You cannot change the size of it after creation. While being less flexible, it is more efficient in terms of performance.
+*This part is only relevant to versions of Mojo before v0.25.6. You can very well skip this part.*
 
-Therefore, you need specify the size of the `SIMD` at the time of creation, so that Mojo compiler can allocate the exact amount of memory needed for the `SIMD` object.
-
-There are two things that you need to know:
-
-1. The size of the `SIMD` must be a power of two, i.e., 1, 2, 4, 8, 16, 32, etc. You may have noticed this from the example above. If you pass a size that is not a power of two, Mojo will raise an error at the compile time and indicate that "note: constraint failed: simd width must be power of 2".
-1. If you do not specify the size of the `SIMD`, Mojo will automatically set the size to 1. This is useful when you want to create a SIMD with a single element, such as `SIMD[DType.float32](1.0)`.
-
-## Type of SIMD
-
-The type of a `SIMD` is also important as it determines how much memory is needed for each element and what operations can be performed on the elements.
-
-The type of a `SIMD` is defined by the `DType` type, which is a special type that enumerates all possible data types that SIMD can hold.
-
-For example, `DType.float64` represents a 64-bit floating-point number. Note that `DType.float64` is not a type per se, but a field of the `DType` type.
-
-The most common data types are:
-
-| Field of `DType` | Description                  |
-| ---------------- | ---------------------------- |
-| `DType.int8`     | 8-bit signed integer         |
-| `DType.int16`    | 16-bit signed integer        |
-| `DType.int32`    | 32-bit signed integer        |
-| `DType.int64`    | 64-bit signed integer        |
-| `DType.int128`   | 128-bit signed integer       |
-| `DType.int256`   | 256-bit signed integer       |
-| `DType.uint8`    | 8-bit unsigned integer       |
-| `DType.uint16`   | 16-bit unsigned integer      |
-| `DType.uint32`   | 32-bit unsigned integer      |
-| `DType.uint64`   | 64-bit unsigned integer      |
-| `DType.uint128`  | 128-bit unsigned integer     |
-| `DType.uint256`  | 256-bit unsigned integer     |
-| `DType.float16`  | 16-bit floating-point number |
-| `DType.float32`  | 32-bit floating-point number |
-| `DType.float64`  | 64-bit floating-point number |
-| `DType.bool`     | Boolean value                |
-| `DType.index`    | 32-bit or 64-bit index type  |
-
-*"Wait a moment, Yuhao!"* you may say, *"I am sure that I saw this table in the previous chapter!"*
-
-Yes, you are right! We have seen this table in the previous Chapter [Data types](../basic/types) under the sections for integer and floats.
-
-*"Then what is the difference?"* you may ask.
-
-The answer may be surprising to you: **Those numeric types are just SIMD types with size 1!**
-
-Your brain may be burning right now, but let me explain: In Mojo, the basic numeric types are just an alias for the SIMD types with corresponding data types and the size of 1. For example,
-
-- `Int8` is an alias for `SIMD[DType.int8, 1]`.
-- `Int16` is an alias for `SIMD[DType.int16, 1]`.
-- `Float32` is an alias for `SIMD[DType.float32, 1]`. This explains why the variable `e` in the previous example is printed as if it is of a `Float32`  type. Because it is just a `Float32` object that we are familiar with.
-
-**SIMD is the first-class type** in Mojo. This may sounds a little bit exaggerated, but it is true.
-
-::: warning `Int` and `Bool` are not SIMD types
-
-Nevertheless, there are two important exceptions that you need to be aware of:
-
-- `Int` type is not an `SIMD` type. You cannot vectorize operations on `Int` objects. If you want to use SIMD with integers, you need to consider using the specific integral type such as `Int32` (`SIMD[DType.int32]`), `Int64` (`SIMD[DType.int64]`), or `SIMD[DType.index]`.
-- `Bool` type is not an `SIMD` type. This means that `Bool` and `SIMD[DType.bool]` are completely two different things. You cannot vectorize operations on `Bool` objects. If you want to use SIMD with boolean values, you need to use `SIMD[DType.bool]`.
-
-So, don't be surprised if the compiler complains about the type mismatch when you try to use `Int` or `Bool` in a SIMD context.
-
-:::
-
-::: tip `Float64()` vs `SIMD[DType.float64, 1]()`, which to use?
-
-If you look into the source code of the standard library, you will find that `Float64` is defined as `alias Float64 = SIMD[DType.float64, 1]`. This applies to many other numeric types as well. As an alias, `Float64()` and `SIMD[DType.float64, 1]()` are equivalent in terms of functionality.
-
-You may wonder which one you should use in your code for type annotation or variable construction. I would recommend using `Float64()` when you want to deal with a single floating-point number. This is more concise, more readable, and more Pythonic.
-
-Finally, the Mojo compiler will replace `Float64()` with `SIMD[DType.float64, 1]()` at the compile time, so let's do save time here and enjoy a cup of coffee instead. 😉
-
-:::
-
-## Uninitialized SIMD elements
-
-Recall the variable `d` in the previous example:
+Before Mojo v0.25.6, you can create an `SIMD` object whose indicated size is larger than the number of elements you provided to the constructor. For example, the following code works without any error message:
 
 ```mojo
-var d = SIMD[DType.uint8, 8](1, 2, 3, 4)
+var simd_of_uint8 = SIMD[DType.uint8, 8](1, 2, 3, 4)
+print(simd_of_uint8)
 ```
 
-The size of the object is 8, but we only provided 4 elements. The output is then `d = [1, 2, 3, 4, 0, 12, 89, 0]`. If you run your code several times, you will see that the last four elements are different each time (mostly zeros). This is because the last four elements are **uninitialized**.
+This prints:
+
+```console
+[1, 2, 3, 4, 0, 12, 89, 0]
+```
+
+In this example, you indicate that you want to create a `SIMD` object with 8 elements, but you only provide 4 elements as input.
+
+If you run your code several times, you will see that the last four elements are different each time (mostly zeros). This is because the last four elements are **uninitialized**.
 
 We have discussed about **uninitialized variables** in Chapter [Variables](../basic/variables), which means that the variables are declared but not assigned any value. In the case of `SIMD`, the same applies: a memory block is allocated for the last 4 elements of the SIMD, but no values are assigned to them. The values at these addresses are random and unpredictable, which can lead to unexpected behavior in your program.
 
@@ -383,6 +312,96 @@ For the first option, you not only waste precious memory on stack, but also risk
 For the second option, you can apply vectorized operations on the first 8 SIMDs sequentially, and then use the iteration to process the last SIMD. This way, you not only save memory space (63 uninitialized values vs 511 in the first approach), but also gain performance by applying vectorized operations on the first 8 SIMDs.
 
 You can see that there are more than one way to split the data into smaller SIMDs. The optimal size of SIMD? I have no definitive answer for that. It depends on the specific use cases. Maybe you need to experiment with different sizes to find the best one for your application.
+
+:::
+
+---
+
+From v0.25.6, this behavior will lead to an error message at the compile time.
+
+```console
+Assert Error: mismatch in the number of elements in the SIMD variadic constructor
+```
+
+This change is made to help you avoid using uninitialized values inadvertently. You must provide exactly the same number of elements as the size you indicated.
+
+::::::
+
+## Size of SIMD
+
+For a `List` type, you do not need to specify a size at the time of creation. This is because `List` is a dynamic data structure, being created at the runtime, that can grow and shrink as needed. In contrast, `SIMD` is a fixed-size data structure whose size in memory is determined at the compile time. You cannot change the size of it after creation. While being less flexible, it is more efficient in terms of performance.
+
+Therefore, you need specify the size of the `SIMD` at the time of creation, so that Mojo compiler can allocate the exact amount of memory needed for the `SIMD` object.
+
+There are two things that you need to know:
+
+1. The size of the `SIMD` must be a power of two, i.e., 1, 2, 4, 8, 16, 32, etc. You may have noticed this from the example above. If you pass a size that is not a power of two, Mojo will raise an error at the compile time and indicate that "note: constraint failed: simd width must be power of 2".
+1. If you do not specify the size of the `SIMD`, Mojo will automatically set the size to 1. This is useful when you want to create a SIMD with a single element, such as `SIMD[DType.float32](1.0)`.
+
+## Type of SIMD
+
+The type of a `SIMD` is also important as it determines how much memory is needed for each element and what operations can be performed on the elements.
+
+The type of a `SIMD` is defined by the `DType` type, which is a special type that enumerates all possible data types that SIMD can hold.
+
+For example, `DType.float64` represents a 64-bit floating-point number. Note that `DType.float64` is not a type per se, but a field of the `DType` type.
+
+The most common data types are:
+
+| Field of `DType` | Description                  |
+| ---------------- | ---------------------------- |
+| `DType.int8`     | 8-bit signed integer         |
+| `DType.int16`    | 16-bit signed integer        |
+| `DType.int32`    | 32-bit signed integer        |
+| `DType.int64`    | 64-bit signed integer        |
+| `DType.int128`   | 128-bit signed integer       |
+| `DType.int256`   | 256-bit signed integer       |
+| `DType.uint8`    | 8-bit unsigned integer       |
+| `DType.uint16`   | 16-bit unsigned integer      |
+| `DType.uint32`   | 32-bit unsigned integer      |
+| `DType.uint64`   | 64-bit unsigned integer      |
+| `DType.uint128`  | 128-bit unsigned integer     |
+| `DType.uint256`  | 256-bit unsigned integer     |
+| `DType.float16`  | 16-bit floating-point number |
+| `DType.float32`  | 32-bit floating-point number |
+| `DType.float64`  | 64-bit floating-point number |
+| `DType.bool`     | Boolean value                |
+| `DType.index`    | 32-bit or 64-bit index type  |
+
+*"Wait a moment, Yuhao!"* you may say, *"I am sure that I saw this table in the previous chapter!"*
+
+Yes, you are right! We have seen this table in the previous Chapter [Data types](../basic/types) under the sections for integer and floats.
+
+*"Then what is the difference?"* you may ask.
+
+The answer may be surprising to you: **Those numeric types are just SIMD types with size 1!**
+
+Your brain may be burning right now, but let me explain: In Mojo, the basic numeric types are just an alias for the SIMD types with corresponding data types and the size of 1. For example,
+
+- `Int8` is an alias for `SIMD[DType.int8, 1]`.
+- `Int16` is an alias for `SIMD[DType.int16, 1]`.
+- `Float32` is an alias for `SIMD[DType.float32, 1]`. This explains why the variable `e` in the previous example is printed as if it is of a `Float32`  type. Because it is just a `Float32` object that we are familiar with.
+
+**SIMD is the first-class type** in Mojo. This may sounds a little bit exaggerated, but it is true.
+
+::: warning `Int` and `Bool` are not SIMD types
+
+Nevertheless, there are two important exceptions that you need to be aware of:
+
+- `Int` type is not an `SIMD` type. You cannot vectorize operations on `Int` objects. If you want to use SIMD with integers, you need to consider using the specific integral type such as `Int32` (`SIMD[DType.int32]`), `Int64` (`SIMD[DType.int64]`), or `SIMD[DType.index]`.
+- `Bool` type is not an `SIMD` type. This means that `Bool` and `SIMD[DType.bool]` are completely two different things. You cannot vectorize operations on `Bool` objects. If you want to use SIMD with boolean values, you need to use `SIMD[DType.bool]`.
+
+So, don't be surprised if the compiler complains about the type mismatch when you try to use `Int` or `Bool` in a SIMD context.
+
+:::
+
+::: tip `Float64()` vs `SIMD[DType.float64, 1]()`, which to use?
+
+If you look into the source code of the standard library, you will find that `Float64` is defined as `alias Float64 = SIMD[DType.float64, 1]`. This applies to many other numeric types as well. As an alias, `Float64()` and `SIMD[DType.float64, 1]()` are equivalent in terms of functionality.
+
+You may wonder which one you should use in your code for type annotation or variable construction. I would recommend using `Float64()` when you want to deal with a single floating-point number. This is more concise, more readable, and more Pythonic.
+
+Finally, the Mojo compiler will replace `Float64()` with `SIMD[DType.float64, 1]()` at the compile time, so let's do save time here and enjoy a cup of coffee instead. 😉
 
 :::
 
@@ -542,3 +561,4 @@ The vectorized operation is about 56 times faster than the plain iteration. This
 ## Major changes in this chapter
 
 - 2025-06-23: Update to accommodate the changes in Mojo v25.4.
+- 2025-09-27: Move the section on uninitialized values to a tip box and make it relevant only to early versions of Mojo.
