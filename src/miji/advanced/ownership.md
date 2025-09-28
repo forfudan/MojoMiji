@@ -77,10 +77,10 @@ If there is only one variable and one value, we do not need ownership at all. We
 
 There are many ways to introduce the concept of "ownership". I thought about it for a long time and finally decided to build a conceptual model of ownership based on the **statuses possible statuses of ownership**. This model can help you understand the relationship between variables and values, and then we will discuss how the ownership rules are related to these statuses. The statuses are:
 
-1. **isolated**: each variable owns its own value. It can be created by a copy of the value or the `var` keyword.
-2. **referenced**: one variable owns a value, while another variable is an alias (body double) of the first variable. It can be created by the `read` or `mut` keyword in the sub-function scope. From v25.4, it can also be created by the `ref` keyword in the local scope.
-3. **pointed**: one variable owns a value, while another variable is a safe pointer to the value. It can be created by the `Pointer` type.
-4. **unsafe**: one variable is an unsafe pointer to the address of a value, but does not track the status of the owner of the value. It can be created by the `UnsafePointer` type.
+1. **isolated** status: each variable owns its own value. It can be created by a copy of the value or the `var` keyword.
+2. **referenced** status: one variable owns a value, while another variable is an alias (body double) of the first variable. It can be created by the `read` or `mut` keyword in the sub-function scope. From v25.4, it can also be created by the `ref` keyword in the local scope.
+3. **pointed** status: one variable owns a value, while another variable is a safe pointer to the address of value. It can be created by the `Pointer` type.
+4. **unsafe** status: one variable is an unsafe pointer to the address of a value, but does not track the status of the owner of the value. It can be created by the `UnsafePointer` type.
 
 Among these statuses, the isolated status is the safest as no sharing or borrowing is involved. The referenced status and the pointed status have many features and behaviors in common, and they are both guaranteed to be safe with the help of the ownership rules and the Mojo compiler. The unsafe status does not belong to the safe Mojo realm, and we will not discuss it in this Chapter but in a separate chapter on unsafe Mojo later.
 
@@ -402,9 +402,16 @@ As we have discussed in Chapter [Composite data types](../basic/composite#memory
 - The first layer is the meta data of the list, which contains the information about the list, *i.e.*, the **address of the first element**, the length of the list, and the capacity of the list. This meta data is stored on the stack. You can use `Pointer(to=a)` to get the address of the meta data.
 - The second layer is the real data of the list (the elements of the list). This is dynamically stored on the heap. The address of the first element is stored in the meta data of the list with the name "data" (`UnsafePointer` type). You can use `a.data` to get the address of the first element of the list.
 
-After transferring the ownership using `var b = a^`, Mojo compiler will first allocate some space to store the meta data of `b` on the stack, and then let `b` point to the same address as `a` for the actual data of the list elements. In other words, the actual data of the list elements are never copied to a new address. They just have **another owner** now.
+By reading the code `var b = a^`, Mojo compiler knows that you want to transfer the ownership of the list elements from `a` to `b`. It will then:
 
-This operation is very efficient since it does not involve any memory copying. For very large lists, this is a great advantage.
+- Allocate sufficient space on the stack that can store the meta data of a `List[Float64]` type.
+- Bind the name `b` to this space.
+- Copy the meta data of `a` to the space allocated for `b`.
+- Deinitialize the name `a` (so that `a` is no longer accessible).
+
+After these operations, the pointer to the values of the list elements (which is stored on the heap) remains unchanged. That is why, in the above console results, `b[0]` has the same address as `a[0]` before. In other words, the list elements are never copied to a new place; they just have **another owner**!
+
+The move operation is very efficient because it only involves copying the meta data of the list (which is small, fixed in size, and located on stack) instead of copying all the elements of the list (which can be large, variable in size, and loacted on heap).
 
 The following diagram shows the memory layout of the list `a` and `b` before and after the transfer:
 
@@ -579,8 +586,7 @@ When you do `var y = x^`, the Mojo compiler will call `__moveinit__()` to transf
 Nevertheless, there are some exceptions. You **do not need to memorize them**, but it is good to be aware that they exist:
 
 1. **Non-transferable types**: For some structs that are small enough to be copied efficiently, the `__moveinit__()` method is not necessary. In this case, the Mojo compiler will ignore the `^` operator and call `__copyinit__()` instead. Moreover, you will also receive a message from the compiler that a copy is made instead of a move.
-1. **Internal optimization**: In some situations, the value does not need to be copied. For example, in the following code, after the the assignment `y = x`, the variable `x` is never used again. In this case, "move" is more efficient than "copy". The Mojo compiler will then try to use `__moveinit__()` instead of `__copyinit__()`, even if you do not use the `^` operator.
-The same applies `x = y`, which may also call `__moveint__()` instead of `__copyinit__()`. This is because Mojo's compiler will try to use the most efficient way to copy the value from `y` to `x`, which may be a move operation if possible.
+1. **Internal optimization**: In some situations, the value on heap does not need to be copied. For example, after the assignment `y = x`, the variable `x` is never used again. In this case, "move" is more efficient than "copy". The Mojo compiler will then try to use `__moveinit__()` instead of `__copyinit__()`, even if you do not use the `^` operator, since it is more efficient.
 
 ::: danger Inconsistent behaviors of copy and move
 
