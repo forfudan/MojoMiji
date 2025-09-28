@@ -12,8 +12,8 @@ This chapter will cover the following topics:
 - Core philosophy of lifetime
 - Tracking lifetimes of origins
 - Chained lifetimes
-- Manual lifetime management
-- Lifetime in functions
+- Manual lifetime management and annotation
+- Lifetimes in returns of functions
 
 ::: warning Future changes expected
 
@@ -249,11 +249,13 @@ var e = Pointer[type=String, origin=__origin_of(a)](to=a)
 # by using the `__origin_of()` function
 ```
 
-## Manual lifetime management
+## Manual lifetime management and annotation
 
-Mojo will automatically track the lifetime of variables and their references, as we discussed above. However, there are cases where you may want to manually manage the lifetime of a variable, especially when a pointer may point to either an owner `a` or an owner `b`. 
+Mojo will automatically track the lifetime of variables and their references, as we discussed above. However, there are cases where you may want to manually manage the lifetime of a variable, especially when a pointer may point to either an owner `a` or an owner `b`.
 
-Let's illustrate this with an example: The user is asked to input two integers, then the program will create a pointer that points to the smaller of the two integers (the if-statement), finally, the program will print the values of the two integers and the smaller one. The code is as follows:
+Let's illustrate this with an example: The user is asked to input two integers, then the program will create a pointer that points to the smaller of the two integers (the if-statement), finally, the program will print the values of the two integers and the smaller one.
+
+You may immediately come to the following code:
 
 ```mojo
 # src/advanced/lifetimes/combined_lifetime_wrong.mojo
@@ -277,20 +279,7 @@ def main():
     print("The smaller of the two integers is", c[], "at address", String(c))
 ```
 
-In the best scenario, we hope that the Mojo compiler can automatically infer the lifetime of `c` based on the branches of the `if` statement.
-
-- If `a` is smaller than `b`, then `c` should point to `a` and records the original owner of the value as `a`. `a` should live as long as `c` is alive (the last line of the code).
-- If `b` is smaller than `a`, then `c` should point to `b` and records the original owner of the value as `b`. `b` should live as long as `c` is alive (the last line of the code).
-
-However, this automatic adjustment of lifetime information does not work in Mojo, because Mojo is a statically typed language. The lifetime of a variable is determined at compile time, while the final branch of the `if` statement is determined at runtime. Therefore, the compiler cannot automatically infer the lifetime of `c` based on the branches of the `if` statement at compile time.
-
-The root cause of this problem is that **`c` may point to either `a` or `b` at run time, but you never know this at compile time**. This is like a situation called Schrodinger's cat, where `c` is either pointing to `a` or `b`, or it is neither pointing to `a` nor `b`, or it is both pointing to `a` and `b` at the same time.
-
-Let's say, you bet that `c` will always point to `a` and record this in the signature of `c`, then `b` will be destroyed immediately after the `if` statement. If in the runtime, `b` is smaller than `a`, then `c` will point to `b`, then the last line of the code will try to access an address whose value has already been destroyed, leading to use-after-free error.
-
-Let's run the above code to see what happens:
-
-If we run it, we will see the following error at compile time:
+If you try to compile this code, you will see the following error messages:
 
 ```console
 error: failed to infer parameter 'mut'
@@ -304,13 +293,20 @@ error: cannot implicitly convert 'Pointer[Int, b]' value to 'Pointer[Int, a]'
             ~~~~~~~^~~~~~
 ```
 
-The first two error messages mean that the compiler cannot infer whether the value that `c` points to is *mutable or not*, because we did not explicitly specify the original owner of the value it points to.
+Alas! Why does this error happen? Let's analyze the case carefully:
 
-The third error message means that the compiler cannot implicitly convert `Pointer[Int, b]` to `Pointer[Int, a]`. Why? Because when we do `c = Pointer(to=a)` in the first branch, `c` stores the original owner of the value to `a`. However, in the second branch, we are trying to overwrite the original to `b`, which is not allowed.
+What we initially hope is that the Mojo compiler can automatically infer the lifetime of `c` based on the branches of the `if` statement, so that,
 
-We are lucky that the compiler catches this error at compile time. The safe pointer of Mojo prevents us compiling code that may lead to use-after-free errors at runtime. The question is how to fix this error?
+- If `a` is smaller than `b`, then `c` should point to `a` and records the original owner of the value as `a`. `a` should live as long as `c` is alive (the last line of the code).
+- If `b` is smaller than `a`, then `c` should point to `b` and records the original owner of the value as `b`. `b` should live as long as `c` is alive (the last line of the code).
 
-The answer is to **prepare for both cases beforehand**. We can put the information of both `a` and `b` in the pointer `c`, so that Mojo compiler will extend the lifetime of both `a` and `b` until the last line of the code where `c` is lastly used.
+However, the Mojo compiler cannot know in advance which branch of the `if` statement will be executed at runtime. So, it **cannot automatically infer** the lifetime of `c` based on something that will happen in the future.
+
+As a programmer, you cannot make any assumption on which branch will be executed by users, either. This is like a situation called Schrodinger's cat: The final state of `c` is unknown until the `if` statement is executed by users in the future.
+
+Then, how to fix this error?
+
+The answer is quite simple: **to prepare for both cases together**. Since we do not know which branch will be executed, we just assume that both branches will be executed. We tie the lifetime of `c` to both `a` and `b`, so that Mojo compiler will extend the lifetime of both `a` and `b` to be as long as `c` is alive.
 
 To do this, we can use the `__origin_of()` function. This function returns an object (of `Origin` type) that records the original owner(s). Then you can pass this object to the constructor of the `Pointer` type. Let's rewrite the code as follows:
 
@@ -335,9 +331,9 @@ def main():
     print("The smaller of the two integers is", c[], "at address", String(c))
 ```
 
-In this code, we explicitly specify the original owner of the value that `c` points to as `__origin_of(a, b)`. This means that `c` may point to either `a` or `b`. Mojo compiler will then ensure that both `a` and `b` are alive as long as `c` is alive.
+In this code, we explicitly specify the original owner of the value that `c` points to as `__origin_of(a, b)`. This means that the lifetime of `c` is tied to both `a` and `b`. Mojo compiler will then ensure that both `a` and `b` are alive as long as `c` is alive.
 
-This is a wildcard solution, it may not be the most efficient, but it is safe and works for both cases. If we run this code and input `-10` and `10`, we will see the following output:
+This solution may not be the most efficient one, but it is the safest. If we run this code and input `-10` and `10`, we will see the following output:
 
 ```console
 Type the first integer `a`: -10
@@ -359,11 +355,130 @@ The smaller of the two integers is 2 at address 0x16fc54c70
 
 The output is as expected, we always get the smaller of the two integers, the pointer `c` points to the address of the smaller one, and the owner is alive until the last line of the code.
 
-## Lifetime in functions
+---
 
-In the previous example, we create a pointer `c` in the local scope of the `main()` function that may either point to `a` or `b`. You may now wonder whether you can also do this for a function. The answer is yes.
+Let's see another example. We ask the user to input two words (strings), then the program will print the shorter one. The code is as follows:
 
-In the following example, we want to create a function `shorter()` that takes two strings (words) as input, and returns a pointer to the shorter one. We then call this function in the `main()` function. The code is as follows.
+```mojo
+# src/advanced/lifetimes/combined_lifetime_string.mojo
+def main():
+    var a: String = input("Type the first word `a`: ")
+    var b: String = input("Type the first word `b`: ")
+    var c: Pointer[String, origin = __origin_of(a, b)]
+
+    if len(a) < len(b):
+        c = Pointer[String, origin = __origin_of(a, b)](to=a)
+    else:
+        c = Pointer[String, origin = __origin_of(a, b)](to=b)
+
+    print("The first word you give is", a, "at address", String(Pointer(to=a)))
+    print("The second word you give is", b, "at address", String(Pointer(to=b)))
+    print("The shorter of the two words is", c[], "at address", String(c))
+```
+
+The code is similar to the previous one, except that we use `String` type instead of `Int` type. If we run it and input `beautiful` and `pretty`, we will see the following output:
+
+```console
+Type the first word `a`: Beautiful
+Type the first word `b`: Ugly
+The first word you give is Beautiful at address 0x16fd38198
+The second word you give is Ugly at address 0x16fd381b0
+The shorter of the two word is Ugly at address 0x16fd381b0
+```
+
+You can see that the output is as expected: The pointer `c` points to the address of the shorter word (in this case, variable `b`), even though which word is shorter is only determined at runtime. By using `__origin_of(a, b)`, we tell the compiler that the pointer `c` may point to either `a` or `b`, so that both `a` and `b` are alive until the last line of the code.
+
+In case we input `Mojo` and `Python`, we will see the following output:
+
+```console
+Type the first word `a`: Mojo
+Type the first word `b`: Python
+The first word you give is Mojo at address 0x16eec0198
+The second word you give is Python at address 0x16eec01b0
+The shorter of the two word is Mojo at address 0x16eec0198
+```
+
+The output is still as expected: The pointer `c` points to the address of the shorter word (in this case, variable `a`).
+
+## Lifetimes in returns of functions
+
+In the previous example, we create a pointer `c` in the local scope of the `main()` function that may either point to `a` or `b`. Although it works, it is some how tedious to write the same `Pointer[Int, origin = __origin_of(a, b)]` in both the declaration and the assignment of `c`.
+
+Mojo provides an alternative way, yet more concise and elegant, to achieve the same goal: Encapsulate the logic in a function that return a reference (instead of a pointer) by use of the `ref` keyword.
+
+We have already discussed about returning references in the previous chapter [References](../advanced/references/#reference-as-returned-value-ref). Recall that, when you return a reference from a function, the syntax is as follows:
+
+```mojo
+def function_name(arg: TypeOfArg, ...) -> ref [arg] TypeOfReturn:
+```
+
+The `ref [arg] TypeOfReturn` means that the returned reference will carry the information on the argument `arg` as the original owner of the value.
+
+In this chapter, we further extend this syntax to support multiple arguments as the original owners of the returned reference. For example, `ref [a, b] TypeOfReturn` means that the returned reference may point to either argument `a` or argument `b`, and it will carry the information on both `a` and `b` as the possible origins.
+
+Thus, the previous example can be re-written, by adding a auxiliary function `shorter()`, as follows:
+
+```mojo
+# src/advanced/lifetimes/lifetime_function_ref.mojo
+def shorter(a: String, b: String) -> ref [a, b] String:
+    if len(a) < len(b):
+        return a
+    else:
+        return b
+
+
+def main():
+    var a: String = String("beautiful")
+    var b: String = String("pretty")
+
+    var ref c = shorter(a, b)
+
+    print(
+        String('The first word you give is "{}" at address {}').format(
+            a, String(Pointer(to=a))
+        )
+    )
+    print(
+        String('The second word you give is "{}" at address {}').format(
+            b, String(Pointer(to=b))
+        )
+    )
+    print(
+        String('The shorter of the two words is "{}" at address {}').format(
+            c, String(Pointer(to=c))
+        )
+    )
+```
+
+In this code, we use `ref [a, b] String` as the return type of the function `shorter()`. To be more specifc:
+
+- `ref` means that the return is a **referenced value** but not an **owned value**.
+- `String` is the type of the returned value.
+- `[a, b]` is a parameterization that indicates the reference is tied to the lifetime and mutability of both the argument `a` and `b` (the origins). `[a, b]` is a shortcut for `[__origin_of(a, b)]`, which is the complete syntax to indicate that the lifetime and mutability of the reference originates from the argument `a` and `b`.
+
+In this way, the returned value can either be a reference to `a` or be a reference to `b`, so Mojo compiler will ensure that both `a` and `b` are alive as long as the returned reference is alive.
+
+Later in the `main()` function, we use `var ref c = shorter(a, b)` to let `c` to hold the returned reference from the function `shorter()`. The lifetime of `c` is then tied to the lifetime of both `a` and `b`, so both `a` and `b` will be alive until `c` is lastly used in the last line of the code.
+
+```console
+The first word you give is "beautiful" at address 0x16f934220
+The second word you give is "pretty" at address 0x16f934238
+The shorter of the two words is "pretty" at address 0x16f934238
+```
+
+::: warning Note on `var ref c = shorter(a, b)`
+
+Note that we use `var ref c = shorter(a, b)` instead of `var c = shorter(a, b)`. This is because the return type of the function `shorter()` is a reference, so we need to use `var ref` to declare `c` as a reference too. If we use `var c = shorter(a, b)`, the an **implicit copy** will be made and `c` will be an owned value instead of a reference, which is not what we want.
+
+:::
+
+## Further reading
+
+### Lifetime in functions - ref vs Pointer
+
+You may now wonder whether you can also use `Pointer` as the return type of a function, just like using `ref` as the return type. The answer is yes.
+
+In the following example, we create a function `shorter()` that takes two strings (words) as input, and returns a pointer to the shorter one. We then call this function in the `main()` function. The code is as follows.
 
 ```mojo
 # src/advanced/lifetimes/lifetime_function_pointer.mojo
@@ -399,7 +514,7 @@ def main():
     )
 ```
 
-The code is very similar to the previous example, except that we take out the if-statement into a separate function `shorter()`. The function takes two strings as input, and returns a pointer to the shorter one.
+The code is very similar to the previous example where a reference is returned, but this time we return a pointer instead.
 
 One thing that worth noting is that the return type of the function is `Pointer[String, __origin_of(word1, word2)]`, which means that the returned pointer will point to either argument `word1` or `word2`. Therefore, the lifetime of the returned pointer shall not be longer than the lifetime of the arguments `word1` and `word2`.
 
@@ -407,7 +522,7 @@ We have also learned previously that the arguments `word1` and `word2` are immut
 
 Using the **chained lifetime rule**, we know that the lifetime of the returned pointer, which is assigned to `c`, should be no longer than the lifetime of either `a` or `b` in the caller function. In other words, both `a` and `b` are destroyed only after `c` is lastly used in the caller function.
 
-Running the code will give us the following output:
+Running the code will give us the following output, which is exactly what we expect.
 
 ```console
 The first word you give is "beautiful" at address 0x16f768540
@@ -415,9 +530,11 @@ The second word you give is "pretty" at address 0x16f768558
 The shorter of the two words is "pretty" at address 0x16f768558
 ```
 
-This is exactly what we expect.
+Nevertheless, compared to returning a reference, returning a pointer is more verbose and less convenient. You need to write the `Pointer` type with the `__origin_of()` function in both the return type and the return statements. Moreover, you need to use `c[]` to dereference the pointer when you want to access the value.
 
-## Lifetime annotation - Mojo vs Rust
+In future, `Pointer` may eventually go away from Mojo language.
+
+### Lifetime annotation - Mojo vs Rust
 
 If you have used Rust before, you may notice that the above example is very popular in Rust books. Usually a similar example would appear as the first example in the chapter about lifetime.
 
@@ -524,7 +641,7 @@ fn shorter<'a>(word1: &'a String, word2: &'a String) -> &'a String {
 }
 ```
 
-In **Mojo**, a safe pointer must be created with the information of the original owner. Thus, you cannot use a `Pointer` type as a function argument because you cannot put a existing variable into the `__origin_of()` function.
+In **Mojo**, a safe pointer must be created with the information of the original owner. Thus, you cannot use a `Pointer` type as a function argument.
 
 Moreover, the origin reference in the `Pointer` type cannot be overwritten in your code. Failing to do so will lead to an error as early as in the editing time (IDE warning).
 
@@ -539,44 +656,6 @@ The design philosophy of Mojo and Rust lifetime systems is different. Different 
 1. By putting the origin reference in the annotation of the pointers or references, the chains of the relationship between the owner and the borrower is more explicit and clear.
 1. This annotation only needs to be done in the references or safe pointers, but not in the owner variables.
 1. The syntax is more elegant and Pythonic, since `&'a` looks quite strange.
-
-## Lifetime in functions - ref vs Pointer
-
-In the previous example, we used `Pointer` type to return the pointer to the shorter string. However, we can also use `ref` type to achieve the same goal. The code will look like this:
-
-```mojo
-# src/advanced/lifetimes/lifetime_function_ref.mojo
-def shorter(a: String, b: String) -> ref [a, b] String:
-    if len(a) < len(b):
-        return a
-    else:
-        return b
-
-
-def main():
-    var a: String = String("beautiful")
-    var b: String = String("pretty")
-
-    var ref c = shorter(a, b)
-
-    print(
-        String('The first word you give is "{}" at address {}').format(
-            a, String(Pointer(to=a))
-        )
-    )
-    print(
-        String('The second word you give is "{}" at address {}').format(
-            b, String(Pointer(to=b))
-        )
-    )
-    print(
-        String('The shorter of the two words is "{}" at address {}').format(
-            c, String(Pointer(to=c))
-        )
-    )
-```
-
-In this code, we use `ref [a, b] String` as the return type of the function `shorter()`. This means that the returned value will be either a reference of `a` or a reference of `b`, and it will carry the information on both `a` and `b` as the possible origins.
 
 ## Major changes in this chapter
 
