@@ -10,7 +10,7 @@ This chapter summarizes the information, tips, and warnings that are scattered t
 
 [Why you should always use `var` to define variables](../basic/variables.md): It is good to cultivate a habit of using `var` to define variables. Otherwise, it may lead to confusion and unintended behavior, especially when you are working with nested scopes.
 
-[Type is important](../basic/variables.md#conceptual-model-of-variable): Type is important to a variable. It determines how the value is stored in memory, how much space it occupies, how it can be interpreted, and how it can be manipulated.
+[Type is important](../basic/variables.md#conceptual-model-of-mojo-variables): Type is important to a variable. It determines how the value is stored in memory, how much space it occupies, how it can be interpreted, and how it can be manipulated.
 
 [Do not abuse function overloading](../basic/functions.md#function-overloading): Functional overloading is powerful, but it can lead to confusion if you use it as a general container for anything. You should always make the function names self-explanatory.
 

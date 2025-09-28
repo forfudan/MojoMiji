@@ -5,40 +5,39 @@
 
 A variable is a fundamental concept in programming which allows you to store, read, and manipulate data. It can be seen as a container of data, enabling you to refer to the data by a symbolic name rather than the value in the memory directly. This is essential for writing readable and maintainable code. In this chapter, we will explore the following topics:
 
-- Conceptual model of Mojo variables
-- Variables from an object-oriented perspective
+- Conceptual model of Mojo variables and two perspectives
 - Python variables vs Mojo variables
 - Creation of variables
 - Re-assignment of variables
 - Assignment of values between variables
 - Scope of variables
 
-## Conceptual model of variables
+## Conceptual model of Mojo variables
 
 There are various way to define the term "variable", and the definition varies across programming languages. In this Miji, I would provide the following conceptual model which I found easy to understand and remember when I program in Mojo:
 
 ***A variable in Mojo is a quaternary system consisting a name, a type, an address, and a value***.
 
-- The name of the variable is the unique identifier that you use to refer to the variable in your code.
-- The type of the variable defines what kind of data it can hold, how much memory space it occupies, how it can be manipulated, and how the value is represented in binary format in memory.
-- The address of the variable defines where the data is stored in memory.
-- The value of the variable is a meaningful piece of information that you directly or indirectly create or use. It is usually stored in a binary format in the memory.
+- The **name** of the variable is the unique identifier that you use to refer to the variable in your code.
+- The **type** of the variable defines what kind of data it can hold, how much memory space it occupies, how it can be manipulated, and how the value is represented in binary format in memory.
+- The **address** of the variable defines where the data is stored in memory.
+- The **value** of the variable is a meaningful piece of information that you directly or indirectly create or use. It is usually stored in a binary format in the memory.
 
-You can think of a variable as a safe vault, on whose door is printed a name, a type, and an address. The inside of the vault is a space that can hold a value, as shown in the figure below.
+This conceptual model is rather abstract. To facilitate understanding, we can further view Mojo variables from two different perspectives: an object-oriented perspective and a safe-vault perspective. The first perspective is more Pythonista-friendly, focusing on the relationship between the variable name and the object; the second perspective is more low-level, focusing on how the values are stored and transferred in memory. We will explore both perspectives in the following sections.
 
-![Variable as a vault](/graphs/variable_as_vault.jpg)
+### Object-oriented perspective
 
-## Variables from a object-oriented perspective
+As a Pythonista, you may be more comfortable with understanding everything from a object-oriented perspective. Good news is that we can definitely do this for Mojo's variables as well. Let's start by defining a **Mojo object**
 
-As a Pythonista, you may also think from the "object"-oriented perspective. In this case, let's define a **Mojo object** as an abstract object in memory with three attributes:
+A **Mojo object** is an abstract object in memory with three attributes:
 
-1. type
-1. value
-1. address.
+1. Type
+1. Address.
+1. Value
 
 For example, the integer `1` is a Mojo object with type `Int`, value `1`, and an address in memory (let's say, `0x26c6a89a`). The string `"Hello, world!"` is another Mojo object with type `String`, value `"Hello, world!"`, and another address in memory (let's say, `0x26c6b00f`).
 
-From this perspective, a variable in Mojo is **a name that refers to a Mojo object in memory**. More intuitively, you can see the variable name as a label that is stuck onto the object. See the following illustration:
+Then, a Mojo variable can be defined as a **mapping** from a **name** to an **object**. More intuitively, the variable name is a label that is stuck onto a Mojo object. See the following illustration:
 
 ```console
 # Mojo Miji - Basic - Variables - Mojo variables and objects
@@ -46,17 +45,41 @@ From this perspective, a variable in Mojo is **a name that refers to a Mojo obje
              variable name
                   ↓
    ┌────────────────────────────────┐
-   │       Object (abstract)        │
+   │     Mojo object (abstract)     │
    ├──────────┬─────────┬───────────┤
    │   type   │  value  │  address  │
    └──────────┴─────────┴───────────┘
 ```
 
-This conceptual model is consistent with the quaternary system introduced above. The only difference is that we view the type, value, and address as attributes of an abstract object, which is an extra layer of abstraction.
+This approach is consistent with the quaternary system introduced above. The only difference is that we view the **type**, **value**, and **address** together as an abstract object, which is an extra layer of abstraction.
 
-## A concrete example of a variable
+### Value-vault perspective
 
-Let's take a look at a concrete example of a variable in Mojo. The variable is of name `a`, of type `Int`, of address `0x26c6a89a`, and of value `123456789`. Since the `Int` type is 64-bit (8-byte) long, it actually occupies the space from `0x26c6a89a` to `0x26c6a8a1`. The value `123456789` is stored in the memory space in a binary format, which is `00000000 00000000 00000000 00000000 00000000 00000000 00000101 00000101` (in little-endian format).
+Another way to understand a variable is to view it from a low-level, memory-oriented perspective. Let's start by defining a **value vault**
+
+A **value vault** is an abstract safe vault with three attributes:
+
+1. Name
+1. Type
+1. Address
+
+The safe vault is located at the address and is immovable. The type defines how much space the vault occupies in memory and how the value is represented in binary format in memory. The name is a label stuck onto the vault, allowing you to refer to the vault in your code.
+
+Then, a Mojo variable can be defined as a **Safe vault with a value inside**. The value is stored in the vault in a binary format according to the rules defined by the type. See the following illustration:
+
+![Variable as a vault](/graphs/variable_as_vault.jpg)
+
+This approach is more value-oriented and memory-oriented. It emphasizes how the values are stored and transferred in memory, which is crucial for understanding concepts like ownership, mutability, and memory safety in Mojo.
+
+### A concrete example of a variable
+
+Both the object-oriented perspective and the safe-vault perspective are useful for understanding Mojo variables, and they are consistent with the quaternary system introduced above. You can choose either one according to your preference.
+
+Now, let's take a look at a concrete example of a variable in Mojo and how it is laid out in memory:
+
+The variable is of name `a`, of type `Int`, of address `0x26c6a89a`, and of value `123456789`. Since the `Int` type is 64-bit (8-byte) long, it actually occupies the space from `0x26c6a89a` to `0x26c6a8a1`. The value `123456789` is stored in the memory space in a binary format, which is `00000000 00000000 00000000 00000000 00000000 00000000 00000101 00000101` (in little-endian format).
+
+So the memory layout of the variable `a` can be illustrated as follows:
 
 ```console
 # Mojo Miji - Basic - Variables
@@ -75,13 +98,31 @@ Address        │0x26c6a89a│0x26c6a89b│0x26c6a89c│0x26c6a89d│0x26c6a89e
                └──────────┴──────────┴──────────┴──────────┴──────────┴──────────┴──────────┴──────────┘
 ```
 
-More intuitively, the variable `a` can be visualized as the following vault:
+---
 
-![Variable a as a vault](/graphs/variable_vault_a_int_123456789.jpg)
+If we view the variable from the object-oriented perspective, then it is a mapping from the name `a` to a Mojo object. The object is of type `Int`, value `123456789`, and address `0x26c6a89a`. See the following illustration:
+
+```console
+# Mojo Miji - Basic - Variables
+
+                       variable name: a
+                             ↓
+   ┌────────────────────────────────────────────────────┐
+   │               Mojo object (abstract)               │
+   ├───────────┬──────────────────┬─────────────────────┤
+   │ type: Int │ value: 123456789 │ address: 0x26c6a89a │
+   └───────────┴──────────────────┴─────────────────────┘
+```
 
 ---
 
-When you program in Mojo, you should always view a variable as a system consisting of four aspects, a name, a type, an address, and a value. You should not regard it as merely a "name". In this way, you can better understand **how variables are interacted with each other**. When you step into the concept "[ownership](../advanced/ownership.md)", it will save you a lot of effort to understand it.
+If we view the variable from the safe-vault perspective, then it is a immovable safe vault with name `a` and type `Int` at address `0x26c6a89a`, and it contains the value `123456789`. See the following illustration:
+
+![Variable a as a vault](/graphs/variable_vault_a_int_123456789.jpg)
+
+### Always apply the conceptual model
+
+When you program in Mojo, you should always apply the conceptual model and view a variable as a system consisting of four aspects, a name, a type, an address, and a value. In this way, you can better understand **how variables are interacted with each other**. When you step into the concept "[ownership](../advanced/ownership.md)", it will save you a lot of effort to understand it.
 
 For example, when you initialize a variable, you are doing the following things:
 
@@ -129,10 +170,10 @@ See the following abstract representation of a variable in Python:
 ```console
 # Mojo Miji - Basic - Variables - Python variables
 
-       variable name
-            ↓
+           variable name
+                 ↓
    ┌─────────────────────────────┐
-   │      Object (abstract)      │
+   │   Python object (abstract)  │
    ├──────────┬─────────┬────────┤
    │   type   │  value  │   ID   │
    └──────────┴─────────┴────────┘
@@ -144,7 +185,9 @@ However, in Python, the **type**, **value**, and **unique ID** are so tightly co
 
 The fact that Python's object is a well-encapsulated black box is the key to understand the **fundamental** difference between the behavior of Python variables and Mojo variables that we will encounter in the future throughout this Miji.
 
-Okay, let me first use some concrete examples for you to understand Python variables more intuitively.
+---
+
+Here are some concrete examples for you to understand Python variables more intuitively.
 
 *1984 by George Orwell* can be seen as an **object**. It has a **type** (book), a **value** (the content of the book), and a unique **identifier** (ISBN number). The variable name in Python is like a sticker with the name "my favorite book" that you stick onto the book cover. You can then use the name "my favorite book" to refer to the book object. As such, the binary system of the name "my favorite book" and the book object is a variable in Python.
 
@@ -216,7 +259,7 @@ As I said before, a Mojo variable is associated with a memory address. When you 
 
 In other words, the Mojo variable name is a sticker stuck onto a physical memory address directly, while the Python variable name is a sticker stuck onto an abstract object in memory.
 
-In the later section [Assign values between variables](#assign-values-between-variables), we will continue to see how the difference between Python and Mojo variables affects the way we assign values between variables.
+In the later chapters, we will continue to see how this difference affects the way we assign values between variables.
 
 ::: tip Major difference between Python variables and Mojo variables
 
@@ -370,7 +413,7 @@ fn main() {
 
 The two ways of creating variables are equivalent. The second example is more concise and Pythonic. The first example is also useful when you want to show other people which variables will be used later. Which one is better depends on your personal preference and the purpose of the code.
 
-:::tip Too verbose
+::: tip Too verbose
 
 You may find that the complete syntax of variable creation is still verbose, compared to Python. However, Yuhao still recommends you to always follow this complete style, as it is more explicit and error-free, especially the inlay hints is not yet supported by Mojo extension. Being confident is good, but being explicit is better.
 

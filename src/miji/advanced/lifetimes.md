@@ -7,13 +7,19 @@ Lifetime is a concept that describes how long a value (of a variable) exists in 
 
 Many people think that lifetime is a complex concept, as well as how to denote it in your code. Indeed, in Rust, lifetime annotation seems to be complex, and failing to understand it can lead to many compiler errors. In Mojo, however, the syntax related to lifetime is much simpler and more intuitive.
 
+This chapter will cover the following topics:
+
+- Core philosophy of lifetime
+- Tracking lifetimes of origins
+- Chained lifetimes
+- Manual lifetime management
+- Lifetime in functions
+
 ::: warning Future changes expected
 
 The lifetime system in Mojo is still evolving. The syntax and semantics described in this document are subject to change in future versions of Mojo.
 
 :::
-
-[[toc]]
 
 ## Core philosophy of lifetime
 

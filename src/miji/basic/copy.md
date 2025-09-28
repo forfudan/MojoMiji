@@ -180,7 +180,7 @@ The following table summarizes the differences between Mojo and Python when it c
 | New object created? | Yes                                    | No                                                 |
 | Potential errors?   | Yes if type is not implicitly copyable | No                                                 |
 
-::: tip ImplicitCopyable trait
+::: tip `ImplicitlyCopyable` trait
 
 Whether a type is implicitly copyable is determined by the `ImplicitlyCopyable` trait. If a struct conforms to this trait, it means that the type is cheap to copy and can be copied implicitly. For your own user-defined types, you can make them implicitly copyable by implementing the `ImplicitlyCopyable` trait. We will discuss traits in Chapter [Generic and traits](../advanced/generic).
 
@@ -266,7 +266,7 @@ warning: 'List' is no longer implicitly copyable, because it is O(n) expensive; 
 
 As a Python user, you may be unfamiliar with the concept of "move" in programming. In Mojo, "move" means transferring the object (its value, type, and memory location) of a variable to another variable. After the move, the original variable becomes uninitialized and cannot be used anymore. This is different from copying, where both variables remain valid and independent of each other.
 
-Just like **implicit copy** only works on types that are "cheap" to copy, **move** operations in Mojo only work on types that are "expensive" to copy. These types include composite types (e.g., lists, dictionaries, structs) and user-defined types. They are usually large in size and are stored on the heap. Moving these types avoids the overhead of copying large amounts of data.
+Just like **implicit copy** only works on types that are "cheap" to copy, **move** operations in Mojo only work on types that are "expensive" to copy. These types include composite types (e.g., lists, dictionaries, structs) and certain user-defined types. They are usually large in size and are stored on the heap. Moving these types avoids the overhead of copying large amounts of data.
 
 After a move operation, the new variable name is referring to the same memory location as the original variable, no new memory allocation or copying of values is needed. This makes move operations very efficient, especially for large data structures.
 
@@ -280,12 +280,13 @@ var b = a^  # Move the value of `a` into a new variable `b`
 
 The following table summarizes the syntax `b = a^`:
 
-| Item                  | "Small" types (immovable)        | Composite types (movable) |
-| --------------------- | -------------------------------- | ------------------------- |
-| Behavior              | Copy value                       | Move value                |
-| Potential errors?     | Yes, a warning will be displayed | No                        |
-| New memory allocated? | Yes                              | No                        |
-| Original variable     | Remains valid                    | Becomes uninitialized     |
+| Item                   | "Small" types (immovable)        | Composite types (movable)  |
+| ---------------------- | -------------------------------- | -------------------------- |
+| Behavior               | Copy value                       | Move value to the new name |
+| Potential errors?      | Yes, a warning will be displayed | No                         |
+| New object created?    | Yes                              | No                         |
+| New memory allocated?  | Yes                              | No                         |
+| Original variable name | Remains valid                    | Becomes uninitialized      |
 
 ::: tip Move behavior
 
@@ -377,7 +378,7 @@ Based on what we have learnt in the previous sections, a quick conclusion may im
 
 `String` is somewhat special because it allows both implicit copy and move operations. This is because `String` is so common used while can both be allocated on the stack (small strings) or on the heap (large strings). Thus, it is designed to be both implicitly copyable and movable.
 
-::: SIMD is implicitly copyable
+::: tip SIMD is implicitly copyable
 
 Small, stack-based data types in Mojo are always implicitly copied, including SIMD types. This can make Mojo faster than Rust in some computations (Pass-by-ref consumes more than direct copying, as detailed in this article: [Should Small Rust Structs be Passed by-copy or by-borrow?](https://www.forrestthewoods.com/blog/should-small-rust-structs-be-passed-by-copy-or-by-borrow/)).
 

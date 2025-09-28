@@ -92,7 +92,7 @@ var ref <name> = <variable>
 ref <name> = <variable>  # shorthand syntax
 ```
 
-If we apply our [conceptual model of variables](../basic/variables.md#conceptual-model-of-variable), the following things will happen when you use `var ref y = x` (or equivalently `ref y = x`):
+If we apply our [conceptual model of variables](../basic/variables.md#conceptual-model-of-mojo-variables), the following things will happen when you use `var ref y = x` (or equivalently `ref y = x`):
 
 1. The variable `y` will get the same address as the variable `x`, so it can access the value at that address.
 1. The variable `y` is marked as "mutable" or "immutable", depending on whether `x` is mutable or not.
@@ -190,7 +190,7 @@ The main difference is that you have to de-reference the `Pointer` to access the
 
 `read` is the keyword used to define an **immutable shared reference** of a value in the **sub-function scope**. In other words, It creates a read-only reference of the value passed into the function. At the same time, an immutable [**referenced status**](../advanced/ownership.md#four-statuses-of-ownership) is created.
 
-If an argument is declared in the function signature with the keyword `read`, then a read-only reference of the value is passed into the function. If we apply our [conceptual model of variables](../basic/variables.md#conceptual-model-of-variable), the following things will happen:
+If an argument is declared in the function signature with the keyword `read`, then a read-only reference of the value is passed into the function. If we apply our [conceptual model of variables](../basic/variables.md#conceptual-model-of-mojo-variables), the following things will happen:
 
 1. The argument will get the same address as the variable you passed into the function, so it can access the value at that address.
 1. The value at the address is marked as "immutable", meaning that you cannot change the it within the function. The value of the variable outside the function will thus be protected from being modified.
@@ -218,7 +218,7 @@ def main():
 
 The keyword `mut` allows you to pass a **mutable shared reference** of a value in the **sub-function scope**. In other words, it creates a mutable reference of the value passed into the function. At the same time, a mutable [**referenced status**](../advanced/ownership.md#four-statuses-of-ownership) is created.
 
-If an argument is declared in the function signature with the keyword `read`, then a mutable reference of the value is passed into the function. If we apply our [conceptual model of variables](../basic/variables.md#conceptual-model-of-variable), the following things will happen:
+If an argument is declared in the function signature with the keyword `read`, then a mutable reference of the value is passed into the function. If we apply our [conceptual model of variables](../basic/variables.md#conceptual-model-of-mojo-variables), the following things will happen:
 
 1. The argument will get the same address as the variable you passed into the function, so it can access the value at that address.
 1. The argument is marked as "mutable", meaning that you can change the value at the **address** of the argument within the function. Since the address of the argument is the same as that of the variable you passed into the function, this means that the value of the variable outside the function will also be modified.
@@ -337,7 +337,7 @@ Address │16b6a8fae│16b6a8faf│16b6a8fb0│16b6a8fb1│16b6a8fb2│16b6a8fb3
 
 The keyword `var` allows you to pass a **copy** of the value into the function. Not that it is a copy, not a reference. Therefore, an [**isolated status**](../advanced/ownership.md#four-statuses-of-ownership) is created.
 
-If we apply our [conceptual model of variables](../basic/variables.md#conceptual-model-of-variable), the following things will happen:
+If we apply our [conceptual model of variables](../basic/variables.md#conceptual-model-of-mojo-variables), the following things will happen:
 
 1. The value of the variable you passed into the function will be copied to a new address in the memory, and the argument of the function will get this new address and the value at that address.
 1. The argument **owns** the value at the new address. It can modify the value at the address.
