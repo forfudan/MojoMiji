@@ -88,9 +88,19 @@ The keyword `ref` allows you to create a **shared reference** of a value in the 
 A general syntax of the `ref` keyword is as follows:
 
 ```mojo
-var ref <name> = <variable>
-ref <name> = <variable>  # shorthand syntax
+ref <name> = <variable>      # Short, yet more standard syntax
+var ref <name> = <variable>  # Okay, but more verbose
 ```
+
+::: details `var ref` is no longer recommended
+
+Although the nested pattern `var ref` is supported, it is not recommended. From v0.26.1 (2026-01-29), the `var ref` pattern will generate a warning:
+
+> warning: nested 'var' or 'ref' patterns are redundant, remove the outer pattern`.
+
+Nevertheless, this nested pattern is sometimes useful, e.g., `var (a, ref b) = (1, 2)`. See this [thread](https://github.com/modular/modular/issues/4765) for more discussion.
+
+:::
 
 If we apply our [conceptual model of variables](../basic/variables.md#conceptual-model-of-mojo-variables), the following things will happen when you use `var ref y = x` (or equivalently `ref y = x`):
 
