@@ -406,7 +406,7 @@ In the previous example, we create a pointer `c` in the local scope of the `main
 
 Mojo provides an alternative way, yet more concise and elegant, to achieve the same goal: Encapsulate the logic in a function that return a reference (instead of a pointer) by use of the `ref` keyword.
 
-We have already discussed about returning references in the previous chapter [References](../advanced/references/#reference-as-returned-value-ref). Recall that, when you return a reference from a function, the syntax is as follows:
+We have already discussed about returning references in the previous chapter [References](../advanced/references). Recall that, when you return a reference from a function, the syntax is as follows:
 
 ```mojo
 def function_name(arg: TypeOfArg, ...) -> ref [arg] TypeOfReturn:
