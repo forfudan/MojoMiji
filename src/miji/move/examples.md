@@ -43,25 +43,30 @@ Nine-nine Multiplication Table
 
 Now we program in Mojo. A clever way is to simply copy the above Python file and change the file extension to `.mojo`. Then we remove the last line `main()` because it is not needed.
 
-Let's compile and run this Mojo code by `magic run mojo src/move/multiplication_table.mojo`. You may see the following error message:
+Let's compile and run this Mojo code by `pixi run mojo src/move/multiplication_table.mojo`. You will see the following output:
 
 ```console
-error: 'StringLiteral["{} * {} = {}"]' value has no attribute 'format'
-            print("{} * {} = {}".format(i, j, i*j), end="\t")
-                  ~~~~~~~~~~~~~~^
+Nine-nine Multiplication Table
+1 * 1 = 1       1 * 2 = 2       1 * 3 = 3       1 * 4 = 4    1 * 5 = 5    1 * 6 = 6       1 * 7 = 7       1 * 8 = 8    1 * 9 = 9
+2 * 2 = 4       2 * 3 = 6       2 * 4 = 8       2 * 5 = 10   2 * 6 = 12    2 * 7 = 14      2 * 8 = 16      2 * 9 = 18
+3 * 3 = 9       3 * 4 = 12      3 * 5 = 15      3 * 6 = 18   3 * 7 = 21    3 * 8 = 24      3 * 9 = 27
+4 * 4 = 16      4 * 5 = 20      4 * 6 = 24      4 * 7 = 28   4 * 8 = 32    4 * 9 = 36
+5 * 5 = 25      5 * 6 = 30      5 * 7 = 35      5 * 8 = 40   5 * 9 = 45
+6 * 6 = 36      6 * 7 = 42      6 * 8 = 48      6 * 9 = 54
+7 * 7 = 49      7 * 8 = 56      7 * 9 = 63
+8 * 8 = 64      8 * 9 = 72
+9 * 9 = 81
 ```
 
-Here we see another difference between Python and Mojo: `format` is not a method of the string literal in Mojo. This is because, in Python, we do not need differentiate between string and string literal ourselves, because the latter type is coerced to the first type when you call a str method. The contents between quotation marks ("") is of `str` type and you can use the `format()` method. However, in Mojo, we do differentiate between string and string literal. I will discuss more about string in Chapter [String](../basic/string).
+Wow! The program runs successfully with the same output as in Python!
 
-For now, to fix the error, we have to explicitly convert the string literal to a String object by calling the `String()` constructor. So we change the line to:
+::: details Older versions of Mojo
 
-```mojo
-...
-            print(String("{} * {} = {}").format(i, j, i*j), end="\t")
-...
-```
+In older versions of Mojo (before v25.5), a `StringLiteral` object will not be materialized to a `String` object automatically at run time. When you call a method of `String` type (in this case, `format()`) on a `StringLiteral` object, you will get an error.
 
-Now you run the code again. You will see the same output as in Python.
+So you have to wrap the string literal with `String()` constructor to explicitly convert it to a `String` object before calling the method.
+
+:::
 
 For your comparison, I put the complete Mojo code as well as the Python code below:
 
@@ -73,7 +78,7 @@ def main():
     print("Nine-nine Multiplication Table")
     for i in range(1, 10):
         for j in range(i, 10):
-            print(String("{} * {} = {}").format(i, j, i * j), end="\t")
+            print("{} * {} = {}".format(i, j, i*j), end="\t")
         print()
 ```
 
@@ -91,19 +96,19 @@ main()
 
 :::
 
-Great! We see that we can migrate our Python code to Mojo easily with very little modification. But we enjoy the performance of Mojo. How big is the performance gain? Let's check it out using the next example.
+Great! We see that we can migrate our Python code to Mojo so easily, while enjoying the performance of Mojo. How big is the performance gain? Let's check it out using the next example.
 
 ::: tip Difference between Python and Mojo
 
 The table below summarizes the differences between Python and Mojo in this example.
 
-| Feature           | Python                                | Mojo                                            |
-| ----------------- | ------------------------------------- | ----------------------------------------------- |
-| `main()` function | Not needed                            | Mandatory as an entry point                     |
-| String type       | str literal is coerced to str type    | You have to explicitly use `String` constructor |
-| String formatting | `str.format()` method                 | `String().format()` method                      |
-| f-strings         | Supported                             | Not supported (yet)                             |
-| formatted values  | Supported, e.g., `{:0.2f}`, `{:0.3%}` | Not supported (yet)                             |
+| Feature           | Python                                  | Mojo                                              |
+| ----------------- | --------------------------------------- | ------------------------------------------------- |
+| `main()` function | Not needed                              | Mandatory as an entry point                       |
+| String type       | String literal is coerced to `str` type | String literal is materialized to `String` object |
+| String formatting | `str.format()` method                   | `String.format()` method                          |
+| f-strings         | Supported                               | Not supported (yet)                               |
+| formatted values  | Supported, e.g., `{:0.2f}`, `{:0.3%}`   | Not supported (yet)                               |
 
 :::
 
