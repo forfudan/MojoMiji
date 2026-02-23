@@ -438,7 +438,7 @@ def bubble_sort(mut array: List[Float64]):
     ...
 ```
 
-Now you will see that the errors on the function `bubble_sort()` are gone. Running the code with `magic run mojo src/sort.mojo` will give you the following output:
+Now you will see that the errors on the function `bubble_sort()` are gone. Running the code with `pixi run mojo src/sort.mojo` will give you the following output:
 
 ```console
 Input array: [SIMD[DType.float64, 1](64.1), SIMD[DType.float64, 1](34.523), SIMD[DType.float64, 1](25.1), SIMD[DType.float64, 1](-12.3), SIMD[DType.float64, 1](22.0), SIMD[DType.float64, 1](-11.5), SIMD[DType.float64, 1](90.49)]
@@ -512,7 +512,7 @@ main()
 
 :::
 
-Running the code with `magic run mojo src/sort.mojo` will give you the same output as in Python:
+Running the code with `pixi run mojo src/sort.mojo` will give you the same output as in Python:
 
 ```console
 Input array: [64.1, 34.523, 25.1, -12.3, 22.0, -11.5, 90.49]
@@ -658,7 +658,7 @@ Now, let's migrate the code to Mojo. Just like what we did in the previous examp
 We first do some simple changes to the code using the knowledge we have learned so far:
 
 - We change the type hints from `float` to `Float64` and from `str` to `String`.
-- We use `String` constructor to create the string and use `format()` method instead of "f-string".
+- We use `format()` method instead of "f-string".
 - Remove `main()` at the end of the file.
 
 After these changes, we have the following code:
@@ -666,7 +666,8 @@ After these changes, we have the following code:
 ```mojo
 # src/move/triangle_from_py.mojo
 # Adapted from Python code with preliminary changes
-# It is not guaranteed to run successfully yet
+# It won't compile yet
+
 class Triangle:
     """A class to represent a triangle."""
 
@@ -720,7 +721,7 @@ class Triangle:
         Notes:
             You can use the `str()` or `print()` to call this method.
         """
-        return String("Triangle(a={}, b={}, c={})").format(
+        return "Triangle(a={}, b={}, c={})".format(
             self.a, self.b, self.c
         )
 
@@ -730,8 +731,8 @@ def main():
     print("Creating a valid triangle with sides 3, 4, and 5:")
     triangle = Triangle(3, 4, 5)
     print(triangle)
-    print(String("Area: {}").format(triangle.area()))
-    print(String("Perimeter: {}").format(triangle.perimeter()))
+    print("Area: {}".format(triangle.area()))
+    print("Perimeter: {}".format(triangle.perimeter()))
 
     # An invalid triangle with sides 1, 2, and 3
     print("\nCreating an invalid triangle with sides 1, 2, and 3:")
@@ -742,7 +743,7 @@ def main():
         print("Error:", e)
 ```
 
-This will be the starting point of our Mojo code. You will see many error messages when you run the code with `magic run mojo src/move/triangle_from_py.mojo`. The first error message is, which should also be highlighted by the IDE is about the first line:
+This will be the starting point of our Mojo code. You will see many error messages when you run the code with `pixi run mojo src/move/triangle_from_py.mojo`. The first error message is, which should also be highlighted by the IDE is about the first line:
 
 ```console
 /Users/ZHU/Programs/my-first-mojo-project/src/move/triangle.mojo:1:1: error: classes are not supported yet
@@ -766,13 +767,14 @@ There will be no error message for this line anymore, so do the next line, the d
 The next error message is about the `__init__` method.
 
 ```console
-/Users/ZHU/Programs/my-first-mojo-project/src/move/triangle.mojo:4:18: error: argument type must be specified
-    def __init__(self, a: float, b: float, c: float):
+error: __init__ method must return Self type with 'out' argument
+    def __init__(self, a: Float64, b: Float64, c: Float64):
+        ^
 ```
 
 This method in Python is a special method to create an instance of the class by using the class name as a constructor, e.g., `Triangle(3, 4, 5)`. In Mojo, we have the same philosophy, we also use `__init__()` as a constructor, but we have to explicitly specify the "ownership modifier" of the first argument `self` as `out`. This indicates that the `__init__()` method will create a new instance of the struct as an output. (`out` is a abbreviation of "output".)
 
-We then update the first line of the `__init__()` method, by adding the `out` keyword before `self`, and by changing the type of the three arguments from `float` to `Float64`:
+We then update the first line of the `__init__()` method, by adding the `out` keyword before `self`:
 
 ```mojo
 ...
@@ -818,7 +820,7 @@ So, we need to explicitly declare the attributes `a`, `b`, and `c` in the struct
 
 ```mojo
 struct Triangle:
-    """A class to represent a triangle."""
+    """A struct to represent a triangle."""
 
     # Declare attributes
     var a: Float64
@@ -849,15 +851,12 @@ After this change, you will be happy to see that there are no more error message
 Then we come to the main function. The first error message is about printing the triangle:
 
 ```console
-/Users/ZHU/Programs/my-first-mojo-project/src/move/triangle.mojo:64:10: error: invalid call to 'print': could not deduce parameter 'Ts' of callee 'print'
+error: invalid call to 'print': could not convert element of 'values' with type 'Triangle' to expected type 'Writable'
     print(triangle)
-    ~~~~~^~~~~~~~~~
-/Users/ZHU/Programs/my-first-mojo-project/src/move/triangle.mojo:64:11: note: failed to infer parameter 'Ts', argument type 'Triangle' does not conform to trait 'Writable'
-    print(triangle)
-          ^~~~~~~~
-/Users/ZHU/Programs/my-first-mojo-project/src/move/triangle.mojo:1:1: note: function declared here
-struct Triangle:
-^
+    ^~~~~
+error: invalid call to 'print': could not convert element of 'values' with type 'Triangle' to expected type 'Writable'
+        print(invalid_triangle)
+        ^~~~~
 ```
 
 Ah, it is the same error as we had in the previous example when we tried to print a list. The core message is "argument type 'Triangle' does not conform to trait 'Writable'". What does this mean? Maybe you have to wait until you reach Chapter [Generic and traits](../advanced/generic). For now, you can understand this issue in the following way:
@@ -874,10 +873,10 @@ print(String(triangle))
 print(String(invalid_triangle))
 ```
 
-Moreover, for some special double underscore methods like `__str__()`, Mojo requires you to explicitly include the related trait in the struct signature. Here, the `__str__()` method is corresponding to the trait `StringableRaising`. This knowledge is too advanced for beginners and we will discuss this in details in Chapter [Generic and Traits](../advanced/generic.md). For now, we just add the trait name to the struct signature:
+Moreover, for some special double underscore methods like `__str__()`, Mojo requires you to explicitly include the related trait in the struct signature. Here, the `__str__()` method is corresponding to the trait `Writable`. This knowledge is too advanced for beginners and we will discuss this in details in Chapter [Generic and Traits](../advanced/generic.md). For now, we just add the trait name to the struct signature:
 
 ```mojo
-struct Triangle(StringableRaising):
+struct Triangle(Writable):
     ...
 ```
 
@@ -902,8 +901,9 @@ After all these changes, we have our final Mojo code as follows:
 
 ```mojo
 # src/move/triangle.mojo
-struct Triangle(StringableRaising):
-    """A class to represent a triangle."""
+
+struct Triangle(Writable):
+    """A struct to represent a triangle."""
 
     # Declare attributes
     var a: Float64
@@ -919,7 +919,7 @@ struct Triangle(StringableRaising):
             c: Length of side c.
 
         Raises:
-            ValueError: If the lengths do not form a valid triangle.
+            Error: If the lengths do not form a valid triangle.
         """
         self.a = a
         self.b = b
@@ -930,7 +930,9 @@ struct Triangle(StringableRaising):
             or (self.a + self.c <= self.b)
             or (self.b + self.c <= self.a)
         ):
-            raise Error("The lengths of sides do not form a valid triangle.")
+            raise Error(
+                "The lengths of sides do not form a valid triangle."
+            )
 
     def area(self) -> Float64:
         """Calculates the area of the triangle using Heron's formula.
@@ -958,7 +960,7 @@ struct Triangle(StringableRaising):
         Notes:
             You can use the `str()` or `print()` to call this method.
         """
-        return String("Triangle(a={}, b={}, c={})").format(
+        return "Triangle(a={}, b={}, c={})".format(
             self.a, self.b, self.c
         )
 
@@ -968,8 +970,8 @@ def main():
     print("Creating a valid triangle with sides 3, 4, and 5:")
     triangle = Triangle(3, 4, 5)
     print(String(triangle))
-    print(String("Area: {}").format(triangle.area()))
-    print(String("Perimeter: {}").format(triangle.perimeter()))
+    print("Area: {}".format(triangle.area()))
+    print("Perimeter: {}".format(triangle.perimeter()))
 
     # An invalid triangle with sides 1, 2, and 3
     print("\nCreating an invalid triangle with sides 1, 2, and 3:")
@@ -1063,7 +1065,7 @@ main()
 
 :::
 
-Compiling and running the code with `magic run mojo src/move/triangle.mojo` generates no error messages and gives the expected output:
+Compiling and running the code with `pixi run mojo src/move/triangle.mojo` generates no error messages and gives the expected output:
 
 ```console
 Creating a valid triangle with sides 3, 4, and 5:
