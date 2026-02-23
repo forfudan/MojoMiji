@@ -366,18 +366,20 @@ Let's do this first in Python. We create a file in the `src/move` directory call
 
 ```python
 # src/move/sort.py
-def bubble_sort(array):    
+def bubble_sort(array):
     n = len(array)
     for i in range(n):
-        for j in range(0, n-1-i):
-            if array[j] > array[j+1]:
-                array[j], array[j+1] = array[j+1], array[j]
+        for j in range(0, n - 1 - i):
+            if array[j] > array[j + 1]:
+                array[j], array[j + 1] = array[j + 1], array[j]
+
 
 def main():
     array = [64.1, 34.523, 25.1, -12.3, 22.0, -11.5, 90.49]
     print("Input array:", array)
     bubble_sort(array)
     print("After sorting:", array)
+
 
 main()
 ```
@@ -403,9 +405,9 @@ def bubble_sort(array):
                 ^~~~~
 ```
 
-This is because Mojo is a statically typed language. You have to explicitly specify the type of the argument and the type of the return value, so that the compiler can allocate the correct amount of memory on stack for the function call.
+This is because Mojo is a **statically typed** language. You have to explicitly specify the type of the argument and the type of the return value, so that the compiler can allocate the correct amount of memory on stack for the function call.
 
-On the other hand, Python is a dynamically typed language. You do not need to specify the type of the argument and the return value. The Python interpreter will infer the type at runtime. If the type is not subscriptable (i.e., you cannot use `[]` to access the element), it will raise an error. You can also add type hints in Python, which is a good practice for static checks, readability and maintainability, but it is not mandatory.
+On contrary, Python is a dynamically typed language. You do not need to specify the type of the argument and the return value. The Python interpreter will infer the type at runtime. If the type is not subscriptable (i.e., you cannot use `[]` to access the element), it will raise an error. You can also add type hints in Python, which is a good practice for static checks, readability and maintainability, but it is not mandatory.
 
 The type hint in Python is something like:
 
@@ -414,7 +416,7 @@ def bubble_sort(array: list[float]):
     ...
 ```
 
-In Mojo, as mentioned above, the types may have different naming conventions. Beside Camel Case, floating-point type in Mojo is named as `Float64` instead of `float`.
+In Mojo, as mentioned above, the types may have different naming conventions. Beside using Camel Case (e.g., `list` -> `List`), the floating-point type in Mojo is named as `Float64` instead of `float`.
 
 ```mojo
 def bubble_sort(array: List[Float64]):
@@ -425,8 +427,8 @@ After the change, you will see that the IDE is still complaining:
 
 ```console
 error: expression must be mutable in assignment
-                array[j], array[j+1] = array[j+1], array[j]
-                ~~~~~~~~^~~~~~~~~~~~
+                array[j], array[j + 1] = array[j + 1], array[j]
+                     ~~~^~~~~~~~
 ```
 
 This is another important and new feature of Mojo: the arguments cannot be modified at will within the body of a function. This is to avoid unintentional changes to the original variable that is passed into the function. If you intend to change the value of the argument within the function, you have to explicitly declare the argument as ***mutable***. This is done via several special keywords in the function signature. We will discuss this more in Chapter [Functions](../basic/functions). For now, we just add the keyword `mut` in front of the argument `array`. By doing this, we tell Mojo that we want to modify the variable `array` by using this function.
@@ -436,7 +438,18 @@ def bubble_sort(mut array: List[Float64]):
     ...
 ```
 
-Now you will see that the errors on the function `bubble_sort()` are gone. We can move forward to deal with the very last error message:
+Now you will see that the errors on the function `bubble_sort()` are gone. Running the code with `magic run mojo src/sort.mojo` will give you the following output:
+
+```console
+Input array: [SIMD[DType.float64, 1](64.1), SIMD[DType.float64, 1](34.523), SIMD[DType.float64, 1](25.1), SIMD[DType.float64, 1](-12.3), SIMD[DType.float64, 1](22.0), SIMD[DType.float64, 1](-11.5), SIMD[DType.float64, 1](90.49)]
+After sorting: [SIMD[DType.float64, 1](-12.3), SIMD[DType.float64, 1](-11.5), SIMD[DType.float64, 1](22.0), SIMD[DType.float64, 1](25.1), SIMD[DType.float64, 1](34.523), SIMD[DType.float64, 1](64.1), SIMD[DType.float64, 1](90.49)]
+```
+
+Oops! This seems quite annoying! In Mojo, `print()` function does not support printing the elements of a list in a concise manner. Instead, it prints the type and the value of each element in the list. This is because Mojo's `print()` function is designed to be more informative and to show the type of the variable. It is not designed to be as concise as Python's `print()` function.
+
+::: details `print()` function in Mojo
+
+Before v0.26.1, you can not print a list at all. You will get an error message like:
 
 ```console
 error: invalid call to 'print': could not deduce parameter 'Ts' of callee 'print'
@@ -444,17 +457,21 @@ error: invalid call to 'print': could not deduce parameter 'Ts' of callee 'print
     ~~~~~^~~~~~~~~~~~~~~~~~~~~~~
 ```
 
-Oops! This seems quite annoying! We cannot use the `print()` function to print lists in Mojo, at least not possible at the moment (v25.3). Maybe in future we can do that. For now, we have to work around a little bit. Let's define a helper function to print the list. After all changes, we have our final Mojo code as follows:
+:::
+
+We cannot use the `print()` function to print lists in a Python's style (at least for Mojo v0.26.1). We have to work around a little bit. Let's define a helper function to print the list. After all changes, we have our final Mojo code as follows:
 
 ::: code-group
 
 ```mojo
+# src/move/sort.mojo
+
 def bubble_sort(mut array: List[Float64]):
     n = len(array)
     for i in range(n):
-        for j in range(0, n-1-i):
-            if array[j] > array[j+1]:
-                array[j], array[j+1] = array[j+1], array[j]
+        for j in range(0, n - 1 - i):
+            if array[j] > array[j + 1]:
+                array[j], array[j + 1] = array[j + 1], array[j]
 
 def print_list(array: List[Float64]):
     print("[", end="")
@@ -474,28 +491,21 @@ def main():
 ```
 
 ```python
-def bubble_sort(array: list[float]):
+# src/move/sort.py
+def bubble_sort(array):
     n = len(array)
     for i in range(n):
-        for j in range(0, n-1-i):
-            if array[j] > array[j+1]:
-                array[j], array[j+1] = array[j+1], array[j]
+        for j in range(0, n - 1 - i):
+            if array[j] > array[j + 1]:
+                array[j], array[j + 1] = array[j + 1], array[j]
 
-def print_list(array: list[float]):
-    print("[", end="")
-    for i in range(len(array)):
-        if i < len(array) - 1:
-            print(array[i], end=", ")
-        else:
-            print(array[i], end="]\n")
 
 def main():
     array = [64.1, 34.523, 25.1, -12.3, 22.0, -11.5, 90.49]
-    print("Input array:", end=" ")
-    print_list(array)
+    print("Input array:", array)
     bubble_sort(array)
-    print("After sorting:", end=" ")
-    print_list(array)
+    print("After sorting:", array)
+
 
 main()
 ```
@@ -509,14 +519,13 @@ Input array: [64.1, 34.523, 25.1, -12.3, 22.0, -11.5, 90.49]
 After sorting: [-12.3, -11.5, 22.0, 25.1, 34.523, 64.1, 90.49]
 ```
 
-Finally successful!
+Successful!
 
 For this example, we have to change more lines to adapt our Python code to Mojo, including:
 
 - Explicitly specify the type of the arguments of the function.
-- Use the list constructor to create a list and specify the type of the elements.
 - Use the keyword `mut` before arguments in function signature if you want to modify their values.
-- Printing lists is currently not supported in Mojo. You have to define a helper function to print the list.
+- Printing lists behaves differently in Mojo. You have to define a helper function to print the list.
 
 If you already use the type-hint system a lot in Python, you will not find these changes too difficult. If you do not use the type-hint system in Python, you may find it a bit annoying and frustrated. But believe me, it is a good practice to declare the types of variables and arguments of functions, in both Mojo and Python. It makes our code more readable and maintainable, and it enables the linter to do static checks and find out potential bugs before you run the code.
 
@@ -524,14 +533,15 @@ If you already use the type-hint system a lot in Python, you will not find these
 
 The table below summarizes the differences between Python and Mojo in this example.
 
-| Feature                               | Python              | Mojo                       |
-| ------------------------------------- | ------------------- | -------------------------- |
-| Integral type                         | `int` (big integer) | `Int` (fixed-size integer) |
-| Type annotation in function signature | Optional            | Mandatory                  |
-| Annotation for the list type          | `list[float]`       | `List[Float64]`            |
-| Types of elements in a list           | Heterogeneous       | Homogeneous                |
-| Mutable argument                      | Default             | Must use `mut` keyword     |
-| Print list with `print()`             | Supported           | Not supported (yet)        |
+| Feature                               | Python              | Mojo                                            |
+| ------------------------------------- | ------------------- | ----------------------------------------------- |
+| Integral type                         | `int` (big integer) | `Int` (fixed-size integer)                      |
+| Type annotation in function signature | Optional            | Mandatory                                       |
+| Annotation for the list type          | `a: list[float]`    | `var a: List[Float64]`                          |
+| Type annotation when creating lists   | Optional            | Mostly mandatory, but sometimes can be inferred |
+| Types of elements in a list           | Heterogeneous       | Homogeneous                                     |
+| Mutable argument                      | Default             | Must use `mut` keyword                          |
+| Print list with `print()`             | Supported           | Supported but behaves differently               |
 
 :::
 
