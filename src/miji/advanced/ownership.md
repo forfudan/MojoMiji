@@ -574,7 +574,7 @@ struct MyType(ImplicitlyCopyable):
         self.value = other.value  # Copy the value from `other` to `self`
         ...
 
-    fn __moveinit__(out self, other: Self):
+    fn __moveinit__(out self, deinit other: Self):
         self.value = other.value^  # Transfer the ownership of the value from `other` to `self`
         ...
 ```

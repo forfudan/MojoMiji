@@ -2,7 +2,7 @@
 
 As discussed in Chapter [What are different](../move/different.md) and Chapter [Data Types](../basic/types#integers), Mojo's built-in integer types are fixed-width integers, while Python's built-in `int` type is an arbitrary-precision integer. This means that you need to be careful when using Mojo's built-in integer types, as they can overflow and lead to unexpected results.
 
-Sometimes, you may still need to use arbitrary-precision integers or decimals in Mojo, especially for financial calculations or scientific computing where precision is crucial. During migrating my Python code to Mojo, I found that I need such numeric types, so I implemented them in the `decimojo` package. The `decimojo` package provides a comprehensive library for arbitrary-precision decimal and integer mathematics in Mojo.
+Sometimes, you may still need to use arbitrary-precision integers or decimals in Mojo, especially for financial calculations or scientific computing where precision is crucial. During migrating my Python code to Mojo, I found that I need such numeric types, so I implemented them in the `decimo` package. The `decimo` package provides a comprehensive library for arbitrary-precision decimal and integer mathematics in Mojo.
 
 [[toc]]
 
@@ -48,10 +48,10 @@ main()
 
 This kind of arbitrary-precision integer type is usually called a **"big integer"** or **"big number"**. It is a common feature in many programming languages, including Python, Java, and C#.
 
-If you want to use arbitrary-precision integers in Mojo, then you should implement you own big integer type or use a third-party library that provides such functionality. `decimojo` is one such library that provides arbitrary-precision integers. We can re-write the above example using the `decimojo.BigInt` type as follows:
+If you want to use arbitrary-precision integers in Mojo, then you should implement you own big integer type or use a third-party library that provides such functionality. `decimo` is one such library that provides arbitrary-precision integers. We can re-write the above example using the `decimo.BigInt` type as follows:
 
 ```mojo
-from decimojo import BigInt
+from decimo import BigInt
 
 
 def main():
@@ -69,7 +69,7 @@ This will give you the correct result:
 You can actually work on more extreme cases, for example, calculating the power of `a` to `b`:
 
 ```mojo
-from decimojo import BigInt
+from decimo import BigInt
 
 def main():
     var a = Int(1234567890123456789)
@@ -141,11 +141,11 @@ Usually, we can ignore these small errors in most cases, as they are negligible 
 
 To avoid these issues, we can use arbitrary-precision decimal types that can represent decimal numbers exactly without rounding errors. The decimal types usually store the decimal numbers as a list of digits ranging from 0 to 9, along with a scale factor that indicates the position of the decimal point. It conducts arithmetic operations on the digits directly, just like how we do it in elementary school, which avoids the rounding errors caused by floating-point numbers.
 
-In Python, this decimal type is provided by the built-in `decimal` module as the `Decimal` type. In Mojo, you can use the `BigDecimal` type from the `decimojo` package, which is an arbitrary-precision decimal type that can represent decimal numbers exactly without rounding errors. For example, the above example can be rewritten using the `decimojo.BigDecimal` type as follows:
+In Python, this decimal type is provided by the built-in `decimal` module as the `Decimal` type. In Mojo, you can use the `BigDecimal` type from the `decimo` package, which is an arbitrary-precision decimal type that can represent decimal numbers exactly without rounding errors. For example, the above example can be rewritten using the `decimo.BigDecimal` type as follows:
 
 ```mojo
-# src/extend/decimojo/decimal_type.mojo
-from decimojo import BigDecimal
+# src/extend/decimo/decimal_type.mojo
+from decimo import BigDecimal
 
 
 def main():
@@ -169,9 +169,9 @@ When you run this code, you will get the following result:
 
 You can see that the result is exact as expected, and there are no rounding errors.
 
-## DeciMojo library
+## Decimo library
 
-[DeciMojo](https://github.com/forfudan/decimojo) provides an arbitrary-precision decimal and integer mathematics library for Mojo, delivering exact calculations for financial modeling, scientific computing, and applications where floating-point approximation errors are unacceptable. Beyond basic arithmetic, the library includes advanced mathematical functions with guaranteed precision.
+[Decimo](https://github.com/forfudan/decimo) provides an arbitrary-precision decimal and integer mathematics library for Mojo, delivering exact calculations for financial modeling, scientific computing, and applications where floating-point approximation errors are unacceptable. Beyond basic arithmetic, the library includes advanced mathematical functions with guaranteed precision.
 
 The core types are:
 
@@ -188,7 +188,7 @@ The core types are:
 
 ---
 
-DeciMojo is available in the [modular-community](https://repo.prefix.dev/modular-community) package repository. You can install it by adding ```decimojo = "*"``` in the dependency section of the ```pixi.toml``` file. Then run `pixi install` to download and install the package.
+Decimo is available in the [modular-community](https://repo.prefix.dev/modular-community) package repository. You can install it by adding ```decimo = "*"``` in the dependency section of the ```pixi.toml``` file. Then run `pixi install` to download and install the package.
 
 ## Core types
 
@@ -201,7 +201,7 @@ The `BigInt` type is similar to the `int` type in Python.
 Here is a comprehensive quick-start guide showcasing each major function of the `BigInt` type.
 
 ```mojo
-from decimojo import BigInt, BInt
+from decimo import BigInt, BInt
 # BInt is an alias for BigInt
 
 fn main() raises:
@@ -248,7 +248,7 @@ The `BigDecimal` type can represent arbitrary-precision decimal values. It is si
 Here are some examples showcasing the arbitrary-precision feature of the `BigDecimal` type.
 
 ```mojo
-from decimojo import BDec, RM
+from decimo import BDec, RM
 
 
 fn main() raises:
@@ -265,12 +265,12 @@ fn main() raises:
 
 ### Decimal type
 
-The `Decimal` type can represent values with up to 29 significant digits and a maximum of 28 digits after the decimal point. When a value exceeds the maximum representable value (`2^96 - 1`), DeciMojo either raises an error or rounds the value to fit within these constraints. For example, the significant digits of `8.8888888888888888888888888888` (29 eights total with 28 after the decimal point) exceeds the maximum representable value (`2^96 - 1`) and is automatically rounded to `8.888888888888888888888888889` (28 eights total with 27 after the decimal point). DeciMojo's `Decimal` type is similar to `System.Decimal` (C#/.NET), `rust_decimal` in Rust, `DECIMAL/NUMERIC` in SQL Server, etc.
+The `Decimal` type can represent values with up to 29 significant digits and a maximum of 28 digits after the decimal point. When a value exceeds the maximum representable value (`2^96 - 1`), Decimo either raises an error or rounds the value to fit within these constraints. For example, the significant digits of `8.8888888888888888888888888888` (29 eights total with 28 after the decimal point) exceeds the maximum representable value (`2^96 - 1`) and is automatically rounded to `8.888888888888888888888888889` (28 eights total with 27 after the decimal point). Decimo's `Decimal` type is similar to `System.Decimal` (C#/.NET), `rust_decimal` in Rust, `DECIMAL/NUMERIC` in SQL Server, etc.
 
 Here is a comprehensive quick-start guide showcasing each major function of the `Decimal` type.
 
 ```mojo
-from decimojo import Decimal, RoundingMode
+from decimo import Decimal, RoundingMode
 
 fn main() raises:
     # === Construction ===

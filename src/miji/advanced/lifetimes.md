@@ -205,7 +205,7 @@ Here, the `[a]` in `ref [a] String` means that the values of `b` and `c` are ori
 
 `Pointer[String, a]` means that the pointer instance `d` carries the information on the origin as a **parameter**.
 
-## `Origin` and `__origin_of()`
+## `Origin` and `origin_of()`
 
 In the previous example, the pointer `d` is of the type `Pointer[String, a]`. We can see there are two items in the square brackets: `String` and `a`.
 
@@ -238,15 +238,15 @@ Well, it is a special primitive type that carries the information on two things:
 
 The `origin` parameter can be automatically **inferred** by the compiler when you create a pointer. You can also explicitly **specify** it when you create a pointer. In other words, you can define the origin of a pointer a specific owner.
 
-To do this, you need to use the `__origin_of()` function. This function takes the owner variable(s) as arguments and returns an `Origin` object that contains the information on the original owner(s) of the value. Then, you can pass this `Origin` object to the constructor of the `Pointer` type. See the following examples:
+To do this, you need to use the `origin_of()` function. This function takes the owner variable(s) as arguments and returns an `Origin` object that contains the information on the original owner(s) of the value. Then, you can pass this `Origin` object to the constructor of the `Pointer` type. See the following examples:
 
 ```mojo
 var d = Pointer(to=c)
 # The compiler will automatically infer the origin of `d` as `a`
 
-var e = Pointer[type=String, origin=__origin_of(a)](to=a)
+var e = Pointer[type=String, origin=origin_of(a)](to=a)
 # You manually specify that the origin of the variable `e` is the variable `a`
-# by using the `__origin_of()` function
+# by using the `origin_of()` function
 ```
 
 ## Manual lifetime management and annotation
@@ -308,19 +308,19 @@ Then, how to fix this error?
 
 The answer is quite simple: **to prepare for both cases together**. Since we do not know which branch will be executed, we just assume that both branches will be executed. We tie the lifetime of `c` to both `a` and `b`, so that Mojo compiler will extend the lifetime of both `a` and `b` to be as long as `c` is alive.
 
-To do this, we can use the `__origin_of()` function. This function returns an object (of `Origin` type) that records the original owner(s). Then you can pass this object to the constructor of the `Pointer` type. Let's rewrite the code as follows:
+To do this, we can use the `origin_of()` function. This function returns an object (of `Origin` type) that records the original owner(s). Then you can pass this object to the constructor of the `Pointer` type. Let's rewrite the code as follows:
 
 ```mojo
 # src/advanced/lifetimes/combined_lifetime.mojo
 def main():
     var a: Int = Int(input("Type the first integer `a`: "))
     var b: Int = Int(input("Type the second integer `b`: "))
-    var c: Pointer[Int, origin = __origin_of(a, b)]
+    var c: Pointer[Int, origin = origin_of(a, b)]
 
     if a < b:
-        c = Pointer[Int, origin = __origin_of(a, b)](to=a)
+        c = Pointer[Int, origin = origin_of(a, b)](to=a)
     else:
-        c = Pointer[Int, origin = __origin_of(a, b)](to=b)
+        c = Pointer[Int, origin = origin_of(a, b)](to=b)
 
     print(
         "The first integer you give is", a, "at address", String(Pointer(to=a))
@@ -331,7 +331,7 @@ def main():
     print("The smaller of the two integers is", c[], "at address", String(c))
 ```
 
-In this code, we explicitly specify the original owner of the value that `c` points to as `__origin_of(a, b)`. This means that the lifetime of `c` is tied to both `a` and `b`. Mojo compiler will then ensure that both `a` and `b` are alive as long as `c` is alive.
+In this code, we explicitly specify the original owner of the value that `c` points to as `origin_of(a, b)`. This means that the lifetime of `c` is tied to both `a` and `b`. Mojo compiler will then ensure that both `a` and `b` are alive as long as `c` is alive.
 
 This solution may not be the most efficient one, but it is the safest. If we run this code and input `-10` and `10`, we will see the following output:
 
@@ -364,12 +364,12 @@ Let's see another example. We ask the user to input two words (strings), then th
 def main():
     var a: String = input("Type the first word `a`: ")
     var b: String = input("Type the first word `b`: ")
-    var c: Pointer[String, origin = __origin_of(a, b)]
+    var c: Pointer[String, origin = origin_of(a, b)]
 
     if len(a) < len(b):
-        c = Pointer[String, origin = __origin_of(a, b)](to=a)
+        c = Pointer[String, origin = origin_of(a, b)](to=a)
     else:
-        c = Pointer[String, origin = __origin_of(a, b)](to=b)
+        c = Pointer[String, origin = origin_of(a, b)](to=b)
 
     print("The first word you give is", a, "at address", String(Pointer(to=a)))
     print("The second word you give is", b, "at address", String(Pointer(to=b)))
@@ -386,7 +386,7 @@ The second word you give is Ugly at address 0x16fd381b0
 The shorter of the two word is Ugly at address 0x16fd381b0
 ```
 
-You can see that the output is as expected: The pointer `c` points to the address of the shorter word (in this case, variable `b`), even though which word is shorter is only determined at runtime. By using `__origin_of(a, b)`, we tell the compiler that the pointer `c` may point to either `a` or `b`, so that both `a` and `b` are alive until the last line of the code.
+You can see that the output is as expected: The pointer `c` points to the address of the shorter word (in this case, variable `b`), even though which word is shorter is only determined at runtime. By using `origin_of(a, b)`, we tell the compiler that the pointer `c` may point to either `a` or `b`, so that both `a` and `b` are alive until the last line of the code.
 
 In case we input `Mojo` and `Python`, we will see the following output:
 
@@ -402,7 +402,7 @@ The output is still as expected: The pointer `c` points to the address of the sh
 
 ## Lifetimes in returns of functions
 
-In the previous example, we create a pointer `c` in the local scope of the `main()` function that may either point to `a` or `b`. Although it works, it is some how tedious to write the same `Pointer[Int, origin = __origin_of(a, b)]` in both the declaration and the assignment of `c`.
+In the previous example, we create a pointer `c` in the local scope of the `main()` function that may either point to `a` or `b`. Although it works, it is some how tedious to write the same `Pointer[Int, origin = origin_of(a, b)]` in both the declaration and the assignment of `c`.
 
 Mojo provides an alternative way, yet more concise and elegant, to achieve the same goal: Encapsulate the logic in a function that return a reference (instead of a pointer) by use of the `ref` keyword.
 
@@ -454,7 +454,7 @@ In this code, we use `ref [a, b] String` as the return type of the function `sho
 
 - `ref` means that the return is a **referenced value** but not an **owned value**.
 - `String` is the type of the returned value.
-- `[a, b]` is a parameterization that indicates the reference is tied to the lifetime and mutability of both the argument `a` and `b` (the origins). `[a, b]` is a shortcut for `[__origin_of(a, b)]`, which is the complete syntax to indicate that the lifetime and mutability of the reference originates from the argument `a` and `b`.
+- `[a, b]` is a parameterization that indicates the reference is tied to the lifetime and mutability of both the argument `a` and `b` (the origins). `[a, b]` is a shortcut for `[origin_of(a, b)]`, which is the complete syntax to indicate that the lifetime and mutability of the reference originates from the argument `a` and `b`.
 
 In this way, the returned value can either be a reference to `a` or be a reference to `b`, so Mojo compiler will ensure that both `a` and `b` are alive as long as the returned reference is alive.
 
@@ -484,11 +484,11 @@ In the following example, we create a function `shorter()` that takes two string
 # src/advanced/lifetimes/lifetime_function_pointer.mojo
 def shorter(
     word1: String, word2: String
-) -> Pointer[String, __origin_of(word1, word2)]:
+) -> Pointer[String, origin_of(word1, word2)]:
     if len(word1) < len(word2):
-        return Pointer[String, __origin_of(word1, word2)](to=word1)
+        return Pointer[String, origin_of(word1, word2)](to=word1)
     else:
-        return Pointer[String, __origin_of(word1, word2)](to=word2)
+        return Pointer[String, origin_of(word1, word2)](to=word2)
 
 
 def main():
@@ -516,7 +516,7 @@ def main():
 
 The code is very similar to the previous example where a reference is returned, but this time we return a pointer instead.
 
-One thing that worth noting is that the return type of the function is `Pointer[String, __origin_of(word1, word2)]`, which means that the returned pointer will point to either argument `word1` or `word2`. Therefore, the lifetime of the returned pointer shall not be longer than the lifetime of the arguments `word1` and `word2`.
+One thing that worth noting is that the return type of the function is `Pointer[String, origin_of(word1, word2)]`, which means that the returned pointer will point to either argument `word1` or `word2`. Therefore, the lifetime of the returned pointer shall not be longer than the lifetime of the arguments `word1` and `word2`.
 
 We have also learned previously that the arguments `word1` and `word2` are immutable references of the variables in the caller function `main()`. This means that the lifetime of the arguments `word1` and `word2` is the same as the lifetime of the variables `a` and `b` in the caller function.
 
@@ -530,7 +530,7 @@ The second word you give is "pretty" at address 0x16f768558
 The shorter of the two words is "pretty" at address 0x16f768558
 ```
 
-Nevertheless, compared to returning a reference, returning a pointer is more verbose and less convenient. You need to write the `Pointer` type with the `__origin_of()` function in both the return type and the return statements. Moreover, you need to use `c[]` to dereference the pointer when you want to access the value.
+Nevertheless, compared to returning a reference, returning a pointer is more verbose and less convenient. You need to write the `Pointer` type with the `origin_of()` function in both the return type and the return statements. Moreover, you need to use `c[]` to dereference the pointer when you want to access the value.
 
 In future, `Pointer` may eventually go away from Mojo language.
 
@@ -631,7 +631,7 @@ We may want to compare the design philosophy of lifetime annotation in Mojo and 
 ```mojo
 def shorter(
     word1: String, word2: String
-) -> Pointer[String, __origin_of(word1, word2)]:
+) -> Pointer[String, origin_of(word1, word2)]:
     ...
 ```
 

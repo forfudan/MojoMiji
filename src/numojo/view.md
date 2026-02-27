@@ -19,7 +19,7 @@ struct NDArray[dtype: DType = DType.float64, Buffer: Bufferable = OwnedData](Str
 The array view is actually:
 
 ```mojo
-NDArray[dtype, Buffer = RefData[__origin_of(existing_array)]
+NDArray[dtype, Buffer = RefData[origin_of(existing_array)]
 ```
 
 The underlying data buffer of `NDArray` is `OwnedData`, which is a wrapper of owned `UnsafePointer`. The underlying data buffer of view of data is `RefData`, which is a wrapper of referenced `UnsafePointer` of another array.

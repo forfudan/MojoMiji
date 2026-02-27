@@ -447,18 +447,6 @@ After sorting: [SIMD[DType.float64, 1](-12.3), SIMD[DType.float64, 1](-11.5), SI
 
 Oops! This seems quite annoying! In Mojo, `print()` function does not support printing the elements of a list in a concise manner. Instead, it prints the type and the value of each element in the list. This is because Mojo's `print()` function is designed to be more informative and to show the type of the variable. It is not designed to be as concise as Python's `print()` function.
 
-::: details `print()` function in Mojo
-
-Before v0.26.1, you can not print a list at all. You will get an error message like:
-
-```console
-error: invalid call to 'print': could not deduce parameter 'Ts' of callee 'print'
-    print("Input array:", array)
-    ~~~~~^~~~~~~~~~~~~~~~~~~~~~~
-```
-
-:::
-
 We cannot use the `print()` function to print lists in a Python's style (at least for Mojo v0.26.1). We have to work around a little bit. Let's define a helper function to print the list. After all changes, we have our final Mojo code as follows:
 
 ::: code-group

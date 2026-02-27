@@ -197,7 +197,7 @@ export default defineConfig({
           items: [
             {
               text: 'Arbitrary-precision numbers',
-              link: '/miji/extend/decimojo'
+              link: '/miji/extend/decimo'
             },
             {
               text: 'Multi-dimensional arrays',

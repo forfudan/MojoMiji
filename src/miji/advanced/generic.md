@@ -312,13 +312,7 @@ In the code in `src/advanced/generic/favorite_food_with_trait.mojo`, we explicit
 
 In historical Mojo versions before v25.4, explicit trait declaration was **optional**. You can also write the struct without explicitly declaring the trait, like `struct Cat():`, `struct Bird():`, and `struct Human():`. If the a struct implements all the methods defined in the `Animal` trait, the Mojo compiler will **automatically** add the trait information to the struct for you. This is called **conforming to a trait implicitly**.
 
-From Mojo v25.4, this implicit trait declaration was deprecated. If you do so, you will see a warning message like this:
-
-```console
-warning: struct 'Human' utilizes conformance to trait 'Animal' but does not explicitly declare it (implicit conformance is deprecated)
-struct Human:  # Explicitly specify that Human implements the Animal trait
-       ^
-```
+From Mojo v25.4, this implicit trait declaration was deprecated. If you do so, you will receive an error message.
 
 :::
 
@@ -584,7 +578,7 @@ The mysterious number of me is:  88
 
 ::: tip Combining traits before Mojo v25.4
 
-Before Mojo v25.4, combining multiple traits *ad hoc* in a type parameter declaration is not possible. You have to first declare a new trait that combines all the required methods from the other traits. For example, the built-in `Comparable` trait is defined as:
+Before Mojo v25.4, combining multiple traits *ad hoc* in a type parameter declaration was not possible. You had to first declare a new trait that combines all the required methods from the other traits. For example, the built-in `Comparable` trait **was** defined as:
 
 ```mojo
 # Mojo v25.3 standard library
@@ -599,13 +593,46 @@ trait Comparable(
     """A type which can be compared with other instances of itself."""
 ```
 
-From Mojo v25.4, you can use the `&` operator to combine multiple traits in a type parameter declaration, which is more concise and readable. Due to this change, the built-in `Comparable` trait becomes an trait alias of the combined traits:
+From Mojo v25.4, you can use the `&` operator to combine multiple traits in a type parameter declaration, which is more concise and readable.
+
+Due to this change, from Mojo v25.4, the built-in `Comparable` trait became a trait alias of the combined traits:
 
 ```mojo
 # Mojo v25.4 standard library
 # mojo/stdlib/stdlib/builtin/comparable.mojo
 alias Comparable = EqualityComparable & LessThanComparable & GreaterThanComparable & LessThanOrEqualComparable & GreaterThanOrEqualComparable
 """A type which can be compared with other instances of itself."""
+```
+
+Note that, from Mojo v0.25.7, `Comparable` is no longer a trait alias of the combined traits, but a standalone, regular trait.
+
+```mojo
+# Mojo v0.25.7 standard library
+# mojo/stdlib/stdlib/builtin/comparable.mojo
+trait Comparable(EqualityComparable):
+    """A type which can be compared for order with other instances of itself.
+
+    Implementers of this trait must define the `__lt__` and `__eq__` methods.
+
+    The default implementations of the default comparison methods can be
+    potentially inefficent for types where comparison is expensive. For such
+    types, it is recommended to override all the default implementations.
+    """
+
+    fn __lt__(self, rhs: Self) -> Bool:
+        ...
+
+    @always_inline
+    fn __gt__(self, rhs: Self) -> Bool:
+        ...
+
+    @always_inline
+    fn __le__(self, rhs: Self) -> Bool:
+        ...
+
+    @always_inline
+    fn __ge__(self, rhs: Self) -> Bool:
+        ...
 ```
 
 :::

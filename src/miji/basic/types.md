@@ -55,23 +55,24 @@ Mojo also has other integer types with different sizes in bits, such as `Int8`, 
 
 The table below summarizes the integer types in Mojo and corresponding integer types in Python:
 
-| Mojo Type              | Python Type        | Description                                               |
-| ---------------------- | ------------------ | --------------------------------------------------------- |
-| `Int`                  | `numpy.intp`       | 32-bit or 64-bit signed integer, depending on the system. |
-| `Int8`                 | `numpy.int8`       | 8-bit signed integer. Range: -128 to 127.                 |
-| `Int16`                | `numpy.int16`      | 16-bit signed integer. Range: -32768 to 32767.            |
-| `Int32`                | `numpy.int32`      | 32-bit signed integer. Range: -2147483648 to 2147483647.  |
-| `Int64`                | `numpy.int64`      | 64-bit signed integer. Range: -2^63 to 2^63-1.            |
-| `Int128`               | `decimojo.Int128`  | 128-bit signed integer. Range: -2^127 to 2^127-1.         |
-| `Int256`               | `decimojo.Int256`  | 256-bit signed integer. Range: -2^256 to 2^256-1.         |
-| `UInt8`                | `numpy.uint8`      | 8-bit unsigned integer. Range: 0 to 255.                  |
-| `UInt16`               | `numpy.uint16`     | 16-bit unsigned integer. Range: 0 to 65535.               |
-| `UInt32`               | `numpy.uint32`     | 32-bit unsigned integer. Range: 0 to 4294967295.          |
-| `UInt64`               | `numpy.uint64`     | 64-bit unsigned integer. Range: 0 to 2^64-1.              |
-| `UInt128`              | `decimojo.UInt128` | 128-bit unsigned integer. Range: 0 to 2^128-1.            |
-| `UInt256`              | `decimojo.UInt256` | 256-bit unsigned integer. Range: 0 to 2^256-1.            |
-| `SIMD[DType.index, 1]` | `numpy.intp`       | 32-bit or 64-bit signed integer, depending on the system. |
-| `decimojo.BigInt`      | `int`              | Arbitrary-precision. 9^10-based internal representation.  |
+| Mojo Type            | Python Type      | Description                                                 |
+| -------------------- | ---------------- | ----------------------------------------------------------- |
+| `Int`                | `numpy.intp`     | 32-bit or 64-bit signed integer, depending on the system.   |
+| `Int8`               | `numpy.int8`     | 8-bit signed integer. Range: -128 to 127.                   |
+| `Int16`              | `numpy.int16`    | 16-bit signed integer. Range: -32768 to 32767.              |
+| `Int32`              | `numpy.int32`    | 32-bit signed integer. Range: -2147483648 to 2147483647.    |
+| `Int64`              | `numpy.int64`    | 64-bit signed integer. Range: -2^63 to 2^63-1.              |
+| `Int128`             | `decimo.Int128`  | 128-bit signed integer. Range: -2^127 to 2^127-1.           |
+| `Int256`             | `decimo.Int256`  | 256-bit signed integer. Range: -2^256 to 2^256-1.           |
+| `UInt`               | `numpy.uintp`    | 32-bit or 64-bit unsigned integer, depending on the system. |
+| `UInt8`              | `numpy.uint8`    | 8-bit unsigned integer. Range: 0 to 255.                    |
+| `UInt16`             | `numpy.uint16`   | 16-bit unsigned integer. Range: 0 to 65535.                 |
+| `UInt32`             | `numpy.uint32`   | 32-bit unsigned integer. Range: 0 to 4294967295.            |
+| `UInt64`             | `numpy.uint64`   | 64-bit unsigned integer. Range: 0 to 2^64-1.                |
+| `UInt128`            | `decimo.UInt128` | 128-bit unsigned integer. Range: 0 to 2^128-1.              |
+| `UInt256`            | `decimo.UInt256` | 256-bit unsigned integer. Range: 0 to 2^256-1.              |
+| `SIMD[DType.int, 1]` | `numpy.intp`     | 32-bit or 64-bit signed integer, depending on the system.   |
+| `decimo.BInt`        | `int`            | Arbitrary-precision. 9^10-based internal representation.    |
 
 ### Create an integer
 
@@ -89,7 +90,7 @@ def main():
     var g: Int8 = Int8(
         12
     )  # 8-bit Integer from constructor and with type annotation
-    var h = SIMD[DType.index, 1](10)  # Integer with index type
+    var h = SIMD[DType.int, 1](10)  # Integer with index type
     print(a, b, c, d, e, f, g, h)
 ```
 
@@ -117,7 +118,7 @@ This is because `UInt8` can only hold values from 0 to 255. When you assign 256 
 
 Note that there is no error message printed in this case. This is because Mojo does not perform runtime checks for integer overflows by default. We need to be very careful when using integer types in Mojo compared to Python. If you really need to work on big integers that are larger than the capacity of `Int`, you can consider using the `BigInt` type, which has the similar functionality as the `int` type in Python.
 
-We will discuss about integer overflow and Big Integer type in detail in Chapter [Arbitrary-precision numbers](../extend/decimojo.md).
+We will discuss about integer overflow and Big Integer type in detail in Chapter [Arbitrary-precision numbers](../extend/decimo.md).
 
 ### Integer conversion
 
@@ -240,7 +241,7 @@ This is a common issue in many programming languages, including Python. You can 
 1. Use higher precision floating-point types, such as `Float64` or `Float32`, which can represent more decimal places and reduce the error. Note that the values are still inexact, but the error can be negligible.
 1. Use the big decimal type, which is internally presented in base 10. It can represent decimal numbers exactly, but it is slower than floating-point types.
 
-We will discuss more about the inexactness of floating-point numbers and big decimal types in the chapter [Arbitrary-precision numbers](../extend/decimojo.md).
+We will discuss more about the inexactness of floating-point numbers and big decimal types in the chapter [Arbitrary-precision numbers](../extend/decimo.md).
 
 :::
 
