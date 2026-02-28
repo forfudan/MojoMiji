@@ -228,7 +228,7 @@ var d = Pointer[type=String, origin = origin_of(b)](to=b)
 
 What happens within in the Mojo compiler can be summarized as follows:
 
-- First, the the compiler extracts the parameters and expand your code. The variable `c` is now of a type `Pointer_String_Origin_a`, and the variable `d` is of a type `mojo_Pointer_String_Origin_b`.
+- First, the the compiler extracts the parameters and expand your code. The variable `c` is now of a type `Pointer_String_Origin_a`, and the variable `d` is of a type `Pointer_String_Origin_b`.
 - Then, the compiler will check the ownership rules. It knows that `c` is bound to the original owner `a`, and `d` is bound to the original owner `b`. It will ensure that the lifetime of `c` is not longer than `a`, and the lifetime of `d` is not longer than `b`.
 
 Note that, although `c` and `d` are both "a safe pointer to a string type", they are actually different types in Mojo because the lifetime information of them differs. So the following code will not compile:

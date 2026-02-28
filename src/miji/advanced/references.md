@@ -98,7 +98,7 @@ var ref <name> = <variable>  # Okay, but more verbose
 
 Although the nested pattern `var ref` is supported, it is not recommended. From v0.26.1 (2026-01-29), the `var ref` pattern will generate a warning:
 
-> warning: nested 'var' or 'ref' patterns are redundant, remove the outer pattern`.
+> warning: nested 'var' or 'ref' patterns are redundant, remove the outer pattern.
 
 Nevertheless, this nested pattern is sometimes useful, e.g., `var (a, ref b) = (1, 2)`. See this [thread](https://github.com/modular/modular/issues/4765) for more discussion.
 

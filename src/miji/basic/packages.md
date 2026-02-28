@@ -188,8 +188,8 @@ import math
 # ===----------------------------------------------------------------------=== #
 # Type or value aliases known at compiled time
 # ===----------------------------------------------------------------------=== #
-comptime FourByteFloat = SIMD[DType.float64, 1]
-"""Alias for a 4-byte float (double precision)."""
+comptime EightByteFloat = SIMD[DType.float64, 1]
+"""Alias for a 8-byte float (double precision)."""
 comptime PI = 3.14159
 """Alias for the mathematical constant pi (π)."""
 
@@ -203,7 +203,7 @@ fn print_address(a: Point):
     print("Memory address of the point:", String(ptr))
 
 
-fn distance[T: Distanceable](item: T) -> FourByteFloat:
+fn distance[T: Distanceable](item: T) -> EightByteFloat:
     """Calculates the distance."""
     return item.__distance__()
 
@@ -222,18 +222,18 @@ trait Distanceable:
 struct Point(Distanceable):
     """A point in 2D space."""
 
-    var x: FourByteFloat
-    var y: FourByteFloat
+    var x: EightByteFloat
+    var y: EightByteFloat
 
-    fn __init__(out self, x: FourByteFloat, y: FourByteFloat):
+    fn __init__(out self, x: EightByteFloat, y: EightByteFloat):
         self.x = x
         self.y = y
 
-    fn __distance__(self) -> FourByteFloat:
+    fn __distance__(self) -> EightByteFloat:
         """Calculates the distance from the origin (0, 0)."""
         return math.sqrt(self.x * self.x + self.y * self.y)
 
-    fn area(self) -> FourByteFloat:
+    fn area(self) -> EightByteFloat:
         """Calculates the area of a circle with this point as the radius."""
         return PI * distance(self) * distance(self)
 ```
