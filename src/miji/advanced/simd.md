@@ -565,3 +565,4 @@ The vectorized operation is about 56 times faster than the plain iteration. This
 
 - 2025-06-23: Update to accommodate the changes in Mojo v25.4.
 - 2025-09-27: Move the section on uninitialized values to a tip box and make it relevant only to early versions of Mojo.
+- 2026-02-28: Update to accommodate the changes in Mojo v0.26.1.

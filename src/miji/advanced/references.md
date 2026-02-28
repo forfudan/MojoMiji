@@ -487,7 +487,7 @@ def return_first_element_as_copy(mut a: List[String]) -> String:
 
 
 def main():
-    var lst = List[String]("Mojo", "is", "interesting")
+    var lst: List[String] = ["Mojo", "is", "interesting"]
     print("The 1st item of the list is '", lst[0], "'", sep="")
     var val = return_first_element_as_copy(lst)
     val = String("Miji")
@@ -523,7 +523,7 @@ def return_first_element_as_pointer(
 
 
 def main():
-    var lst = List[String]("Mojo", "is", "interesting")
+    var lst: List[String] = ["Mojo", "is", "interesting"]
     print("The 1st item of the list is '", lst[0], "'", sep="")
     var ptr = return_first_element_as_pointer(lst)
     ptr[] = String("Miji")
@@ -564,7 +564,7 @@ def return_first_element_as_reference(
 
 
 def main():
-    var lst = List[String]("Mojo", "is", "interesting")
+    var lst: List[String] = ["Mojo", "is", "interesting"]
     print("The 1st item of the list is '", lst[0], "'", sep="")
     ref first = return_first_element_as_reference(lst)
     first = String("Miji")

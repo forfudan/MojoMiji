@@ -332,7 +332,7 @@ In the following example, we create a list `a` of type `List[Float64]` with four
 ```mojo
 # src/advanced/ownership/transfer_value_explicitly.mojo
 def main():
-    var a = List[Float64](1.0, 2.0, 3.0, 4.0)
+    var a: List[Float64] = [1.0, 2.0, 3.0, 4.0]
     print(
         "The meta data of the list `a` is stored at address",
         String(Pointer(to=a)),
@@ -377,7 +377,7 @@ Since `a` is no longer valid after the transfer, if you try to access `a` after 
 # src/advanced/ownership/transfer_value_and_use_again.mojo
 # This code will not compile
 def main():
-    var a = List[Float64](1.0, 2.0, 3.0, 4.0)
+    var a: List[Float64] = [1.0, 2.0, 3.0, 4.0]
 
     # Transfer ownership from `a` to `b`
     var b = a^
@@ -465,7 +465,7 @@ from memory import Pointer
 
 
 def main():
-    var a = List[Float64](1.0, 2.0, 3.0, 4.0)
+    var a: List[Float64] = [1.0, 2.0, 3.0, 4.0]
     print("a at address", String(Pointer(to=a)), "with values:")
     for i in a:
         print(i, end=", ")
@@ -579,7 +579,7 @@ struct MyType(ImplicitlyCopyable):
         ...
 ```
 
-`ImplictlyCopyable` is a built-in trait that indicates that the struct can be copied without calling the `copy()` method. When you do `var y = x`, the Mojo compiler will call `__copyinit__()` to copy the value from `x` to `y`, i.e., `MyType.__copyinit__(y, x)`.
+`ImplicitlyCopyable` is a built-in trait that indicates that the struct can be copied without calling the `copy()` method. When you do `var y = x`, the Mojo compiler will call `__copyinit__()` to copy the value from `x` to `y`, i.e., `MyType.__copyinit__(y, x)`.
 
 When you do `var y = x^`, the Mojo compiler will call `__moveinit__()` to transfer the ownership of the value from `x` to `y`, i.e., `MyType.__moveinit__(y, x)`. After that, `x` will no longer be valid and cannot be used anymore.
 
@@ -592,7 +592,7 @@ Nevertheless, there are some exceptions. You **do not need to memorize them**, b
 
 The second exception, though improving the performance and efficiency, may lead to some potential issues, especially when the following two conditions are met:
 
-1. The struct is implicitly-copyable (i.e., it implements the `ImplictlyCopyable` trait).
+1. The struct is implicitly-copyable (i.e., it implements the `ImplicitlyCopyable` trait).
 2. The behaviors of `copy` and `move` are inconsistent.
 
 Here is an example to illustrate this issue:
@@ -1010,3 +1010,4 @@ These rules of ownership are checked at compile time, and ensure that Mojo is sa
 
 - 2025-09-04: Update to accommodate the changes in Mojo v25.5.
 - 2025-09-27: Update to accommodate the changes in Mojo v0.25.6.
+- 2026-02-28: Update to accommodate the changes in Mojo v0.26.1.

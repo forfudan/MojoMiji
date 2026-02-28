@@ -34,11 +34,11 @@ The lifetime of a variable is the period during which its value is valid and can
 ```mojo
 # src/advanced/lifetimes/lifetime_scenarios.mojo
 def main():
-    var a = List[Int](1, 2, 3)
+    var a: List[Int] = [1, 2, 3]
     var x = String("I am a string.")
 
-    var ref b = a
-    var ref y = x
+    ref b = a
+    ref y = x
     var c = Pointer(to=a)
     var z = Pointer(to=x)
 
@@ -83,10 +83,10 @@ Now, let's analyze the lifetime of each variable in this code. The lifetime of a
 
 | Name | Stage  | Lifetime starts or ends after      | Type      | Code                                        |
 | ---- | ------ | ---------------------------------- | --------- | ------------------------------------------- |
-| `a`  | Starts | Initialization (assigned a value)  | Owner     | `var a = List[Int](1,2,3)`                  |
-| `b`  | Starts | Initialization                     | Reference | `var ref b = a`                             |
+| `a`  | Starts | Initialization (assigned a value)  | Owner     | `var a: List[Int] = [1, 2, 3]`              |
+| `b`  | Starts | Initialization                     | Reference | `ref b = a`                                 |
 | `x`  | Starts | Initialization (assigned a value)  | Owner     | `var x = String("I am a string.")`          |
-| `y`  | Starts | Initialization                     | Reference | `var ref y = x`                             |
+| `y`  | Starts | Initialization                     | Reference | `ref y = x`                                 |
 | `c`  | Starts | Initialization                     | Pointer   | `var c = Pointer(to=a)`                     |
 | `z`  | Starts | Initialization                     | Pointer   | `var z = Pointer(to=x)`                     |
 | `b`  | Ends   | Last used                          | -         | `print("0-th element of a via b:", b[0])`   |
@@ -108,11 +108,11 @@ We will use comments to denote the start and end of lifetime in the above code.
 ```mojo
 # src/advanced/lifetimes/lifetime_scenarios_with_comments.mojo
 def main():
-    var a = List[Int](1, 2, 3)                     # Lifetime of `a` starts here
+    var a: List[Int] = [1, 2, 3]                   # Lifetime of `a` starts here
     var x = String("I am a string.")               # Lifetime of `x` starts here
 
-    var ref b = a                                  # Lifetime of `b` starts here, sharing `a`
-    var ref y = x                                  # Lifetime of `y` starts here, sharing `x`
+    ref b = a                                      # Lifetime of `b` starts here, sharing `a`
+    ref y = x                                      # Lifetime of `y` starts here, sharing `x`
     var c = Pointer(to=a)                          # Lifetime of `c` starts here, pointing to `a`
     var z = Pointer(to=x)                          # Lifetime of `z` starts here, pointing to `x`
 
@@ -151,7 +151,7 @@ This policy is both safe and efficient:
 
 How does Mojo ensure, in the last example, that the lifetime of `x` is extended until all its references are lastly used? The answer is **to track the lifetime of the original owner in its references and safe pointers**.
 
-When you create a reference or a safe pointer to a variable, the reference will carry a piece of information on who is the **original** owner variable. Let's say the owner variable is `a`, and you create several references, e.g., `b`, `c`, `d`, etc, to it. Then all these references will carry the information that `a` is the **original** owner of the value.
+When you create a reference or a safe pointer to a variable, the reference will carry a piece of information on "who is the **original** owner variable" as a parameter. Let's say the owner variable is `a`, and you create several references, e.g., `b`, `c`, `d`, etc, to it. Then all these references will carry the information that `a` is the **original** owner of the value.
 
 During compilation, Mojo will do these steps:
 
@@ -170,27 +170,32 @@ In Mojo, the lifetime of a variable can be chained through references. For examp
 Let's illustrate this with an example:
 
 ```mojo
+# src/advanced/lifetimes/chained_lifetime.mojo
+
 def main():
     var a = String("I am owned by `a`")
-    var ref b = a
-    var ref c = b
+    ref b = a
+    ref c = b
     var d = Pointer(to=c)
-    print(a, "at", String(Pointer(to=a)))
-    print(b, "at", String(Pointer(to=b)))
-    print(c, "at", String(Pointer(to=c)))
-    print(d[], "at", String(Pointer(to=d[])))
+    var e = Pointer[type=String, origin = origin_of(a)](to=a)
+    print("`a`:", a, "at", String(Pointer(to=a)))
+    print("`b`:", b, "at", String(Pointer(to=b)))
+    print("`c`:", c, "at", String(Pointer(to=c)))
+    print("`d[]`:", d[], "at", String(Pointer(to=d[])))
+    print("`e[]`:", e[], "at", String(Pointer(to=e[])))
 ```
 
 If we run it, we will see the following output:
 
 ```console
-I am owned by `a` at 0x16d43cc90
-I am owned by `a` at 0x16d43cc90
-I am owned by `a` at 0x16d43cc90
-I am owned by `a` at 0x16d43cc90
+`a`: I am owned by `a` at 0x16dc281b0
+`b`: I am owned by `a` at 0x16dc281b0
+`c`: I am owned by `a` at 0x16dc281b0
+`d[]`: I am owned by `a` at 0x16dc281b0
+`e[]`: I am owned by `a` at 0x16dc281b0
 ```
 
-Because `b`, `c`, and `d` are all references or safe pointers to `a`, they all contain the information on the original owner `a`. This means that Mojo compiler will extend the lifetime of `a` until all these references are lastly used.
+Because `b`, `c`, `d`, and `e` are all references or safe pointers to `a`, they all contain the information on the original owner `a`. This means that Mojo compiler will extend the lifetime of `a` until all these references are lastly used.
 
 In the VS Code editor, you can hover over the variables to see their lifetime information:
 
@@ -198,12 +203,57 @@ In the VS Code editor, you can hover over the variables to see their lifetime in
 | -------- | -------------------------------------- |
 | `a`      | `(variable) var a: String`             |
 | `b`      | `(variable) var b: ref [a] String`     |
-| `c`      | `(variable) var b: ref [a] String`     |
+| `c`      | `(variable) var c: ref [a] String`     |
 | `d`      | `(variable) var d: Pointer[String, a]` |
+| `e`      | `(variable) var e: Pointer[String, a]` |
 
 Here, the `[a]` in `ref [a] String` means that the values of `b` and `c` are originally owned by `a`.
 
 `Pointer[String, a]` means that the pointer instance `d` carries the information on the origin as a **parameter**.
+
+## Parameterized lifetime
+
+You can see from the preious section that, when you look at the type information of the pointer variable `d`, it is `Pointer[String, a]`. This means that the pointer variable `d` carries the information on the original owner `a` as a **parameter**.
+
+This way of tracking the original owner of a value as a parameter of the child types is called **parameterized lifetime**.
+
+Let's look at an example:
+
+```mojo
+var a = String("Hello, Python!")
+var b = String("Hello, Mojo!")
+var c = Pointer[type=String, origin = origin_of(a)](to=a)
+var d = Pointer[type=String, origin = origin_of(b)](to=b)
+```
+
+What happens within in the Mojo compile can be summarized as follows:
+
+- First, the the compiler extract the parameters and expand your code. The variable `c` is now of a type `Pointer_String_Origin_a`, and the variable `d` is of a type `mojo_Pointer_String_Origin_b`.
+- Then, the compiler will check the ownership rules. It knows that `c` is binded to the original owner `a`, and `d` is binded to the original owner `b`. It will ensure that the lifetime of `c` is not longer than `a`, and the lifetime of `d` is not longer than `b`.
+
+Note that, although `c` and `d` are both "a safe pointer to a string type", they are actually different types in Mojo because the lifetime information of them differes. So the following code will not compile:
+
+```mojo
+# src/advanced/lifetimes/copy_values_of_different_origins.mojo
+# This will not compile
+
+
+fn main():
+    var a = String("Hello, Python!")
+    var b = String("Hello, Mojo!")
+    var c = Pointer[type=String, origin = origin_of(a)](to=a)
+    var d = Pointer[type=String, origin = origin_of(b)](to=b)
+    c = d
+``
+
+You will receive an error message like this:
+
+```console 
+error: cannot implicitly convert 'Pointer[String, b]' value to 'Pointer[String, a]'
+    c = d
+```
+
+Parameterized lifetime is a powerful feature that allows the compiler to track the lifetime of variables and their references more precisely, ensuring memory safety while providing flexibility in how you manage lifetimes in your code. However, it may also require you to be more **aware of** the lifetime of your variables and their references. You should not be surprised if you see some compilation errors related to lifetime when you first start using Mojo, especially when you are trying to copy or assign values of different origins. With practice, you will get used to it and learn how to manage lifetimes effectively in your code.
 
 ## `Origin` and `origin_of()`
 
@@ -431,7 +481,7 @@ def main():
     var a: String = String("beautiful")
     var b: String = String("pretty")
 
-    var ref c = shorter(a, b)
+    ref c = shorter(a, b)
 
     print(
         String('The first word you give is "{}" at address {}').format(
@@ -458,7 +508,7 @@ In this code, we use `ref [a, b] String` as the return type of the function `sho
 
 In this way, the returned value can either be a reference to `a` or be a reference to `b`, so Mojo compiler will ensure that both `a` and `b` are alive as long as the returned reference is alive.
 
-Later in the `main()` function, we use `var ref c = shorter(a, b)` to let `c` to hold the returned reference from the function `shorter()`. The lifetime of `c` is then tied to the lifetime of both `a` and `b`, so both `a` and `b` will be alive until `c` is lastly used in the last line of the code.
+Later in the `main()` function, we use `ref c = shorter(a, b)` to let `c` to hold the returned reference from the function `shorter()`. The lifetime of `c` is then tied to the lifetime of both `a` and `b`, so both `a` and `b` will be alive until `c` is lastly used in the last line of the code.
 
 ```console
 The first word you give is "beautiful" at address 0x16f934220
@@ -466,9 +516,9 @@ The second word you give is "pretty" at address 0x16f934238
 The shorter of the two words is "pretty" at address 0x16f934238
 ```
 
-::: warning Note on `var ref c = shorter(a, b)`
+::: warning Note on `ref c = shorter(a, b)`
 
-Note that we use `var ref c = shorter(a, b)` instead of `var c = shorter(a, b)`. This is because the return type of the function `shorter()` is a reference, so we need to use `var ref` to declare `c` as a reference too. If we use `var c = shorter(a, b)`, the an **implicit copy** will be made and `c` will be an owned value instead of a reference, which is not what we want.
+Note that we use `ref c = shorter(a, b)` instead of `var c = shorter(a, b)`. This is because the return type of the function `shorter()` is a reference, so we need to use `ref` to declare `c` as a reference too. If we use `var c = shorter(a, b)`, the an **implicit copy** will be made and `c` will be an owned value instead of a reference, which is not what we want.
 
 :::
 
@@ -660,3 +710,4 @@ The design philosophy of Mojo and Rust lifetime systems is different. Different 
 ## Major changes in this chapter
 
 - 2025-06-23: Update to accommodate the changes in Mojo v25.4.
+- 2026-02-28: Update to accommodate the changes in Mojo v0.26.1.

@@ -221,7 +221,7 @@ def main():
 This will generate a compile-time error:
 
 ```console
-warning: 'List' is no longer implicitly copyable, because it is O(n) expensive; this warning will be an error in the next release of Mojo
+error: value of type 'List[List[Int]]' cannot be implicitly copied, it does not conform to 'ImplicitlyCopyable'
     lst2 = lst1
            ^~~~
 ```
@@ -234,7 +234,7 @@ You can retrieve the elements of a `List` in Mojo using **indexing**, just like 
 
 ```mojo
 def main():
-    my_list_of_integers = List[Int](1, 2, 3, 4, 5)
+    my_list_of_integers = [1, 2, 3, 4, 5]
     first_element = my_list_of_integers[0]  # Accessing the first element
     last_element = my_list_of_integers[-1]  # Accessing the last element
 ```
@@ -245,7 +245,7 @@ You can convert a `Span` to a `List` by using the `List()` constructor. Note tha
 
 ```mojo
 def main():
-    my_list_of_integers = List[Int](1, 2, 3, 4, 5)
+    my_list_of_integers = [1, 2, 3, 4, 5]
     sliced_list_as_view = my_list_of_integers[0:3]  # Slicing the first three elements as view
     sliced_list_as_copy = List(sliced_list_as_view)  # Converting the view to a new list
 ```
@@ -256,7 +256,7 @@ You can **append** elements to the end of a `List` in Mojo using the `append()` 
 
 ```mojo
 def main():
-    my_list_of_integers = List[Int](1, 2, 3, 4, 5)
+    my_list_of_integers = [1, 2, 3, 4, 5]
     my_list_of_integers.append(6)  # Appending a new element
 # my_list_of_integers = [1, 2, 3, 4, 5, 6]
 ```
@@ -265,8 +265,8 @@ You can use the `+` operator to concatenate two `List` objects, just like in Pyt
 
 ```mojo
 def main():
-    first_list = List[Int](1, 2, 3)
-    second_list = List[Int](4, 5, 6)
+    first_list: List[Int] = [1, 2, 3]
+    second_list: List[Int] = [4, 5, 6]
     concatenated_list = first_list + second_list  # Concatenating two lists
 # concatenated_list = [1, 2, 3, 4, 5, 6]
 ```
@@ -385,7 +385,7 @@ Before Mojo v25.4, the iteration over a `List` in Mojo would return **a pointer 
 # This code is valid until Mojo v25.3
 # It will not compile in Mojo v25.4 and later versions.
 def main():
-    my_list = List[Int](1, 2, 3, 4, 5)
+    my_list: List[Int] = [1, 2, 3, 4, 5]
     for i in my_list:  # `i` is a safe pointer to the element
         print(i[], end=" ")  # De-referencing the element to get its value
 ```
@@ -599,14 +599,14 @@ Let's take a closer look at how a Mojo `List` is stored in the memory with a sim
 
 ```mojo
 def main():
-    var me = List[UInt8](89, 117, 104, 97, 111)
+    var me: List[UInt8] = [89, 117, 104, 97, 111]
     print(me.capacity)
     for i in me:
-        print(chr(Int(i[])), end="")
+        print(chr(Int(i)), end="")
 # Output: Yuhao
 ```
 
-When you create a `List` with `List[UInt8](89, 117, 104, 97, 111)`, Mojo will first allocate a continuous block of memory on **stack** to store the three fields (`_data: Pointer`, `_len: Int` and `capacity: Int`, each of which is 8 bytes long on a 64-bit system. Because we passed 5 elements to the `List` constructor, the `_len` field will be set to 5, and the `capacity` field will also be set to 5 (default setting, `capacity = _len`).
+When you create a `List` with `List[UInt8]([89, 117, 104, 97, 111])`, Mojo will first allocate a continuous block of memory on **stack** to store the three fields (`_data: Pointer`, `_len: Int` and `capacity: Int`, each of which is 8 bytes long on a 64-bit system. Because we passed 5 elements to the `List` constructor, the `_len` field will be set to 5, and the `capacity` field will also be set to 5 (default setting, `capacity = _len`).
 
 Then Mojo will allocate a continuous block of memory on **heap** to store the actual values of the elements of the list, which is 1 bytes (8 bits) for each `UInt8` element, equaling to 5 bytes in total for 5 elements. The `_data` field will then store the address of the first byte in this block of memory.
 
@@ -615,7 +615,7 @@ The following figure illustrates how the `List` is stored in the memory. You can
 ```console
 # Mojo Miji - Data types - List in memory
 
-        local variable `me = List[UInt8](89, 117, 104, 97, 111)`
+        local variable `me: List[UInt8] = [89, 117, 104, 97, 111]`
             ↓  (meta data on stack)
         ┌────────────────┬────────────┬────────────┐
 Field   │ _data          │ _len       │ capacity   │
@@ -665,27 +665,28 @@ Mojo's `Dict` type is similar to Python's `dict` type, Rust's `HashMap` type, C#
 
 The table below compares Mojo's `Dict` with Python's `dict`:
 
-| Functionality      | Mojo `Dict`                | Python `dict`                         |
-| ------------------ | -------------------------- | ------------------------------------- |
-| Type of elements   | Homogeneous type           | Heterogenous types                    |
-| Mutability         | Mutable                    | Mutable                               |
-| Initialization     | `Dict[Type, Type]()`       | `dict()` or `{}`                      |
-| Unique keys        | Yes                        | Yes                                   |
-| Unique values      | No                         | No                                    |
-| Key-value mapping  | Many-to-one mapping        | Many-to-one mapping                   |
-| Ordered            | No                         | Yes (>= Python 3.7)                   |
-| Indexing           | Use brackets `[key]`       | Use brackets `[key]`                  |
-| Slicing            | No                         | No                                    |
-| Extending by items | Use `update()`             | Use `update()`                        |
-| Extending by dicts | Use `update()`             | Use `update()`                        |
-| Printing           | Use `print()`              | Use `print()`                         |
-| Iterating          | Use `for` loop to get keys | Use `for` loop to get key-value pairs |
-| Iterator returns   | Reference to element       | Copy of element                       |
-| Shadow copy        | N.A.                       | `dct.copy()` or `copy.copy(dct)`      |
-| Deep copy          | `dct.copy()`               | `copy.deepcopy(dct)`                  |
-| Reference          | `ref` keyword              | `dct2 = dct1`                         |
-| Transfer ownership | `^` operator               | N.A.                                  |
+| Functionality      | Mojo `Dict`                  | Python `dict`                         |
+| ------------------ | ---------------------------- | ------------------------------------- |
+| Type of elements   | Homogeneous type             | Heterogenous types                    |
+| Mutability         | Mutable                      | Mutable                               |
+| Initialization     | `Dict[Type, Type]()` or `{}` | `dict()` or `{}`                      |
+| Unique keys        | Yes                          | Yes                                   |
+| Unique values      | No                           | No                                    |
+| Key-value mapping  | Many-to-one mapping          | Many-to-one mapping                   |
+| Ordered            | No                           | Yes (>= Python 3.7)                   |
+| Indexing           | Use brackets `[key]`         | Use brackets `[key]`                  |
+| Slicing            | No                           | No                                    |
+| Extending by items | Use `update()`               | Use `update()`                        |
+| Extending by dicts | Use `update()`               | Use `update()`                        |
+| Printing           | Use `print()`                | Use `print()`                         |
+| Iterating          | Use `for` loop to get keys   | Use `for` loop to get key-value pairs |
+| Iterator returns   | Reference to element         | Copy of element                       |
+| Shadow copy        | N.A.                         | `dct.copy()` or `copy.copy(dct)`      |
+| Deep copy          | `dct.copy()`                 | `copy.deepcopy(dct)`                  |
+| Reference          | `ref` keyword                | `dct2 = dct1`                         |
+| Transfer ownership | `^` operator                 | N.A.                                  |
 
 ## Main changes in this chapter
 
 - 2025-09-25: Update to accommodate the changes in Mojo v0.25.6.
+- 2026-02-28: Update to accommodate the changes in Mojo v0.26.1.

@@ -358,3 +358,4 @@ def main():
 - 2025-06-22: Add a section about the literal types and type inference.
 - 2025-06-26: Move the sections of list and literals to standalone chapters.
 - 2025-09-25: Update to accommodate the changes in Mojo v0.25.6.
+- 2026-02-28: Update to accommodate the changes in Mojo v0.26.1.

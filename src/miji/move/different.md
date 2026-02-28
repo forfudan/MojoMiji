@@ -94,7 +94,7 @@ Currently, you cannot indicate formatting style for `String`, such as `.2f` for 
 
 You cannot use f-strings in Mojo at the moment.
 
-To iterate over the UTF-8 code points in a `String`, you can use a `for` loop, but it is more complicated than in Python. You have to iterate over `String.codepoints()` and then wrap the items with `String()` constructor. See the following comparison:
+To iterate over the UTF-8 code points in a `String`, you can use a `for` loop, but it is more complicated than in Python. You have to iterate over `String.codepoints()` and then print each code point. See the following comparison:
 
 ```python
 def main():
@@ -109,7 +109,7 @@ main()
 def main():
     my_string = String("Hello, world! 你好，世界！")
     for char in my_string.codepoints():
-        print(String(char), end="")
+        print(char, end="")
 # Output: Hello, world! 你好，世界！
 ```
 

@@ -74,11 +74,11 @@ Address │18c128e3│           18c128fb                  │
 
 In Mojo, objects are stored in a more straightforward way. When you create an variable, it asks for a space in the memory (stack) to store the value directly. For example, when you declare `a: Int64 = 5`, Mojo allocates a space in the memory that is large enough to hold an integer (8 bytes, or equivalently 64-bit, for `Int`), and stores the value `5` directly in that space. When you want to access the value of `a`, for example `print(a)`, Mojo simply go to the corresponding memory address and read the value directly.
 
-For composite data types like lists, Mojo uses a similar approach but with some additional structures. When you create a list, such as `my_list = List[Float64](0.125, 12.0, 12.625, -2.0, -12.0)`, Mojo allocates a space in the memory (stack) for the list object which contains metadata about the list, i.e., length, capacity, and a pointer to a continuous memory block that holds the actual elements of the list. Then it allocates another continuous memory block on the memory (heap) to store the values of the elements of the list, which are of type `Float64`. The values of the elements are stored directly in this memory block, without further referring to another locations in the memory.
+For composite data types like lists, Mojo uses a similar approach but with some additional structures. When you create a list, such as `my_list: List[Float64] = [0.125, 12.0, 12.625, -2.0, -12.0]`, Mojo allocates a space in the memory (stack) for the list object which contains metadata about the list, i.e., length, capacity, and a pointer to a continuous memory block that holds the actual elements of the list. Then it allocates another continuous memory block on the memory (heap) to store the values of the elements of the list, which are of type `Float64`. The values of the elements are stored directly in this memory block, without further referring to another locations in the memory.
 
 Thus, there are only two layers in the memory layout of a Mojo list: the first layer is the list object that contains metadata and a pointer to the second layer, which is a continuous memory block that holds the actual values of the elements.
 
-Below is a similar abstract representation of how the Mojo list `my_list = List[Float64](0.125, 12.0, 12.625, -2.0, -12.0)` is stored in the memory.
+Below is a similar abstract representation of how the Mojo list `my_list: List[Float64] = [0.125, 12.0, 12.625, -2.0, -12.0]` is stored in the memory.
 
 ```console
 # Mojo Miji - Memory Layout - Mojo List

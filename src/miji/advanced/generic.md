@@ -981,3 +981,4 @@ Below is a table summarizing the most common dunder methods, the operators they 
 
 - 2025-06-23: Update to accommodate the changes in Mojo v25.4.
 - 2025-09-25: Include a section on default implementation of methods to accommodate the changes in Mojo v0.25.6.
+- 2026-02-28: Update to accommodate the changes in Mojo v0.26.1.
