@@ -9,7 +9,7 @@ by ***Yuhao Zhu 朱宇浩***
 
 ::: warning Notes
 
-This Miji is compatible with Mojo v0.25.6 (2025-09-22).
+This Miji is compatible with Mojo v0.26.1 (2026-01-29).
 
 For the example programs featured in this Miji, you can find them in the [GitHub repository](https://github.com/forfudan/my-first-mojo-project).
 
@@ -50,7 +50,7 @@ For the example programs featured in this Miji, you can find them in the [GitHub
   - [Design of MatMojo library](./apply/design.md) (Preparation for a matrix library)
   - [Make it work](./apply/work.md) (Define and implement the basic functionalities)
 - [PART VI: EXTEND MOJO](./extend/extend)
-  - [Arbitrary-precision numbers](./extend/decimojo) (A library for arbitrary-precision integers and decimals)
+  - [Arbitrary-precision numbers](./extend/decimo) (A library for arbitrary-precision integers and decimals)
   - [Multi-dimensional arrays](./extend/numojo) (A library for numerical computing and NDArray)
 - [PART VII: MISCELLANEOUS](./misc/misc)
   <!-- - [Memory layout of Mojo objects](./misc/layout) (How Mojo objects are stored in memory) -->

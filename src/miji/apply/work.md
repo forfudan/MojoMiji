@@ -165,7 +165,7 @@ You can create a file called `test.mojo` in the `tests` folder. This file will b
 import matmojo as mm
 
 def main():
-    var mat = mm.matrix.Matrix[DType.float64](data=List[Float64](1.0, 2.0, 3.0, 4.0, 5.0), shape=(2, 2))
+    var mat = mm.matrix.Matrix[DType.float64](data=List[Float64]([1.0, 2.0, 3.0, 4.0, 5.0]), shape=(2, 2))
 ```
 
 In the code, we import the `matmojo` package into the file by `import matmojo as mm`, and then use the `mm.matrix.Matrix[DType.float64]` to call call the constructor of the `Matrix` type. This is very similar to Python's import statement, so you can safely use your knowledge of Python import system here.
@@ -208,7 +208,7 @@ Unhandled exception caught during execution: Data length does not match the spec
 
 This means that the `Matrix` constructor was successfully called, but it raised an exception because the length of the `data` list does not match the specified shape. This is expected, as we only provided 5 elements in the `data` list, while the shape is `(2, 2)`, which requires 4 elements.
 
-If you change the code in the `test.mojo` file and provide a valid `data` list, such as `data=List[Float64](1.0, 2.0, 3.0, 4.0)`, you should see no output, which means the code ran successfully without any exceptions.
+If you change the code in the `test.mojo` file and provide a valid `data` list, such as `data=List[Float64]([1.0, 2.0, 3.0, 4.0])`, you should see no output, which means the code ran successfully without any exceptions.
 
 ### Use pixi tasks as a shortcut
 

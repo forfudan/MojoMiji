@@ -261,7 +261,7 @@ Today is 1 Janurary 2023
 
 ## String iteration
 
-In Mojo, you can iterate over the valid characters (code points) of a `String` using the `codepoints()` method. This method returns an iterable object that contains the UTF-8 code points of the string. You can use a `for` loop to iterate over the code points and print them one by one. Note that it is more complicated than that in Python, where you can directly iterate over a `str` object to print each character.
+In Mojo, you can iterate over the valid characters (code points) of a `String` using the `codepoints()` method. This method returns an iterable object that contains the UTF-8 code points of the string. You can use a `for` loop to iterate over the code points and print them one by one. Note that it is a little bit more complicated than that in Python, where you can directly iterate over a `str` object to print each character.
 
 The following examples compares the iteration of strings in Mojo and Python:
 
@@ -272,7 +272,7 @@ The following examples compares the iteration of strings in Mojo and Python:
 def main():
     my_string = String("Hello, world! 你好，世界！")
     for char in my_string.codepoints():
-        print(String(char), end="")
+        print(char, end="")
 ```
 
 ```python
@@ -292,9 +292,7 @@ Let me explain the Mojo code in detail:
 
 1. The `String.codepoints()` methods construct a iterator object (of `CodepointsIter` type) over the **UTF-8 code points** of the string.
 1. When you use `for char in my_string.codepoints():`, we iterate over the `CodepointsIter` object, and sequentially get each Unicode character as an `CodePoint` object.
-1. Finally, we use `String(char)` to convert the `CodePoint` object back to a `String` object, which can then be printed with the `print()` function.
-
-Note that you cannot directly print a `CodePoint` object, as it does not implement the `Writable` trait at the moment.
+1. Finally, we use the `print()` function to print each `CodePoint` object.
 
 ::: info characters vs code points
 
@@ -497,3 +495,4 @@ Index | Binary       | Decimal | Hexadecimal
 
 - 2025-06-21: Update to accommodate the changes in Mojo v25.4.
 - 2025-08-18: Update to accommodate the changes in Mojo v25.5.
+- 2026-02-28: Update to accommodate the changes in Mojo v0.26.1.

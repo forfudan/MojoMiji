@@ -493,19 +493,10 @@ Here is an example that read elements from a list and print them. Note that the 
 
 ```mojo
 # src/basic/functions/read_keyword.mojo
-def print_list_of_string(read a: List[String]):
-    # `a` is a read-only reference of the list passed into the function
-    print("[", end="")
-    for i in range(len(a)):
-        if i < len(a) - 1:
-            print(String('"{}"').format(a[i]), end=", ")
-        else:
-            print(String('"{}"').format(a[i]), end="]\n")
-
 
 def main():
-    var lst = List[String]("Mojo", "Miji", "is", "interesting")
-    var new_lst = print_list_of_string(lst)
+    var lst = ["Mojo", "Miji", "is", "interesting"]  # Auto inferred as List[String]
+    print(lst)
 ```
 
 :::
@@ -522,7 +513,7 @@ fn changeit(read some: List[Int]) -> List[Int]:
 
 
 fn main():
-    var a = List[Int](1, 2, 3, 4, 5)
+    var a = [1, 2, 3, 4, 5]  # Auto inferred as List[Int]
     changeit(a)
 ```
 

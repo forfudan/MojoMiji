@@ -417,7 +417,7 @@ The two ways of creating variables are equivalent. The second example is more co
 
 You may find that the complete syntax of variable creation is still verbose, compared to Python. However, Yuhao still recommends you to always follow this complete style, as it is more explicit and error-free, especially the inlay hints is not yet supported by Mojo extension. Being confident is good, but being explicit is better.
 
-The only exception, where you can omit the type annotation, is when you use the explicit constructors of types, such as `var l = List[Int](1, 2, 3)`, `var s = String("Hello")`, or `var i = Int128(100)`. In this case, the Mojo compiler can infer the type of the variable from the constructor.
+The only exception, where you can omit the type annotation, is when you use the explicit constructors of types, such as `var l: List[Int] = [1, 2, 3]`, `var s = String("Hello")`, or `var i = Int128(100)`. In this case, the Mojo compiler can infer the type of the variable from the constructor.
 
 If you still want to chill a bit, luckily, Mojo is more than "clever" to allow you to omit the `var` keyword as well as the type annotation and use a **simplified** syntax: `name = value`, just like Python. This will be discussed in details in a later section.
 
@@ -869,3 +869,4 @@ def main():
 - 2025-06-18: Add some graphs for variables.
 - 2025-06-21: Update to accommodate the changes in Mojo v25.4 (fcaa01b2).
 - 2025-09-25: Update to accommodate the changes in Mojo v0.25.6.
+- 2026-02-28: Update to accommodate the changes in Mojo v0.26.1.

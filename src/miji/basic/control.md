@@ -513,7 +513,7 @@ def main():
     var numbers = [1.1, 2.2, 3.3, 4.4, 5.5]
 
     # Expand the for loop to show how it works internally
-    var ref number = numbers[0]
+    ref number = numbers[0]
     total += number
     number = numbers[1]
     total += number
@@ -1381,7 +1381,7 @@ main()
 
 Please be aware that the Fibonacci numbers grow very fast, and the maximum value of an `Int` in Mojo is `9223372036854775807` (which is $2^{63} - 1$). If you try to print more than 93 Fibonacci numbers, you will get an a wrong value for the 94-th number due to integer overflow (`-6246583658587674878`).
 
-We have discussed the integer overflow issue in Chapter [Data types](../basic/types#integer-overflow). If you really want to print more than 93 Fibonacci numbers, you can use the `BigInt` type, which is discussed in Chapter [Arbitrary-precision integers](../extend/decimojo).
+We have discussed the integer overflow issue in Chapter [Data types](../basic/types#integer-overflow). If you really want to print more than 93 Fibonacci numbers, you can use the `BigInt` type, which is discussed in Chapter [Arbitrary-precision integers](../extend/decimo).
 
 To properly this issue, you can raise and error or print a warning message if the input number is greater than 93. For example, you can modify the `print_fibonacci()` function as follows:
 

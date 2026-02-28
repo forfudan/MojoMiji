@@ -43,25 +43,30 @@ Nine-nine Multiplication Table
 
 Now we program in Mojo. A clever way is to simply copy the above Python file and change the file extension to `.mojo`. Then we remove the last line `main()` because it is not needed.
 
-Let's compile and run this Mojo code by `magic run mojo src/move/multiplication_table.mojo`. You may see the following error message:
+Let's compile and run this Mojo code by `pixi run mojo src/move/multiplication_table.mojo`. You will see the following output:
 
 ```console
-error: 'StringLiteral["{} * {} = {}"]' value has no attribute 'format'
-            print("{} * {} = {}".format(i, j, i*j), end="\t")
-                  ~~~~~~~~~~~~~~^
+Nine-nine Multiplication Table
+1 * 1 = 1       1 * 2 = 2       1 * 3 = 3       1 * 4 = 4    1 * 5 = 5    1 * 6 = 6       1 * 7 = 7       1 * 8 = 8    1 * 9 = 9
+2 * 2 = 4       2 * 3 = 6       2 * 4 = 8       2 * 5 = 10   2 * 6 = 12    2 * 7 = 14      2 * 8 = 16      2 * 9 = 18
+3 * 3 = 9       3 * 4 = 12      3 * 5 = 15      3 * 6 = 18   3 * 7 = 21    3 * 8 = 24      3 * 9 = 27
+4 * 4 = 16      4 * 5 = 20      4 * 6 = 24      4 * 7 = 28   4 * 8 = 32    4 * 9 = 36
+5 * 5 = 25      5 * 6 = 30      5 * 7 = 35      5 * 8 = 40   5 * 9 = 45
+6 * 6 = 36      6 * 7 = 42      6 * 8 = 48      6 * 9 = 54
+7 * 7 = 49      7 * 8 = 56      7 * 9 = 63
+8 * 8 = 64      8 * 9 = 72
+9 * 9 = 81
 ```
 
-Here we see another difference between Python and Mojo: `format` is not a method of the string literal in Mojo. This is because, in Python, we do not need differentiate between string and string literal ourselves, because the latter type is coerced to the first type when you call a str method. The contents between quotation marks ("") is of `str` type and you can use the `format()` method. However, in Mojo, we do differentiate between string and string literal. I will discuss more about string in Chapter [String](../basic/string).
+Wow! The program runs successfully with the same output as in Python!
 
-For now, to fix the error, we have to explicitly convert the string literal to a String object by calling the `String()` constructor. So we change the line to:
+::: details Older versions of Mojo
 
-```mojo
-...
-            print(String("{} * {} = {}").format(i, j, i*j), end="\t")
-...
-```
+In older versions of Mojo (before v25.5), a `StringLiteral` object will not be materialized to a `String` object automatically at run time. When you call a method of `String` type (in this case, `format()`) on a `StringLiteral` object, you will get an error.
 
-Now you run the code again. You will see the same output as in Python.
+So you have to wrap the string literal with `String()` constructor to explicitly convert it to a `String` object before calling the method.
+
+:::
 
 For your comparison, I put the complete Mojo code as well as the Python code below:
 
@@ -73,7 +78,7 @@ def main():
     print("Nine-nine Multiplication Table")
     for i in range(1, 10):
         for j in range(i, 10):
-            print(String("{} * {} = {}").format(i, j, i * j), end="\t")
+            print("{} * {} = {}".format(i, j, i*j), end="\t")
         print()
 ```
 
@@ -91,19 +96,19 @@ main()
 
 :::
 
-Great! We see that we can migrate our Python code to Mojo easily with very little modification. But we enjoy the performance of Mojo. How big is the performance gain? Let's check it out using the next example.
+Great! We see that we can migrate our Python code to Mojo so easily, while enjoying the performance of Mojo. How big is the performance gain? Let's check it out using the next example.
 
 ::: tip Difference between Python and Mojo
 
 The table below summarizes the differences between Python and Mojo in this example.
 
-| Feature           | Python                                | Mojo                                            |
-| ----------------- | ------------------------------------- | ----------------------------------------------- |
-| `main()` function | Not needed                            | Mandatory as an entry point                     |
-| String type       | str literal is coerced to str type    | You have to explicitly use `String` constructor |
-| String formatting | `str.format()` method                 | `String().format()` method                      |
-| f-strings         | Supported                             | Not supported (yet)                             |
-| formatted values  | Supported, e.g., `{:0.2f}`, `{:0.3%}` | Not supported (yet)                             |
+| Feature           | Python                                  | Mojo                                              |
+| ----------------- | --------------------------------------- | ------------------------------------------------- |
+| `main()` function | Not needed                              | Mandatory as an entry point                       |
+| String type       | String literal is coerced to `str` type | String literal is materialized to `String` object |
+| String formatting | `str.format()` method                   | `String.format()` method                          |
+| f-strings         | Supported                               | Not supported (yet)                               |
+| formatted values  | Supported, e.g., `{:0.2f}`, `{:0.3%}`   | Not supported (yet)                               |
 
 :::
 
@@ -361,18 +366,20 @@ Let's do this first in Python. We create a file in the `src/move` directory call
 
 ```python
 # src/move/sort.py
-def bubble_sort(array):    
+def bubble_sort(array):
     n = len(array)
     for i in range(n):
-        for j in range(0, n-1-i):
-            if array[j] > array[j+1]:
-                array[j], array[j+1] = array[j+1], array[j]
+        for j in range(0, n - 1 - i):
+            if array[j] > array[j + 1]:
+                array[j], array[j + 1] = array[j + 1], array[j]
+
 
 def main():
     array = [64.1, 34.523, 25.1, -12.3, 22.0, -11.5, 90.49]
     print("Input array:", array)
     bubble_sort(array)
     print("After sorting:", array)
+
 
 main()
 ```
@@ -398,9 +405,9 @@ def bubble_sort(array):
                 ^~~~~
 ```
 
-This is because Mojo is a statically typed language. You have to explicitly specify the type of the argument and the type of the return value, so that the compiler can allocate the correct amount of memory on stack for the function call.
+This is because Mojo is a **statically typed** language. You have to explicitly specify the type of the argument and the type of the return value, so that the compiler can allocate the correct amount of memory on stack for the function call.
 
-On the other hand, Python is a dynamically typed language. You do not need to specify the type of the argument and the return value. The Python interpreter will infer the type at runtime. If the type is not subscriptable (i.e., you cannot use `[]` to access the element), it will raise an error. You can also add type hints in Python, which is a good practice for static checks, readability and maintainability, but it is not mandatory.
+On contrary, Python is a dynamically typed language. You do not need to specify the type of the argument and the return value. The Python interpreter will infer the type at runtime. If the type is not subscriptable (i.e., you cannot use `[]` to access the element), it will raise an error. You can also add type hints in Python, which is a good practice for static checks, readability and maintainability, but it is not mandatory.
 
 The type hint in Python is something like:
 
@@ -409,7 +416,7 @@ def bubble_sort(array: list[float]):
     ...
 ```
 
-In Mojo, as mentioned above, the types may have different naming conventions. Beside Camel Case, floating-point type in Mojo is named as `Float64` instead of `float`.
+In Mojo, as mentioned above, the types may have different naming conventions. Beside using Camel Case (e.g., `list` -> `List`), the floating-point type in Mojo is named as `Float64` instead of `float`.
 
 ```mojo
 def bubble_sort(array: List[Float64]):
@@ -420,8 +427,8 @@ After the change, you will see that the IDE is still complaining:
 
 ```console
 error: expression must be mutable in assignment
-                array[j], array[j+1] = array[j+1], array[j]
-                ~~~~~~~~^~~~~~~~~~~~
+                array[j], array[j + 1] = array[j + 1], array[j]
+                     ~~~^~~~~~~~
 ```
 
 This is another important and new feature of Mojo: the arguments cannot be modified at will within the body of a function. This is to avoid unintentional changes to the original variable that is passed into the function. If you intend to change the value of the argument within the function, you have to explicitly declare the argument as ***mutable***. This is done via several special keywords in the function signature. We will discuss this more in Chapter [Functions](../basic/functions). For now, we just add the keyword `mut` in front of the argument `array`. By doing this, we tell Mojo that we want to modify the variable `array` by using this function.
@@ -431,25 +438,28 @@ def bubble_sort(mut array: List[Float64]):
     ...
 ```
 
-Now you will see that the errors on the function `bubble_sort()` are gone. We can move forward to deal with the very last error message:
+Now you will see that the errors on the function `bubble_sort()` are gone. Running the code with `pixi run mojo src/sort.mojo` will give you the following output:
 
 ```console
-error: invalid call to 'print': could not deduce parameter 'Ts' of callee 'print'
-    print("Input array:", array)
-    ~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+Input array: [SIMD[DType.float64, 1](64.1), SIMD[DType.float64, 1](34.523), SIMD[DType.float64, 1](25.1), SIMD[DType.float64, 1](-12.3), SIMD[DType.float64, 1](22.0), SIMD[DType.float64, 1](-11.5), SIMD[DType.float64, 1](90.49)]
+After sorting: [SIMD[DType.float64, 1](-12.3), SIMD[DType.float64, 1](-11.5), SIMD[DType.float64, 1](22.0), SIMD[DType.float64, 1](25.1), SIMD[DType.float64, 1](34.523), SIMD[DType.float64, 1](64.1), SIMD[DType.float64, 1](90.49)]
 ```
 
-Oops! This seems quite annoying! We cannot use the `print()` function to print lists in Mojo, at least not possible at the moment (v25.3). Maybe in future we can do that. For now, we have to work around a little bit. Let's define a helper function to print the list. After all changes, we have our final Mojo code as follows:
+Oops! This seems quite annoying! In Mojo, `print()` function does not support printing the elements of a list in a concise manner. Instead, it prints the type and the value of each element in the list. This is because Mojo's `print()` function is designed to be more informative and to show the type of the variable. It is not designed to be as concise as Python's `print()` function.
+
+We cannot use the `print()` function to print lists in a Python's style (at least for Mojo v0.26.1). We have to work around a little bit. Let's define a helper function to print the list. After all changes, we have our final Mojo code as follows:
 
 ::: code-group
 
 ```mojo
+# src/move/sort.mojo
+
 def bubble_sort(mut array: List[Float64]):
     n = len(array)
     for i in range(n):
-        for j in range(0, n-1-i):
-            if array[j] > array[j+1]:
-                array[j], array[j+1] = array[j+1], array[j]
+        for j in range(0, n - 1 - i):
+            if array[j] > array[j + 1]:
+                array[j], array[j + 1] = array[j + 1], array[j]
 
 def print_list(array: List[Float64]):
     print("[", end="")
@@ -469,49 +479,41 @@ def main():
 ```
 
 ```python
-def bubble_sort(array: list[float]):
+# src/move/sort.py
+def bubble_sort(array):
     n = len(array)
     for i in range(n):
-        for j in range(0, n-1-i):
-            if array[j] > array[j+1]:
-                array[j], array[j+1] = array[j+1], array[j]
+        for j in range(0, n - 1 - i):
+            if array[j] > array[j + 1]:
+                array[j], array[j + 1] = array[j + 1], array[j]
 
-def print_list(array: list[float]):
-    print("[", end="")
-    for i in range(len(array)):
-        if i < len(array) - 1:
-            print(array[i], end=", ")
-        else:
-            print(array[i], end="]\n")
 
 def main():
     array = [64.1, 34.523, 25.1, -12.3, 22.0, -11.5, 90.49]
-    print("Input array:", end=" ")
-    print_list(array)
+    print("Input array:", array)
     bubble_sort(array)
-    print("After sorting:", end=" ")
-    print_list(array)
+    print("After sorting:", array)
+
 
 main()
 ```
 
 :::
 
-Running the code with `magic run mojo src/sort.mojo` will give you the same output as in Python:
+Running the code with `pixi run mojo src/sort.mojo` will give you the same output as in Python:
 
 ```console
 Input array: [64.1, 34.523, 25.1, -12.3, 22.0, -11.5, 90.49]
 After sorting: [-12.3, -11.5, 22.0, 25.1, 34.523, 64.1, 90.49]
 ```
 
-Finally successful!
+Successful!
 
 For this example, we have to change more lines to adapt our Python code to Mojo, including:
 
 - Explicitly specify the type of the arguments of the function.
-- Use the list constructor to create a list and specify the type of the elements.
 - Use the keyword `mut` before arguments in function signature if you want to modify their values.
-- Printing lists is currently not supported in Mojo. You have to define a helper function to print the list.
+- Printing lists behaves differently in Mojo. You have to define a helper function to print the list.
 
 If you already use the type-hint system a lot in Python, you will not find these changes too difficult. If you do not use the type-hint system in Python, you may find it a bit annoying and frustrated. But believe me, it is a good practice to declare the types of variables and arguments of functions, in both Mojo and Python. It makes our code more readable and maintainable, and it enables the linter to do static checks and find out potential bugs before you run the code.
 
@@ -519,14 +521,15 @@ If you already use the type-hint system a lot in Python, you will not find these
 
 The table below summarizes the differences between Python and Mojo in this example.
 
-| Feature                               | Python              | Mojo                       |
-| ------------------------------------- | ------------------- | -------------------------- |
-| Integral type                         | `int` (big integer) | `Int` (fixed-size integer) |
-| Type annotation in function signature | Optional            | Mandatory                  |
-| Annotation for the list type          | `list[float]`       | `List[Float64]`            |
-| Types of elements in a list           | Heterogeneous       | Homogeneous                |
-| Mutable argument                      | Default             | Must use `mut` keyword     |
-| Print list with `print()`             | Supported           | Not supported (yet)        |
+| Feature                               | Python              | Mojo                                            |
+| ------------------------------------- | ------------------- | ----------------------------------------------- |
+| Integral type                         | `int` (big integer) | `Int` (fixed-size integer)                      |
+| Type annotation in function signature | Optional            | Mandatory                                       |
+| Annotation for the list type          | `a: list[float]`    | `var a: List[Float64]`                          |
+| Type annotation when creating lists   | Optional            | Mostly mandatory, but sometimes can be inferred |
+| Types of elements in a list           | Heterogeneous       | Homogeneous                                     |
+| Mutable argument                      | Default             | Must use `mut` keyword                          |
+| Print list with `print()`             | Supported           | Supported but behaves differently               |
 
 :::
 
@@ -643,7 +646,7 @@ Now, let's migrate the code to Mojo. Just like what we did in the previous examp
 We first do some simple changes to the code using the knowledge we have learned so far:
 
 - We change the type hints from `float` to `Float64` and from `str` to `String`.
-- We use `String` constructor to create the string and use `format()` method instead of "f-string".
+- We use `format()` method instead of "f-string".
 - Remove `main()` at the end of the file.
 
 After these changes, we have the following code:
@@ -651,7 +654,8 @@ After these changes, we have the following code:
 ```mojo
 # src/move/triangle_from_py.mojo
 # Adapted from Python code with preliminary changes
-# It is not guaranteed to run successfully yet
+# It won't compile yet
+
 class Triangle:
     """A class to represent a triangle."""
 
@@ -705,7 +709,7 @@ class Triangle:
         Notes:
             You can use the `str()` or `print()` to call this method.
         """
-        return String("Triangle(a={}, b={}, c={})").format(
+        return "Triangle(a={}, b={}, c={})".format(
             self.a, self.b, self.c
         )
 
@@ -715,8 +719,8 @@ def main():
     print("Creating a valid triangle with sides 3, 4, and 5:")
     triangle = Triangle(3, 4, 5)
     print(triangle)
-    print(String("Area: {}").format(triangle.area()))
-    print(String("Perimeter: {}").format(triangle.perimeter()))
+    print("Area: {}".format(triangle.area()))
+    print("Perimeter: {}".format(triangle.perimeter()))
 
     # An invalid triangle with sides 1, 2, and 3
     print("\nCreating an invalid triangle with sides 1, 2, and 3:")
@@ -727,7 +731,7 @@ def main():
         print("Error:", e)
 ```
 
-This will be the starting point of our Mojo code. You will see many error messages when you run the code with `magic run mojo src/move/triangle_from_py.mojo`. The first error message is, which should also be highlighted by the IDE is about the first line:
+This will be the starting point of our Mojo code. You will see many error messages when you run the code with `pixi run mojo src/move/triangle_from_py.mojo`. The first error message is, which should also be highlighted by the IDE is about the first line:
 
 ```console
 /Users/ZHU/Programs/my-first-mojo-project/src/move/triangle.mojo:1:1: error: classes are not supported yet
@@ -751,13 +755,14 @@ There will be no error message for this line anymore, so do the next line, the d
 The next error message is about the `__init__` method.
 
 ```console
-/Users/ZHU/Programs/my-first-mojo-project/src/move/triangle.mojo:4:18: error: argument type must be specified
-    def __init__(self, a: float, b: float, c: float):
+error: __init__ method must return Self type with 'out' argument
+    def __init__(self, a: Float64, b: Float64, c: Float64):
+        ^
 ```
 
 This method in Python is a special method to create an instance of the class by using the class name as a constructor, e.g., `Triangle(3, 4, 5)`. In Mojo, we have the same philosophy, we also use `__init__()` as a constructor, but we have to explicitly specify the "ownership modifier" of the first argument `self` as `out`. This indicates that the `__init__()` method will create a new instance of the struct as an output. (`out` is a abbreviation of "output".)
 
-We then update the first line of the `__init__()` method, by adding the `out` keyword before `self`, and by changing the type of the three arguments from `float` to `Float64`:
+We then update the first line of the `__init__()` method, by adding the `out` keyword before `self`:
 
 ```mojo
 ...
@@ -803,7 +808,7 @@ So, we need to explicitly declare the attributes `a`, `b`, and `c` in the struct
 
 ```mojo
 struct Triangle:
-    """A class to represent a triangle."""
+    """A struct to represent a triangle."""
 
     # Declare attributes
     var a: Float64
@@ -834,15 +839,12 @@ After this change, you will be happy to see that there are no more error message
 Then we come to the main function. The first error message is about printing the triangle:
 
 ```console
-/Users/ZHU/Programs/my-first-mojo-project/src/move/triangle.mojo:64:10: error: invalid call to 'print': could not deduce parameter 'Ts' of callee 'print'
+error: invalid call to 'print': could not convert element of 'values' with type 'Triangle' to expected type 'Writable'
     print(triangle)
-    ~~~~~^~~~~~~~~~
-/Users/ZHU/Programs/my-first-mojo-project/src/move/triangle.mojo:64:11: note: failed to infer parameter 'Ts', argument type 'Triangle' does not conform to trait 'Writable'
-    print(triangle)
-          ^~~~~~~~
-/Users/ZHU/Programs/my-first-mojo-project/src/move/triangle.mojo:1:1: note: function declared here
-struct Triangle:
-^
+    ^~~~~
+error: invalid call to 'print': could not convert element of 'values' with type 'Triangle' to expected type 'Writable'
+        print(invalid_triangle)
+        ^~~~~
 ```
 
 Ah, it is the same error as we had in the previous example when we tried to print a list. The core message is "argument type 'Triangle' does not conform to trait 'Writable'". What does this mean? Maybe you have to wait until you reach Chapter [Generic and traits](../advanced/generic). For now, you can understand this issue in the following way:
@@ -859,10 +861,10 @@ print(String(triangle))
 print(String(invalid_triangle))
 ```
 
-Moreover, for some special double underscore methods like `__str__()`, Mojo requires you to explicitly include the related trait in the struct signature. Here, the `__str__()` method is corresponding to the trait `StringableRaising`. This knowledge is too advanced for beginners and we will discuss this in details in Chapter [Generic and Traits](../advanced/generic.md). For now, we just add the trait name to the struct signature:
+Moreover, for some special double underscore methods like `__str__()`, Mojo requires you to explicitly include the related trait in the struct signature. Here, the `__str__()` method is corresponding to the trait `Writable`. This knowledge is too advanced for beginners and we will discuss this in details in Chapter [Generic and Traits](../advanced/generic.md). For now, we just add the trait name to the struct signature:
 
 ```mojo
-struct Triangle(StringableRaising):
+struct Triangle(Writable):
     ...
 ```
 
@@ -887,8 +889,9 @@ After all these changes, we have our final Mojo code as follows:
 
 ```mojo
 # src/move/triangle.mojo
-struct Triangle(StringableRaising):
-    """A class to represent a triangle."""
+
+struct Triangle(Writable):
+    """A struct to represent a triangle."""
 
     # Declare attributes
     var a: Float64
@@ -904,7 +907,7 @@ struct Triangle(StringableRaising):
             c: Length of side c.
 
         Raises:
-            ValueError: If the lengths do not form a valid triangle.
+            Error: If the lengths do not form a valid triangle.
         """
         self.a = a
         self.b = b
@@ -915,7 +918,9 @@ struct Triangle(StringableRaising):
             or (self.a + self.c <= self.b)
             or (self.b + self.c <= self.a)
         ):
-            raise Error("The lengths of sides do not form a valid triangle.")
+            raise Error(
+                "The lengths of sides do not form a valid triangle."
+            )
 
     def area(self) -> Float64:
         """Calculates the area of the triangle using Heron's formula.
@@ -943,7 +948,7 @@ struct Triangle(StringableRaising):
         Notes:
             You can use the `str()` or `print()` to call this method.
         """
-        return String("Triangle(a={}, b={}, c={})").format(
+        return "Triangle(a={}, b={}, c={})".format(
             self.a, self.b, self.c
         )
 
@@ -953,8 +958,8 @@ def main():
     print("Creating a valid triangle with sides 3, 4, and 5:")
     triangle = Triangle(3, 4, 5)
     print(String(triangle))
-    print(String("Area: {}").format(triangle.area()))
-    print(String("Perimeter: {}").format(triangle.perimeter()))
+    print("Area: {}".format(triangle.area()))
+    print("Perimeter: {}".format(triangle.perimeter()))
 
     # An invalid triangle with sides 1, 2, and 3
     print("\nCreating an invalid triangle with sides 1, 2, and 3:")
@@ -1048,7 +1053,7 @@ main()
 
 :::
 
-Compiling and running the code with `magic run mojo src/move/triangle.mojo` generates no error messages and gives the expected output:
+Compiling and running the code with `pixi run mojo src/move/triangle.mojo` generates no error messages and gives the expected output:
 
 ```console
 Creating a valid triangle with sides 3, 4, and 5:

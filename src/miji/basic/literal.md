@@ -210,7 +210,7 @@ def main():
     var d = Float32(
         2.71828e-10  # FloatLiteral `2.71828e-10` is converted to `Float32`
     )
-    var e = List[Float32](1, 2, 3)
+    var e: List[Float32] = [1, 2, 3]
     # `ListLiteral[IntLiteral]` is converted to `List[Float32]`
     var f = String("Hello, World!")  # `StringLiteral` is converted to `String`
 ```

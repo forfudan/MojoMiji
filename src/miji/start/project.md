@@ -69,7 +69,7 @@ Let's now open this `pixi.toml` file and take a close look.
 
 ```toml
 [workspace]
-authors = ["ZHU Yuhao 朱宇浩 <dr.yuhao.zhu@outlook.com>"]
+authors = ["ZHU Yuhao <dr.yuhao.zhu@outlook.com>"]
 channels = ["https://conda.modular.com/max", "https://repo.prefix.dev/modular-community", "conda-forge"]
 name = "my-first-mojo-project"
 platforms = ["osx-arm64"]
@@ -96,7 +96,7 @@ You can see that there is currently nothing in the `[dependencies]` section. Thi
 
 ```toml
 [dependencies]
-mojo = "==0.25.6"
+mojo = "==0.26.1"
 ```
 
 :::
@@ -105,14 +105,14 @@ The word on the left side of the `=` is the name of the package. In this case, i
 
 The word on the right side of the `=` is the version of the package you want to install. Here are some examples:
 
-- `mojo = "==0.25.6"`: This means to install a specific version of the package, e.g., version 0.25.6[^versioning].
-- `mojo = ">=0.25.6"`: This means to install any version from 0.25.6 and later.
-- `mojo = ">=0.25.6, <0.25.7"`: This means to install version 0.25.6 or later, but less than 0.25.7.
+- `mojo = "==0.26.1"`: This means to install a specific version of the package, e.g., version 0.26.1[^versioning].
+- `mojo = ">=0.26.1"`: This means to install any version from 0.26.1 and later.
+- `mojo = ">=0.26.1, <0.26.2"`: This means to install version 0.26.1 or later, but less than 0.26.2.
 - `mojo = "*"`: This means to install the latest version of the package (as available in the channels specified in the "channels" field).
 
 ## Install Mojo compiler
 
-After we put `mojo = "==0.25.6"` in the dependencies field, pixi knows that we want to install the latest version of the `mojo` package. To finish the installation, we need to run the following command in your terminal (Use `Cmd + J` to open the terminal in VS Code):
+After we put `mojo = "==0.26.1"` in the dependencies field, pixi knows that we want to install the latest version of the `mojo` package. To finish the installation, we need to run the following command in your terminal (Use `Cmd + J` to open the terminal in VS Code):
 
 ::: code-group
 

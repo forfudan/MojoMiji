@@ -67,17 +67,19 @@ In the early days of Mojo, there used to be other keywords. As time went by, the
 
 As a "archaeologist", I always like to track the history of the changes in the language. The following table shows the historical keywords of the conventions and the versions of Mojo when they were used.
 
-| Version    | Immutable<br>reference        | Mutable<br>reference                     | Local mutable<br>reference | Owned value        | Named result     | Destruction         |
-| ---------- | ----------------------------- | ---------------------------------------- | -------------------------- | ------------------ | ---------------- | ------------------- |
-| 2022-10-24 |                               | `&expr` introduced                       |                            |                    |                  |                     |
-| 2023-03-13 | `borrowed` introduced         |                                          |                            | `owned` introduced |                  |                     |
-| 2023-05-11 |                               | `inout` introduced<br>`&expr` deprecated |                            |                    |                  |                     |
-| v24.6      | `read` introduced             | `mut` introduced                         |                            |                    | `out` introduced |                     |
-| v25.1      | `borrowed` generating warning | `inout` generating warning               |                            |                    |                  |                     |
-| v25.2      | `borrowed` deprecated         | `inout` deprecated                       |                            |                    |                  |                     |
-| v25.4      |                               |                                          | `ref` introduced           |                    |                  |                     |
-| v25.5      |                               |                                          |                            | `var` introduced   |                  |                     |
-| v0.25.6    |                               |                                          |                            |                    |                  | `deinit` introduced |
+| Version    | Immutable<br>reference        | Mutable<br>reference                     | Local mutable<br>reference | Owned value                | Named result     | Destruction         |
+| ---------- | ----------------------------- | ---------------------------------------- | -------------------------- | -------------------------- | ---------------- | ------------------- |
+| 2022-10-24 |                               | `&expr` introduced                       |                            |                            |                  |                     |
+| 2023-03-13 | `borrowed` introduced         |                                          |                            | `owned` introduced         |                  |                     |
+| 2023-05-11 |                               | `inout` introduced<br>`&expr` deprecated |                            |                            |                  |                     |
+| v24.6      | `read` introduced             | `mut` introduced                         |                            |                            | `out` introduced |                     |
+| v25.1      | `borrowed` generating warning | `inout` generating warning               |                            |                            |                  |                     |
+| v25.2      | `borrowed` deprecated         | `inout` deprecated                       |                            |                            |                  |                     |
+| v25.4      |                               |                                          | `ref` introduced           |                            |                  |                     |
+| v25.5      |                               |                                          |                            | `var` introduced           |                  |                     |
+| v0.25.6    |                               |                                          |                            |                            |                  | `deinit` introduced |
+| v0.26.1    |                               |                                          |                            | `owned` generating warning |                  |                     |
+| v0.26.2    |                               |                                          |                            | `owned` deprecated         |                  |                     |
 
 We will discuss each keyword of conventions in the following sub-sections.
 
@@ -88,9 +90,19 @@ The keyword `ref` allows you to create a **shared reference** of a value in the 
 A general syntax of the `ref` keyword is as follows:
 
 ```mojo
-var ref <name> = <variable>
-ref <name> = <variable>  # shorthand syntax
+ref <name> = <variable>      # Short, yet more standard syntax
+var ref <name> = <variable>  # Okay, but more verbose
 ```
+
+::: details `var ref` is no longer recommended
+
+Although the nested pattern `var ref` is supported, it is not recommended. From v0.26.1 (2026-01-29), the `var ref` pattern will generate a warning:
+
+> warning: nested 'var' or 'ref' patterns are redundant, remove the outer pattern.
+
+Nevertheless, this nested pattern is sometimes useful, e.g., `var (a, ref b) = (1, 2)`. See this [thread](https://github.com/modular/modular/issues/4765) for more discussion.
+
+:::
 
 If we apply our [conceptual model of variables](../basic/variables.md#conceptual-model-of-mojo-variables), the following things will happen when you use `var ref y = x` (or equivalently `ref y = x`):
 
@@ -456,7 +468,7 @@ The `ref` keyword can also be used to **return a reference** of a value from a f
 
 ```mojo
 def function_name(arg: TypeOfArg, ...) -> ref [arg] TypeOfReturn:
-def function_name(arg: TypeOfArg, ...) -> ref [__origin_of(...)] TypeOfReturn:
+def function_name(arg: TypeOfArg, ...) -> ref [origin_of(...)] TypeOfReturn:
 ```
 
 Before we explain what the syntax means, let's first look at an example where we define a function to return the first element of a list. Then we modify this value in the main function and see how it affects the original list. There are three approaches to achieve this: (1) return a copy of the value, (2) return a pointer to the value, and (3) return a reference to the value.
@@ -475,11 +487,11 @@ def return_first_element_as_copy(mut a: List[String]) -> String:
 
 
 def main():
-    var lst = List[String]("Mojo", "is", "interesting")
+    var lst: List[String] = ["Mojo", "is", "interesting"]
     print("The 1st item of the list is '", lst[0], "'", sep="")
     var val = return_first_element_as_copy(lst)
     val = String("Miji")
-    print("The 1st item of the list is now '", lst[0], "'", sep="")
+    print("The 1st item of the list is '", lst[0], "' now", sep="")
 ```
 
 :::
@@ -503,7 +515,7 @@ The second piece of code illustrates how to return a safe pointer to the first e
 # src/advanced/references/return_as_pointer.mojo
 def return_first_element_as_pointer(
     mut a: List[String],
-) -> Pointer[String, __origin_of(a)]:
+) -> Pointer[String, origin_of(a)]:
     if len(a) == 0:
         raise Error("List is empty.")
     else:
@@ -511,7 +523,7 @@ def return_first_element_as_pointer(
 
 
 def main():
-    var lst = List[String]("Mojo", "is", "interesting")
+    var lst: List[String] = ["Mojo", "is", "interesting"]
     print("The 1st item of the list is '", lst[0], "'", sep="")
     var ptr = return_first_element_as_pointer(lst)
     ptr[] = String("Miji")
@@ -552,7 +564,7 @@ def return_first_element_as_reference(
 
 
 def main():
-    var lst = List[String]("Mojo", "is", "interesting")
+    var lst: List[String] = ["Mojo", "is", "interesting"]
     print("The 1st item of the list is '", lst[0], "'", sep="")
     ref first = return_first_element_as_reference(lst)
     first = String("Miji")
@@ -624,7 +636,7 @@ Back to the syntax of the `ref` keyword in the return type. You can now understa
 
 ```mojo
 def function_name(arg: TypeOfArg, ...) -> ref [arg] TypeOfReturn:
-def function_name(arg: TypeOfArg, ...) -> ref [__origin_of(arg)] TypeOfReturn:
+def function_name(arg: TypeOfArg, ...) -> ref [origin_of(arg)] TypeOfReturn:
 ```
 
 Here:
@@ -632,7 +644,7 @@ Here:
 - `ref` means that the returned value is a **mutable reference**.
 - `TypeOfReturn` is the type of the returned value.
 - `[arg]` is a parameterization that indicates the reference is tied to the lifetime and mutability of the argument `arg` (the origin). The mutability information stored as a parameter is called **parametric mutability**. This suggests that the information is known at compile time.
-- `[arg]` is a shortcut for `[__origin_of(arg)]`, which is the complete syntax to indicate that the lifetime and mutability of the reference originates from the argument `arg` (the `__origin_of` function is a built-in function that returns an object with the information of the origin of the value).
+- `[arg]` is a shortcut for `[origin_of(arg)]`, which is the complete syntax to indicate that the lifetime and mutability of the reference originates from the argument `arg` (the `origin_of` function is a built-in function that returns an object with the information of the origin of the value).
 - You can also put multiple arguments in the parameterization, such as `[arg1, arg2, ...]`, to indicate that the reference is tied to the lifetime and mutability of multiple arguments.
 
 We will discuss lifetimes and origins in more detail in the chapter [Lifetimes and Origins](../advanced/lifetimes).

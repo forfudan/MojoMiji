@@ -21,8 +21,8 @@ def add_lists(a: List[Float64], b: List[Float64]) -> List[Float64]:
 
 
 def main():
-    a = List[Float64](1.0, 2.0, 3.0, 4.0)
-    b = List[Float64](5.0, 6.0, 7.0, 8.0)
+    a: List[Float64] = [1.0, 2.0, 3.0, 4.0]
+    b: List[Float64] = [5.0, 6.0, 7.0, 8.0]
     result = add_lists(a, b)
     for i in result:
         print(i, end=", ")
@@ -53,7 +53,7 @@ In Mojo, you do not need to worry about this in most cases. Just use plain itera
 
 SIMD stands for "Single Instruction, Multiple Data". The name is self-explanatory: It is a type of ***parallel computing*** that allows a single instruction to be applied to multiple data points simultaneously. This is particularly useful in numerical computing, where operations can often be performed simultaneously on multiple elements of an array or vector.
 
-Let me illustrate this concept with the following graphical representation. Suppose we have a list `me = List[UInt8](89, 117, 104, 97, 111)`. The elements are stored contiguously in memory, and we want to add 1 to each element. In a **traditional approach**, we would iterate over each element and perform the addition one by one. The process would look like this:
+Let me illustrate this concept with the following graphical representation. Suppose we have a list `me: List[UInt8] = [89, 117, 104, 97, 111]`. The elements are stored contiguously in memory, and we want to add 1 to each element. In a **traditional approach**, we would iterate over each element and perform the addition one by one. The process would look like this:
 
 ``` txt
         ┌────────┬────────┬────────┬────────┬────────┐
@@ -169,7 +169,7 @@ Here is a summary of the `SIMD` type:
 | Slicing            | Use brackets `[a:b:c]`              |
 | Extending by items | Use `append()`                      |
 | Concatenation      | Use `+` operator                    |
-| Printing           | Not supported                       |
+| Printing           | Use `print()`                       |
 | Iterating          | Use `for` loop and de-reference     |
 | Memory layout      | Contiguous on stack                 |
 
@@ -348,25 +348,26 @@ For example, `DType.float64` represents a 64-bit floating-point number. Note tha
 
 The most common data types are:
 
-| Field of `DType` | Description                  |
-| ---------------- | ---------------------------- |
-| `DType.int8`     | 8-bit signed integer         |
-| `DType.int16`    | 16-bit signed integer        |
-| `DType.int32`    | 32-bit signed integer        |
-| `DType.int64`    | 64-bit signed integer        |
-| `DType.int128`   | 128-bit signed integer       |
-| `DType.int256`   | 256-bit signed integer       |
-| `DType.uint8`    | 8-bit unsigned integer       |
-| `DType.uint16`   | 16-bit unsigned integer      |
-| `DType.uint32`   | 32-bit unsigned integer      |
-| `DType.uint64`   | 64-bit unsigned integer      |
-| `DType.uint128`  | 128-bit unsigned integer     |
-| `DType.uint256`  | 256-bit unsigned integer     |
-| `DType.float16`  | 16-bit floating-point number |
-| `DType.float32`  | 32-bit floating-point number |
-| `DType.float64`  | 64-bit floating-point number |
-| `DType.bool`     | Boolean value                |
-| `DType.index`    | 32-bit or 64-bit index type  |
+| Field of `DType` | Description                            |
+| ---------------- | -------------------------------------- |
+| `DType.int8`     | 8-bit signed integer                   |
+| `DType.int16`    | 16-bit signed integer                  |
+| `DType.int32`    | 32-bit signed integer                  |
+| `DType.int64`    | 64-bit signed integer                  |
+| `DType.int128`   | 128-bit signed integer                 |
+| `DType.int256`   | 256-bit signed integer                 |
+| `DType.uint8`    | 8-bit unsigned integer                 |
+| `DType.uint16`   | 16-bit unsigned integer                |
+| `DType.uint32`   | 32-bit unsigned integer                |
+| `DType.uint64`   | 64-bit unsigned integer                |
+| `DType.uint128`  | 128-bit unsigned integer               |
+| `DType.uint256`  | 256-bit unsigned integer               |
+| `DType.float16`  | 16-bit floating-point number           |
+| `DType.float32`  | 32-bit floating-point number           |
+| `DType.float64`  | 64-bit floating-point number           |
+| `DType.bool`     | Boolean value                          |
+| `DType.int`      | 32-bit or 64-bit integer type          |
+| `DType.uint`     | 32-bit or 64-bit unsigned integer type |
 
 *"Wait a moment, Yuhao!"* you may say, *"I am sure that I saw this table in the previous chapter!"*
 
@@ -388,7 +389,7 @@ Your brain may be burning right now, but let me explain: In Mojo, the basic nume
 
 Nevertheless, there are two important exceptions that you need to be aware of:
 
-- `Int` type is not an `SIMD` type. You cannot vectorize operations on `Int` objects. If you want to use SIMD with integers, you need to consider using the specific integral type such as `Int32` (`SIMD[DType.int32]`), `Int64` (`SIMD[DType.int64]`), or `SIMD[DType.index]`.
+- `Int` type is not an `SIMD` type. You cannot vectorize operations on `Int` objects. If you want to use SIMD with integers, you need to consider using the specific integral type such as `Int32` (`SIMD[DType.int32]`), `Int64` (`SIMD[DType.int64]`), or `SIMD[DType.int]`.
 - `Bool` type is not an `SIMD` type. This means that `Bool` and `SIMD[DType.bool]` are completely two different things. You cannot vectorize operations on `Bool` objects. If you want to use SIMD with boolean values, you need to use `SIMD[DType.bool]`.
 
 So, don't be surprised if the compiler complains about the type mismatch when you try to use `Int` or `Bool` in a SIMD context.
@@ -507,11 +508,13 @@ fn simd_operation[iter: Int, a: SIMD[DType.float64, 8]]():
 
 
 fn main() raises:
-    alias a = SIMD[DType.float64, 8](1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0)
-    alias iter = Int(10_000_000)
+    comptime a = SIMD[DType.float64, 8](1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0)
+    comptime iter = Int(10_000_000)
 
-    var report_plain_iter = benchmark.run[plain_iterations[iter, a]](1)
-    var report_simd_operation = benchmark.run[simd_operation[iter, a]](1)
+    var report_plain_iter = benchmark.run[func2 = plain_iterations[iter, a]](1)
+    var report_simd_operation = benchmark.run[func2 = simd_operation[iter, a]](
+        1
+    )
 
     report_plain_iter.print_full()
     report_simd_operation.print_full()
@@ -562,3 +565,4 @@ The vectorized operation is about 56 times faster than the plain iteration. This
 
 - 2025-06-23: Update to accommodate the changes in Mojo v25.4.
 - 2025-09-27: Move the section on uninitialized values to a tip box and make it relevant only to early versions of Mojo.
+- 2026-02-28: Update to accommodate the changes in Mojo v0.26.1.

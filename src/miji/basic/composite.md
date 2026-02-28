@@ -17,7 +17,7 @@ I have to warn you at the beginning of this chapter that current Mojo version do
 ```mojo
 # DANGEROUS! DO NOT RUN THIS CODE!
 def main():
-    var lst = List[Int](1, 2, 3, 4, 5)
+    var lst: List[Int] = [1, 2, 3, 4, 5]
     ref item = lst[10]
     print("Item at index 10:", item)
     item += 100
@@ -42,24 +42,24 @@ In the future, this flag will be enabled by default, and Mojo will raise an erro
 
 In Mojo, a `List` is a mutable, variable-length sequence that can hold a collection of elements of the ***same type***. It is similar to Rust's `Vec` type, but it is different from Python's `list` type that can hold objects of **any type**. Here are some key differences between Python's `list` and Mojo's `List`:
 
-| Functionality      | Mojo `List`            | Python `list`                               |
-| ------------------ | ---------------------- | ------------------------------------------- |
-| Type of elements   | Homogeneous type       | Heterogenous types                          |
-| Mutability         | Mutable                | Mutable                                     |
-| Initialization     | `List[Type]()` or `[]` | `list()` or `[]`                            |
-| Indexing           | Use brackets `[]`      | Use brackets `[]`                           |
-| Slicing            | Use brackets `[a:b:c]` | Use brackets `[a:b:c]`                      |
-| Extending by items | Use `append()`         | Use `append()`                              |
-| Concatenation      | Use `+` operator       | Use `+` operator                            |
-| Printing           | Not supported          | Use `print()`                               |
-| Iterating          | Use `for` loop         | Use `for` loop                              |
-| Iterator returns   | Reference to element   | Copy of element                             |
-| List comprehension | Partially supported    | Supported                                   |
-| Memory layout      | Metadata -> Elements   | Pointer -> metadata -> Pointers -> Elements |
-| Shadow copy        | N.A.                   | `list.copy()` or `copy.copy(lst)`           |
-| Deep copy          | `lst.copy()`           | `copy.deepcopy(lst)`                        |
-| Reference          | `ref` keyword          | `lst2 = lst1`                               |
-| Transfer ownership | `^` operator           | N.A.                                        |
+| Functionality      | Mojo `List`                | Python `list`                               |
+| ------------------ | -------------------------- | ------------------------------------------- |
+| Type of elements   | Homogeneous type           | Heterogenous types                          |
+| Mutability         | Mutable                    | Mutable                                     |
+| Initialization     | `List[Type]()` or `[]`     | `list()` or `[]`                            |
+| Indexing           | Use brackets `[]`          | Use brackets `[]`                           |
+| Slicing            | Use brackets `[a:b:c]`     | Use brackets `[a:b:c]`                      |
+| Extending by items | Use `append()`             | Use `append()`                              |
+| Concatenation      | Use `+` operator           | Use `+` operator                            |
+| Printing           | Use `print()`, but verbose | Use `print()`                               |
+| Iterating          | Use `for` loop             | Use `for` loop                              |
+| Iterator returns   | Reference to element       | Copy of element                             |
+| List comprehension | Partially supported        | Supported                                   |
+| Memory layout      | Metadata -> Elements       | Pointer -> metadata -> Pointers -> Elements |
+| Shadow copy        | N.A.                       | `list.copy()` or `copy.copy(lst)`           |
+| Deep copy          | `lst.copy()`               | `copy.deepcopy(lst)`                        |
+| Reference          | `ref` keyword              | `lst2 = lst1`                               |
+| Transfer ownership | `^` operator               | N.A.                                        |
 
 ### Construct a list
 
@@ -81,16 +81,16 @@ def main():
     print(my_list_of_list_of_integers[0][0])
 ```
 
-The second way is to use the ***list constructor***, which is a special method that initializes a new instance of the `List` type. The list constructor takes a variable number of arguments, which are the elements of the list. You **must** specify the type of the elements in the list by using square brackets `[]` after the `List` keyword. For example, we can re-write the previous example using the list constructor:
+The second way is to use the ***list constructor***, `List()`, which similar to Python's `list()` constructor. However, you **must** specify the type of the elements in the list by using square brackets `[]` after the `List` keyword. For example, we can re-write the previous example using the list constructor:
 
 ```mojo
 # src/basic/types/list_creation_with_constructor.mojo
 def main():
-    my_list_of_integers = List[Int](1, 2, 3, 4, 5)
-    var my_list_of_floats = List[Float64](0.125, 12.0, 12.625, -2.0, -12.0)
-    var my_list_of_strings: List[String] = List[String]("Mojo", "is", "awesome")
+    my_list_of_integers = List[Int]([1, 2, 3, 4, 5])
+    var my_list_of_floats = List[Float64]([0.125, 12.0, 12.625, -2.0, -12.0])
+    var my_list_of_strings: List[String] = List[String](["Mojo", "is", "awesome"])
     var my_list_of_list_of_integers = List[List[Int]](
-        List[Int](1, 2), List[Int](3, 4), [5, 6]
+        [List[Int]([1, 2]), List[Int]([3, 4]), List[Int]([5, 6])]
     )
 
     print(my_list_of_integers[0])
@@ -99,7 +99,15 @@ def main():
     print(my_list_of_list_of_integers[0][0])
 ```
 
-The first way is more concise and easier to read, while the second way is more explicit since you have to specify the type of the elements in the list. Both ways are valid and will produce the same result. You can choose either way depending on your preference.
+The first way is more concise and easier to read, but both ways are valid and will produce the same result. You can choose either way depending on your preference.
+
+::: details `List()` constructor used to take variadic arguments
+
+Before Mojo v0.26.1, the `List()` constructor used to take variadic arguments, which means that you can pass the elements of the list directly as arguments to the constructor without using square brackets `[]`. For example, you can create a list of integers with `List[Int](1, 2, 3, 4, 5)`. However, this syntax is no longer supported in the latest version of Mojo. You have to use square brackets `[]` to pass the elements as a single argument to the constructor, like `List[Int]([1, 2, 3, 4, 5])`.
+
+In this sense, using the list literal syntax is more concise and easier to read than using the `List()` constructor.
+
+:::
 
 ### Copy and move a list
 
@@ -213,7 +221,7 @@ def main():
 This will generate a compile-time error:
 
 ```console
-warning: 'List' is no longer implicitly copyable, because it is O(n) expensive; this warning will be an error in the next release of Mojo
+error: value of type 'List[List[Int]]' cannot be implicitly copied, it does not conform to 'ImplicitlyCopyable'
     lst2 = lst1
            ^~~~
 ```
@@ -222,15 +230,24 @@ To fix this, you can either use the `copy()` method to create a deep copy of the
 
 ### Index or slice a list
 
-You can retrieve the elements of a `List` in Mojo using **indexing**, just like in Python. For example, you can access the first element of `my_list_of_integers` with `my_list_of_integers[0]`.
-
-You can create another `List` by **slicing** an existing `List`, just like in Python. For example, you can create a new list that contains the first three elements of `my_list_of_integers` with `my_list_of_integers[0:3]`.
+You can retrieve the elements of a `List` in Mojo using **indexing**, just like in Python. For example,
 
 ```mojo
 def main():
-    my_list_of_integers = List[Int](1, 2, 3, 4, 5)
+    my_list_of_integers = [1, 2, 3, 4, 5]
     first_element = my_list_of_integers[0]  # Accessing the first element
-    sliced_list = my_list_of_integers[0:3]  # Slicing the first three elements
+    last_element = my_list_of_integers[-1]  # Accessing the last element
+```
+
+You can also **slice** an existing `List`, just like in Python. However, list slicing returns a `Span` type, which is a view of the original list. A "view" means that it looks into the same memory location as the original list, which is a "cheap" way to access a portion of the list without copying the elements. Modifying the elements in the sliced view will also modify the corresponding elements in the original list, and vice versa.
+
+You can convert a `Span` to a `List` by using the `List()` constructor. Note that the new list is independent of the original list, and modifying the elements in the new list will not affect the corresponding elements in the original list, and vice versa. For example,
+
+```mojo
+def main():
+    my_list_of_integers = [1, 2, 3, 4, 5]
+    sliced_list_as_view = my_list_of_integers[0:3]  # Slicing the first three elements as view
+    sliced_list_as_copy = List(sliced_list_as_view)  # Converting the view to a new list
 ```
 
 ### Extend or concat a list
@@ -239,7 +256,7 @@ You can **append** elements to the end of a `List` in Mojo using the `append()` 
 
 ```mojo
 def main():
-    my_list_of_integers = List[Int](1, 2, 3, 4, 5)
+    my_list_of_integers = [1, 2, 3, 4, 5]
     my_list_of_integers.append(6)  # Appending a new element
 # my_list_of_integers = [1, 2, 3, 4, 5, 6]
 ```
@@ -248,8 +265,8 @@ You can use the `+` operator to concatenate two `List` objects, just like in Pyt
 
 ```mojo
 def main():
-    first_list = List[Int](1, 2, 3)
-    second_list = List[Int](4, 5, 6)
+    first_list: List[Int] = [1, 2, 3]
+    second_list: List[Int] = [4, 5, 6]
     concatenated_list = first_list + second_list  # Concatenating two lists
 # concatenated_list = [1, 2, 3, 4, 5, 6]
 ```
@@ -368,7 +385,7 @@ Before Mojo v25.4, the iteration over a `List` in Mojo would return **a pointer 
 # This code is valid until Mojo v25.3
 # It will not compile in Mojo v25.4 and later versions.
 def main():
-    my_list = List[Int](1, 2, 3, 4, 5)
+    my_list: List[Int] = [1, 2, 3, 4, 5]
     for i in my_list:  # `i` is a safe pointer to the element
         print(i[], end=" ")  # De-referencing the element to get its value
 ```
@@ -389,10 +406,12 @@ For the difference between a pointer and a reference, please refer to Chapter [R
 
 ### Print a list
 
-You cannot print the `List` object directly in Mojo (at least at the moment). This is because the `List` type does not implement the `Writable` trait, which is required for printing. To print a `List`, you have to write your own auxiliary function.
+You can print a `List` object directly in Mojo with the built-in `print()` function. However, the output may be verbose for some types of lists, such as a list of floats.
+
+See the following example where we print lists with the built-in `print()` function and with custom print functions:
 
 ```mojo
-# src/basic/types/list_printing.mojo
+# src/basic/composite/list_printing.mojo
 def print_list_of_floats(array: List[Float64]):
     print("[", end="")
     for i in range(len(array)):
@@ -400,6 +419,7 @@ def print_list_of_floats(array: List[Float64]):
             print(array[i], end=", ")
         else:
             print(array[i], end="]\n")
+
 
 def print_list_of_strings(array: List[String]):
     print("[", end="")
@@ -409,16 +429,48 @@ def print_list_of_strings(array: List[String]):
         else:
             print(array[i], end="]\n")
 
+
 def main():
-    var my_list_of_floats = List[Float64](0.125, 12.0, 12.625, -2.0, -12.0)
-    var my_list_of_strings = List[String]("Mojo", "is", "awesome")
+    var my_list_of_floats: List[Float64] = [0.125, 12.0, 12.625, -2.0, -12.0]
+    var my_list_of_strings: List[String] = ["Mojo", "is", "awesome"]
+    print("Printing lists directly with built-in print():")
+    print(my_list_of_floats)
+    print(my_list_of_strings)
+    print()
+    print("Printing lists using custom print functions:")
     print_list_of_floats(my_list_of_floats)
     print_list_of_strings(my_list_of_strings)
 ```
 
+The output would be:
+
+```console
+Printing lists directly with built-in print():
+[SIMD[DType.float64, 1](0.125), SIMD[DType.float64, 1](12.0), SIMD[DType.float64, 1](12.625), SIMD[DType.float64, 1](-2.0), SIMD[DType.float64, 1](-12.0)]
+['Mojo', 'is', 'awesome']
+
+Printing lists using custom print functions:
+[0.125, 12.0, 12.625, -2.0, -12.0]
+[Mojo, is, awesome]
+```
+
+Note that the output of the built-in `print()` function is verbose for the list of floats, while it is concise for the list of strings. If you want to print the list of floats in a more concise way, you should define a custom `print_list_of_floats()` function as we defined above.
+
 ::: info `print_lists()` function
 
 We have already seen this auxiliary function in Chapter [Convert Python code into Mojo](../move/examples.md). We will use this kinds of functions to print lists in the following chapters as well.
+
+:::
+
+::: details You cannot print a list via `print()` function before Mojo v0.26.1
+
+Before v0.26.1, you can not print a list at all. You will get an error message like:
+
+```console
+error: invalid call to 'print': could not deduce parameter 'Ts' of callee 'print'
+    print("Input array:", array)
+    ~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+```
 
 :::
 
@@ -547,14 +599,14 @@ Let's take a closer look at how a Mojo `List` is stored in the memory with a sim
 
 ```mojo
 def main():
-    var me = List[UInt8](89, 117, 104, 97, 111)
+    var me: List[UInt8] = [89, 117, 104, 97, 111]
     print(me.capacity)
     for i in me:
-        print(chr(Int(i[])), end="")
+        print(chr(Int(i)), end="")
 # Output: Yuhao
 ```
 
-When you create a `List` with `List[UInt8](89, 117, 104, 97, 111)`, Mojo will first allocate a continuous block of memory on **stack** to store the three fields (`_data: Pointer`, `_len: Int` and `capacity: Int`, each of which is 8 bytes long on a 64-bit system. Because we passed 5 elements to the `List` constructor, the `_len` field will be set to 5, and the `capacity` field will also be set to 5 (default setting, `capacity = _len`).
+When you create a `List` with `List[UInt8]([89, 117, 104, 97, 111])`, Mojo will first allocate a continuous block of memory on **stack** to store the three fields (`_data: Pointer`, `_len: Int` and `capacity: Int`, each of which is 8 bytes long on a 64-bit system. Because we passed 5 elements to the `List` constructor, the `_len` field will be set to 5, and the `capacity` field will also be set to 5 (default setting, `capacity = _len`).
 
 Then Mojo will allocate a continuous block of memory on **heap** to store the actual values of the elements of the list, which is 1 bytes (8 bits) for each `UInt8` element, equaling to 5 bytes in total for 5 elements. The `_data` field will then store the address of the first byte in this block of memory.
 
@@ -563,7 +615,7 @@ The following figure illustrates how the `List` is stored in the memory. You can
 ```console
 # Mojo Miji - Data types - List in memory
 
-        local variable `me = List[UInt8](89, 117, 104, 97, 111)`
+        local variable `me: List[UInt8] = [89, 117, 104, 97, 111]`
             ↓  (meta data on stack)
         ┌────────────────┬────────────┬────────────┐
 Field   │ _data          │ _len       │ capacity   │
@@ -613,27 +665,28 @@ Mojo's `Dict` type is similar to Python's `dict` type, Rust's `HashMap` type, C#
 
 The table below compares Mojo's `Dict` with Python's `dict`:
 
-| Functionality      | Mojo `Dict`                | Python `dict`                         |
-| ------------------ | -------------------------- | ------------------------------------- |
-| Type of elements   | Homogeneous type           | Heterogenous types                    |
-| Mutability         | Mutable                    | Mutable                               |
-| Initialization     | `Dict[Type, Type]()`       | `dict()` or `{}`                      |
-| Unique keys        | Yes                        | Yes                                   |
-| Unique values      | No                         | No                                    |
-| Key-value mapping  | Many-to-one mapping        | Many-to-one mapping                   |
-| Ordered            | No                         | Yes (>= Python 3.7)                   |
-| Indexing           | Use brackets `[key]`       | Use brackets `[key]`                  |
-| Slicing            | No                         | No                                    |
-| Extending by items | Use `update()`             | Use `update()`                        |
-| Extending by dicts | Use `update()`             | Use `update()`                        |
-| Printing           | Not supported              | Use `print()`                         |
-| Iterating          | Use `for` loop to get keys | Use `for` loop to get key-value pairs |
-| Iterator returns   | Reference to element       | Copy of element                       |
-| Shadow copy        | N.A.                       | `dct.copy()` or `copy.copy(dct)`      |
-| Deep copy          | `dct.copy()`               | `copy.deepcopy(dct)`                  |
-| Reference          | `ref` keyword              | `dct2 = dct1`                         |
-| Transfer ownership | `^` operator               | N.A.                                  |
+| Functionality      | Mojo `Dict`                  | Python `dict`                         |
+| ------------------ | ---------------------------- | ------------------------------------- |
+| Type of elements   | Homogeneous type             | Heterogenous types                    |
+| Mutability         | Mutable                      | Mutable                               |
+| Initialization     | `Dict[Type, Type]()` or `{}` | `dict()` or `{}`                      |
+| Unique keys        | Yes                          | Yes                                   |
+| Unique values      | No                           | No                                    |
+| Key-value mapping  | Many-to-one mapping          | Many-to-one mapping                   |
+| Ordered            | No                           | Yes (>= Python 3.7)                   |
+| Indexing           | Use brackets `[key]`         | Use brackets `[key]`                  |
+| Slicing            | No                           | No                                    |
+| Extending by items | Use `update()`               | Use `update()`                        |
+| Extending by dicts | Use `update()`               | Use `update()`                        |
+| Printing           | Use `print()`                | Use `print()`                         |
+| Iterating          | Use `for` loop to get keys   | Use `for` loop to get key-value pairs |
+| Iterator returns   | Reference to element         | Copy of element                       |
+| Shadow copy        | N.A.                         | `dct.copy()` or `copy.copy(dct)`      |
+| Deep copy          | `dct.copy()`                 | `copy.deepcopy(dct)`                  |
+| Reference          | `ref` keyword                | `dct2 = dct1`                         |
+| Transfer ownership | `^` operator                 | N.A.                                  |
 
 ## Main changes in this chapter
 
 - 2025-09-25: Update to accommodate the changes in Mojo v0.25.6.
+- 2026-02-28: Update to accommodate the changes in Mojo v0.26.1.

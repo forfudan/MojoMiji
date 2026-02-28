@@ -58,4 +58,4 @@ In future, when Mojo's trait are enhanced, slicing will returns a view of the da
 | `__getitem__`     | *Slice               | yes   | yes    | Same ndim as input   |
 | `__getitem__`     | *Variant[Slice, Int] | yes   | yes    | Same or smaller ndim |
 | `__getitem__`     | NDArray[DType.bool]  | no    | no     | Items of buffer      |
-| `__getitem__`     | NDArray[DType.index] | no    | no     | Items of buffer      |
+| `__getitem__`     | NDArray[DType.int]   | no    | no     | Items of buffer      |

@@ -148,18 +148,26 @@ Let's start with a simple example. Suppose we want to define a `Point` struct th
 1. **Traits**: Traits that define common behavior for types that can be used with the `Point` struct.
 1. **Structs**: The main `Point` struct that implements a point type and conforms to the customized trait.
 
-::: tip `alias` keyword
+::: tip `comptime` keyword
 
-The `alias` keyword is used to define **type aliases** or **value aliases** in Mojo. It allows you to create a new name for an existing type or value, making your code more readable and understandable.
+The `comptime` keyword is used to define **type aliases** or **value aliases** at compile time in Mojo. It allows you to create a new name for an existing type or value, making your code more readable and understandable.
 
-The syntax for defining alias is `alias Name = Type` or `alias name = value`. These aliases are replaced with the actual type or value at compile time, so they will be constant at the runtime.
+The syntax for defining alias is `comptime Name = Type` or `comptime name = value`. These aliases are replaced with the actual type or value at compile time, so they will be constant at the runtime.
 
 Usually, we define aliases for **commonly used types or values**. For example, the following built-in types of Mojo are actually type aliases:
 
 - `Float64` is a type alias for `SIMD[DType.float64, 1]`, which represents a 64-bit floating-point SIMD with size 1.
 - `Byte` and `UInt8` are both type aliases for `SIMD[DType.uint8, 1]`, which represents an 8-bit unsigned integer SIMD with size 1.
 
-You can also define value aliases, which are constants that can be used throughout your code. For example, you can define an alias for the mathematical constant pi (π) as `alias PI = 3.14159`. During compilation, this alias `PI` will be replaced with the value `3.14159`.
+You can also define value aliases, which are constants that can be used throughout your code. For example, you can define an alias for the mathematical constant pi (π) as `comptime PI = 3.14159`. During compilation, this alias `PI` will be replaced with the value `3.14159`.
+
+:::
+
+::: details `alias` vs `comptime`
+
+Before Mojo v0.25.7, the keyword `alias` was used to define type aliases and value aliases. However, starting from v0.25.7, the `comptime` keyword is used instead of `alias` for defining both type aliases and value aliases. The reason for this change is that the `comptime` keyword more accurately reflects the fact that these aliases are evaluated at compile time, rather than being simple aliases that can be changed at runtime.
+
+You receive a warning if you use the `alias` keyword from Mojo v0.26.1.
 
 :::
 
@@ -178,11 +186,11 @@ from memory import UnsafePointer
 import math
 
 # ===----------------------------------------------------------------------=== #
-# Aliases (known at compiled time)
+# Type or value aliases known at compiled time
 # ===----------------------------------------------------------------------=== #
-alias FourByteFloat = SIMD[DType.float64, 1]
-"""Alias for a 4-byte float (double precision)."""
-alias PI = 3.14159
+comptime EightByteFloat = SIMD[DType.float64, 1]
+"""Alias for a 8-byte float (double precision)."""
+comptime PI = 3.14159
 """Alias for the mathematical constant pi (π)."""
 
 # ===----------------------------------------------------------------------=== #
@@ -195,7 +203,7 @@ fn print_address(a: Point):
     print("Memory address of the point:", String(ptr))
 
 
-fn distance[T: Distanceable](item: T) -> FourByteFloat:
+fn distance[T: Distanceable](item: T) -> EightByteFloat:
     """Calculates the distance."""
     return item.__distance__()
 
@@ -214,18 +222,18 @@ trait Distanceable:
 struct Point(Distanceable):
     """A point in 2D space."""
 
-    var x: FourByteFloat
-    var y: FourByteFloat
+    var x: EightByteFloat
+    var y: EightByteFloat
 
-    fn __init__(out self, x: FourByteFloat, y: FourByteFloat):
+    fn __init__(out self, x: EightByteFloat, y: EightByteFloat):
         self.x = x
         self.y = y
 
-    fn __distance__(self) -> FourByteFloat:
+    fn __distance__(self) -> EightByteFloat:
         """Calculates the distance from the origin (0, 0)."""
         return math.sqrt(self.x * self.x + self.y * self.y)
 
-    fn area(self) -> FourByteFloat:
+    fn area(self) -> EightByteFloat:
         """Calculates the area of a circle with this point as the radius."""
         return PI * distance(self) * distance(self)
 ```
