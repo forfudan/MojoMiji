@@ -402,7 +402,7 @@ Complex number c1: 3.0+4.0i
 Complex number c2: 1.0-2.0i
 Complex number c3: 0.0+0.0i
 c1 + c2 = 4.0+2.0i
-c1 - c2 = 2.0+6.0if
+c1 - c2 = 2.0+6.0i
 c1 * c2 = 11.0-2.0i
 c1 / c2 = -1.0+2.0i
 c1 + c3 = 3.0+4.0i

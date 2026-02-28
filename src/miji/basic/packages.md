@@ -167,7 +167,7 @@ You can also define value aliases, which are constants that can be used througho
 
 Before Mojo v0.25.7, the keyword `alias` was used to define type aliases and value aliases. However, starting from v0.25.7, the `comptime` keyword is used instead of `alias` for defining both type aliases and value aliases. The reason for this change is that the `comptime` keyword more accurately reflects the fact that these aliases are evaluated at compile time, rather than being simple aliases that can be changed at runtime.
 
-You received a warning if you use the `alias` keyword from Mojo v0.26.1.
+You receive a warning if you use the `alias` keyword from Mojo v0.26.1.
 
 :::
 

@@ -213,7 +213,7 @@ Here, the `[a]` in `ref [a] String` means that the values of `b` and `c` are ori
 
 ## Parameterized lifetime
 
-You can see from the preious section that, when you look at the type information of the pointer variable `d`, it is `Pointer[String, a]`. This means that the pointer variable `d` carries the information on the original owner `a` as a **parameter**.
+You can see from the previous section that, when you look at the type information of the pointer variable `d`, it is `Pointer[String, a]`. This means that the pointer variable `d` carries the information on the original owner `a` as a **parameter**.
 
 This way of tracking the original owner of a value as a parameter of the child types is called **parameterized lifetime**.
 
@@ -226,12 +226,12 @@ var c = Pointer[type=String, origin = origin_of(a)](to=a)
 var d = Pointer[type=String, origin = origin_of(b)](to=b)
 ```
 
-What happens within in the Mojo compile can be summarized as follows:
+What happens within in the Mojo compiler can be summarized as follows:
 
-- First, the the compiler extract the parameters and expand your code. The variable `c` is now of a type `Pointer_String_Origin_a`, and the variable `d` is of a type `mojo_Pointer_String_Origin_b`.
-- Then, the compiler will check the ownership rules. It knows that `c` is binded to the original owner `a`, and `d` is binded to the original owner `b`. It will ensure that the lifetime of `c` is not longer than `a`, and the lifetime of `d` is not longer than `b`.
+- First, the the compiler extracts the parameters and expand your code. The variable `c` is now of a type `Pointer_String_Origin_a`, and the variable `d` is of a type `mojo_Pointer_String_Origin_b`.
+- Then, the compiler will check the ownership rules. It knows that `c` is bound to the original owner `a`, and `d` is bound to the original owner `b`. It will ensure that the lifetime of `c` is not longer than `a`, and the lifetime of `d` is not longer than `b`.
 
-Note that, although `c` and `d` are both "a safe pointer to a string type", they are actually different types in Mojo because the lifetime information of them differes. So the following code will not compile:
+Note that, although `c` and `d` are both "a safe pointer to a string type", they are actually different types in Mojo because the lifetime information of them differs. So the following code will not compile:
 
 ```mojo
 # src/advanced/lifetimes/copy_values_of_different_origins.mojo
@@ -244,11 +244,11 @@ fn main():
     var c = Pointer[type=String, origin = origin_of(a)](to=a)
     var d = Pointer[type=String, origin = origin_of(b)](to=b)
     c = d
-``
+```
 
 You will receive an error message like this:
 
-```console 
+```console
 error: cannot implicitly convert 'Pointer[String, b]' value to 'Pointer[String, a]'
     c = d
 ```

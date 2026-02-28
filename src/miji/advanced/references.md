@@ -491,7 +491,7 @@ def main():
     print("The 1st item of the list is '", lst[0], "'", sep="")
     var val = return_first_element_as_copy(lst)
     val = String("Miji")
-    print("The 1st item of the list is now '", lst[0], "'", sep="")
+    print("The 1st item of the list is '", lst[0], "' now", sep="")
 ```
 
 :::

@@ -63,7 +63,7 @@ The table below summarizes the integer types in Mojo and corresponding integer t
 | `Int32`              | `numpy.int32`    | 32-bit signed integer. Range: -2147483648 to 2147483647.    |
 | `Int64`              | `numpy.int64`    | 64-bit signed integer. Range: -2^63 to 2^63-1.              |
 | `Int128`             | `decimo.Int128`  | 128-bit signed integer. Range: -2^127 to 2^127-1.           |
-| `Int256`             | `decimo.Int256`  | 256-bit signed integer. Range: -2^256 to 2^256-1.           |
+| `Int256`             | `decimo.Int256`  | 256-bit signed integer. Range: -2^255 to 2^255-1.           |
 | `UInt`               | `numpy.uintp`    | 32-bit or 64-bit unsigned integer, depending on the system. |
 | `UInt8`              | `numpy.uint8`    | 8-bit unsigned integer. Range: 0 to 255.                    |
 | `UInt16`             | `numpy.uint16`   | 16-bit unsigned integer. Range: 0 to 65535.                 |
