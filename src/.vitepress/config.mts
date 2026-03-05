@@ -86,13 +86,13 @@ export default defineConfig({
             //   text: 'Install magic (being deprecated)', link: '/miji/start/magic'
             // },
             {
-              text: 'Install pixi and extension', link: '/miji/start/pixi'
+              text: '1 Install pixi and extension', link: '/miji/start/pixi'
             },
             {
-              text: 'Initiate Mojo project', link: '/miji/start/project'
+              text: '2 Initiate Mojo project', link: '/miji/start/project'
             },
             {
-              text: 'My first Mojo program', link: '/miji/start/hello'
+              text: '3 My first Mojo program', link: '/miji/start/hello'
             }
           ],
         },
@@ -101,13 +101,13 @@ export default defineConfig({
           link: '/miji/move/move',
           items: [
             {
-              text: 'Convert Python code into Mojo', link: '/miji/move/examples'
+              text: '4 Convert Python code into Mojo', link: '/miji/move/examples'
             },
             {
-              text: 'Things that are in common', link: '/miji/move/common'
+              text: '5 Things that are in common', link: '/miji/move/common'
             },
             {
-              text: 'Things that are different', link: '/miji/move/different'
+              text: '6 Things that are different', link: '/miji/move/different'
             },
           ],
         },
@@ -116,65 +116,68 @@ export default defineConfig({
           link: '/miji/basic/basic',
           items: [
             {
-              text: 'Variables', link: '/miji/basic/variables',
+              text: '7 Variables', link: '/miji/basic/variables',
             },
             {
-              text: 'Copy and move', link: '/miji/basic/copy',
+              text: '8 Copy and move', link: '/miji/basic/copy',
             },
             {
-              text: 'Data types - basic', link: '/miji/basic/types',
+              text: '9 Data types - basic', link: '/miji/basic/types',
             },
             {
-              text: 'Data types - composite', link: '/miji/basic/composite',
+              text: '10 Data types - composite', link: '/miji/basic/composite',
             },
             {
-              text: 'Data type - string', link: '/miji/basic/string',
+              text: '11 Data type - string', link: '/miji/basic/string',
             },
             {
-              text: 'Literals and type inference', link: '/miji/basic/literal',
+              text: '12 Literals and type inference', link: '/miji/basic/literal',
             },
             {
-              text: 'Functions', link: '/miji/basic/functions',
+              text: '13 Functions', link: '/miji/basic/functions',
             },
             {
-              text: 'Operators and assignment', link: '/miji/basic/operators',
+              text: '14 Operators and assignment', link: '/miji/basic/operators',
             },
             {
-              text: 'Control flows', link: '/miji/basic/control',
+              text: '15 Control flows', link: '/miji/basic/control',
             },
             {
-              text: "Error handling and raises", link: '/miji/basic/errors',
+              text: "16 Error handling and raises", link: '/miji/basic/errors',
             },
             {
-              text: 'Structs', link: '/miji/basic/structs',
+              text: '17 Structs', link: '/miji/basic/structs',
             },
             {
-              text: "Modules and packages", link: '/miji/basic/packages',
+              text: "18 Modules and packages", link: '/miji/basic/packages',
             },
+            {
+              text: '19 Use Python in Mojo', link: '/miji/basic/py4mojo',
+            }
           ],
         },
         {
           text: 'PART IV: ADVANCED MOJO', link: '/miji/advanced/advanced',
           items: [
             {
-              text: 'Data type - SIMD', link: '/miji/advanced/simd',
+              text: '20 Data type - SIMD', link: '/miji/advanced/simd',
             },
             {
-              text: 'Parameterization', link: '/miji/advanced/parameterization',
+              text: '21 Parameterization', link: '/miji/advanced/parameterization',
             },
             {
-              text: 'Generic and traits', link: '/miji/advanced/generic',
+              text: '22 Generic and traits', link: '/miji/advanced/generic',
             },
             {
-              text: 'Ownership',
+              text: '23 Ownership',
               link: '/miji/advanced/ownership'
             },
             {
-              text: 'References and pointers',
+              text: '24 References and pointers',
               link: '/miji/advanced/references'
             },
             {
-              text: 'Lifetimes and origins',
+              text: '25 Lifetimes and origins',
               link: '/miji/advanced/lifetimes'
             }
           ]
@@ -183,11 +186,11 @@ export default defineConfig({
           text: 'PART V: APPLY MOJO', link: '/miji/apply/apply',
           items: [
             {
-              text: 'Design of MatMojo library',
+              text: '26 Design of MatMojo library',
               link: '/miji/apply/design'
             },
             {
-              text: 'Make it work',
+              text: '27 Make it work',
               link: '/miji/apply/work'
             },
           ]
@@ -196,11 +199,11 @@ export default defineConfig({
           text: 'PART VI: EXTEND MOJO', link: '/miji/extend/extend',
           items: [
             {
-              text: 'Arbitrary-precision numbers',
+              text: '28 Arbitrary-precision numbers',
               link: '/miji/extend/decimo'
             },
             {
-              text: 'Multi-dimensional arrays',
+              text: '29 Multi-dimensional arrays',
               link: '/miji/extend/numojo'
             },
           ]

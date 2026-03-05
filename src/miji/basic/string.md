@@ -1,6 +1,6 @@
 # Data type - String
 
-> There are a thousand string types in a thousand people's eyes.
+> There are a thousand string types in a thousand people's eyes.  
 > -- Yuhao Zhu, _Gate of Heaven_
 
 String is one of the most important concepts in programming languages, but also one of the most controversial ones. On the one hand, the "string" is able to store or represent the texts of almost all human languages. On the other hand, it is also a source of confusion and frustration for many programmers, especially when it comes to how to encode, decode, and manipulate strings. In a thousand people's eyes, there are a thousand different ways to implement a string type as well as its functionalities. Thus, some people even think that the string type should not be a built-in type in programming languages, but rather be in third-party libraries that can be implemented in different ways.
