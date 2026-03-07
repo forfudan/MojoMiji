@@ -147,6 +147,55 @@ This policy is both safe and efficient:
 
 :::
 
+## Object lifetime vs binding lifetime
+
+I believe that, if you understand the previous example, you have already some basic understanding of the concept of lifetime. Now, let's discuss the two types of lifetime: Object lifetime and binding lifetime.
+
+- **Object lifetime** refers to the period during which the value of a variable is created and destroyed in memory. It is determined by when the variable is initialized and when it goes out of scope or is lastly used.
+- **Binding lifetime** refers to the period during which a variable binding (name, reference, or pointer) is valid. It is determined by the scope in which the binding is declared.
+
+In short, the object lifetime is about the value, while the binding lifetime is about how we access the value.
+
+Most of memory issues happen when the object lifetime **mismatches** with the binding lifetime. For example, if you have a reference that is still alive (binding lifetime) but the object has been destroyed (object lifetime), then you will have a dangling reference, which can lead to undefined behavior if you try to access it. For example, consider an String object with the name `a` that is created at time t3 and destroyed at time t7. We also have some references `b`, `c`, `d`, and `e` to `a` that are created at different times and used at different times. The timeline of the object lifetime and the binding lifetime can be illustrated as follows:
+
+```txt
+t1: reference `b` to `a` is created
+t2: reference `b` is used
+t3: String object is created, with the name `a`
+t4: reference `c` to `a` is created
+t5: reference `c` is used
+t6: reference `d` to `a` is created
+t7: String object is destroyed
+t8: reference `e` to `a` is created
+t9: reference `d` is used
+t10: reference `e` is used
+
+time →   t1  t2  t3  t4  t5  t6  t7  t8  t9  t10
+object           └───────────────┘
+a                └───────────────┘
+b        └───┘
+c                    └───┘
+d                            └───────────┘
+e                                    └───────┘
+```
+
+In this timeline, we can see an object life time: a String object with the name `a` is created at time t3 and destroyed at time t7. We also have some binding lifetimes: `b` is created at time t1 and used at time t2, `c` is created at time t4 and used at time t5, `d` is created at time t6 and used at time t9, and `e` is created at time t8 and used at time t10. (Of course, the variable name `a` is also a binding, but we can ignore it for simplicity.)
+
+Here, we can see some mismatches between the object lifetime and the binding lifetime:
+
+1. The binding `b` is created and used before the object `a` is created. This means that `b` is assessing or storing a memory address that has not been allocated yet, which can lead to undefined behavior if you try to access it. This is a case of **use before initialization**.
+1. The binding `c` is created after the object `a` is created, but it is used before the object `a` is destroyed. This means that `c` is valid and can access the value of `a`, which is fine.
+1. The binding `d` is created after the object `a` is created, but it is used after the object `a` is destroyed. This means that `d` is a dangling reference, which can lead to undefined behavior if you try to access it. This is a case of **use after free**.
+1. The binding `e` is created after the object `a` is destroyed, which means that it is also a dangling reference, and it can lead to undefined behavior if you try to access it. This is another case of **use after free**.
+
+To be safe, we should ensure that the object lifetime always **covers** the binding lifetime. This is also the philosophy of the lifetime system of Mojo: The owner of a value must outlive all the borrowers of that value. In other words, the object lifetime must last longer than the binding lifetime.
+
+As long as you are using **Safe Mojo**, the compiler will always track the object lifetime and the binding lifetime, and it will ensure that the object lifetime always covers the binding lifetime. If there is any mismatch between the two types of lifetime, a compilation error will be raised.
+
+---
+
+For Pythonistas and many other programmers, we often implicitly assume that the object lifetime is the same as the binding lifetime, since we seldom need to manually manage the memory. For other programmers who have experience with C/C++, they may be more aware of the difference between the two types of lifetime, since they need to manually manage memory. No matter which type of programmers you are, it is important to understand the difference between object lifetime and binding lifetime, because it can help you to better understand why Mojo's lifetime system is designed the way it is, and how to use it effectively in your code.
+
 ## Tracking lifetimes of origins
 
 How does Mojo ensure, in the last example, that the lifetime of `x` is extended until all its references are lastly used? The answer is **to track the lifetime of the original owner in its references and safe pointers**.
