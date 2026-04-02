@@ -188,8 +188,6 @@ As your project grows, you may want to add some other directories to hold the do
 1. `tests/`: a directory that contains the test cases for the project.
 1. `benches/`: a directory that contains the benchmark tests for the project.
 
-[[toc]]
-
 ## Initiate the project
 
 After a general design of the library, we can start to implement it. We will first try to **make it work**: to implement the basic functionalities of the matrix type.

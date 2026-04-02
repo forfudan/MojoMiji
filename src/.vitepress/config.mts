@@ -61,8 +61,7 @@ export default defineConfig({
   themeConfig: {
     logo: '/icon.png',
     nav: [
-      { text: 'List of Mojo resources', link: '/miji/misc/resources' },
-      { text: 'Repo of programs in this Miji', link: 'https://github.com/forfudan/my-first-mojo-project' },
+      { text: 'Repo of example programs in this Miji', link: 'https://github.com/forfudan/my-first-mojo-project' },
     ],
     logoLink: {
       link: 'https://mojo-lang.com/miji',
@@ -186,12 +185,12 @@ export default defineConfig({
           text: 'PART V: APPLY MOJO', link: '/miji/apply/apply',
           items: [
             {
-              text: '26 Design of MatMojo library',
-              link: '/miji/apply/design'
+              text: '26 Calendar app in Mojo',
+              link: '/miji/apply/calendar'
             },
             {
-              text: '27 Make it work',
-              link: '/miji/apply/work'
+              text: '27 Matrix library in Mojo',
+              link: '/miji/apply/matrix'
             },
           ]
         },
