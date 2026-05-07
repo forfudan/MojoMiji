@@ -205,7 +205,7 @@ The main difference is that you have to de-reference the `Pointer` to access the
 If an argument is declared in the function signature with the keyword `read`, then a read-only reference of the value is passed into the function. If we apply our [conceptual model of variables](../basic/variables.md#conceptual-model-of-mojo-variables), the following things will happen:
 
 1. The argument will get the same address as the variable you passed into the function, so it can access the value at that address.
-1. The value at the address is marked as "immutable", meaning that you cannot change the it within the function. The value of the variable outside the function will thus be protected from being modified.
+1. The value at the address is marked as "immutable", meaning that you cannot change it within the function. The value of the variable outside the function will thus be protected from being modified.
 
 Notably, you cannot use the `read` keyword to define a immutable reference in the **local scope**. For example, the following code will not compile:
 

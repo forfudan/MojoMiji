@@ -461,7 +461,7 @@ There are some other proposals for this keyword, such as `immut`.
 If an argument is declared with the keyword `read`, then a read-only reference of the value is passed into the function. If we apply our [conceptual model of variables](../basic/variables.md#conceptual-model-of-mojo-variables), the following things will happen:
 
 1. The argument will get the same address as the variable you passed into the function, so it can access the value at that address.
-1. The value at the address is marked as "immutable", meaning that you cannot change the it within the function. The value of the variable outside the function will thus be protected from being modified.
+1. The value at the address is marked as "immutable", meaning that you cannot change it within the function. The value of the variable outside the function will thus be protected from being modified.
 
 If we apply the [four-status model of ownership](../advanced/ownership.md#four-statuses-of-ownership) introduced in Chapter [Ownership](../advanced/ownership.md) later, this means that a **immutable referenced status** is created.
 
