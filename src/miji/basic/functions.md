@@ -585,11 +585,11 @@ Before change:    variable `x` is of the value 10 and the address 0x16b6a8fb0
 
 Let's use a diagram to illustrate what happens in the memory when you run the code.
 
-First, you create variable with the name `x` and type `Int8,` and assign value `5` to it. Mojo assigns a space in the memory, which is of 1-byte (8-bit) length at the address `16b6a8fb0` and store the value `5` as `00000100` (binary representation) at the address. See the following illustration.
+First, you create variable with the name `x` and type `Int8,` and assign value `5` to it. Mojo assigns a space in the memory, which is of 1-byte (8-bit) length at the address `16b6a8fb0` and store the value `5` as `00000101` (binary representation) at the address. See the following illustration.
 
 ```console
         ┌─────────┬─────────┬─────────┬─────────┬─────────┬─────────┐
-Value   │         │         │ 00000100│         │         │         │
+Value   │         │         │ 00000101│         │         │         │
         ├─────────┼─────────┼─────────┼─────────┼─────────┼─────────┤
 Address │16b6a8fae│16b6a8faf│16b6a8fb0│16b6a8fb1│16b6a8fb2│16b6a8fb3│
         └─────────┴─────────┴─────────┴─────────┴─────────┴─────────┘
@@ -603,7 +603,7 @@ Next, you pass this value into the function `changeit()` with the `mut` keyword.
                         argument `a` (Int8): Mutable reference of x
                                  ↓
         ┌─────────┬─────────┬─────────┬─────────┬─────────┬─────────┐
-Value   │         │         │ 00000100│         │         │         │
+Value   │         │         │ 00000101│         │         │         │
         ├─────────┼─────────┼─────────┼─────────┼─────────┼─────────┤
 Address │16b6a8fae│16b6a8faf│16b6a8fb0│16b6a8fb1│16b6a8fb2│16b6a8fb3│
         └─────────┴─────────┴─────────┴─────────┴─────────┴─────────┘
