@@ -641,7 +641,7 @@ Address │16b6a8fae│16b6a8faf│16b6a8fb0│16b6a8fb1│16b6a8fb2│16b6a8fb3
 
 You can modify the value of passed-in variable at its original address if you use `mut` keyword. It is similar to Rust's mutable reference, e.g., `fn foo(a: &mut i8)`. But keep in mind that the reference in Mojo is more an alias than a safe pointer, which means a de-referencing is not needed. We will cover this topic in detail in Chapter [Ownership](../advanced/ownership) and [Reference system](../advanced/references).
 
-Let's re-write teh previous example in Rust for comparison.
+Let's re-write the previous example in Rust for comparison.
 
 ::: code-group
 
