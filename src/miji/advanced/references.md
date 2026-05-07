@@ -408,11 +408,11 @@ You will see that:
 
 Let's use a diagram to illustrate what happens in the memory when you run the code.
 
-First, you create variable with the name `x` and type `Int8` and assign value `5` to it. Mojo assigns a space in the memory, which is of 1-byte (8-bit) length at the address `16bb384f7`, and then store the value `5` as `00000100` (binary representation) at the address. See the following illustration.
+First, you create variable with the name `x` and type `Int8` and assign value `5` to it. Mojo assigns a space in the memory, which is of 1-byte (8-bit) length at the address `16bb384f7`, and then store the value `5` as `00000101` (binary representation) at the address. See the following illustration.
 
 ```console
         ┌─────────┬─────────┬─────────┬─────────┐
-Value   │         │         │ 00000100│         │
+Value   │         │         │ 00000101│         │
         ├─────────┼─────────┼─────────┼─────────┤
 Address │16bb384f5│16bb384f6│16bb384f7│16bb384f8│
         └─────────┴─────────┴─────────┴─────────┘
@@ -420,13 +420,13 @@ Address │16bb384f5│16bb384f6│16bb384f7│16bb384f8│
                           variable `x` (Int8)
 ```
 
-Next, you pass this variable `x` into the function `changeit()` with the `var` keyword. Mojo will then copy the value (`0b00000100`) to a new address `0x16bb38510`, and let the argument `a` to own this new value and the address. These two variables are completely isolated from each other. See the following illustration.
+Next, you pass this variable `x` into the function `changeit()` with the `var` keyword. Mojo will then copy the value (`0b00000101`) to a new address `0x16bb38510`, and let the argument `a` to own this new value and the address. These two variables are completely isolated from each other. See the following illustration.
 
 ```console
                                                                 argument `a` (Int8)
                                                                          ↓
         ┌─────────┬─────────┬─────────┬─────────┬─────────┬─────────┬─────────┬─────────┐
-Value   │         │         │ 00000100│         │         │         │ 00000100│         │
+Value   │         │         │ 00000101│         │         │         │ 00000101│         │
         ├─────────┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┤
 Address │16bb384f5│16bb384f6│16bb384f7│16bb384f8│   ...   │16bb38509│16bb38510│16bb38511│
         └─────────┴─────────┴─────────┴─────────┴─────────┴─────────┴─────────┴─────────┘
@@ -440,7 +440,7 @@ Then, you re-assign a value `10` to the `a`. Since `a` is marked as **owned**, i
                                                                 argument `a` (Int8)
                                                                          ↓
         ┌─────────┬─────────┬─────────┬─────────┬─────────┬─────────┬─────────┬─────────┐
-Value   │         │         │ 00000100│         │         │         │ 00001010│         │
+Value   │         │         │ 00000101│         │         │         │ 00001010│         │
         ├─────────┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┤
 Address │16bb384f5│16bb384f6│16bb384f7│16bb384f8│   ...   │16bb38509│16bb38510│16bb38511│
         └─────────┴─────────┴─────────┴─────────┴─────────┴─────────┴─────────┴─────────┘
@@ -454,7 +454,7 @@ Finally, you go out of the function `changeit()` and back to the `main()` functi
                                      The value is destroyed and the memory at the address is uninitialized
                                                                          ↓
         ┌─────────┬─────────┬─────────┬─────────┬─────────┬─────────┬─────────┬─────────┐
-Value   │         │         │ 00000100│         │         │         │         │         │
+Value   │         │         │ 00000101│         │         │         │         │         │
         ├─────────┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┤
 Address │16bb384f5│16bb384f6│16bb384f7│16bb384f8│   ...   │16bb38509│16bb38510│16bb38511│
         └─────────┴─────────┴─────────┴─────────┴─────────┴─────────┴─────────┴─────────┘
