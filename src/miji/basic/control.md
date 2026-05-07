@@ -199,7 +199,7 @@ Python is a dynamically typed language, so it does not require that the type of 
 
 In the example above where we check if a string is either `a`, `b`, or `c`, we did not handle the case where the string is **not** one of these three values. This is called a **non-exhaustive conditional**, meaning that there are some cases that are not handled by the conditional statements.
 
-While it is not a problem in the case above, however, it may cause issues in other cases, especially when you are writing a function that is supposed to return a value. If you do not exhaustively handle all possible cases, the function may return `None` implicitly, which is in consistent with the function's return type. This can lead to unexpected behavior and bugs in your code.
+While it is not a problem in the case above, however, it may cause issues in other cases, especially when you are writing a function that is supposed to return a value. If you do not exhaustively handle all possible cases, the function may return `None` implicitly, which is inconsistent with the function's return type. This can lead to unexpected behavior and bugs in your code.
 
 For example, if we modify the `check_string` function to **return a string** instead of printing it, the code would be as follows:
 
