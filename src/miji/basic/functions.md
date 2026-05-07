@@ -807,7 +807,7 @@ Function overloading is a cool feature of Mojo which does not appear in Python. 
 ::: code-group
 
 ```python
-# src/basic/functions/bigger.mojo
+# src/basic/functions/bigger.py
 def bigger(a: int, b: int | None = None) -> int:
     """Returns the bigger of one or two integers.
     
