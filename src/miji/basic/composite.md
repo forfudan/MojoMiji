@@ -56,7 +56,7 @@ In Mojo, a `List` is a mutable, variable-length sequence that can hold a collect
 | Iterator returns   | Reference to element       | Copy of element                             |
 | List comprehension | Partially supported        | Supported                                   |
 | Memory layout      | Metadata -> Elements       | Pointer -> metadata -> Pointers -> Elements |
-| Shadow copy        | N.A.                       | `list.copy()` or `copy.copy(lst)`           |
+| Shallow copy       | N.A.                       | `list.copy()` or `copy.copy(lst)`           |
 | Deep copy          | `lst.copy()`               | `copy.deepcopy(lst)`                        |
 | Reference          | `ref` keyword              | `lst2 = lst1`                               |
 | Transfer ownership | `^` operator               | N.A.                                        |
@@ -681,7 +681,7 @@ The table below compares Mojo's `Dict` with Python's `dict`:
 | Printing           | Use `print()`                | Use `print()`                         |
 | Iterating          | Use `for` loop to get keys   | Use `for` loop to get key-value pairs |
 | Iterator returns   | Reference to element         | Copy of element                       |
-| Shadow copy        | N.A.                         | `dct.copy()` or `copy.copy(dct)`      |
+| Shallow copy       | N.A.                         | `dct.copy()` or `copy.copy(dct)`      |
 | Deep copy          | `dct.copy()`                 | `copy.deepcopy(dct)`                  |
 | Reference          | `ref` keyword                | `dct2 = dct1`                         |
 | Transfer ownership | `^` operator                 | N.A.                                  |
