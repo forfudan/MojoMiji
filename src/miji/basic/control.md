@@ -1252,7 +1252,7 @@ Since a iterator has a `__iter__()` method that returns itself, we say that **an
 
 ### `range()` generates an iterator
 
-The `range()` function can generates an object that that satisfies the above conditions of an iterator, and therefore, it is also an iterable to be used in a for loop. In Mojo, a `range()` can return one of the following three types of iterators, depending on the arguments passed to it:
+The `range()` function can generates an object that satisfies the above conditions of an iterator, and therefore, it is also an iterable to be used in a for loop. In Mojo, a `range()` can return one of the following three types of iterators, depending on the arguments passed to it:
 
 1. `_ZeroStartingRange`: An iterator that starts from `0` and goes up by 1 to a specified end value.
 1. `_SequentialRange`: An iterator that starts from a specified start value and goes up by 1 to a specified end value.
