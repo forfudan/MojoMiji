@@ -67,7 +67,7 @@ The outcome of the above code shows the two scenarios:
 
 ---
 
-Therefore, we need to **re-think** about the conceptual model of the functions that may raise errors. These function does not simply return the expected type, but rather returns **either the expected type or an `Error` type**. It is a **blind box** that may contain either a value an error. You have to open the box to find out what is inside, just like what is shown in the following illustration:
+Therefore, we need to **re-think** about the conceptual model of the functions that may raise errors. These function does not simply return the expected type, but rather returns **either the expected type or an `Error` type**. It is a **blind box** that may contain either a value or an error. You have to open the box to find out what is inside, just like what is shown in the following illustration:
 
 ![result_as_blind_box.jpg](/graphs/result_as_blind_box.jpg)
 
