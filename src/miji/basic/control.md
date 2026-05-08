@@ -732,7 +732,7 @@ while condition:
     # do something
 ```
 
-The "condition" after the `while` keyword is a **boolean expression** that evaluates to `True` or `False`. If the expression is `True`, the we say that the condition is **met** and the loop will execute the code block inside the loop body. After the code block is finished, we will come again to the `while` statement and re-evaluate the condition. If the expression is still `True`, the loop will continue to execute the code block again. This process will repeat until the condition becomes `False`.
+The "condition" after the `while` keyword is a **boolean expression** that evaluates to `True` or `False`. If the expression is `True`, then we say that the condition is **met** and the loop will execute the code block inside the loop body. After the code block is finished, we will come again to the `while` statement and re-evaluate the condition. If the expression is still `True`, the loop will continue to execute the code block again. This process will repeat until the condition becomes `False`.
 
 Let's demonstrate the `while` loop with an example in both Mojo and Python. We will write a program that counts from `0` to `4` and prints each number:
 
