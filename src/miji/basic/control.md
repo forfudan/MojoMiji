@@ -1132,7 +1132,7 @@ Some people may find this logic more intuitive than a while loop, especially whe
 
 Mojo, however, **does not** have a built-in `do ... until` loop syntax. Neither does Python. But we can **simulate this logic** using a while loop with a `break` statement. This is because `break` is also a way to exit the loop early.
 
-For example, we want to find the first Fibonacci number that is greater than `1000`. In programming languages that support repeat-until logic, we can write the following code:
+For example, we want to find the first Fibonacci number that is greater than `1000000000`. In programming languages that support repeat-until logic, we can write the following code:
 
 ::: code-group
 
