@@ -1119,19 +1119,6 @@ def main():
         print(i, "at", String(Pointer(to=i)))
 ```
 
-```mojo
-def main():
-    var iterator = range(10)
-    # Create a list iterator
-    var iterator = numbers.__iter__()
-
-    # Replacement for the for loop
-    while iterator.__has_next__():
-        ref i = iterator.__next__()
-        print(i, "at", String(Pointer(to=i)))
-    # End of the replacement
-```
-
 :::
 
 ### Do-until logic with while loops
