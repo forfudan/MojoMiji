@@ -705,7 +705,7 @@ In the first for loop, we use `range(5)` to generate an iterator that gives us t
 
 In the second for loop, we use `range(3)` to generate an iterator that gives us the numbers `0`, `1`, and `2`. However, we do not use these numbers in the loop body but just use it as a **counter** to repeat the printing task three times. Because the variable `_j` is not used, we attach a underscore `_` to the variable name to indicate that it is a **disposable variable**.
 
-The `range()` function can also take two or three arguments to specify the start, stop, and step values. For example, `range(2, 6)` will generate an iterator that gives you the numbers `2`, `3`, and `6`, and `range(1, 10, 2)` will generate an iterator that gives you the numbers `1`, `3`, `5`, `7`, and `9`. Note that the `stop` value is never included in the generated sequence.
+The `range()` function can also take two or three arguments to specify the start, stop, and step values. For example, `range(2, 6)` will generate an iterator that gives you the numbers `2`, `3`, `4`, `5`, and `range(1, 10, 2)` will generate an iterator that gives you the numbers `1`, `3`, `5`, `7`, and `9`. Note that the `stop` value is never included in the generated sequence.
 
 ## While loops
 
