@@ -13,7 +13,7 @@ A struct is a composite data structure which contains multiple variables (fields
 
 Structs are used to represent (with some abstraction) the real-world entities or concepts. For example, a point with two coordinates can be represented two numerical variables, `x` and `y`. But this is not convenient to use. We want a way to access these values with in single namespace (or, we want to access these values with a single pointer). Thus, we group these two variables into a struct, which is called `Point`. We can then access the values by means of `Point.x` and `Point.y`.
 
-These idea of grouping multiple variables into a single namespace can also be extended to functions. For example, if we want to calculate the distance between a point and the origin `(0, 0)`, we can define a function `distance_from_zero()` that takes a `Point` as an argument and returns the distance:
+This idea of grouping multiple variables into a single namespace can also be extended to functions. For example, if we want to calculate the distance between a point and the origin `(0, 0)`, we can define a function `distance_from_zero()` that takes a `Point` as an argument and returns the distance:
 
 ```mojo
 def distance_from_zero(p: Point) -> Float:
