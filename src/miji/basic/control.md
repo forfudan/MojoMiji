@@ -1061,7 +1061,7 @@ Converged value: 1.0
 
 Note that every for loop can be replaced by an equivalent while loop. In other words, you can think of a for loop as a syntax sugar for a while loop.
 
-Why? Let's recall what the syntax `for i in some:` does, assuming some is an iterable object with `100` items:
+Why? Let's recall what the syntax `for i in some:` does, assuming `some` is an iterable object with `100` items:
 
 1. It create an **iterator** from the iterable object `some`.
 1. It starts the iterations over the iterator. In each iteration:
