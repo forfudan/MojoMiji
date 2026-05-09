@@ -208,6 +208,7 @@ No error message is raised, but you may notice something intriguing:
 
 - You may notice that the sizes of the SIMD that I passed to the constructor are always the power of two.
 - You may notice that, although I did not specify the size of the SIMD `d`, it still works and prints the value `1.0`.
+- You may notice that the variable `d` is printed as if it is of a `Float32` type.
 - You may notice that the fields in `DType` are very similar to the numeric data types we discussed in the previous Chapter [Data types](../basic/types.md), but they are all in lowercase.
 
 If you do, then you can find out the answer by continuing reading this chapter.
