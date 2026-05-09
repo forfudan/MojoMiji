@@ -63,7 +63,7 @@ Type    │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │
         ├────────┼────────┼────────┼────────┼────────┤
 Value   │01011001│01110101│01101000│01100001│01101111│
         ├────────┼────────┼────────┼────────┼────────┤
-Address │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│
+Address │17ca81f8│17ca81f9│17ca81fa│17ca81fb│17ca81fc│
         └────────┴────────┴────────┴────────┴────────┘
             ↓ (Iterator goes to me[0] and adds 1)
         ┌────────┬────────┬────────┬────────┬────────┐
@@ -73,7 +73,7 @@ Type    │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │
         ├────────┼────────┼────────┼────────┼────────┤
 Value   │01011010│01110101│01101000│01100001│01101111│
         ├────────┼────────┼────────┼────────┼────────┤
-Address │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│
+Address │17ca81f8│17ca81f9│17ca81fa│17ca81fb│17ca81fc│
         └────────┴────────┴────────┴────────┴────────┘
                      ↓ (Iterator goes to me[1] and adds 1)
         ┌────────┬────────┬────────┬────────┬────────┐
@@ -83,7 +83,7 @@ Type    │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │
         ├────────┼────────┼────────┼────────┼────────┤
 Value   │01011010│01110110│01101000│01100001│01101111│
         ├────────┼────────┼────────┼────────┼────────┤
-Address │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│
+Address │17ca81f8│17ca81f9│17ca81fa│17ca81fb│17ca81fc│
         └────────┴────────┴────────┴────────┴────────┘
                               ↓ (Iterator goes to me[2] and adds 1)
         ┌────────┬────────┬────────┬────────┬────────┐
@@ -93,7 +93,7 @@ Type    │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │
         ├────────┼────────┼────────┼────────┼────────┤
 Value   │01011010│01110110│01101001│01100001│01101111│
         ├────────┼────────┼────────┼────────┼────────┤
-Address │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│
+Address │17ca81f8│17ca81f9│17ca81fa│17ca81fb│17ca81fc│
         └────────┴────────┴────────┴────────┴────────┘
     (Iterator goes to me[3] and adds 1) ↓ 
         ┌────────┬────────┬────────┬────────┬────────┐
@@ -103,7 +103,7 @@ Type    │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │
         ├────────┼────────┼────────┼────────┼────────┤
 Value   │01011010│01110110│01101001│01100010│01101111│
         ├────────┼────────┼────────┼────────┼────────┤
-Address │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│
+Address │17ca81f8│17ca81f9│17ca81fa│17ca81fb│17ca81fc│
         └────────┴────────┴────────┴────────┴────────┘
             (Iterator goes to me[4] and adds 1) ↓
         ┌────────┬────────┬────────┬────────┬────────┐
@@ -113,7 +113,7 @@ Type    │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │
         ├────────┼────────┼────────┼────────┼────────┤
 Value   │01011010│01110110│01101001│01100010│01110000│
         ├────────┼────────┼────────┼────────┼────────┤
-Address │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│
+Address │17ca81f8│17ca81f9│17ca81fa│17ca81fb│17ca81fc│
         └────────┴────────┴────────┴────────┴────────┘
 ```
 
@@ -129,7 +129,7 @@ Type    │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │
         ├────────┼────────┼────────┼────────┼────────┤
 Value   │01011001│01110101│01101000│01100001│01101111│
         ├────────┼────────┼────────┼────────┼────────┤
-Address │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│
+Address │17ca81f8│17ca81f9│17ca81fa│17ca81fb│17ca81fc│
         └────────┴────────┴────────┴────────┴────────┘
                               │
                               │ (add 1)
@@ -142,7 +142,7 @@ Type    │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │
         ├────────┼────────┼────────┼────────┼────────┤
 Value   │01011010│01110110│01101001│01100010│01110000│
         ├────────┼────────┼────────┼────────┼────────┤
-Address │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│
+Address │17ca81f8│17ca81f9│17ca81fa│17ca81fb│17ca81fc│
         └────────┴────────┴────────┴────────┴────────┘
 ```
 
@@ -207,7 +207,7 @@ d = 1.0
 No error message is raised, but you may notice something intriguing:
 
 - You may notice that the sizes of the SIMD that I passed to the constructor are always the power of two.
-- You may notice that, although I did not specify the size of the SIMD `e`, it still works and prints the value `1.0`.
+- You may notice that, although I did not specify the size of the SIMD `d`, it still works and prints the value `1.0`.
 - You may notice that the variable `d` prints 4 more elements than I provided to the constructor. These four values are strange values.
 - You may notice that the variable `e` is printed as if it is of a `Float32` type.
 - You may notice that the fields in `DType` are very similar to the numeric data types we discussed in the previous Chapter [Data types](../basic/types.md), but they are all in lowercase.
@@ -239,9 +239,9 @@ We have discussed about **uninitialized variables** in Chapter [Variables](../ba
 
 To help you understand this, let me use graphs to illustrate what has happened in the memory when you created the variable `d` in the code above.
 
-When you define the variable `d` and indicate that it is a `SIMD[DType.uint8, 8]`, the Mojo compiler will allocate 8 bytes (one byte for each element) of contiguous memory on the stack (e.g., from the address `17ca81f8` to `17ca81a5`), which is just enough to hold 8 elements of type `UInt8`.
+When you define the variable `d` and indicate that it is a `SIMD[DType.uint8, 8]`, the Mojo compiler will allocate 8 bytes (one byte for each element) of contiguous memory on the stack (e.g., from the address `17ca81f8` to `17ca81ff`), which is just enough to hold 8 elements of type `UInt8`.
 
-At this time, the memory block may still contain some random values which are leftover from other programs or functions. For example, the memory address `17ca81a2` and `17ca81a5` are zeros, while the other addresses contain non-zero values. These values are all random and unpredictable. You should never assume any specific value for them. In Mojo, we call that the values at these addresses are **uninitialized**. The memory block looks like this:
+At this time, the memory block may still contain some random values which are leftover from other programs or functions. For example, the memory address `17ca81fc` and `17ca81ff` are zeros, while the other addresses contain non-zero values. These values are all random and unpredictable. You should never assume any specific value for them. In Mojo, we call that the values at these addresses are **uninitialized**. The memory block looks like this:
 
 ```txt
         local variable `d` of type SIMD[DType.uint8, 8]
@@ -251,7 +251,7 @@ Type    │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UI
         ├────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤
 Value   │00100001|00111010│00000011│00110110│00000000│00001100│01011001│00000000│
         ├────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-Address │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│17ca81a3│17ca81a4│17ca81a5│
+Address │17ca81f8│17ca81f9│17ca81fa│17ca81fb│17ca81fc│17ca81fd│17ca81fe│17ca81ff│
         └────────┴────────┴────────┴────────┴────────┴────────┴────────┴────────┘
 ```
 
@@ -265,7 +265,7 @@ Type    │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UI
         ├────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤
 Value   │00000001|00000010│00000011│00000100│00000000│00001100│01011001│00000000│
         ├────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-Address │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│17ca81a3│17ca81a4│17ca81a5│
+Address │17ca81f8│17ca81f9│17ca81fa│17ca81fb│17ca81fc│17ca81fd│17ca81fe│17ca81ff│
         └────────┴────────┴────────┴────────┴────────┴────────┴────────┴────────┘
 ```
 
