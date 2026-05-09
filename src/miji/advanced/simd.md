@@ -235,9 +235,9 @@ If you run your code several times, you will see that the last four elements are
 
 We have discussed about **uninitialized variables** in Chapter [Variables](../basic/variables), which means that the variables are declared but not assigned any value. In the case of `SIMD`, the same applies: a memory block is allocated for the last 4 elements of the SIMD, but no values are assigned to them. The values at these addresses are random and unpredictable, which can lead to unexpected behavior in your program.
 
-To help you understand this, let me use graphs to illustrate what has happened in the memory when you created the variable `d` in the code above.
+To help you understand this, let me use graphs to illustrate what has happened in the memory when you created the variable `simd_of_uint8` in the code above.
 
-When you define the variable `d` and indicate that it is a `SIMD[DType.uint8, 8]`, the Mojo compiler will allocate 8 bytes (one byte for each element) of contiguous memory on the stack (e.g., from the address `17ca81f8` to `17ca81ff`), which is just enough to hold 8 elements of type `UInt8`.
+When you define the variable `simd_of_uint8` and indicate that it is a `SIMD[DType.uint8, 8]`, the Mojo compiler will allocate 8 bytes (one byte for each element) of contiguous memory on the stack (e.g., from the address `17ca81f8` to `17ca81ff`), which is just enough to hold 8 elements of type `UInt8`.
 
 At this time, the memory block may still contain some random values which are leftover from other programs or functions. For example, the memory address `17ca81fc` and `17ca81ff` are zeros, while the other addresses contain non-zero values. These values are all random and unpredictable. You should never assume any specific value for them. In Mojo, we call that the values at these addresses are **uninitialized**. The memory block looks like this:
 
@@ -247,7 +247,7 @@ At this time, the memory block may still contain some random values which are le
         ┌────────┬────────┬────────┬────────┬────────┬────────┬────────┬────────┐
 Type    │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │
         ├────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-Value   │00100001|00111010│00000011│00110110│00000000│00001100│01011001│00000000│
+Value   │00100001│00111010│00000011│00110110│00000000│00001100│01011001│00000000│
         ├────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤
 Address │17ca81f8│17ca81f9│17ca81fa│17ca81fb│17ca81fc│17ca81fd│17ca81fe│17ca81ff│
         └────────┴────────┴────────┴────────┴────────┴────────┴────────┴────────┘
@@ -261,7 +261,7 @@ Next, the Mojo compiler will sequentially copy the values you provided in the co
         ┌────────┬────────┬────────┬────────┬────────┬────────┬────────┬────────┐
 Type    │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │
         ├────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-Value   │00000001|00000010│00000011│00000100│00000000│00001100│01011001│00000000│
+Value   │00000001│00000010│00000011│00000100│00000000│00001100│01011001│00000000│
         ├────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤
 Address │17ca81f8│17ca81f9│17ca81fa│17ca81fb│17ca81fc│17ca81fd│17ca81fe│17ca81ff│
         └────────┴────────┴────────┴────────┴────────┴────────┴────────┴────────┘
