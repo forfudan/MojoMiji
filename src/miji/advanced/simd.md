@@ -397,7 +397,7 @@ So, don't be surprised if the compiler complains about the type mismatch when yo
 
 ::: tip `Float64()` vs `SIMD[DType.float64, 1]()`, which to use?
 
-If you look into the source code of the standard library, you will find that `Float64` is defined as `alias Float64 = SIMD[DType.float64, 1]`. This applies to many other numeric types as well. As an alias, `Float64()` and `SIMD[DType.float64, 1]()` are equivalent in terms of functionality.
+If you look into the source code of the standard library, you will find that `Float64` is defined as an alias for `SIMD[DType.float64, 1]`. This applies to many other numeric types as well. As an alias, `Float64()` and `SIMD[DType.float64, 1]()` are equivalent in terms of functionality.
 
 You may wonder which one you should use in your code for type annotation or variable construction. I would recommend using `Float64()` when you want to deal with a single floating-point number. This is more concise, more readable, and more Pythonic.
 
