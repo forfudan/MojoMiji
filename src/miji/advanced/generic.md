@@ -774,7 +774,7 @@ You may still use the idea of duck typing in Mojo, but replace it by **traits**:
 
 Mojo provides quite a lot of built-in traits that you can use in your code. Sometimes, you may even not aware that you are using them. For example, many dunder methods, such as `__str__()`, `__repr__()`, `__absable__()`, `__gt__()`, etc., are actually implementing the built-in traits. Some non-dunder methods, such as `write_to()`, also implement the built-in traits.
 
-Let's look it one of these built-in traits, `Absable`, which is used to take the absolute value of a number. Types that conform to the `Absable` trait can be used with the built-in function `abs()` to get the absolute value of the number. See the following example:
+Let's look at one of these built-in traits, `Absable`, which is used to take the absolute value of a number. Types that conform to the `Absable` trait can be used with the built-in function `abs()` to get the absolute value of the number. See the following example:
 
 ```mojo
 # src/advanced/generic/absable_trait.mojo
