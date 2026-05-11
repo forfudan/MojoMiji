@@ -915,7 +915,7 @@ $$
 (x_1, y_1) + (x_2, y_2) = (x_1^2 + x_2^2, y_1^2 + y_2^2)
 $$
 
-We can so this by defining a method, e.g., `pixel1.add(pixel2)`. But it is not very intuitive.
+We can do this by defining a method, e.g., `pixel1.add(pixel2)`. But it is not very intuitive.
 
 A more intuitive way is to use the `+` operator to add two `Pixel` objects together. However, Mojo won't do this automatically for you. You need to define the behavior of the `+` operator for the `Pixel` type yourself. This is called **operator overloading**.
 
