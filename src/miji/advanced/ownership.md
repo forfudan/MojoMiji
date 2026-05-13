@@ -94,8 +94,8 @@ As shown in the following diagram, the variable `a` owns the value `89` which is
 
 ```console
 # Mojo Miji - Ownership - Isolated status
-                     a                          b
-                     ↓                          ↓
+                     a        b
+                     ↓        ↓
                  ┌────────┬────────┬────────┬─────────────────┐
 Value (readable) │  89    │  117   │  104   │       111       │
                  ├────────┼────────┼────────┼─────────────────┤
