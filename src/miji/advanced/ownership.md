@@ -171,7 +171,7 @@ Address (hex)    │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│17ca8
                       └───────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-Notably, the type of `b` is `Pointer[UInt8, a]`, which means that `b` is a pointer to an 8-bit unsigned integer **type** (`UInt8`) and that `b` is associated with the **lifetime** of `a`. These two pieces of information is very important because:
+Notably, the type of `b` is `Pointer[UInt8, a]`, which means that `b` is a pointer to an 8-bit unsigned integer **type** (`UInt8`) and that `b` is associated with the **lifetime** of `a`. These two pieces of information are very important because:
 
 1. By indicating the type of the value that `b` points to, the Mojo compiler can ensure that the value at the address `0x17ca81f8` will be dereferenced correctly. In this case, Mojo will read 8 bits from the address `0x17ca81f8` when you dereference `b`. (In another scenario, if `b` is a pointer to a `UInt16`, then de-referencing will read 16 bits from the address `0x17ca81f8`.)
 1. By indicating `a` in the type of the variable `b`, the Mojo compiler knows that **the variable `a` is the ultimate and the only owner** of the value. It will checks the rules of ownership at compile time to ensure memory safety. If you use `b[]` after `a` is destroyed, the Mojo compiler will raise an error. We will discuss this later.
