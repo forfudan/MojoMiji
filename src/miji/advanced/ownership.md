@@ -411,7 +411,7 @@ By reading the code `var b = a^`, Mojo compiler knows that you want to transfer 
 
 After these operations, the pointer to the values of the list elements (which is stored on the heap) remains unchanged. That is why, in the above console results, `b[0]` has the same address as `a[0]` before. In other words, the list elements are never copied to a new place; they just have **another owner**!
 
-The move operation is very efficient because it only involves copying the meta data of the list (which is small, fixed in size, and located on stack) instead of copying all the elements of the list (which can be large, variable in size, and loacted on heap).
+The move operation is very efficient because it only involves copying the meta data of the list (which is small, fixed in size, and located on stack) instead of copying all the elements of the list (which can be large, variable in size, and located on heap).
 
 The following diagram shows the memory layout of the list `a` and `b` before and after the transfer:
 
