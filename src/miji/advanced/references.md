@@ -386,7 +386,7 @@ def main():
     changeit(x)
     print(
         String(
-            "Before function call: variable `x` is of the value {} and the address {}"
+            "After function call: variable `x` is of the value {} and the address {}"
         ).format(x, String(Pointer(to=x)))
     )
 ```
@@ -398,7 +398,7 @@ Before function call: variable `x` is of the value 5 and the address 0x16bb384f7
 Within function call: argument `a` is of the value 5 and the address 0x16bb38510
 Within function call: change value of a to 10 with `a = 10`
 Within function call: argument `a` is of the value 10 and the address 0x16bb38510
-Before function call: variable `x` is of the value 5 and the address 0x16bb384f7
+After function call: variable `x` is of the value 5 and the address 0x16bb384f7
 ```
 
 You will see that:
