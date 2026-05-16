@@ -539,7 +539,7 @@ The 1st item of the list is 'Mojo'
 The 1st item of the list is 'Miji' now
 ```
 
-This is because the function `return_first_element_as_pointer()` returns a **safe pointer** to the first element of the list (`mut` is to indicate that the `str` argument is mutable, so as the returned pointer), *i.e.*, a **pointed status** is created. If you change the value of `ptr[]` in the main function, it will modify the original list, since `ptr` is a pointer to the address of the first element of the list. The value of `lst[0]` is changed to `Miji`.
+This is because the function `return_first_element_as_pointer()` returns a **safe pointer** to the first element of the list (`mut` is to indicate that the `a` argument is mutable, so as the returned pointer), *i.e.*, a **pointed status** is created. If you change the value of `ptr[]` in the main function, it will modify the original list, since `ptr` is a pointer to the address of the first element of the list. The value of `lst[0]` is changed to `Miji`.
 
 ---
 
