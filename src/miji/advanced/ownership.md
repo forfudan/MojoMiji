@@ -805,6 +805,8 @@ fn main():
     var b = UnsafePointer(a.buffer)  # a's last use, immediately destroyed
     
     print(b)  # a points to already freed memory
+```
+
 
 You can manually extend the lifetime of `a` by putting `var _ = a^` at the end of the code block.
 
