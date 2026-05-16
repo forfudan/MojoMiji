@@ -595,20 +595,20 @@ In the function signature:
 - The return type is `ref [a] String`, where,
 - `ref` means that we are returning a **reference** to a value, not a copy.
 - `String` means that the type of the returned value is `String`.
-- `[str]` is a [**parameterization**](../advanced/parameterization.md)). It indicates that the reference is tied to the lifetime and mutability of the argument `str` (the origin).
-- Recall that the mutability of the reference is determined by the mutability of the origin, which is `str` in this case. Since `str` is mutable, the reference returned by the function is also **mutable**.
+- `[a]` is a [**parameterization**](../advanced/parameterization.md)). It indicates that the reference is tied to the lifetime and mutability of the argument `a` (the origin).
+- Recall that the mutability of the reference is determined by the mutability of the origin, which is `a` in this case. Since `a` is mutable, the reference returned by the function is also **mutable**.
 
 ```mojo
 ...
-    if len(str) == 0:
+    if len(a) == 0:
         raise Error("List is empty.")
     else:
-        return ref str[0]
+        return ref a[0]
 ```
 
-In the function body, we return the first element of the list if the list is not empty (`return ref str[0]`). Because we explicitly specify the return type as `ref [str] String` in the function signature, Mojo will mark this returned value as a reference instead of a copy.
+In the function body, we return the first element of the list if the list is not empty (`return ref a[0]`). Because we explicitly specify the return type as `ref [a] String` in the function signature, Mojo will mark this returned value as a reference instead of a copy.
 
-You can also write `return str[0]` without the `ref` keyword, and Mojo will automatically infer that it is a reference based on the return type.
+You can also write `return a[0]` without the `ref` keyword, and Mojo will automatically infer that it is a reference based on the return type.
 
 ```mojo
 def main():
