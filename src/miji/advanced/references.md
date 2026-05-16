@@ -347,7 +347,7 @@ Address │16b6a8fae│16b6a8faf│16b6a8fb0│16b6a8fb1│16b6a8fb2│16b6a8fb3
 
 ### Copied value in sub-scope: `var`
 
-The keyword `var` allows you to pass a **copy** of the value into the function. Not that it is a copy, not a reference. Therefore, an [**isolated status**](../advanced/ownership.md#four-statuses-of-ownership) is created.
+The keyword `var` allows you to pass a **copy** of the value into the function. Note, that it is a copy, not a reference. Therefore, an [**isolated status**](../advanced/ownership.md#four-statuses-of-ownership) is created.
 
 If we apply our [conceptual model of variables](../basic/variables.md#conceptual-model-of-mojo-variables), the following things will happen:
 
