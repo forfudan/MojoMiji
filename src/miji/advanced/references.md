@@ -718,7 +718,7 @@ Let's summarize in the below table, when we use different conventional keywords,
 | ------- | -------------------------------- | --------------------- |
 | `read`  | immutable reference (`muttoimm`) | immutable reference   |
 | `mut`   | mutable reference                | **Not allowed**       |
-| `owned` | owned value (mutable)            | owned value (mutable) |
+| `var`   | owned value (mutable)            | owned value (mutable) |
 
 For example, the following code illustrates such a chained references with different mutability:
 
