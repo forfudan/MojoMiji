@@ -278,7 +278,7 @@ def main():
     changeit(x)
     print(
         String(
-            "Before change:    variable `x` is of the value {} and the address {}"
+            "After change:    variable `x` is of the value {} and the address {}"
         ).format(x, String(Pointer(to=x)))
     )
 ```
@@ -288,7 +288,7 @@ When you run the code, you will see the following output:
 ```console
 Before change:    variable `x` is of the value 5 and the address 0x16b6a8fb0
 In function call: argument `a` is of the value 10 and the address 0x16b6a8fb0
-Before change:    variable `x` is of the value 10 and the address 0x16b6a8fb0
+After change:    variable `x` is of the value 10 and the address 0x16b6a8fb0
 ```
 
 Let's use a diagram to illustrate what happens in the memory when you run the code.
