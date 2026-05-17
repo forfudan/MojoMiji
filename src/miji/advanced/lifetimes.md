@@ -567,7 +567,7 @@ The shorter of the two words is "pretty" at address 0x16f934238
 
 ::: warning Note on `ref c = shorter(a, b)`
 
-Note that we use `ref c = shorter(a, b)` instead of `var c = shorter(a, b)`. This is because the return type of the function `shorter()` is a reference, so we need to use `ref` to declare `c` as a reference too. If we use `var c = shorter(a, b)`, the an **implicit copy** will be made and `c` will be an owned value instead of a reference, which is not what we want.
+Note that we use `ref c = shorter(a, b)` instead of `var c = shorter(a, b)`. This is because the return type of the function `shorter()` is a reference, so we need to use `ref` to declare `c` as a reference too. If we use `var c = shorter(a, b)`, then an **implicit copy** will be made and `c` will be an owned value instead of a reference, which is not what we want.
 
 :::
 
