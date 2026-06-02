@@ -567,7 +567,7 @@ The shorter of the two words is "pretty" at address 0x16f934238
 
 ::: warning Note on `ref c = shorter(a, b)`
 
-Note that we use `ref c = shorter(a, b)` instead of `var c = shorter(a, b)`. This is because the return type of the function `shorter()` is a reference, so we need to use `ref` to declare `c` as a reference too. If we use `var c = shorter(a, b)`, the an **implicit copy** will be made and `c` will be an owned value instead of a reference, which is not what we want.
+Note that we use `ref c = shorter(a, b)` instead of `var c = shorter(a, b)`. This is because the return type of the function `shorter()` is a reference, so we need to use `ref` to declare `c` as a reference too. If we use `var c = shorter(a, b)`, then an **implicit copy** will be made and `c` will be an owned value instead of a reference, which is not what we want.
 
 :::
 
@@ -690,7 +690,7 @@ fn shorter<'a>(word1: &'a String, word2: &'a String) -> &'a String {
 
 Here, you use the lifetime annotation `'a` in the function signature, in the type annotation of the arguments, and in the type annotation of the return value. `a` is a formal lifetime parameter which can be any name, but it is conventionally named `'a` in Rust.
 
-This this way, you tell the Rust compiler that the lifetime of the return value is `a`, and it is the same as the lifetime of either `word1` or `word2`. This way, the compiler can ensure that the return value will not outlive the arguments.
+This way, you tell the Rust compiler that the lifetime of the return value is `a`, and it is the same as the lifetime of either `word1` or `word2`. This way, the compiler can ensure that the return value will not outlive the arguments.
 
 After this change, the code will compile successfully in Rust. The final Rust code looks like this:
 

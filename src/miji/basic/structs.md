@@ -3,7 +3,7 @@
 > You exist as a free spirit until you join a group, whereupon you are rechristened as a ***Spirit von der Gruppe***.  
 > -- Yuhao Zhu, *Gate of Heaven*
 
-Though Python does not has the concept of "struct", it has a similar concept called "class". In many cases, you can use a struct to achieve the same functionality as a class in Python. These, I put the struct in the "basic" part of this Miji Book.
+Though Python does not have the concept of "struct", it has a similar concept called "class". In many cases, you can use a struct to achieve the same functionality as a class in Python. These, I put the struct in the "basic" part of this Miji Book.
 
 [[toc]]
 
@@ -13,7 +13,7 @@ A struct is a composite data structure which contains multiple variables (fields
 
 Structs are used to represent (with some abstraction) the real-world entities or concepts. For example, a point with two coordinates can be represented two numerical variables, `x` and `y`. But this is not convenient to use. We want a way to access these values with in single namespace (or, we want to access these values with a single pointer). Thus, we group these two variables into a struct, which is called `Point`. We can then access the values by means of `Point.x` and `Point.y`.
 
-These idea of grouping multiple variables into a single namespace can also be extended to functions. For example, if we want to calculate the distance between a point and the origin `(0, 0)`, we can define a function `distance_from_zero()` that takes a `Point` as an argument and returns the distance:
+This idea of grouping multiple variables into a single namespace can also be extended to functions. For example, if we want to calculate the distance between a point and the origin `(0, 0)`, we can define a function `distance_from_zero()` that takes a `Point` as an argument and returns the distance:
 
 ```mojo
 def distance_from_zero(p: Point) -> Float:
@@ -525,7 +525,7 @@ Field            │                name: String                      │  age: 
                  ├─────────────────────┬───────────┬────────────────┼─────────────┼───────────┼───────────────────┼───────────┼─────────────────────┬───────────┬────────────────┤
 Field in field   │ data: UnsafePointer │ size: Int │ capacity: UInt │             │           │                   │           │ data: UnsafePointer │ size: Int │ capacity: Int  │
                  ├─────────────────────┼───────────┼────────────────┼─────────────┼───────────┼───────────────────┼───────────┼─────────────────────┼───────────┼────────────────┤
-Size in byte     │ 8                   │   38      │       8        │   1         │   1       │ 2                 │  4        │ 8                   │   8       │       8        │
+Size in byte     │ 8                   │   8       │       8        │   1         │   1       │ 2                 │  4        │ 8                   │   8       │       8        │
                  ├─────────────────────┼───────────┼────────────────┼─────────────┼───────────┼───────────────────┼───────────┼─────────────────────┼───────────┼────────────────┤
 Value            │ 0x1000              │   5       │   (encoded)    │   124       │           │ 1.70              │           │ 0x2000              │   3       │       3        │
                  ├─────────────────────┼───────────┼────────────────┼─────────────┼───────────┼───────────────────┼───────────┼─────────────────────┼───────────┼────────────────┤

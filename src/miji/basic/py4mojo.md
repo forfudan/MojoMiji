@@ -29,7 +29,7 @@ As dicussed in the previous Chapter [Data Types](./types.md), the Mojo's `Int` t
 
 Thus, if you want to store a value that is too large for Mojo's `Int` type, you may consider using Python's `int` type instead.
 
-Lucily, Mojo provides a seamless way to interact with Python's built-in types and functions. On the one hand, a Python interpreter will be installed alongside your Mojo installation, so you do not need to do anything extra work yourself; on the other hand, Mojo provides a `Python` module that allows you to import Python modules, create Python objects, call Python functions, and even evaluate Python expressions directly from your Mojo code.
+Luckily, Mojo provides a seamless way to interact with Python's built-in types and functions. On the one hand, a Python interpreter will be installed alongside your Mojo installation, so you do not need to do anything extra work yourself; on the other hand, Mojo provides a `Python` module that allows you to import Python modules, create Python objects, call Python functions, and even evaluate Python expressions directly from your Mojo code.
 
 To use a Python primitive type in Mojo, you just need to do two things:
 

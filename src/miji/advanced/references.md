@@ -230,7 +230,7 @@ def main():
 
 The keyword `mut` allows you to pass a **mutable shared reference** of a value in the **sub-function scope**. In other words, it creates a mutable reference of the value passed into the function. At the same time, a mutable [**referenced status**](../advanced/ownership.md#four-statuses-of-ownership) is created.
 
-If an argument is declared in the function signature with the keyword `read`, then a mutable reference of the value is passed into the function. If we apply our [conceptual model of variables](../basic/variables.md#conceptual-model-of-mojo-variables), the following things will happen:
+If an argument is declared in the function signature with the keyword `mut`, then a mutable reference of the value is passed into the function. If we apply our [conceptual model of variables](../basic/variables.md#conceptual-model-of-mojo-variables), the following things will happen:
 
 1. The argument will get the same address as the variable you passed into the function, so it can access the value at that address.
 1. The argument is marked as "mutable", meaning that you can change the value at the **address** of the argument within the function. Since the address of the argument is the same as that of the variable you passed into the function, this means that the value of the variable outside the function will also be modified.
@@ -278,7 +278,7 @@ def main():
     changeit(x)
     print(
         String(
-            "Before change:    variable `x` is of the value {} and the address {}"
+            "After change:    variable `x` is of the value {} and the address {}"
         ).format(x, String(Pointer(to=x)))
     )
 ```
@@ -288,7 +288,7 @@ When you run the code, you will see the following output:
 ```console
 Before change:    variable `x` is of the value 5 and the address 0x16b6a8fb0
 In function call: argument `a` is of the value 10 and the address 0x16b6a8fb0
-Before change:    variable `x` is of the value 10 and the address 0x16b6a8fb0
+After change:    variable `x` is of the value 10 and the address 0x16b6a8fb0
 ```
 
 Let's use a diagram to illustrate what happens in the memory when you run the code.
@@ -347,7 +347,7 @@ Address │16b6a8fae│16b6a8faf│16b6a8fb0│16b6a8fb1│16b6a8fb2│16b6a8fb3
 
 ### Copied value in sub-scope: `var`
 
-The keyword `var` allows you to pass a **copy** of the value into the function. Not that it is a copy, not a reference. Therefore, an [**isolated status**](../advanced/ownership.md#four-statuses-of-ownership) is created.
+The keyword `var` allows you to pass a **copy** of the value into the function. Note, that it is a copy, not a reference. Therefore, an [**isolated status**](../advanced/ownership.md#four-statuses-of-ownership) is created.
 
 If we apply our [conceptual model of variables](../basic/variables.md#conceptual-model-of-mojo-variables), the following things will happen:
 
@@ -386,7 +386,7 @@ def main():
     changeit(x)
     print(
         String(
-            "Before function call: variable `x` is of the value {} and the address {}"
+            "After function call: variable `x` is of the value {} and the address {}"
         ).format(x, String(Pointer(to=x)))
     )
 ```
@@ -398,7 +398,7 @@ Before function call: variable `x` is of the value 5 and the address 0x16bb384f7
 Within function call: argument `a` is of the value 5 and the address 0x16bb38510
 Within function call: change value of a to 10 with `a = 10`
 Within function call: argument `a` is of the value 10 and the address 0x16bb38510
-Before function call: variable `x` is of the value 5 and the address 0x16bb384f7
+After function call: variable `x` is of the value 5 and the address 0x16bb384f7
 ```
 
 You will see that:
@@ -539,7 +539,7 @@ The 1st item of the list is 'Mojo'
 The 1st item of the list is 'Miji' now
 ```
 
-This is because the function `return_first_element_as_pointer()` returns a **safe pointer** to the first element of the list (`mut` is to indicate that the `str` argument is mutable, so as the returned pointer), *i.e.*, a **pointed status** is created. If you change the value of `ptr[]` in the main function, it will modify the original list, since `ptr` is a pointer to the address of the first element of the list. The value of `lst[0]` is changed to `Miji`.
+This is because the function `return_first_element_as_pointer()` returns a **safe pointer** to the first element of the list (`mut` is to indicate that the `a` argument is mutable, so as the returned pointer), *i.e.*, a **pointed status** is created. If you change the value of `ptr[]` in the main function, it will modify the original list, since `ptr` is a pointer to the address of the first element of the list. The value of `lst[0]` is changed to `Miji`.
 
 ---
 
@@ -595,20 +595,20 @@ In the function signature:
 - The return type is `ref [a] String`, where,
 - `ref` means that we are returning a **reference** to a value, not a copy.
 - `String` means that the type of the returned value is `String`.
-- `[str]` is a [**parameterization**](../advanced/parameterization.md)). It indicates that the reference is tied to the lifetime and mutability of the argument `str` (the origin).
-- Recall that the mutability of the reference is determined by the mutability of the origin, which is `str` in this case. Since `str` is mutable, the reference returned by the function is also **mutable**.
+- `[a]` is a [**parameterization**](../advanced/parameterization.md)). It indicates that the reference is tied to the lifetime and mutability of the argument `a` (the origin).
+- Recall that the mutability of the reference is determined by the mutability of the origin, which is `a` in this case. Since `a` is mutable, the reference returned by the function is also **mutable**.
 
 ```mojo
 ...
-    if len(str) == 0:
+    if len(a) == 0:
         raise Error("List is empty.")
     else:
-        return ref str[0]
+        return ref a[0]
 ```
 
-In the function body, we return the first element of the list if the list is not empty (`return ref str[0]`). Because we explicitly specify the return type as `ref [str] String` in the function signature, Mojo will mark this returned value as a reference instead of a copy.
+In the function body, we return the first element of the list if the list is not empty (`return ref a[0]`). Because we explicitly specify the return type as `ref [a] String` in the function signature, Mojo will mark this returned value as a reference instead of a copy.
 
-You can also write `return str[0]` without the `ref` keyword, and Mojo will automatically infer that it is a reference based on the return type.
+You can also write `return a[0]` without the `ref` keyword, and Mojo will automatically infer that it is a reference based on the return type.
 
 ```mojo
 def main():
@@ -718,7 +718,7 @@ Let's summarize in the below table, when we use different conventional keywords,
 | ------- | -------------------------------- | --------------------- |
 | `read`  | immutable reference (`muttoimm`) | immutable reference   |
 | `mut`   | mutable reference                | **Not allowed**       |
-| `owned` | owned value (mutable)            | owned value (mutable) |
+| `var`   | owned value (mutable)            | owned value (mutable) |
 
 For example, the following code illustrates such a chained references with different mutability:
 

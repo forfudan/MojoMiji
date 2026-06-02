@@ -94,8 +94,8 @@ As shown in the following diagram, the variable `a` owns the value `89` which is
 
 ```console
 # Mojo Miji - Ownership - Isolated status
-                     a                          b
-                     ↓                          ↓
+                     a        b
+                     ↓        ↓
                  ┌────────┬────────┬────────┬─────────────────┐
 Value (readable) │  89    │  117   │  104   │       111       │
                  ├────────┼────────┼────────┼─────────────────┤
@@ -103,7 +103,7 @@ Type             │ UInt8  │ UInt8  │ UInt8  │      UInt16     │
                  ├────────┼────────┼────────┼─────────────────┤
 Value (binary)   │01011001│01110101│01101000│00000000 01101111│
                  ├────────┼────────┼────────┼────────┬────────┤
-Address (hex)    │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│
+Address (hex)    │17ca81f8│17ca81f9│17ca81fa│17ca81fb│17ca81fc│
                  └────────┴────────┴────────┴────────┴────────┘
 ```
 
@@ -128,7 +128,7 @@ Type             │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │
                  ├────────┼────────┼────────┼─────────────────┤
 Value (binary)   │01011001│01110101│01101000│01100001│01101111│
                  ├────────┼────────┼────────┼────────┬────────┤
-Address (hex)    │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│
+Address (hex)    │17ca81f8│17ca81f9│17ca81fa│17ca81fb│17ca81fc│
                  └────────┴────────┴────────┴────────┴────────┘
 ```
 
@@ -171,7 +171,7 @@ Address (hex)    │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│17ca8
                       └───────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-Notably, the type of `b` is `Pointer[UInt8, a]`, which means that `b` is a pointer to an 8-bit unsigned integer **type** (`UInt8`) and that `b` is associated with the **lifetime** of `a`. These two pieces of information is very important because:
+Notably, the type of `b` is `Pointer[UInt8, a]`, which means that `b` is a pointer to an 8-bit unsigned integer **type** (`UInt8`) and that `b` is associated with the **lifetime** of `a`. These two pieces of information are very important because:
 
 1. By indicating the type of the value that `b` points to, the Mojo compiler can ensure that the value at the address `0x17ca81f8` will be dereferenced correctly. In this case, Mojo will read 8 bits from the address `0x17ca81f8` when you dereference `b`. (In another scenario, if `b` is a pointer to a `UInt16`, then de-referencing will read 16 bits from the address `0x17ca81f8`.)
 1. By indicating `a` in the type of the variable `b`, the Mojo compiler knows that **the variable `a` is the ultimate and the only owner** of the value. It will checks the rules of ownership at compile time to ensure memory safety. If you use `b[]` after `a` is destroyed, the Mojo compiler will raise an error. We will discuss this later.
@@ -211,7 +211,7 @@ Type             │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │
                  ├────────┼────────┼────────┼─────────────────┤
 Value (binary)   │01011001│01110101│01101000│01100001│01101111│
                  ├────────┼────────┼────────┼────────┬────────┤
-Address (hex)    │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│
+Address (hex)    │17ca81f8│17ca81f9│17ca81fa│17ca81fb│17ca81fc│
                  └────────┴────────┴────────┴────────┴────────┘
                     ↑
                 b: UnsafePointer[UInt8]
@@ -224,7 +224,7 @@ Type             │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │
                  ├────────┼────────┼────────┼─────────────────┤
 Value (binary)   │00000000│01110101│01101000│01100001│01101111│
                  ├────────┼────────┼────────┼────────┬────────┤
-Address (hex)    │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│
+Address (hex)    │17ca81f8│17ca81f9│17ca81fa│17ca81fb│17ca81fc│
                  └────────┴────────┴────────┴────────┴────────┘
                     ↑
                 b: UnsafePointer[UInt8]
@@ -239,7 +239,7 @@ Type             │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │
                  ├────────┼────────┼────────┼─────────────────┤
 Value (binary)   │11111111│01110101│01101000│01100001│01101111│
                  ├────────┼────────┼────────┼────────┬────────┤
-Address (hex)    │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│
+Address (hex)    │17ca81f8│17ca81f9│17ca81fa│17ca81fb│17ca81fc│
                  └────────┴────────┴────────┴────────┴────────┘
                     ↑
                 b: UnsafePointer[UInt8]
@@ -411,7 +411,7 @@ By reading the code `var b = a^`, Mojo compiler knows that you want to transfer 
 
 After these operations, the pointer to the values of the list elements (which is stored on the heap) remains unchanged. That is why, in the above console results, `b[0]` has the same address as `a[0]` before. In other words, the list elements are never copied to a new place; they just have **another owner**!
 
-The move operation is very efficient because it only involves copying the meta data of the list (which is small, fixed in size, and located on stack) instead of copying all the elements of the list (which can be large, variable in size, and loacted on heap).
+The move operation is very efficient because it only involves copying the meta data of the list (which is small, fixed in size, and located on stack) instead of copying all the elements of the list (which can be large, variable in size, and located on heap).
 
 The following diagram shows the memory layout of the list `a` and `b` before and after the transfer:
 
@@ -805,6 +805,8 @@ fn main():
     var b = UnsafePointer(a.buffer)  # a's last use, immediately destroyed
     
     print(b)  # a points to already freed memory
+```
+
 
 You can manually extend the lifetime of `a` by putting `var _ = a^` at the end of the code block.
 

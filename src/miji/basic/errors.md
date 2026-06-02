@@ -67,7 +67,7 @@ The outcome of the above code shows the two scenarios:
 
 ---
 
-Therefore, we need to **re-think** about the conceptual model of the functions that may raise errors. These function does not simply return the expected type, but rather returns **either the expected type or an `Error` type**. It is a **blind box** that may contain either a value an error. You have to open the box to find out what is inside, just like what is shown in the following illustration:
+Therefore, we need to **re-think** about the conceptual model of the functions that may raise errors. These function does not simply return the expected type, but rather returns **either the expected type or an `Error` type**. It is a **blind box** that may contain either a value or an error. You have to open the box to find out what is inside, just like what is shown in the following illustration:
 
 ![result_as_blind_box.jpg](/graphs/result_as_blind_box.jpg)
 
@@ -90,7 +90,7 @@ To return a container type like `ResultBox` allows the users to quickly understa
 
 Mojo, as a Python-like language, inherits most of the syntax style from Python. It does not wrap the errors in a container as a returned type. However, it still tries to make the errors more explicit by using the `raises` keyword in the function signature when you define the function with the `fn` keyword. This keyword explicitly indicates that the function may raise an error, the users should be aware of it and handle it properly.
 
-The `raises` keyword is placed before the return type. If a function does not return anything (`None`), the signature is located at the end of the signature. A general function signature with the `raises` keyword looks like this:
+The `raises` keyword is placed before the return type. If a function does not return anything (`None`), the `raises` is located at the end of the signature. A general function signature with the `raises` keyword looks like this:
 
 ```mojo
 fn foo(arg: Type) raises -> ReturnType:

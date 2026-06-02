@@ -199,7 +199,7 @@ Python is a dynamically typed language, so it does not require that the type of 
 
 In the example above where we check if a string is either `a`, `b`, or `c`, we did not handle the case where the string is **not** one of these three values. This is called a **non-exhaustive conditional**, meaning that there are some cases that are not handled by the conditional statements.
 
-While it is not a problem in the case above, however, it may cause issues in other cases, especially when you are writing a function that is supposed to return a value. If you do not exhaustively handle all possible cases, the function may return `None` implicitly, which is in consistent with the function's return type. This can lead to unexpected behavior and bugs in your code.
+While it is not a problem in the case above, however, it may cause issues in other cases, especially when you are writing a function that is supposed to return a value. If you do not exhaustively handle all possible cases, the function may return `None` implicitly, which is inconsistent with the function's return type. This can lead to unexpected behavior and bugs in your code.
 
 For example, if we modify the `check_string` function to **return a string** instead of printing it, the code would be as follows:
 
@@ -705,7 +705,7 @@ In the first for loop, we use `range(5)` to generate an iterator that gives us t
 
 In the second for loop, we use `range(3)` to generate an iterator that gives us the numbers `0`, `1`, and `2`. However, we do not use these numbers in the loop body but just use it as a **counter** to repeat the printing task three times. Because the variable `_j` is not used, we attach a underscore `_` to the variable name to indicate that it is a **disposable variable**.
 
-The `range()` function can also take two or three arguments to specify the start, stop, and step values. For example, `range(2, 6)` will generate an iterator that gives you the numbers `2`, `3`, and `6`, and `range(1, 10, 2)` will generate an iterator that gives you the numbers `1`, `3`, `5`, `7`, and `9`. Note that the `stop` value is never included in the generated sequence.
+The `range()` function can also take two or three arguments to specify the start, stop, and step values. For example, `range(2, 6)` will generate an iterator that gives you the numbers `2`, `3`, `4`, `5`, and `range(1, 10, 2)` will generate an iterator that gives you the numbers `1`, `3`, `5`, `7`, and `9`. Note that the `stop` value is never included in the generated sequence.
 
 ## While loops
 
@@ -732,7 +732,7 @@ while condition:
     # do something
 ```
 
-The "condition" after the `while` keyword is a **boolean expression** that evaluates to `True` or `False`. If the expression is `True`, the we say that the condition is **met** and the loop will execute the code block inside the loop body. After the code block is finished, we will come again to the `while` statement and re-evaluate the condition. If the expression is still `True`, the loop will continue to execute the code block again. This process will repeat until the condition becomes `False`.
+The "condition" after the `while` keyword is a **boolean expression** that evaluates to `True` or `False`. If the expression is `True`, then we say that the condition is **met** and the loop will execute the code block inside the loop body. After the code block is finished, we will come again to the `while` statement and re-evaluate the condition. If the expression is still `True`, the loop will continue to execute the code block again. This process will repeat until the condition becomes `False`.
 
 Let's demonstrate the `while` loop with an example in both Mojo and Python. We will write a program that counts from `0` to `4` and prints each number:
 
@@ -1061,7 +1061,7 @@ Converged value: 1.0
 
 Note that every for loop can be replaced by an equivalent while loop. In other words, you can think of a for loop as a syntax sugar for a while loop.
 
-Why? Let's recall what the syntax `for i in some:` does, assuming some is an iterable object with `100` items:
+Why? Let's recall what the syntax `for i in some:` does, assuming `some` is an iterable object with `100` items:
 
 1. It create an **iterator** from the iterable object `some`.
 1. It starts the iterations over the iterator. In each iteration:
@@ -1119,19 +1119,6 @@ def main():
         print(i, "at", String(Pointer(to=i)))
 ```
 
-```mojo
-def main():
-    var iterator = range(10)
-    # Create a list iterator
-    var iterator = numbers.__iter__()
-
-    # Replacement for the for loop
-    while iterator.__has_next__():
-        ref i = iterator.__next__()
-        print(i, "at", String(Pointer(to=i)))
-    # End of the replacement
-```
-
 :::
 
 ### Do-until logic with while loops
@@ -1145,7 +1132,7 @@ Some people may find this logic more intuitive than a while loop, especially whe
 
 Mojo, however, **does not** have a built-in `do ... until` loop syntax. Neither does Python. But we can **simulate this logic** using a while loop with a `break` statement. This is because `break` is also a way to exit the loop early.
 
-For example, we want to find the first Fibonacci number that is greater than `1000`. In programming languages that support repeat-until logic, we can write the following code:
+For example, we want to find the first Fibonacci number that is greater than `1000000000`. In programming languages that support repeat-until logic, we can write the following code:
 
 ::: code-group
 
@@ -1265,7 +1252,7 @@ Since a iterator has a `__iter__()` method that returns itself, we say that **an
 
 ### `range()` generates an iterator
 
-The `range()` function can generates an object that that satisfies the above conditions of an iterator, and therefore, it is also an iterable to be used in a for loop. In Mojo, a `range()` can return one of the following three types of iterators, depending on the arguments passed to it:
+The `range()` function can generates an object that satisfies the above conditions of an iterator, and therefore, it is also an iterable to be used in a for loop. In Mojo, a `range()` can return one of the following three types of iterators, depending on the arguments passed to it:
 
 1. `_ZeroStartingRange`: An iterator that starts from `0` and goes up by 1 to a specified end value.
 1. `_SequentialRange`: An iterator that starts from a specified start value and goes up by 1 to a specified end value.

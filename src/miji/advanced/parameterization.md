@@ -13,7 +13,7 @@ We have learnt this in the first Part of this Miji when we write our [first Mojo
 
 In our previous examples, we usually combine these step into one. So every time we run a Mojo program, we do one compile and one execute. However, this is only for tutorial purposes. In real life, we can compile our Mojo code once and then run it many, many times. Think of a game, a calculator, or a web server. We just run the executable file.
 
-Since do do fewer compilations but more executions, a question arises: **can we shift some work from the run time to the compile time?** This is what parameterization is about.
+Since do fewer compilations but more executions, a question arises: **can we shift some work from the run time to the compile time?** This is what parameterization is about.
 
 Parametrization in Mojo is done via the concept "**parameter**". A parameter in Mojo is **a variable at compile time but is a constant at runtime**. How can this be achieved? The answer is that the compiler will replace the parameter with the value you provide at the compile time. When you execute the program, the parameter becomes a fixed value, and you cannot change it or assess it anymore.
 

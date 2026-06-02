@@ -56,7 +56,7 @@ In Mojo, a `List` is a mutable, variable-length sequence that can hold a collect
 | Iterator returns   | Reference to element       | Copy of element                             |
 | List comprehension | Partially supported        | Supported                                   |
 | Memory layout      | Metadata -> Elements       | Pointer -> metadata -> Pointers -> Elements |
-| Shadow copy        | N.A.                       | `list.copy()` or `copy.copy(lst)`           |
+| Shallow copy       | N.A.                       | `list.copy()` or `copy.copy(lst)`           |
 | Deep copy          | `lst.copy()`               | `copy.deepcopy(lst)`                        |
 | Reference          | `ref` keyword              | `lst2 = lst1`                               |
 | Transfer ownership | `^` operator               | N.A.                                        |
@@ -593,7 +593,7 @@ A Mojo `List` is actually a structure that contains three fields:
 
 - A pointer type `_data` that points to a continuous block of memory on the heap that stores the elements of the list contiguously.
 - A integer type `_len` which stores the number of elements in the list.
-- A integer type `capacity` which represents the maximum number of elements that can be stored in the list without reallocating memory. When `capacity` is larger than `_len`, it means that the memory space is allocated but is fully used. This enable you to append a few new elements to the list without reallocating memory. If you append more elements than the current capacity, the list will request another block of memory on the heap with a larger capacity, copy the existing elements to the new block, and then append the new elements.
+- A integer type `capacity` which represents the maximum number of elements that can be stored in the list without reallocating memory. When `capacity` is larger than `_len`, it means that the memory space is allocated but is not fully used. This enable you to append a few new elements to the list without reallocating memory. If you append more elements than the current capacity, the list will request another block of memory on the heap with a larger capacity, copy the existing elements to the new block, and then append the new elements.
 
 Let's take a closer look at how a Mojo `List` is stored in the memory with a simple example: The code below creates a `List` of `UInt8` numbers representing the ASCII code of 5 letters. We can use the `chr()` function to convert them into characters and print them out to see what they mean.
 
@@ -681,7 +681,7 @@ The table below compares Mojo's `Dict` with Python's `dict`:
 | Printing           | Use `print()`                | Use `print()`                         |
 | Iterating          | Use `for` loop to get keys   | Use `for` loop to get key-value pairs |
 | Iterator returns   | Reference to element         | Copy of element                       |
-| Shadow copy        | N.A.                         | `dct.copy()` or `copy.copy(dct)`      |
+| Shallow copy       | N.A.                         | `dct.copy()` or `copy.copy(dct)`      |
 | Deep copy          | `dct.copy()`                 | `copy.deepcopy(dct)`                  |
 | Reference          | `ref` keyword                | `dct2 = dct1`                         |
 | Transfer ownership | `^` operator                 | N.A.                                  |

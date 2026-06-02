@@ -774,7 +774,7 @@ You may still use the idea of duck typing in Mojo, but replace it by **traits**:
 
 Mojo provides quite a lot of built-in traits that you can use in your code. Sometimes, you may even not aware that you are using them. For example, many dunder methods, such as `__str__()`, `__repr__()`, `__absable__()`, `__gt__()`, etc., are actually implementing the built-in traits. Some non-dunder methods, such as `write_to()`, also implement the built-in traits.
 
-Let's look it one of these built-in traits, `Absable`, which is used to take the absolute value of a number. Types that conform to the `Absable` trait can be used with the built-in function `abs()` to get the absolute value of the number. See the following example:
+Let's look at one of these built-in traits, `Absable`, which is used to take the absolute value of a number. Types that conform to the `Absable` trait can be used with the built-in function `abs()` to get the absolute value of the number. See the following example:
 
 ```mojo
 # src/advanced/generic/absable_trait.mojo
@@ -915,7 +915,7 @@ $$
 (x_1, y_1) + (x_2, y_2) = (x_1^2 + x_2^2, y_1^2 + y_2^2)
 $$
 
-We can so this by defining a method, e.g., `pixel1.add(pixel2)`. But it is not very intuitive.
+We can do this by defining a method, e.g., `pixel1.add(pixel2)`. But it is not very intuitive.
 
 A more intuitive way is to use the `+` operator to add two `Pixel` objects together. However, Mojo won't do this automatically for you. You need to define the behavior of the `+` operator for the `Pixel` type yourself. This is called **operator overloading**.
 
