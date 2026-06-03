@@ -9,7 +9,7 @@ by ***Yuhao Zhu (朱宇浩)***
 
 ::: warning Notes
 
-This Miji is compatible with Mojo v0.26.1 (2026-01-29).
+This Miji is compatible with Mojo v1.0.0b1 (2026-05-07).
 
 For the example programs featured in this Miji, you can find them in the [GitHub repository](https://github.com/forfudan/my-first-mojo-project).
 

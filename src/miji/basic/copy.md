@@ -1,3 +1,12 @@
+<!-- 
+
+This chapter needs to be updated.
+
+Note that the compiler no longer auto-rewrites repeated use of a variable into a copy followed by a move; you must call `.copy()` explicitly when both the source and the new variable need to remain valid.
+
+The `__copyinit__` and `__moveinit__` methods are deprecated.
+ -->
+
 # Copy and move
 
 We have briefly touched the topic of value assignment between variables in Chapter [Variables](./variables). In this chapter, we will take a deeper look into how values are transferred between variables in Mojo. More advanced topics such as ownership and borrowing will be covered in later chapters.

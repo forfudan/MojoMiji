@@ -25,13 +25,13 @@ Now, the `pixi` binary is installed in the directory `~/.pixi/bin`.
 
 You may be confused by the names of Modular's products. Here is a brief introduction to the Modular family:
 
-|         | Description                                                | Official link                                                                  |
-| ------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| magic   | Package and virtual environment manager (being deprecated) | [https://docs.modular.com/magic/](https://docs.modular.com/magic/)             |
-| pixi    | Package and virtual environment manager (to replace magic) | [https://pixi.sh/latest/](https://pixi.sh/latest/)                             |
-| modular | Company, platform, suite of AI libraries and tools         | [https://www.modular.com/](https://www.modular.com/)                           |
-| max     | GenAI graph compiler                                       | [https://docs.modular.com/max/intro](https://docs.modular.com/max/intro)       |
-| mojo    | Programming language, mojo compiler                        | [https://docs.modular.com/mojo/manual/](https://docs.modular.com/mojo/manual/) |
+|         | Description                                                | Official link                                                            |
+| ------- | ---------------------------------------------------------- | ------------------------------------------------------------------------ |
+| magic   | Package and virtual environment manager (being deprecated) | [https://docs.modular.com/magic/](https://docs.modular.com/magic/)       |
+| pixi    | Package and virtual environment manager (to replace magic) | [https://pixi.sh/latest/](https://pixi.sh/latest/)                       |
+| modular | Company, platform, suite of AI libraries and tools         | [https://www.modular.com/](https://www.modular.com/)                     |
+| max     | GenAI graph compiler                                       | [https://docs.modular.com/max/intro](https://docs.modular.com/max/intro) |
+| mojo    | Programming language, mojo compiler                        | [https://mojolang.org/docs/manual/](https://mojolang.org/docs/manual/)   |
 
 :::
 

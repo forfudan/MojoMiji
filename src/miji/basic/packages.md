@@ -182,7 +182,7 @@ A example module containing a `Point` struct and related structs and functions.
 # ===----------------------------------------------------------------------=== #
 # Imports
 # ===----------------------------------------------------------------------=== #
-from memory import UnsafePointer
+from std.memory import UnsafePointer
 import math
 
 # ===----------------------------------------------------------------------=== #

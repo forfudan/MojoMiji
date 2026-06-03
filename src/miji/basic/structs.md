@@ -134,7 +134,7 @@ struct Complex(Writable):
     var imag: Float64
     """Imaginary part of the complex number."""
 
-    fn __init__(out self, real: Float64 = 0.0, imag: Float64 = 0.0):
+    def __init__(out self, real: Float64 = 0.0, imag: Float64 = 0.0):
         """Initializes a complex number with real and imaginary parts.
 
         Args:
@@ -144,7 +144,7 @@ struct Complex(Writable):
         self.real = real
         self.imag = imag
 
-    fn write_to[T: Writer](self, mut writer: T):
+    def write_to[T: Writer](self, mut writer: T):
         """Writes the complex number to a writer."""
         if self.imag < 0:
             writer.write(self.real, self.imag, "i")
@@ -152,7 +152,7 @@ struct Complex(Writable):
             writer.write(self.real, "+", self.imag, "i")
 
 
-fn main():
+def main():
     var c1 = Complex(3.0, 4.0)
     var c2 = Complex(1.0, -2.0)
     var c3 = Complex()
@@ -260,7 +260,7 @@ struct Complex(Writable):
     var imag: Float64
     """Imaginary part of the complex number."""
 
-    fn __init__(out self, real: Float64 = 0.0, imag: Float64 = 0.0):
+    def __init__(out self, real: Float64 = 0.0, imag: Float64 = 0.0):
         """Initializes a complex number with real and imaginary parts.
 
         Args:
@@ -270,29 +270,29 @@ struct Complex(Writable):
         self.real = real
         self.imag = imag
 
-    fn write_to[T: Writer](self, mut writer: T):
+    def write_to[T: Writer](self, mut writer: T):
         """Writes the complex number to a writer."""
         if self.imag < 0:
             writer.write(self.real, self.imag, "i")
         else:
             writer.write(self.real, "+", self.imag, "i")
 
-    fn __add__(self, other: Self) -> Self:
+    def __add__(self, other: Self) -> Self:
         """Adds two complex numbers."""
         return Complex(self.real + other.real, self.imag + other.imag)
 
-    fn __sub__(self, other: Self) -> Self:
+    def __sub__(self, other: Self) -> Self:
         """Subtracts two complex numbers."""
         return Complex(self.real - other.real, self.imag - other.imag)
 
-    fn __mul__(self, other: Self) -> Self:
+    def __mul__(self, other: Self) -> Self:
         """Multiplies two complex numbers."""
         return Complex(
             self.real * other.real - self.imag * other.imag,
             self.real * other.imag + self.imag * other.real,
         )
 
-    fn __truediv__(self, other: Self) raises -> Self:
+    def __truediv__(self, other: Self) raises -> Self:
         """Divides two complex numbers."""
         var denominator: Float64 = other.real * other.real + other.imag * other.imag
         if denominator == 0:
@@ -303,7 +303,7 @@ struct Complex(Writable):
         )
 
 
-fn main() raises:
+def main() raises:
     var c1 = Complex(3.0, 4.0)
     var c2 = Complex(1.0, -2.0)
     var c3 = Complex()
@@ -472,14 +472,14 @@ struct Human:
     var height: Float16
     var date: List[UInt16]
 
-    fn __init__(out self, name: String, age: UInt8, height: Float16, var date: List[UInt16]):
+    def __init__(out self, name: String, age: UInt8, height: Float16, var date: List[UInt16]):
         """Initializes a human with a name."""
         self.name = name
         self.age = age
         self.height = height
         self.date = date^
 
-fn main():
+def main():
     var human = Human(
         "Yuhao Zihong Mengzexianke Xianyong Zhu",
         124,
@@ -573,7 +573,7 @@ But be warned that this is an unsafe operation! You should not touch this unless
 
 ```mojo
 # src/basic/structs/human.mojo
-from memory import UnsafePointer
+from std.memory import UnsafePointer
 
 struct Human:
     # same as above
@@ -587,7 +587,7 @@ struct Human:
     var height: Float16
     var date: List[UInt16]
 
-    fn __init__(
+    def __init__(
         out self,
         name: String,
         age: UInt8,
@@ -601,7 +601,7 @@ struct Human:
         self.date = date^
 
 
-fn main():
+def main():
     var human = Human(
         "Yuhao Zihong Mengzexianke Xianyong Zhu",
         124,

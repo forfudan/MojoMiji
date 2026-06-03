@@ -1,9 +1,21 @@
+<!-- 
+This chapter needs update. 
+-->
+
 # Functions
 
 > laziness brings creativity.  
 > -- Yuhao Zhu, *Gate of Heaven*
 
 Now we are familiar with variables in Mojo. This chapter continue with functions.
+
+::: warning `fn` is deprecated since Mojo v1.0.0b1
+
+Since Mojo v1.0.0b1, the `fn` keyword has been deprecated and will be removed in a future release. Use `def` instead. Furthermore, `def` no longer **implicitly raises**: if a function may raise an error, you must annotate it explicitly with `raises`. Function arguments are also read-only by default in both `def` and `fn`.
+
+This chapter still uses `fn` in many places to contrast it with `def` for pedagogical reasons. Treat every `fn ...:` as if it were `def ...:`, and add `raises` where the function actually raises. The example source files under [`my-first-mojo-project/src/basic/functions/`](https://github.com/forfudan/miji/tree/main/my-first-mojo-project/src/basic/functions) reflect the new syntax.
+
+:::
 
 [[toc]]
 
@@ -548,7 +560,7 @@ The following example examines the functionality of the `mut` keyword **from the
 
 ```mojo
 # src/basic/functions/mut_keyword.mojo
-from memory import Pointer
+from std.memory import Pointer
 
 def changeit(mut a: Int8):
     a = 10
@@ -695,7 +707,7 @@ The following example examines the functionality of the `var` keyword **from the
 
 ```mojo
 # src/basic/functions/var_keyword.mojo
-from memory import Pointer
+from std.memory import Pointer
 
 
 def changeit(var a: Int8):

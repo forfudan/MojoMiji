@@ -3,6 +3,15 @@
 > Gold can't be pure and man can't be perfect.  
 > --  DAI Fugu 戴復古 (Song Dynasty)
 
+<!--
+To do
+
+- Remove `def` `fn` difference.
+- A note that `raises` is the shortcut for `raises Error` in the function signature.
+- A note that `raise` is the shortcut for `raise Error(T: Writable)` in the function body.
+- A note that except system is a generalized if-else statement, so that you can not only raise (by default) a Error type when the condition is met, but also return other data types. Maybe this can be left to a dedicated chapter in "advanced" part.
+ -->
+
 It is not uncommon to encounter errors in programming. Errors are not necessarily bad, but failing to handle them properly can lead to unexpected behaviors and bugs in your code. That is why most programming languages provide mechanisms to handle errors gracefully.
 
 Mojo, as a Python-like language, inherits the error handling mechanism from Python but makes it stricter. This chapter will introduce you to the error handling mechanism in Mojo, including:
