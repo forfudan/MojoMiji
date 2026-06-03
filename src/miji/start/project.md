@@ -96,7 +96,7 @@ You can see that there is currently nothing in the `[dependencies]` section. Thi
 
 ```toml
 [dependencies]
-mojo = "==0.26.1"
+mojo = "==1.0.0b1"
 ```
 
 :::
@@ -112,7 +112,7 @@ The word on the right side of the `=` is the version of the package you want to 
 
 ## Install Mojo compiler
 
-After we put `mojo = "==0.26.1"` in the dependencies field, pixi knows that we want to install the latest version of the `mojo` package. To finish the installation, we need to run the following command in your terminal (Use `Cmd + J` to open the terminal in VS Code):
+After we put `mojo = "==1.0.0b1"` in the dependencies field, pixi knows that we want to install the latest version of the `mojo` package. To finish the installation, we need to run the following command in your terminal (Use `Cmd + J` to open the terminal in VS Code):
 
 ::: code-group
 
@@ -145,4 +145,4 @@ You can always update the dependencies in `pixi.toml` file. Then, just run `pixi
 For more information about pixi, you can refer to the [official documentation](https://pixi.sh/latest/getting_started/).
 
 [^hidden]: There are also three hidden files: `.gitignore`, `.pixi` and `.gitattributes`. These files are used for version control and package management. You can ignore them for now.
-[^versioning]: Before Mojo v0.25.6 (2025-09-22), the versioning scheme was different. It was like Mojo v25.1 for the release in January 2025. From v0.25.6, a extra `0.` is added in front of the version number to be more consistent with semantic versioning.
+[^versioning]: Before Mojo v0.25.6 (2025-09-22), the versioning scheme was different. It was like Mojo v25.1 for the release in January 2025. From v0.25.6, a extra `0.` is added in front of the version number to be more consistent with semantic versioning. From v1.0.0b1 (2026-05-07), the versioning scheme is changed to be more consistent with semantic versioning. The `b` in the version number indicates that this is a beta version.

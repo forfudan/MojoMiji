@@ -67,19 +67,19 @@ In the early days of Mojo, there used to be other keywords. As time went by, the
 
 As a "archaeologist", I always like to track the history of the changes in the language. The following table shows the historical keywords of the conventions and the versions of Mojo when they were used.
 
-| Version    | Immutable<br>reference        | Mutable<br>reference                     | Local mutable<br>reference | Owned value                | Named result     | Destruction         |
-| ---------- | ----------------------------- | ---------------------------------------- | -------------------------- | -------------------------- | ---------------- | ------------------- |
-| 2022-10-24 |                               | `&expr` introduced                       |                            |                            |                  |                     |
-| 2023-03-13 | `borrowed` introduced         |                                          |                            | `owned` introduced         |                  |                     |
-| 2023-05-11 |                               | `inout` introduced<br>`&expr` deprecated |                            |                            |                  |                     |
-| v24.6      | `read` introduced             | `mut` introduced                         |                            |                            | `out` introduced |                     |
-| v25.1      | `borrowed` generating warning | `inout` generating warning               |                            |                            |                  |                     |
-| v25.2      | `borrowed` deprecated         | `inout` deprecated                       |                            |                            |                  |                     |
-| v25.4      |                               |                                          | `ref` introduced           |                            |                  |                     |
-| v25.5      |                               |                                          |                            | `var` introduced           |                  |                     |
-| v0.25.6    |                               |                                          |                            |                            |                  | `deinit` introduced |
-| v0.26.1    |                               |                                          |                            | `owned` generating warning |                  |                     |
-| v0.26.2    |                               |                                          |                            | `owned` deprecated         |                  |                     |
+| Version    | Immutable<br>reference        | Mutable<br>reference                     | Local mutable<br>reference | Owned value                | Named result     | Destruction         | Move / copy                  |
+| ---------- | ----------------------------- | ---------------------------------------- | -------------------------- | -------------------------- | ---------------- | ------------------- | ---------------------------- |
+| 2022-10-24 |                               | `&expr` introduced                       |                            |                            |                  |                     |                              |
+| 2023-03-13 | `borrowed` introduced         |                                          |                            | `owned` introduced         |                  |                     |                              |
+| 2023-05-11 |                               | `inout` introduced<br>`&expr` deprecated |                            |                            |                  |                     |                              |
+| v24.6      | `read` introduced             | `mut` introduced                         |                            |                            | `out` introduced |                     |                              |
+| v25.1      | `borrowed` generating warning | `inout` generating warning               |                            |                            |                  |                     |                              |
+| v25.2      | `borrowed` deprecated         | `inout` deprecated                       |                            |                            |                  |                     |                              |
+| v25.4      |                               |                                          | `ref` introduced           |                            |                  |                     |                              |
+| v25.5      |                               |                                          |                            | `var` introduced           |                  |                     |                              |
+| v0.25.6    |                               |                                          |                            |                            |                  | `deinit` introduced |                              |
+| v0.26.1    |                               |                                          |                            | `owned` generating warning |                  |                     |                              |
+| v0.26.2    |                               |                                          |                            | `owned` removed            |                  |                     | `take` and `copy` introduced |
 
 We will discuss each keyword of conventions in the following sub-sections.
 
@@ -258,7 +258,7 @@ The following example examines the functionality of the `mut` keyword **from the
 
 ```mojo
 # src/basic/functions/mut_keyword.mojo
-from memory import Pointer
+from std.memory import Pointer
 
 def changeit(mut a: Int8):
     a = 10
@@ -359,7 +359,7 @@ The following example examines the functionality of the `var` keyword **from the
 
 ```mojo
 # src/basic/functions/var_keyword.mojo
-from memory import Pointer
+from std.memory import Pointer
 
 
 def changeit(var a: Int8):
@@ -794,3 +794,4 @@ error: invalid call to 'third_reference': argument #0 must be mutable in order t
 
 - 2025-06-23: Update to accommodate the changes in Mojo v25.4.
 - 2025-09-04: Update to accommodate the changes in Mojo v25.5.
+- 2026-06-02: Update to accommodate the changes in Mojo v1.0.0b1.

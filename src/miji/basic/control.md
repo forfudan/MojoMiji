@@ -1065,20 +1065,20 @@ Why? Let's recall what the syntax `for i in some:` does, assuming `some` is an i
 
 1. It create an **iterator** from the iterable object `some`.
 1. It starts the iterations over the iterator. In each iteration:
-   - It checks whether the `__has_next__()` method of the iterator returns `True`. If it does, it means there are still more items to iterate over. If it returns `False`, the loop ends.
-   - It calls the `__next__()` method of the iterator to get the next item from the iterator and assigns it to the variable `i`.
+   - It calls the `__next__()` method of the iterator to get the next item from the iterator and assigns it to the variable `i`. If the iterator has no more items, the `__next__()` method raises a `StopIteration` error, and the loop ends.
    - It updates the internal status of the iterator (*e.g.*, a counter of the remaining items, or a counter of the current iteration).
    - It proceeds to the next iteration.
 
-Since there is a **condition** and an **internal counter**, we can then replace the for loop with a while loop that checks the condition and updates the counter accordingly.
+Since the iteration is controlled by a raising `__next__()` call and an **internal counter**, we can replace the for loop with a while loop that repeatedly calls `__next__()` and breaks when the `StopIteration` error is raised.
 
 Below is an example of how to replace a for loop with a while loop in Mojo.
 
 ::: code-group
 
 ```mojo
-# src/basic/control/
-# loop_over_iterators_with_for.mojo
+# src/miji/basic/control/loop_over_iterators_with_for.mojo
+
+
 def main():
     var iterator = range(10)
 
@@ -1089,15 +1089,21 @@ def main():
 ```
 
 ```mojo
-# src/basic/control/
-# loop_over_iterators_with_while.mojo
-def main():
+# src/basic/control/loop_over_iterators_with_while.mojo
+
+from std.memory import Pointer
+
+
+def main() raises:
     var iterator = range(10)
 
     # Replacement for the for loop
-    while iterator.__has_next__():
-        i = iterator.__next__()
-        print(i, "at", String(Pointer(to=i)))
+    while True:
+        try:
+            i = iterator.__next__()
+            print(i, "at", String(Pointer(to=i)))
+        except:  # StopIteration ends the iteration
+            break
     # End of the replacement
 ```
 
@@ -1108,15 +1114,24 @@ This replacement is **general** and can be applied to **any for loop** that iter
 ::: code-group
 
 ```mojo
-def main():
-    var numbers = [1, 2, 3, 4, 5]
+# src/basic/control/loop_over_list_with_while.mojo
+
+from std.memory import Pointer
+
+
+def main() raises:
+    var numbers: List[String] = ["I", "am", "a", "list", "of", "strings"]
     # Create a list iterator
     var iterator = numbers.__iter__()
 
-    # You can also use `for i in numbers:`
-    # Mojo automatically creates an iterator
-    for i in iterator:
-        print(i, "at", String(Pointer(to=i)))
+    # Replacement for the for loop
+    while True:
+        try:
+            ref i = iterator.__next__()
+            print(i, "at", String(Pointer(to=i)))
+        except:  # StopIteration ends the iteration
+            break
+    # End of the replacement
 ```
 
 :::
@@ -1244,11 +1259,16 @@ An object is an **iterable** if it implements a `__iter__()` method that returns
 
 The iterator is an instance of such a **type** that satisfies the following conditions:
 
-1. It has a `__next__()` method that returns a value at at time,
-1. It has a `__iter__()` method that returns an instance of its own type, and
-1. It has a `__has_next__()` method that returns a boolean indicating whether there are more elements to iterate over.
+1. It has a `__next__()` method that returns a value at a time, and raises a `StopIteration` error when there are no more elements left, and
+1. It has a `__iter__()` method that returns an instance of its own type.
 
 Since a iterator has a `__iter__()` method that returns itself, we say that **an iterator is also an iterable**. This is why you can also use a for loop to iterate over an iterator.
+
+::: tip Iterator protocol change in Mojo v1.0.0b1
+
+Before Mojo v1.0.0b1, iterators were also required to implement a `__has_next__()` method, which returned a boolean indicating whether more elements were available. From v1.0.0b1 onward, `__has_next__()` has been removed, and `__next__()` now raises a `StopIteration` error to signal the end of the iteration.
+
+:::
 
 ### `range()` generates an iterator
 
@@ -1258,7 +1278,7 @@ The `range()` function can generates an object that satisfies the above conditio
 1. `_SequentialRange`: An iterator that starts from a specified start value and goes up by 1 to a specified end value.
 1. `_StridedRange`: An iterator that starts from a specified start value, goes up by a specified step value, and stops at a specified end value.
 
-They all have a `__next__()` method that returns the next integral number in a range, a `__iter__()` method that returns itself, and a `__has_next__()` method that returns `True` if the end of the range is not reached yet, or `False` if it is.
+They all have a `__next__()` method that returns the next integral number in a range (or raises a `StopIteration` error when the end of the range is reached), and a `__iter__()` method that returns themselves.
 
 ---
 
@@ -2040,3 +2060,7 @@ Enter a year (after 1582) to print its calendar: 2025
 └─────────────────────────────────────┘
 
 :::
+
+## Major changes in this chapter
+
+- 2026-06-02: Update to accommodate the changes in Mojo v1.0.0b1. The iterator protocol was changed: `__has_next__()` was removed, and `__next__()` now raises a `StopIteration` error to signal the end of the iteration. The `loop_over_iterators_with_while.mojo` and `loop_over_list_with_while.mojo` examples have been rewritten to use the new `try / except StopIteration` pattern inside `while True`.

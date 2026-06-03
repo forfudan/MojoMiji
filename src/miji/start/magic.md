@@ -2,7 +2,7 @@
 
 ::: warning Deprecation of magic
 
-The `magic` manager is in the process of being deprecated. The alternative solution is `pixi`. Please consider go to the next chapter and install `pixi` instead. 
+The `magic` manager is in the process of being deprecated. The alternative solution is `pixi`. Please consider go to the next chapter and install `pixi` instead.
 
 See the following post in the Moular forum for more information: [Migrating from Magic to Pixi](https://forum.modular.com/t/migrating-from-magic-to-pixi/1530).
 
@@ -35,12 +35,12 @@ Now, Magic CLI is installed in the directory `~/.modular/`.
 
 You may be confused by the names of Modular's products. Here is a brief introduction to the Modular family:
 
-|         | Description                                                | Official link                                                                  |
-| ------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| magic   | Package and virtual environment manager, command line tool | [https://docs.modular.com/magic/](https://docs.modular.com/magic/)             |
-| modular | Platform, suite of AI libraries and tools                  | [https://www.modular.com/](https://www.modular.com/)                           |
-| max     | GenAI graph compiler                                       | [https://docs.modular.com/max/intro](https://docs.modular.com/max/intro)       |
-| mojo    | Programming language                                       | [https://docs.modular.com/mojo/manual/](https://docs.modular.com/mojo/manual/) |
+|         | Description                                                | Official link                                                            |
+| ------- | ---------------------------------------------------------- | ------------------------------------------------------------------------ |
+| magic   | Package and virtual environment manager, command line tool | [https://docs.modular.com/magic/](https://docs.modular.com/magic/)       |
+| modular | Platform, suite of AI libraries and tools                  | [https://www.modular.com/](https://www.modular.com/)                     |
+| max     | GenAI graph compiler                                       | [https://docs.modular.com/max/intro](https://docs.modular.com/max/intro) |
+| mojo    | Programming language                                       | [https://mojolang.org/docs/manual/](https://mojolang.org/docs/manual/)   |
 
 :::
 

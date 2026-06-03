@@ -861,29 +861,35 @@ You may remember that we have already discussed this topic in Section [Basic met
 
 In the following example, we define a custom type `Pixel` that represents a pixel in a 2D space with `x` and `y` coordinates. In order to display the pixel in a human-readable format, we want to (1) define the string representation of the pixel, (2) call the built-in `String()` constructor to convert the pixel to its string representation, and (3) print the string representation of the pixel.
 
-To use `String()` constructor, the type `Pixel` need to conform to the `Stringable` trait, which requires the type to implement the dunder method `__str__()` that returns a string representation of the pixel. The code is as follows:
+To use `String()` constructor on a custom type, the type must conform to the `Writable` trait, which requires the type to implement the dunder method `write_to[T: Writer](self, mut writer: T)`. The `String()` constructor and `print()` function both use this method to obtain a textual representation of the object. The code is as follows:
 
 ```mojo
 # src/advanced/generic/pixel.mojo
-struct Pixel(Stringable):
+struct Pixel(Writable):
     var x: Int
     var y: Int
 
-    fn __init__(out self, x: Int, y: Int):
+    def __init__(out self, x: Int, y: Int):
         self.x = x
         self.y = y
 
-    fn __str__(self) -> String:
-        return String("Pixel(") + String(self.x) + String(", ") + String(self.y) + String(")")
+    def write_to[T: Writer](self, mut writer: T):
+        writer.write("Pixel(", self.x, ", ", self.y, ")")
 
 def main():
-    var point1 = Pixel(212,149)
-    var point2 = Pixel(-12,391)
+    var point1 = Pixel(212, 149)
+    var point2 = Pixel(-12, 391)
     print(String(point1))
     print(String(point2))
 ```
 
-In the code, the `__str__()` method combines the `x` and `y` coordinates, as well as necessary texts and punctuations, into a string. When we use `String(point1)` and `String(point2)`, the Mojo compiler will automatically call the `__str__()` method of the `Pixel` type to get the string representation of the pixel, then print it to the console.
+In the code, the `write_to()` method writes a textual representation of the pixel into the given writer. When we use `String(point1)` and `String(point2)`, the Mojo compiler will automatically call `write_to()` to assemble the string, then print it to the console.
+
+::: tip `Stringable` and `Representable` are removed in Mojo v1.0.0b1
+
+Earlier versions of Mojo provided the `Stringable` trait (with `__str__()`) and the `Representable` trait (with `__repr__()`). Both traits have been removed in Mojo v1.0.0b1. Use the `Writable` trait with `write_to()` for printing and string conversion, while use the `Writable` trait with `write_repr_to()` for built-in function `repr()`.
+
+:::
 
 The output of the code is as follows:
 
@@ -894,16 +900,15 @@ Pixel(-12, 391)
 
 Below is a summary of the most common dunder methods, the built-in traits they conform to, and the built-in functions they enable.
 
-| Dunder method | Built-in trait  | Built-in function | Description                                                |
-| ------------- | --------------- | ----------------- | ---------------------------------------------------------- |
-| `__str__()`   | `Stringable`    | `String()`        | String representation of the object                        |
-| `__repr__()`  | `Representable` | `repr()`          | String representation in the format of a constructor       |
-| `write_to()`  | `Writable`      | `print()`         | Write the object to a writer instance to enable printing   |
-| `__len__()`   | `Sizable`       | `len()`           | Length of the object                                       |
-| `__abs__()`   | `Absable`       | `abs()`           | Absolute value of the object                               |
-| `__int__()`   | `Intable`       | `Int()`           | Convert the object to an integer with the constructor      |
-| `__bool__()`  | `Boolable`      | `Bool()`          | Convert the object to a boolean value with the constructor |
-| `__round__()` | `Roundable`     | `round()`         | Round the object                                           |
+| Dunder method     | Built-in trait | Built-in function     | Description                                                                    |
+| ----------------- | -------------- | --------------------- | ------------------------------------------------------------------------------ |
+| `write_to()`      | `Writable`     | `print()`, `String()` | Write the object to a writer instance to enable printing and string conversion |
+| `write_repr_to()` | `Writable`     | `repr()`              | Write the object to a writer instance to enable the built-in function `repr()` |
+| `__len__()`       | `Sizable`      | `len()`               | Length of the object                                                           |
+| `__abs__()`       | `Absable`      | `abs()`               | Absolute value of the object                                                   |
+| `__int__()`       | `Intable`      | `Int()`               | Convert the object to an integer with the constructor                          |
+| `__bool__()`      | `Boolable`     | `Bool()`              | Convert the object to a boolean value with the constructor                     |
+| `__round__()`     | `Roundable`    | `round()`             | Round the object                                                               |
 
 ## Dunder methods and operators overloading
 
@@ -982,3 +987,4 @@ Below is a table summarizing the most common dunder methods, the operators they 
 - 2025-06-23: Update to accommodate the changes in Mojo v25.4.
 - 2025-09-25: Include a section on default implementation of methods to accommodate the changes in Mojo v0.25.6.
 - 2026-02-28: Update to accommodate the changes in Mojo v0.26.1.
+- 2026-06-02: Update to accommodate the changes in Mojo v1.0.0b1.

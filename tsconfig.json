@@ -16,9 +16,8 @@
     "esModuleInterop": true,
     "compilerOptions": {
         "target": "ESNext",
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
         "module": "ESNext",
-        "baseUrl": ".",
         "paths": {
             "@/*": [
                 "./components/*"

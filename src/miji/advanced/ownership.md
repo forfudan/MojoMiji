@@ -1,3 +1,6 @@
+<!-- 
+Note that the compiler no longer auto-rewrites `__copyinit__` / `__moveinit__` callsites; the `copy_move_inconsistency*.mojo` examples therefore no longer compile in v1.0.0b1 and are kept only for historical reference. Need to update it to the new syntax.
+-->
 # Ownership
 
 Perhaps Rust is the programming languages that we should thank the most for making the concept of **ownership** popular (maybe also the term "lifetime"). The so-called "ownership" is a conceptual model that intuitively describes how memory is managed and meticulously track the life cycle of values in a program.
@@ -461,7 +464,7 @@ We use the previous example, but this time we will copy the value instead of tra
 
 ```mojo
 # src/advanced/ownership/copy_value.mojo
-from memory import Pointer
+from std.memory import Pointer
 
 
 def main():
@@ -790,7 +793,7 @@ a is at address 0x16d4d4958 with de-referenced value: Hello, Mojo!
 
 ::: danger ASAP Destruction Policy
 
-Compared to Rust, Mojo is more aggressive in destroying variables. Rust variables end their lifetime at the end of the current scope (code block), but Mojo destroys a variable immediately after its last use. This is called [ASAP destruction](https://docs.modular.com/mojo/manual/lifecycle/death).
+Compared to Rust, Mojo is more aggressive in destroying variables. Rust variables end their lifetime at the end of the current scope (code block), but Mojo destroys a variable immediately after its last use. This is called [ASAP destruction](https://mojolang.org/docs/manual/lifecycle/death).
 
 You may then wonder, in the previous example, why the pointer `ptr` is still valid after the last use of `a`, i.e., `var b = a`?
 

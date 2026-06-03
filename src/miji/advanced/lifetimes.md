@@ -136,7 +136,7 @@ def main():
 
 ::: tip ASAP destruction policy
 
-Compared to Rust, Mojo is more aggressive in destroying variables. Rust variables end their lifetime at the end of the current scope (code block), but Mojo destroys a variable immediately after its last use. This is called [ASAP destruction](https://docs.modular.com/mojo/manual/lifecycle/death).
+Compared to Rust, Mojo is more aggressive in destroying variables. Rust variables end their lifetime at the end of the current scope (code block), but Mojo destroys a variable immediately after its last use. This is called [ASAP destruction](https://mojolang.org/docs/manual/lifecycle/death).
 
 However, the term "last use" does not mean that the variable name lastly appears in the code. It also means that all its references and safe pointers are lastly used. As long as one of its references are still alive, the variable will not be destroyed.
 
@@ -760,3 +760,4 @@ The design philosophy of Mojo and Rust lifetime systems is different. Different 
 
 - 2025-06-23: Update to accommodate the changes in Mojo v25.4.
 - 2026-02-28: Update to accommodate the changes in Mojo v0.26.1.
+- 2026-06-02: Update to accommodate the changes in Mojo v1.0.0b1.
