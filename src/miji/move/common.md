@@ -1,12 +1,16 @@
 # Things that are in common
 
-In this chapter, I will discuss the things that are in common between Mojo and Python. For these features, you do not need to learn from scratch. You can just use the same knowledge you have in Python and apply it to Mojo.
+In this chapter, I will discuss the things that are in common between Mojo and
+Python. For these features, you do not need to learn from scratch. You can just
+use the same knowledge you have in Python and apply it to Mojo.
 
 [[toc]]
 
 ## Coding style
 
-Mojo is designed to be similar to Python in terms of coding style. You can use the same coding style you have in Python in Mojo. For example, you can use the same indentation, comments, and naming conventions. Here is a summary:
+Mojo is designed to be similar to Python in terms of coding style. You can use
+the same coding style you have in Python in Mojo. For example, you can use the
+same indentation, comments, and naming conventions. Here is a summary:
 
 | Feature              | Python and Mojo                          |
 | -------------------- | ---------------------------------------- |
@@ -21,7 +25,9 @@ We go through these features one by one.
 
 ### Code blocks
 
-The first feature is the code blocks. In Python, we use a colon (`:`) to indicate the start of a code block. The body of the code block is then intended with the same number of spaces, usually 4 spaces. For example:
+The first feature is the code blocks. In Python, we use a colon (`:`) to
+indicate the start of a code block. The body of the code block is then intended
+with the same number of spaces, usually 4 spaces. For example:
 
 ```python
 def main():
@@ -35,23 +41,39 @@ def code_block():
     print("We are in a code block")
 ```
 
-Some people may find this indentation-sensitive style of coding a little bit annoying. For example, if you want to copy some code from one place to another, you have to make sure that the indentation is correct. Sometimes, for complicated code, it is very eye-unfriendly and prone to errors.
+Some people may find this indentation-sensitive style of coding a little bit
+annoying. For example, if you want to copy some code from one place to another,
+you have to make sure that the indentation is correct. Sometimes, for
+complicated code, it is very eye-unfriendly and prone to errors.
 
-In some other languages, such as C, Java, and Go, they use curly braces (`{}`) to indicate the start and end of a code block. Other languages like Pascal and Lua uses `end` to indicate the end of a code block.
+In some other languages, such as C, Java, and Go, they use curly braces (`{}`)
+to indicate the start and end of a code block. Other languages like Pascal and
+Lua uses `end` to indicate the end of a code block.
 
-Both styles have their own advantages and disadvantages. I will not discuss them here. Since Mojo is designed to be similar to Python, we expect that the indentation-sensitive style will not be changed in the future. So, you have to get used to it.
+Both styles have their own advantages and disadvantages. I will not discuss them
+here. Since Mojo is designed to be similar to Python, we expect that the
+indentation-sensitive style will not be changed in the future. So, you have to
+get used to it.
 
 ::: info People want different things
 
-Some people indeed proposes optional, alternative syntax for code blocks in Mojo. You may find these discussions of interest: [Issue #284](https://github.com/modular/modular/issues/284) and [Issue #2929](https://github.com/modular/modular/issues/2929).
+Some people indeed proposes optional, alternative syntax for code blocks in
+Mojo. You may find these discussions of interest:
+[Issue #284](https://github.com/modular/modular/issues/284) and
+[Issue #2929](https://github.com/modular/modular/issues/2929).
 
-I also wish that Mojo could support an optional block ending keyword to make auto-formatting more convenient. I will discuss this [in this page](../misc/wishes).
+I also wish that Mojo could support an optional block ending keyword to make
+auto-formatting more convenient. I will discuss this
+[in this page](../misc/wishes).
 
 :::
 
 ### Indentation
 
-In Python, the standard indentation is 4 spaces. This is also the same in Mojo. In fact, you can also use any number of spaces or tabs to indent your code, as long as the indentation is consistent within the same level of code block. For example, the following code is also valid in Mojo. But don't do this.
+In Python, the standard indentation is 4 spaces. This is also the same in Mojo.
+In fact, you can also use any number of spaces or tabs to indent your code, as
+long as the indentation is consistent within the same level of code block. For
+example, the following code is also valid in Mojo. But don't do this.
 
 ```mojo
 def main():
@@ -64,14 +86,16 @@ def main():
 
 ### Comments
 
-In Python, we use `#` to indicate a single-line comment. This is also the same in Mojo. For example:
+In Python, we use `#` to indicate a single-line comment. This is also the same
+in Mojo. For example:
 
 ```mojo
 # This is a single-line comment
 print("Hello, world!")  # This is also a single-line comment
 ```
 
-In Python, we can also use consecutive single-line comments to indicate a block comment. The same applies to Mojo. For example:
+In Python, we can also use consecutive single-line comments to indicate a block
+comment. The same applies to Mojo. For example:
 
 ```mojo
 # This is a block comment
@@ -79,7 +103,8 @@ In Python, we can also use consecutive single-line comments to indicate a block 
 # This is the last line of the block comment
 ```
 
-You may also see some people using multi-line string literal to indicate a block comment. This is also valid in Mojo. For example:
+You may also see some people using multi-line string literal to indicate a block
+comment. This is also valid in Mojo. For example:
 
 ```mojo
 """
@@ -89,11 +114,15 @@ Some people use it as a block comment.
 """
 ```
 
-But it is ***not recommended***. In fact, you will receive an warning if you do this Mojo. The compiler will tell that this is a multi-line string literal is unused.
+But it is ***not recommended***. In fact, you will receive an warning if you do
+this Mojo. The compiler will tell that this is a multi-line string literal is
+unused.
 
 ### Documentation string
 
-In Python, documentation string ("docstring") is multi-line string literal that is used to document a function, class, or module. Usually, it is placed at the beginning of the function, class, or module. For example:
+In Python, documentation string ("docstring") is multi-line string literal that
+is used to document a function, class, or module. Usually, it is placed at the
+beginning of the function, class, or module. For example:
 
 ```python
 def bubble_sort(array: list[int]) -> list[int]:
@@ -106,23 +135,30 @@ def bubble_sort(array: list[int]) -> list[int]:
     ...
 ```
 
-In Mojo, the same applies. You can use the multi-line string literal to provide information about the functions, structs, and modules.
+In Mojo, the same applies. You can use the multi-line string literal to provide
+information about the functions, structs, and modules.
 
 ::: tip Docstring style guide
 
-There are many styles of docstring in Python. Some people use Google style, some people use NumPy style, and some people use reStructuredText (reST) style.
+There are many styles of docstring in Python. Some people use Google style, some
+people use NumPy style, and some people use reStructuredText (reST) style.
 
-Mojo has its own [docstring style guide](https://github.com/modular/modular/blob/main/mojo/stdlib/docs/docstring-style-guide.md). If you are interested in it, you can check it out now or later.
+Mojo has its own
+[docstring style guide](https://github.com/modular/modular/blob/main/mojo/stdlib/docs/docstring-style-guide.md).
+If you are interested in it, you can check it out now or later.
 
 :::
 
 ### Case-sensitivity
 
-Both Python and Mojo are case-sensitive. This means that `hello`, `Hello`, and `HELLO` are three different identifiers. It also means that you can never run your code successfully if you use `IF` instead of `if` or `FOR` instead of `for`. For example, the following code is not even wrong.
+Both Python and Mojo are case-sensitive. This means that `hello`, `Hello`, and
+`HELLO` are three different identifiers. It also means that you can never run
+your code successfully if you use `IF` instead of `if` or `FOR` instead of
+`for`. For example, the following code is not even wrong.
 
 ```mojo
 def main():
-    a = 1
+    var a = 1
     IF A > 0:
         print("A is positive")
     ELSE:
@@ -131,45 +167,75 @@ def main():
 
 ### Naming conventions
 
-Naming conventions are the guidelines for naming variables, functions, classes, etc. They are not mandatory for a successful compilation or execution of the code, but are important for code readability and maintainability. Mojo borrows Python's naming conventions, such as:
+Naming conventions are the guidelines for naming variables, functions, classes,
+etc. They are not mandatory for a successful compilation or execution of the
+code, but are important for code readability and maintainability. Mojo borrows
+Python's naming conventions, such as:
 
-- Variables and functions: use lowercase letters with words separated by underscores, e.g., `a`, `some_variable`, `this_is_a_long_variable`, `foo()`, `calculate_pi()`.
-- Classes or structs: capitalize the first letter of each word and put them together (CamelCase), e.g., `MyClass`, `Human`, `TableWithFourLegs`.
-- Constants: use uppercase letters with words separated by underscores, e.g., `PI`, `MAX_VALUE`, `MIN_VALUE`.
-- Modules and packages: use lowercase letters with words separated by underscores, e.g., `first_module`, `second_package`, `data_types`.
+- Variables and functions: use lowercase letters with words separated by
+  underscores, e.g., `a`, `some_variable`, `this_is_a_long_variable`, `foo()`,
+  `calculate_pi()`.
+- Classes or structs: capitalize the first letter of each word and put them
+  together (CamelCase), e.g., `MyClass`, `Human`, `TableWithFourLegs`.
+- Constants: use uppercase letters with words separated by underscores, e.g.,
+  `PI`, `MAX_VALUE`, `MIN_VALUE`.
+- Modules and packages: use lowercase letters with words separated by
+  underscores, e.g., `first_module`, `second_package`, `data_types`.
 
-Note that Python's primitive types are actually not following the naming conventions. For example, `int`, `float`, `str`, and `bool` are all lowercase. Mojo is stricter on this and use instead `Int`, `Float64`, `String`, and `Bool` for the corresponding types. We will discuss this in detail in Chapter ([Things that are different](./different.md)).
+Note that Python's primitive types are actually not following the naming
+conventions. For example, `int`, `float`, `str`, and `bool` are all lowercase.
+Mojo is stricter on this and use instead `Int`, `Float64`, `String`, and `Bool`
+for the corresponding types. We will discuss this in detail in Chapter
+([Things that are different](./different.md)).
 
 ## Identifiers
 
-Identifiers are names used to identify variables, functions, structs, classes, etc.
+Identifiers are names used to identify variables, functions, structs, classes,
+etc.
 
-Mojo has the exactly the same rules for identifiers as Python does. You can always use your existing knowledge of Python identifiers in Mojo. To be more specific, Mojo has the following rules on identifiers:
+Mojo has the exactly the same rules for identifiers as Python does. You can
+always use your existing knowledge of Python identifiers in Mojo. To be more
+specific, Mojo has the following rules on identifiers:
 
-- Identifiers must consist of letters (both uppercase and lowercase), digits, and underscores (`_`), e.g, `my_variable`, `MyVariable`, `my_variable_1`, `_temp_variable`, etc.
-- Identifiers cannot start with a digit, e.g., `1st_variable` is not a valid identifier, but `first_variable` is.
-- Identifiers cannot be a keyword (reserved word), e.g, `if`, `for`, `while`, `def`, etc. are not valid identifiers.
+- Identifiers must consist of letters (both uppercase and lowercase), digits,
+  and underscores (`_`), e.g, `my_variable`, `MyVariable`, `my_variable_1`,
+  `_temp_variable`, etc.
+- Identifiers cannot start with a digit, e.g., `1st_variable` is not a valid
+  identifier, but `first_variable` is.
+- Identifiers cannot be a keyword (reserved word), e.g, `if`, `for`, `while`,
+  `def`, etc. are not valid identifiers.
 - Identifiers are case-sensitive.
 
 ::: info More on identifiers
 
-We will discuss the identifiers in more detail in Section [Identifiers](../basic/variables#identifiers) of Chapter [Variables](../basic/variables).
+We will discuss the identifiers in more detail in Section
+[Identifiers](../basic/variables#identifiers) of Chapter
+[Variables](../basic/variables).
 
 :::
 
 ## Keywords
 
-Keywords are reserved words with special meaning and purposes in a programming languages. They are a part of the syntax and cannot be used as identifiers, e.g., variable names, function names, etc. For example, `if`, `for`, `while`, `def`, `class`, etc. are the most common keywords in Python.
+Keywords are reserved words with special meaning and purposes in a programming
+languages. They are a part of the syntax and cannot be used as identifiers,
+e.g., variable names, function names, etc. For example, `if`, `for`, `while`,
+`def`, `class`, etc. are the most common keywords in Python.
 
-Mojo inherits most of the keywords from Python. In most cases, they have the same meaning and functionality. For example, `if`, `for`, `while`, `def`, `class`, `import`, `from`, `as`, `return`, `break`, `continue`, etc. are the same in both languages. Let's take a look at the keywords in Mojo.
+Mojo inherits most of the keywords from Python. In most cases, they have the
+same meaning and functionality. For example, `if`, `for`, `while`, `def`,
+`class`, `import`, `from`, `as`, `return`, `break`, `continue`, etc. are the
+same in both languages. Let's take a look at the keywords in Mojo.
 
 ### Control flow keywords
 
-Control flow keywords are used to control the flow of execution in a program. They are used to make decisions (selections), repeat actions (iterations or loops), and handle exceptions.
+Control flow keywords are used to control the flow of execution in a program.
+They are used to make decisions (selections), repeat actions (iterations or
+loops), and handle exceptions.
 
 #### Selection
 
-For selection, we have `if`, `elif`, and `else` in both Python and Mojo. For example:
+For selection, we have `if`, `elif`, and `else` in both Python and Mojo. For
+example:
 
 ```mojo
 def is_positive(a: Int):
@@ -183,24 +249,28 @@ def is_positive(a: Int):
 
 #### Iteration
 
-For iteration, we have `for` and `while` in both Python and Mojo. For example, the following code prints the numbers from 0 to 4:
+For iteration, we have `for` and `while` in both Python and Mojo. For example,
+the following code prints the numbers from 0 to 4:
 
 ```mojo
 def main():
     for i in range(5):
         print(i)
     
-    i = 0
+    var i = 0
     while i < 5:
         print(i)
         i += 1
 ```
 
-The `break` and `continue` keywords that are used to break out of a loop or skip the current iteration of a loop, respectively, are also valid in Mojo. For example, the following code prints the natural numbers from 1, but skips the number 3 and breaks out of the loop when it reaches 8:
+The `break` and `continue` keywords that are used to break out of a loop or skip
+the current iteration of a loop, respectively, are also valid in Mojo. For
+example, the following code prints the natural numbers from 1, but skips the
+number 3 and breaks out of the loop when it reaches 8:
 
 ```mojo
 def main():
-    i = 0
+    var i = 0
     while i < 10:
         i += 1
         if i == 3:
@@ -211,7 +281,9 @@ def main():
 # Output: 1 2 4 5 6 7
 ```
 
-The `for`-`else` and `while`-`else` statements are also valid in Mojo. The `else` block is executed when the loop terminates normally (i.e., not by a `break` statement). For example:
+The `for`-`else` and `while`-`else` statements are also valid in Mojo. The
+`else` block is executed when the loop terminates normally (i.e., not by a
+`break` statement). For example:
 
 ```mojo
 def main():
@@ -224,10 +296,11 @@ def main():
 
 #### Exception handling
 
-For exception handling, we have `try`, `except`, `finally`, and `raise` in both Python and Mojo. For example:
+For exception handling, we have `try`, `except`, `finally`, and `raise` in both
+Python and Mojo. For example:
 
 ```mojo
-def main():
+def main() raises:
     try:
         print("Hello, World!")
     except e:
@@ -241,11 +314,13 @@ def main():
 
 ### Definition keywords
 
-Definition keywords are used to define variables, functions, structs, classes, etc.
+Definition keywords are used to define variables, functions, structs, classes,
+etc.
 
 #### Variables
 
-In Python, we do not use any keyword to define and create variables. We just assign a value to a variable name. For example:
+In Python, we do not use any keyword to define and create variables. We just
+assign a value to a variable name. For example:
 
 ```python
 def main():
@@ -253,19 +328,27 @@ def main():
     b = 2
 ```
 
-In mojo, we have two approaches to define variables. The first one is the same as Python. We just assign value to a variable name. The second one is new in Mojo. We use the `var` keyword. For example:
+In mojo, we have two approaches to define variables. The first one is the same
+as Python. We just assign value to a variable name. The second one is new in
+Mojo. We use the `var` keyword. For example:
 
 ```mojo
 def main():
-    a = 1
+    var a = 1
     var b = 2
 ```
 
-Nevertheless, there is still some difference in the philosophy and behavior of variable declaration and assignment between Mojo and Python. For example, in Python, you can easily re-assign a variable to a new value with a different type. But in Mojo, you cannot do this. You can only re-assign a variable to a value with the same type. We will discuss this in detail in Chapter ([Variables](../basic/variables.md)).
+Nevertheless, there is still some difference in the philosophy and behavior of
+variable declaration and assignment between Mojo and Python. For example, in
+Python, you can easily re-assign a variable to a new value with a different
+type. But in Mojo, you cannot do this. You can only re-assign a variable to a
+value with the same type. We will discuss this in detail in Chapter
+([Variables](../basic/variables.md)).
 
 ::: info `let` keyword
 
-Do you know that in early Mojo versions, there is also a `let` keyword to define immutable variables? The `let` keyword is now deprecated.
+Do you know that in early Mojo versions, there is also a `let` keyword to define
+immutable variables? The `let` keyword is now deprecated.
 
 :::
 
@@ -285,18 +368,18 @@ def add(a: Int, b: Int) -> Int:
     return a + b
 ```
 
-Moreover, Mojo has another way to define a function, the `fn` keyword. For example:
-
-```mojo
-fn sub(a: Int, b: Int) -> Int:
-    return a - b
-```
-
-The `def` keyword and the `fn` keyword share the most of the functionality. The main difference is in the default behavior of the arguments. If a function is defined with `fn`, the arguments are immutable by default, and you cannot change the values of the arguments within the function. If a function is defined with `def`, the arguments are immutable by default, but changing the values of the arguments will create a mutable copy of them. We will discuss this in detail in Section [def vs fn](../basic/functions#def-vs-fn) of Chapter ([Functions](../basic/functions.md)).
+Mojo used to have a second keyword for defining functions, `fn`, so you will
+meet it in older Mojo code. It has been deprecated since v1.0.0b1, and you can
+read every `fn` as a `def`. See Chapter [Functions](../basic/functions.md) for
+the story.
 
 #### Classes vs Structs
 
-In Python, "class" is a core feature that reflect the philosophy of object-oriented programming (OOP), we use the `class` keyword to define a class. For example, we define a class called `Human` with two attributes, `name` and `age`, and a method called `greet()`. Then we construct an object of the class and call the method:
+In Python, "class" is a core feature that reflect the philosophy of
+object-oriented programming (OOP), we use the `class` keyword to define a class.
+For example, we define a class called `Human` with two attributes, `name` and
+`age`, and a method called `greet()`. Then we construct an object of the class
+and call the method:
 
 ```python
 class Human:
@@ -323,7 +406,11 @@ This prints:
 Hello, world! I am Yuhao Zhu and I am 33 years old.
 ```
 
-In Mojo, however, we do not have "class" (yet). Instead, we have "struct". A struct is a composite that contains multiple fields and methods. It is similar to a class, but it cannot be inherited. Structs are defined with the `struct` keyword. For example, we define a struct that achieves the same functionality as the `Human` class in Python:
+In Mojo, however, we do not have "class" (yet). Instead, we have "struct". A
+struct is a composite that contains multiple fields and methods. It is similar
+to a class, but it cannot be inherited. Structs are defined with the `struct`
+keyword. For example, we define a struct that achieves the same functionality as
+the `Human` class in Python:
 
 ```mojo
 struct Human:
@@ -334,17 +421,21 @@ struct Human:
         self.name = name
         self.age = age
 
-    def greet(self):
+    def greet(self) raises:
         print(String("Hello, world! I am {} and I am {} years old.").format(self.name, self.age))
 
-def main():
+def main() raises:
     var person = Human("Yuhao Zhu", 33)
     person.greet()
 ```
 
-It is mostly similar to the Python code. The main difference is that we have to use `var` to define the attributes of the struct, and we use `out` to modify the `self` parameter.
+It is mostly similar to the Python code. The main difference is that we have to
+use `var` to define the attributes of the struct, and we use `out` to modify the
+`self` parameter.
 
-The following table provides a brief summary of the similarities and differences between Mojo structs and Python classes. We will discuss more in Chapter ([Structs](../basic/structs.md)).
+The following table provides a brief summary of the similarities and differences
+between Mojo structs and Python classes. We will discuss more in Chapter
+([Structs](../basic/structs.md)).
 
 | Feature                    | Mojo                                    | Python                                                          |
 | -------------------------- | --------------------------------------- | --------------------------------------------------------------- |
@@ -356,9 +447,18 @@ The following table provides a brief summary of the similarities and differences
 
 ### Basic data types
 
-Basic data types are the most common data types in programming languages, they can be numeric. They are usually small in size, simple memory layout, and intuitive in meaning. For example, integers, floating-point numbers, strings, and booleans are the most common basic data types in almost all programming languages. In Python, these are `int`, `float`, `str`, and `bool`.
+Basic data types are the most common data types in programming languages, they
+can be numeric. They are usually small in size, simple memory layout, and
+intuitive in meaning. For example, integers, floating-point numbers, strings,
+and booleans are the most common basic data types in almost all programming
+languages. In Python, these are `int`, `float`, `str`, and `bool`.
 
-Mojo provides the corresponding basic data types as well. They behave almost the same as in Python. In most cases, you can use the these types without any issues. The following tables lists the basic data types in Python and their corresponding types in Mojo. Note that they are not exactly the same. We will discuss the differences in detail later in Chapter ([Things that are different](./different.md)).
+Mojo provides the corresponding basic data types as well. They behave almost the
+same as in Python. In most cases, you can use the these types without any
+issues. The following tables lists the basic data types in Python and their
+corresponding types in Mojo. Note that they are not exactly the same. We will
+discuss the differences in detail later in Chapter
+([Things that are different](./different.md)).
 
 | Python type | Mojo type | Description           | Behavior                                 |
 | ----------- | --------- | --------------------- | ---------------------------------------- |
@@ -369,9 +469,15 @@ Mojo provides the corresponding basic data types as well. They behave almost the
 
 ### Composite data types
 
-Composite data types are more complex data structures and may contain multiple basic types. They are usually larger in size, more complex memory layout, and more abstract in meaning. For example, lists, tuples, sets, and dictionaries are the most common advanced data types in Python. Mojo provides the corresponding advanced data types as well.
+Composite data types are more complex data structures and may contain multiple
+basic types. They are usually larger in size, more complex memory layout, and
+more abstract in meaning. For example, lists, tuples, sets, and dictionaries are
+the most common advanced data types in Python. Mojo provides the corresponding
+advanced data types as well.
 
-Unfortunately, you will see more difference in behavior and functionality between Mojo and Python. We will compare these composite data types between Mojo and Python in detail in Chapter ([Things that are different](./different.md)).
+Unfortunately, you will see more difference in behavior and functionality
+between Mojo and Python. We will compare these composite data types between Mojo
+and Python in detail in Chapter ([Things that are different](./different.md)).
 
 The following table summarize these data structures.
 
@@ -384,53 +490,111 @@ The following table summarize these data structures.
 
 ## Operators
 
-Operators are symbols that perform operations on one or more operands. They are fundamental building blocks of any programming language, including Mojo and Python. Operators allow you to perform calculations, comparisons, logical operations, and more. 
+Operators are symbols that perform operations on one or more operands. They are
+fundamental building blocks of any programming language, including Mojo and
+Python. Operators allow you to perform calculations, comparisons, logical
+operations, and more.
 
-In Python, we have arithmetic operators (`+`, `-`, `*`, `/`, `%`, `**`), comparison operators (`==`, `!=`, `<`, `>`, `<=`, `>=`), logical operators (`and`, `or`, `not`), bitwise operators (`&`, `|`, `^`, `~`), and assignment operators (`=`, `+=`, `-=`, etc.). In Mojo, we have **exactly the same operators** as in Python. They have the same meaning and functionality. Moreover, the **operator precedence and associativity** are also the same in both languages.
+In Python, we have arithmetic operators (`+`, `-`, `*`, `/`, `%`, `**`),
+comparison operators (`==`, `!=`, `<`, `>`, `<=`, `>=`), logical operators
+(`and`, `or`, `not`), bitwise operators (`&`, `|`, `^`, `~`), and assignment
+operators (`=`, `+=`, `-=`, etc.). In Mojo, we have
+**exactly the same operators** as in Python. They have the same meaning and
+functionality. Moreover, the **operator precedence and associativity** are also
+the same in both languages.
 
-Another important feature of operators in Python is the **chained comparison**. This means that you can chain multiple comparison operators together, such as `a < b < c`, which is equivalent to `(a < b) and (b < c)`. This feature is also available in Mojo.
+Another important feature of operators in Python is the **chained comparison**.
+This means that you can chain multiple comparison operators together, such as
+`a < b < c`, which is equivalent to `(a < b) and (b < c)`. This feature is also
+available in Mojo.
 
 ::: info More on operators
 
-We will discuss operators in more detail in Chapter [Operators](../basic/operators.md).
+We will discuss operators in more detail in Chapter
+[Operators](../basic/operators.md).
 
 :::
 
 ## Core functions
 
-Many core functions in Python are also available in Mojo. Usually, they have the same name, same objectives, and even same arguments. For example, `print()`, `len()`, `range()`, `sum()`, `min()`, `max()`, etc. are almost the same in both languages.
+Many core functions in Python are also available in Mojo. Usually, they have the
+same name, same objectives, and even same arguments. For example, `print()`,
+`len()`, `range()`, `sum()`, `min()`, `max()`, etc. are almost the same in both
+languages.
 
-AT the current stage, some of the functions in Mojo cannot achieve 100% functionality as in Python. For example, the `print()` function in Mojo does not support "f-string" formatting. You have to use the `format()` method of the `String` class. For example:
+At the current stage, some of the functions in Mojo cannot achieve 100%
+functionality as in Python. For example, the `print()` function in Mojo does not
+support Python's "f-string" formatting. Mojo has a **t-string** instead, written
+with a `t` prefix, and you can also use the `format()` method of `String`. For
+example:
 
 ```mojo
-def main():
-    year = 2025
-    print(f"It is {year} now!")  # This will not work
-    print(String("It is {} now!").format(year))  # This will work
+def main() raises:
+    var year = 2025
+    print(f"It is {year} now!")                  # This will not work
+    print(t"It is {year} now!")                  # This will work
+    print(String("It is {} now!").format(year))  # This will work too
 ```
+
+We look at t-strings in Chapter
+[String](../basic/string.md#template-strings-t-strings).
 
 ## Dunder methods
 
-***Dunder methods***, which is short for "double underscore" methods, are special methods defined in Python functions that start and end with double underscores. The most popular dunder method, I believe, is `__init__()`, which is used to initialize an object. You should have learnt it in the first lesson on Python class. There are many other dunder methods, such as `__str__()`, `__repr__()`, `__add__()`, `__sub__()`, etc. They are used to implement certain universal behaviors and provide a uniformed interface to interact with objects.
+***Dunder methods***, which is short for "double underscore" methods, are
+special methods defined in Python functions that start and end with double
+underscores. The most popular dunder method, I believe, is `__init__()`, which
+is used to initialize an object. You should have learnt it in the first lesson
+on Python class. There are many other dunder methods, such as `__str__()`,
+`__repr__()`, `__add__()`, `__sub__()`, etc. They are used to implement certain
+universal behaviors and provide a uniformed interface to interact with objects.
 
-For example, `__str__()` is used to define the string representation of an object. If you define a `__str__()` method in your class, you can use the function `print()` to print the object. Another example is `__add__()`, which is used to define the behavior of the `+` operator. If you define a `__add__()` method in your class, you can use the `+` operator to add two objects of the class. In other words, Python will first translate `a + b` into `a.__add__(b)` and then conduct the operation.
+For example, `__str__()` is used to define the string representation of an
+object. If you define a `__str__()` method in your class, you can use the
+function `print()` to print the object. Another example is `__add__()`, which is
+used to define the behavior of the `+` operator. If you define a `__add__()`
+method in your class, you can use the `+` operator to add two objects of the
+class. In other words, Python will first translate `a + b` into `a.__add__(b)`
+and then conduct the operation.
 
-You see, dunder methods allows you to use the same function `print()` to print different objects, as long as these objects have the `__str__()` method defined. If you create a new class `Human`, you do not need to modify the system function `print()` in order to get it printed, but just add a `__str__()` method in the class `Human`.
+You see, dunder methods allows you to use the same function `print()` to print
+different objects, as long as these objects have the `__str__()` method defined.
+If you create a new class `Human`, you do not need to modify the system function
+`print()` in order to get it printed, but just add a `__str__()` method in the
+class `Human`.
 
-Mojo also inherit this feature. You can use system functions like `print()`, `len()`, `sum()`, etc, on your own structs by defining the corresponding dunder methods. Moreover, this is also related to the concept "trait". A type that conforms to a trait guarantees that it implements all of the features of the trait. We will discuss this in detail as an advanced topic in Chapter [Generic and traits](../advanced/generic.md).
+Mojo also inherit this feature. You can use system functions like `print()`,
+`len()`, `sum()`, etc, on your own structs by defining the corresponding dunder
+methods. One name differs: where Python uses `__str__()` for printing, Mojo uses
+a method called `write_to()`, which serves both `print()` and `String()`.
+Moreover, this is also related to the concept "trait". A type that conforms to a
+trait guarantees that it implements all of the features of the trait. We will
+discuss this in detail as an advanced topic in Chapter
+[Generic and traits](../advanced/generic.md).
 
 ## Modules, packages, and imports
 
-In Python, modules are files that contain functions, classes, and variables. They are used to organize Python code into separate files and make it easier to manage and reuse code. Packages are directories that contain multiple modules (Python files). Usually, a `__init__.py` file is created in the package directory to indicate that this directory is a Python package. In there is another directory within a package directory, we call it a sub-package.
+In Python, modules are files that contain functions, classes, and variables.
+They are used to organize Python code into separate files and make it easier to
+manage and reuse code. Packages are directories that contain multiple modules
+(Python files). Usually, a `__init__.py` file is created in the package
+directory to indicate that this directory is a Python package. In there is
+another directory within a package directory, we call it a sub-package.
 
-To import packages, module, functions, or classes into your current Python file, we use the `import` statement. For example, to import the built-in `math` module and the decimal class from the `decimal` module, we can use:
+To import packages, module, functions, or classes into your current Python file,
+we use the `import` statement. For example, to import the built-in `math` module
+and the decimal class from the `decimal` module, we can use:
 
 ```python
 import math
 from decimal import Decimal
 ```
 
-Mojo completely inherits the modules, package, an imports system from Python. Each Mojo file is a module, and each directory with `__init__.mojo` file is a package. You can use the same `import` statement or `import ... from ... as ...` statement to import modules, packages, functions, or structs into your Mojo file. For example:
+Mojo completely inherits the modules, package, an imports system from Python.
+Each Mojo file is a module, and each directory with `__init__.mojo` file is a
+package. You can use the same `import` statement or `import ... from ... as ...`
+statement to import modules, packages, functions, or structs into your Mojo
+file. For example:
 
 ```mojo
 import math
@@ -439,4 +603,13 @@ from collections import Dict as BuiltInDict
 
 ## Next step
 
-Now we have seen the things that are in common between Mojo and Python. I hope that, after reading this chapter, you will be confident that you can learn and master Mojo quickly. In the next chapter, we will discuss the things that are different between Mojo and Python.
+Now we have seen the things that are in common between Mojo and Python. I hope
+that, after reading this chapter, you will be confident that you can learn and
+master Mojo quickly. In the next chapter, we will discuss the things that are
+different between Mojo and Python.
+
+## Main changes in this chapter
+
+- 2026-08-19: Update to accommodate the changes in Mojo v1.0.0. The `fn` keyword
+  is deprecated, so the section comparing it with `def` is replaced by a pointer
+  to the Functions chapter.
