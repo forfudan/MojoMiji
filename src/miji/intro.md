@@ -42,7 +42,7 @@ First version: May 2025
 Revision: March 2025  
 Rotterdam, the Netherlands
 
-::: info Quick glance at Mojo's syntax
+:::::: info Quick glance at Mojo's syntax
 
 Mojo borrows Python’s syntax style, making it very similar to Python code with type annotations. In terms of usage, Mojo allows for easy importation of Python functions and packages. Below are examples of Python and Mojo code, demonstrating their similar styles.
 
@@ -69,3 +69,5 @@ print(b)
 ```
 
 :::
+
+::::::

@@ -49,3 +49,100 @@ p code {
   width: max-content;
    */
 }
+/* ---------------------------------------------------------------------------
+   Callout blocks
+   ---------------------------------------------------------------------------
+   VitePress gives us five: info, tip, warning, danger, details.
+   config.mts adds two more of our own:
+
+     ::: python    how the same thing is done in Python
+     ::: version   what changed in which Mojo release
+
+   Each type gets a coloured bar down its left side, so you can tell them apart
+   at a glance instead of by reading the title. The bar colour is also used for
+   the title, the links, and the inline code inside the block, which is why the
+   rules below have to say `!important`: the global link and code colours
+   further up this file say it too.
+   --------------------------------------------------------------------------- */
+
+.custom-block.tip {
+  --miji-accent: #0d9488;
+  --miji-wash: rgba(13, 148, 136, 0.07);
+}
+
+.custom-block.info {
+  --miji-accent: #64748b;
+  --miji-wash: rgba(100, 116, 139, 0.08);
+}
+
+.custom-block.warning {
+  --miji-accent: #b45309;
+  --miji-wash: rgba(234, 179, 8, 0.11);
+}
+
+.custom-block.danger {
+  --miji-accent: #e11d48;
+  --miji-wash: rgba(244, 63, 94, 0.09);
+}
+
+.custom-block.details {
+  --miji-accent: #64748b;
+  --miji-wash: transparent;
+}
+
+.custom-block.python {
+  --miji-accent: #2f6f9f;
+  --miji-wash: rgba(55, 118, 171, 0.09);
+}
+
+.custom-block.version {
+  --miji-accent: #7c3aed;
+  --miji-wash: rgba(124, 58, 237, 0.07);
+}
+
+.dark .custom-block.tip {
+  --miji-accent: #2dd4bf;
+  --miji-wash: rgba(45, 212, 191, 0.09);
+}
+
+.dark .custom-block.info,
+.dark .custom-block.details {
+  --miji-accent: #94a3b8;
+}
+
+.dark .custom-block.warning {
+  --miji-accent: #fbbf24;
+}
+
+.dark .custom-block.danger {
+  --miji-accent: #fb7185;
+}
+
+.dark .custom-block.python {
+  --miji-accent: #6cb6f0;
+}
+
+.dark .custom-block.version {
+  --miji-accent: #c4b5fd;
+}
+
+.vp-doc .custom-block {
+  border-left: 4px solid var(--miji-accent);
+  border-radius: 0 8px 8px 0;
+  background-color: var(--miji-wash);
+}
+
+.vp-doc .custom-block .custom-block-title,
+.vp-doc .custom-block.details > summary {
+  color: var(--miji-accent);
+}
+
+.vp-doc .custom-block a,
+.vp-doc .custom-block a > code {
+  color: var(--miji-accent) !important;
+}
+
+.vp-doc .custom-block p > code,
+.vp-doc .custom-block li > code {
+  color: var(--miji-accent) !important;
+}

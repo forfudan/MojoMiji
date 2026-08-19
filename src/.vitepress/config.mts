@@ -1,5 +1,6 @@
 import { defineConfig } from 'vitepress'
 import mdFootnote from "markdown-it-footnote"
+import mdContainer from "markdown-it-container"
 import path from "node:path"
 import tailwind from "tailwindcss"
 import autoprefixer from "autoprefixer"
@@ -19,6 +20,25 @@ export default defineConfig({
     },
     config: (md) => {
       md.use(mdFootnote, groupIconMdPlugin)
+      // Two containers of our own, on top of VitePress's
+      // info / tip / warning / danger / details.
+      //   ::: python   -- how the same thing is done in Python
+      //   ::: version  -- what changed in which Mojo release
+      for (const [name, fallback] of [
+        ["python", "COMING FROM PYTHON"],
+        ["version", "MOJO VERSIONS"],
+      ]) {
+        md.use(mdContainer, name, {
+          render(tokens, idx) {
+            const token = tokens[idx]
+            if (token.nesting !== 1) return "</div>\n"
+            const title = token.info.trim().slice(name.length).trim()
+            return `<div class="${name} custom-block"><p class="custom-block-title">${
+              md.renderInline(title || fallback)
+            }</p>\n`
+          },
+        })
+      }
     }
   },
   head: [

@@ -4,9 +4,11 @@
   "private": true,
   "description": "",
   "devDependencies": {
+    "@types/markdown-it-container": "^4.0.0",
     "@types/node": "^20.11.24",
     "autoprefixer": "^10.4.18",
     "daisyui": "^4.7.2",
+    "markdown-it-container": "^4.0.0",
     "markdown-it-footnote": "^4.0.0",
     "markdown-it-mathjax3": "^4.3.2",
     "medium-zoom": "^1.1.0",
