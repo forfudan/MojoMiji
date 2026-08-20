@@ -1,0 +1,333 @@
+/* ---------------------------------------------------------------------------
+   Run button and output panel on Mojo code blocks
+   ---------------------------------------------------------------------------
+   Every code block wears a header line: the tab bar that VitePress draws for
+   a `::: code-group`. `config.mts` puts a lone block in a group of its own, so
+   the bar is there whether the block has one language or three.
+
+   The Run button sits at the right end of that bar, which leaves the block
+   itself exactly as VitePress draws it, copy button and all.
+   --------------------------------------------------------------------------- */
+
+:root {
+  --miji-run: #0d9488;
+  --miji-run-ok: #15803d;
+  --miji-run-fail: #b45309;
+  --miji-run-error: #e11d48;
+
+  /* The two icons, drawn from little SVGs. They are used as masks, so they
+     take the colour of the button they sit in. */
+  --miji-play: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 14'%3E%3Cpath d='M1 1l10 6-10 6z'/%3E%3C/svg%3E");
+  --miji-back: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20.5 12a8.5 8.5 0 1 1-2.5-6'/%3E%3Cpath d='M18 2.5V7h-4.5'/%3E%3C/svg%3E");
+}
+
+.dark {
+  --miji-run: #2dd4bf;
+  --miji-run-ok: #4ade80;
+  --miji-run-fail: #fbbf24;
+  --miji-run-error: #fb7185;
+}
+
+/* --- the header line ------------------------------------------------------ */
+
+/* The tab says which language it is, so the faint label VitePress puts in the
+   corner of the block would say it a second time. */
+.vp-doc .vp-code-group span.lang {
+  display: none;
+}
+
+.vp-doc .vp-code-group > .tabs > button.mojo-run,
+.vp-doc .vp-code-group > .tabs > button.mojo-reset {
+  display: flex;
+  flex: none;
+  align-items: center;
+  align-self: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--miji-run);
+  border-radius: 4px;
+  background-color: transparent;
+  color: var(--miji-run);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.25s, border-color 0.25s, color 0.25s;
+}
+
+/* Run is pushed to the far end of the bar; Reset falls in beside it. */
+.vp-doc .vp-code-group > .tabs > button.mojo-run {
+  margin-left: auto;
+}
+
+.vp-doc .vp-code-group > .tabs > button.mojo-reset {
+  margin-left: 8px;
+  border-color: var(--vp-code-copy-code-border-color);
+  color: var(--vp-c-text-3);
+}
+
+.vp-doc .vp-code-group > .tabs > button.mojo-run:hover,
+.vp-doc .vp-code-group > .tabs > button.mojo-run:focus-visible,
+.vp-doc .vp-code-group > .tabs > button.mojo-run[data-busy] {
+  background-color: color-mix(in srgb, var(--miji-run) 14%, transparent);
+}
+
+.vp-doc .vp-code-group > .tabs > button.mojo-reset:hover,
+.vp-doc .vp-code-group > .tabs > button.mojo-reset:focus-visible {
+  border-color: var(--vp-code-copy-code-hover-border-color);
+  background-color: var(--vp-code-copy-code-hover-bg);
+  color: var(--vp-c-text-1);
+}
+
+/* A button in the bar belongs to the tab that is open. On a Python tab there
+   is nothing to run, and nothing being edited, so neither button is there. */
+.vp-doc
+  .vp-code-group:not(:has(> .blocks > [data-mojo-run].active))
+  > .tabs
+  > button.mojo-run,
+.vp-doc
+  .vp-code-group:not(:has(> .blocks > [data-mojo-run].mojo-editing.active))
+  > .tabs
+  > button.mojo-reset {
+  display: none;
+}
+
+/* --- the icons ------------------------------------------------------------ */
+
+.vp-doc .mojo-run-icon,
+.vp-doc .mojo-reset-icon {
+  position: relative;
+  flex: none;
+  width: 13px;
+  height: 13px;
+  background-color: currentColor;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: 50%;
+  mask-position: 50%;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+.vp-doc .mojo-run-icon {
+  width: 11px;
+  -webkit-mask-image: var(--miji-play);
+  mask-image: var(--miji-play);
+}
+
+.vp-doc .mojo-reset-icon {
+  -webkit-mask-image: var(--miji-back);
+  mask-image: var(--miji-back);
+}
+
+/* While it is working, the triangle becomes a spinning ring. */
+.vp-doc .mojo-run[data-busy] .mojo-run-icon {
+  width: 13px;
+  -webkit-mask-image: none;
+  mask-image: none;
+  background-color: transparent;
+}
+
+.vp-doc .mojo-run[data-busy] .mojo-run-icon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 12px;
+  height: 12px;
+  border: 2px solid;
+  border-radius: 50%;
+  border-color: currentColor transparent currentColor transparent;
+  animation: mojo-spin 0.8s linear infinite;
+}
+
+@keyframes mojo-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* --- welding the block to its output ------------------------------------- */
+
+.vp-doc [data-mojo-run].mojo-open {
+  margin-bottom: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.vp-doc .mojo-output {
+  margin: 0 0 16px;
+  border-left: 4px solid var(--miji-out);
+  border-radius: 0 0 8px 8px;
+  background-color: var(--vp-code-block-bg);
+  overflow: hidden;
+  --miji-out: var(--vp-c-text-3);
+}
+
+.vp-doc .mojo-output[data-state="ok"] {
+  --miji-out: var(--miji-run-ok);
+}
+
+.vp-doc .mojo-output[data-state="fail"] {
+  --miji-out: var(--miji-run-fail);
+}
+
+.vp-doc .mojo-output[data-state="error"] {
+  --miji-out: var(--miji-run-error);
+}
+
+/* --- the header strip ---------------------------------------------------- */
+
+.vp-doc .mojo-output-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px 9px 14px;
+  border-bottom: 1px solid var(--vp-c-divider);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--miji-out);
+}
+
+.vp-doc .mojo-output-title::before {
+  content: "\25CF";
+  margin-right: 7px;
+  font-size: 9px;
+  vertical-align: 1px;
+}
+
+.vp-doc .mojo-output[data-state="busy"] .mojo-output-title::before {
+  animation: mojo-pulse 1s ease-in-out infinite;
+}
+
+@keyframes mojo-pulse {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+.vp-doc .mojo-output-note {
+  margin-left: auto;
+  font-weight: 400;
+  color: var(--vp-c-text-3);
+}
+
+.vp-doc .mojo-output-close {
+  border: 0;
+  background: none;
+  padding: 0 2px;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--vp-c-text-3);
+  transition: color 0.25s;
+}
+
+.vp-doc .mojo-output-close:hover {
+  color: var(--vp-c-text-1);
+}
+
+/* --- the output itself --------------------------------------------------- */
+
+.vp-doc .mojo-output-body {
+  margin: 0;
+  padding: 14px 16px;
+  overflow-x: auto;
+  background: none;
+  font-family: var(--vp-font-family-mono);
+  font-size: var(--vp-code-font-size);
+  line-height: var(--vp-code-line-height);
+  color: var(--vp-c-text-1);
+  white-space: pre;
+}
+
+.vp-doc .mojo-output-body:empty {
+  display: none;
+}
+
+.vp-doc .mojo-output-body.mojo-output-quiet {
+  color: var(--vp-c-text-3);
+  font-style: italic;
+}
+
+.vp-doc .mojo-output[data-state="error"] .mojo-output-body {
+  color: var(--miji-run-error);
+}
+
+/* --- folded compiler warnings -------------------------------------------- */
+
+.vp-doc .mojo-output-warnings {
+  border-top: 1px solid var(--vp-c-divider);
+  font-size: 12px;
+}
+
+.vp-doc .mojo-output-warnings > summary {
+  padding: 8px 14px;
+  cursor: pointer;
+  color: var(--miji-run-fail);
+  font-weight: 600;
+}
+
+.vp-doc .mojo-output-warnings > pre {
+  margin: 0;
+  padding: 0 16px 14px;
+  overflow-x: auto;
+  background: none;
+  font-family: var(--vp-font-family-mono);
+  color: var(--vp-c-text-2);
+  white-space: pre;
+}
+
+/* --- editing the code ----------------------------------------------------- *
+   Click the code and it becomes a plain text box that you can type in. The
+   colours go away while you edit, because the highlighting is done once, when
+   the site is built, and cannot follow your typing. The Reset button brings
+   the original, coloured version back.
+
+   The text box has to sit exactly where the code was, so it copies the
+   padding, the font, and the line height of the `<pre>` and the `<code>`
+   inside it: 20px above and below, 24px left and right.
+   -------------------------------------------------------------------------- */
+
+.vp-doc [data-mojo-run].mojo-editing {
+  box-shadow: inset 3px 0 0 var(--miji-run);
+}
+
+.vp-doc [data-mojo-run] > pre {
+  cursor: text;
+}
+
+.vp-doc [data-mojo-run] > textarea.mojo-editor {
+  display: block;
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
+  padding: 20px 24px;
+  border: 0;
+  outline: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  resize: none;
+  background: transparent;
+  color: var(--vp-code-block-color);
+  caret-color: var(--miji-run);
+  font-family: var(--vp-font-family-mono);
+  font-size: var(--vp-code-font-size);
+  line-height: var(--vp-code-line-height);
+  tab-size: 4;
+  white-space: pre;
+}
+
+/* --- small screens ------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  .vp-doc .vp-code-group > .tabs > button.mojo-run,
+  .vp-doc .vp-code-group > .tabs > button.mojo-reset {
+    height: 26px;
+    padding: 0 8px;
+  }
+}

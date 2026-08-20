@@ -35,6 +35,13 @@ You may be surprised (or even a little bit disappointed) to see that the code is
 Mojo. It is designed to similar to Python, so that a Python user, like you, can
 learn it easily.
 
+Do you see the **Run** button at the right end of the header line of the code
+block above, the line that says `mojo`? Click it, and in a few seconds the
+words "Hello, world!" will appear right below the code. That button is on
+every complete Mojo program in this Miji, so you can always try a program out
+on this website. You can even click on the code and change the words between
+the quotation marks, then run it again.
+
 Now, let's run this code. You can type the following command in your terminal:
 
 ::: code-group

@@ -20,6 +20,115 @@ export default defineConfig({
     },
     config: (md) => {
       md.use(mdFootnote, groupIconMdPlugin)
+
+      // --- a header line on every code block ---------------------------------
+      // VitePress draws a tab bar for a `::: code-group`, and it builds that
+      // bar from the fences inside the group. So a block standing on its own
+      // is wrapped in a group of one here, at build time, and comes out with
+      // the same header. No Markdown file has to change.
+      //
+      // The header names the language, which the faint label in the corner did
+      // badly, and it gives the Run button a place of its own.
+      //
+      // Blocks that are not code in a language are left alone: `console` holds
+      // what a program printed, `txt` holds diagrams and file trees. Neither
+      // has a name worth putting in a header.
+      const plain = new Set(["", "console", "txt", "text", "output"])
+
+      const inGroup = (tokens: any[], i: number): boolean => {
+        for (let j = i - 1; j >= 0; j--) {
+          if (tokens[j].type === "container_code-group_open") return true
+          if (tokens[j].type === "container_code-group_close") return false
+        }
+        return false
+      }
+
+      md.core.ruler.push("miji-code-group", (state) => {
+        const tokens = state.tokens
+        for (let i = 0; i < tokens.length; i++) {
+          const token = tokens[i]
+          if (token.type !== "fence" || token.tag !== "code") continue
+          if (plain.has(token.info.trim().split(/\s+/)[0])) continue
+          if (inGroup(tokens, i)) continue
+
+          const open = new state.Token("container_code-group_open", "div", 1)
+          const close = new state.Token("container_code-group_close", "div", -1)
+          open.block = true
+          close.block = true
+          tokens.splice(i, 0, open)
+          tokens.splice(i + 2, 0, close)
+          i += 2 // past the fence and the token now closing it
+        }
+      })
+
+      // --- Run buttons on Mojo code blocks -----------------------------------
+      // A block can be run only if it is a complete program, that is, if it
+      // defines `main()`. We check that here, at build time. Two markers in the
+      // fence line override the guess:
+      //   ```mojo run     -- always give this block a Run button
+      //   ```mojo norun   -- never give this block a Run button
+      const hasMain = /^\s*(def|fn)\s+main\s*\(/m
+
+      const isRunnable = (token: any): boolean => {
+        const words = token.info.trim().split(/\s+/)
+        if (words[0] !== "mojo") return false
+        const marked = words.slice(1)
+        if (marked.includes("norun")) return false
+        return marked.includes("run") || hasMain.test(token.content)
+      }
+
+      // The block itself only gets a mark, so that the script can find it and
+      // so that the reader can click the code to edit it.
+      const fence = md.renderer.rules.fence!
+      md.renderer.rules.fence = (tokens, idx, opts, env, self) => {
+        const token = tokens[idx]
+        const words = token.info.trim().split(/\s+/)
+        if (words[0] !== "mojo") return fence(tokens, idx, opts, env, self)
+
+        const runnable = isRunnable(token)
+        // Keep the markers out of the fence line, so that the highlighter
+        // never sees them.
+        token.info = words.filter((w) => w !== "run" && w !== "norun").join(" ")
+
+        const html = fence(tokens, idx, opts, env, self)
+        if (!runnable) return html
+        return html.replace(
+          /^<div class="language-/,
+          '<div data-mojo-run class="language-',
+        )
+      }
+
+      // The button goes at the right end of the header line, and it belongs to
+      // whichever tab is open. In a `mojo` + `python` group it is there on the
+      // Mojo tab and gone on the Python one; the CSS does that, by looking at
+      // which block is showing.
+      const button =
+        '<button class="mojo-run" type="button" ' +
+        'title="Compile and run this program">' +
+        '<span class="mojo-run-icon"></span>' +
+        '<span class="mojo-btn-text">Run</span></button>'
+
+      const groupOpen = md.renderer.rules["container_code-group_open"]!
+      md.renderer.rules["container_code-group_open"] = (
+        tokens, idx, opts, env, self,
+      ) => {
+        const html = groupOpen(tokens, idx, opts, env, self)
+        let runnable = false
+        for (let i = idx + 1; i < tokens.length; i++) {
+          const token = tokens[i]
+          if (token.type === "container_code-group_close") break
+          if (token.type === "fence" && isRunnable(token)) {
+            runnable = true
+            break
+          }
+        }
+        if (!runnable) return html
+        return html.replace(
+          '</div><div class="blocks">',
+          `${button}</div><div class="blocks">`,
+        )
+      }
+
       // Two containers of our own, on top of VitePress's
       // info / tip / warning / danger / details.
       //   ::: python   -- how the same thing is done in Python
@@ -63,6 +172,10 @@ export default defineConfig({
         customIcon: {
           'mojo': 'vscode-icons:file-type-mojo',
           'python': 'vscode-icons:file-type-python',
+          'py': 'vscode-icons:file-type-python',
+          'bash': 'vscode-icons:file-type-shell',
+          'sh': 'vscode-icons:file-type-shell',
+          'zsh': 'vscode-icons:file-type-shell',
           'ruby': 'vscode-icons:file-type-ruby',
           'rust': 'vscode-icons:file-type-rust',
           'perl': 'vscode-icons:file-type-perl',

@@ -34,6 +34,40 @@ hero:
   -->
 <!-- <meta http-equiv="Refresh" content="5; url='https://mojo-lang.com/miji'" /> -->
 
+:::::: tip Run the code while you read
+
+Throughout the Miji, every Mojo code block that forms a complete program has a
+**Run** button at the right end of its header line, beside the name of the
+language. Click it, and the program is compiled and executed for you, with the
+output appearing right below the code. You can also click the code itself and
+change it, so you can try your own ideas without leaving the page.
+
+::: code-group
+
+```mojo
+def main():
+   a = "Hello, world!"
+   print(a)
+
+   b = 0
+   for i in range(10):
+      b = b + i
+   print(b)
+```
+
+```python
+a = "Hello, world!"
+print(a)
+
+b = 0
+for i in range(10):
+    b = b + i
+print(b)
+```
+
+:::
+::::::
+
 # Useful libraries, resources, and links for Mojo
 
 ::: tip Official resources for Mojo

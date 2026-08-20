@@ -75,12 +75,16 @@ etc. You can read this Miji as a **complementary** resource to the
 [official Mojo manual](https://mojolang.org/docs/manual/).
 
 In that sense, throughout this Miji, I will focus on providing concrete examples
-and exercises in both Python and Mojo, allowing readers to easily compare the
-two languages. I will also draw graphs and diagrams to illustrate memory layouts
-or internal representations of Mojo objects, since Mojo emphasizes the
-importance of memory safety. Finally, I will tell you about the
+and exercises in both Python and Mojo, allowing you to easily compare the two
+languages. I will also draw graphs and diagrams to illustrate memory layouts or
+internal representations of Mojo objects, since Mojo emphasizes the importance
+of memory safety. Finally, I will tell you about the
 [pits that I fell into](./misc/tips) when I used Mojo, so that you can avoid
 them.
+
+To be as interactive as possible, I put a "run" button at the top right corner
+of the code blocks, so you can run the code to see the real output. You can also
+edit the sample code to check out anything you like.
 
 You do not need to be an expert in Python to read this Miji, but you should
 either have a basic understanding of Python, such as data types, control
@@ -160,36 +164,3 @@ First version: May 2025
 Revision: March 2026  
 Second revision: August 2026  
 Rotterdam, the Netherlands
-
-:::::: info Quick glance at Mojo's syntax
-
-Mojo borrows Python’s syntax style, making it very similar to Python code with
-type annotations. In terms of usage, Mojo allows for easy importation of Python
-functions and packages. Below are examples of Python and Mojo code,
-demonstrating their similar styles.
-
-::: code-group
-
-```mojo
-a = String("Hello, world!")
-print(a)
-
-b: Int = 8
-for i in range(10):
-    b = b + i
-print(b)
-```
-
-```python
-a = str("Hello, world!")
-print(a)
-
-b: int = 8
-for i in range(10):
-    b = b + i
-print(b)
-```
-
-:::
-
-::::::
