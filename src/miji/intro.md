@@ -138,10 +138,12 @@ This Miji will be structured as follows:
    the Miji. It is particularly helpful if you are already a Magician but want
    to avoid common pitfalls and mistakes that I encountered while using Mojo.
 
-Mojo reached its version 1.0 on 11 August 2026, which means that the core
-language is now stable: code that compiles today should keep compiling tomorrow.
-One week later, on 18 August 2026, Modular open-sourced the Mojo compiler and
-the whole toolchain under the Apache 2.0 license with LLVM
+Is Mojo still unstable and proprietary?
+
+No, said Chris. Mojo reached its version 1.0 on 11 August 2026, which means that
+the core language is now stable: code that compiles today should keep compiling
+tomorrow. One week later, on 18 August 2026 at ModCon, Modular open-sourced the
+Mojo compiler and the whole toolchain under the Apache 2.0 license with LLVM
 exceptions^[https://www.modular.com/blog/mojo-open-source]. The standard library
 had already been open since 2024, so the entire language is now in the open.
 Note that the compiler is still written in C++ and does not yet compile itself,

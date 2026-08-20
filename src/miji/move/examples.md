@@ -269,16 +269,18 @@ and deallocation on heap. In Mojo, `Int` is a fixed-size integer type (32-bit or
 
 :::
 
-:::::: info Speed comparison with C and Rust
+:::::: info Speed comparison with C, Rust, et al.
 
 Now you know that Mojo is much faster than Python. You may wonder how the
 performance of Mojo is compared to C, Rust, and other static-typed languages. To
 answer this question, I will implement the same Fibonacci sequence code in C,
 Rust, Go, Swift and Zig.
 
-To give some stress to these languages, I also increase the number of Fibonacci
-numbers to ***50*** (Do not do this in Python unless you want to take a long
-shower 😉).
+Each program now times itself, so that you can compare the languages by pressing
+the **Run** button on each tab instead of taking my word for it. They all
+calculate the first ***40*** Fibonacci numbers, which the compiled languages
+finish in well under a second. Python takes far longer, and the website will
+stop it before it is done. That is the whole point 😉.
 
 The C, Rust, Go, Swift, Zig, Mojo, and Python codes are as follows:
 
@@ -287,6 +289,7 @@ The C, Rust, Go, Swift, Zig, Mojo, and Python codes are as follows:
 ```c
 #include <stdint.h>
 #include <stdio.h>
+#include <time.h>
 
 int64_t fib(int n) {
   if (n <= 1) {
@@ -296,13 +299,17 @@ int64_t fib(int n) {
 }
 
 int main() {
-  for (int i = 0; i < 50; i++) {
-    printf("%lld, ", fib(i));
+  clock_t start = clock();
+  for (int i = 0; i < 40; i++) {
+    printf("%lld, ", (long long)fib(i));
   }
+  printf("\nTime: %f seconds\n", (double)(clock() - start) / CLOCKS_PER_SEC);
 }
 ```
 
 ```rust
+use std::time::Instant;
+
 fn fib (n: i64) -> i64 {
     if n <= 1 {
         return n;
@@ -311,16 +318,21 @@ fn fib (n: i64) -> i64 {
 }
 
 fn main() {
-    for i in 0..50 {
+    let start = Instant::now();
+    for i in 0..40 {
         print!("{}, ", fib(i));
     }
+    println!("\nTime: {} seconds", start.elapsed().as_secs_f64());
 }
 ```
 
 ```go
 package main
 
-import "fmt"
+import (
+    "fmt"
+    "time"
+)
 
 func fib(n int64) int64 {
     if n <= 1 {
@@ -330,13 +342,17 @@ func fib(n int64) int64 {
 }
 
 func main() {
-    for i := int64(0); i < 50; i++ {
+    start := time.Now()
+    for i := int64(0); i < 40; i++ {
         fmt.Printf("%d, ", fib(i))
     }
+    fmt.Printf("\nTime: %v seconds\n", time.Since(start).Seconds())
 }
 ```
 
 ```swift
+import Foundation
+
 func fib(_ n: Int64) -> Int64 {
     if n <= 1 {
         return n
@@ -345,9 +361,11 @@ func fib(_ n: Int64) -> Int64 {
 }
 
 func main() {
-    for i in 0..<50 {
+    let start = Date()
+    for i in 0..<40 {
         print("\(fib(Int64(i))), ", terminator: "")
     }
+    print("\nTime: \(-start.timeIntervalSinceNow) seconds")
 }
 
 main()
@@ -356,22 +374,28 @@ main()
 ```zig
 const std = @import("std");
 
-fn fib(n: i32) i64 {
+fn fib(n: i64) i64 {
     if (n <= 1) {
         return n;
     }
     return fib(n - 1) + fib(n - 2);
 }
 
-pub fn main() void {
-    var i: i32 = 0;
-    while (i < 50) : (i += 1) {
-        std.debug.print("{}, ", .{fib(i)});
+pub fn main() !void {
+    var timer = try std.time.Timer.start();
+    var i: i64 = 0;
+    while (i < 40) : (i += 1) {
+        std.debug.print("{d}, ", .{fib(i)});
     }
+    const seconds = @as(f64, @floatFromInt(timer.read())) / 1e9;
+    std.debug.print("\nTime: {d} seconds\n", .{seconds});
 }
 ```
 
 ```mojo
+from std.time import perf_counter_ns
+
+
 def fib(n: Int64) -> Int64:
     if n <= 1:
         return n
@@ -379,33 +403,70 @@ def fib(n: Int64) -> Int64:
 
 
 def main():
-    for i in range(50):
+    var start = perf_counter_ns()
+    for i in range(40):
         print(fib(Int64(i)), end=", ")
+    print()
+    print("Time:", Float64(perf_counter_ns() - start) / 1e9, "seconds")
 ```
 
 ```python
+import time
+
+
 def fib(n: int) -> int:
     if n <= 1:
         return n
     return fib(n - 1) + fib(n - 2)
 
+
 def main():
-    for i in range(50):
+    start = time.perf_counter()
+    for i in range(40):
         print(fib(i), end=", ")
+    print()
+    print("Time:", time.perf_counter() - start, "seconds")
 
 main()
 ```
 
 :::
 
-Let's compile the scripts into executables with the maximum level of
-optimization and and run them. Here are the results:
+They all print the same forty numbers:
 
 ```console
-0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181, 6765, 10946, 17711, 28657, 46368, 75025, 121393, 196418, 317811, 514229, 832040, 1346269, 2178309, 3524578, 5702887, 9227465, 14930352, 24157817, 39088169, 63245986, 102334155, 165580141, 267914296, 433494437, 701408733, 1134903170, 1836311903, 2971215073, 4807526976, 7778742049,
+0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181, 6765, 10946, 17711, 28657, 46368, 75025, 121393, 196418, 317811, 514229, 832040, 1346269, 2178309, 3524578, 5702887, 9227465, 14930352, 24157817, 39088169, 63245986, 
 ```
 
-The time taken to run the code is as follows:
+But not in the same time. I ran all seven on my own computer, a MacBook Pro
+with an Apple M4 Pro chip, with the compilers set to optimize. Each number
+below is the average of a hundred runs. Time is in seconds:
+
+| Language | Runs | Mean   | Median | Fastest | Slowest | Standard deviation |
+| -------- | ---- | ------ | ------ | ------- | ------- | ------------------ |
+| Mojo     | 100  | 0.258  | 0.258  | 0.252   | 0.268   | 0.003              |
+| C        | 100  | 0.262  | 0.261  | 0.254   | 0.277   | 0.004              |
+| Rust     | 100  | 0.268  | 0.268  | 0.258   | 0.285   | 0.006              |
+| Zig      | 100  | 0.269  | 0.268  | 0.264   | 0.281   | 0.003              |
+| Swift    | 100  | 0.342  | 0.341  | 0.328   | 0.365   | 0.009              |
+| Go       | 100  | 0.356  | 0.354  | 0.347   | 0.376   | 0.006              |
+| Python   | 100  | 12.486 | 12.450 | 12.098  | 15.526  | 0.346              |
+
+The top four are within four hundredths of a second of one another. Do not read
+too much into their order: they all compile the same recursion down to much the
+same machine code, and on your computer they may well line up differently.
+Swift and Go take about a third longer. Python needs **forty-eight times** as
+long as any of them. That gap is the comparison this section is about.
+
+To be frank, I am quite satisfied with the performance of Mojo in this case. It
+keeps company with C, Rust, and Zig, and it is a far younger language than any
+of them.
+
+---
+
+Earlier, I ran the same test with ***50*** Fibonacci numbers, which is about a
+hundred and twenty times more work than 40, so the numbers are much larger.
+Python needed almost an hour, which is why the Miji now uses 40.
 
 | Language | Time (seconds) | Command                                    | Size of executable |
 | -------- | -------------- | ------------------------------------------ | ------------------ |
@@ -417,8 +478,7 @@ The time taken to run the code is as follows:
 | Go       | 43             | go build -ldflags="-s -w" fibonacci.go     | 1.4 MB             |
 | Python   | 3440           | -                                          | -                  |
 
-To be frank, I am quite satisfied with the performance of Mojo in this case. It
-is not the fastest, but it is promising.
+Note that the executable sizes differ a lot more than the times do.
 
 ::::::
 
