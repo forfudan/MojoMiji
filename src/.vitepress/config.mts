@@ -61,29 +61,48 @@ export default defineConfig({
         }
       })
 
-      // --- Run buttons on Mojo code blocks -----------------------------------
-      // A block can be run only if it is a complete program, that is, if it
-      // defines `main()`. We check that here, at build time. Two markers in the
-      // fence line override the guess:
-      //   ```mojo run     -- always give this block a Run button
-      //   ```mojo norun   -- never give this block a Run button
-      const hasMain = /^\s*(def|fn)\s+main\s*\(/m
-
-      const isRunnable = (token: any): boolean => {
-        const words = token.info.trim().split(/\s+/)
-        if (words[0] !== "mojo") return false
-        const marked = words.slice(1)
-        if (marked.includes("norun")) return false
-        return marked.includes("run") || hasMain.test(token.content)
+      // --- Run buttons on code blocks ----------------------------------------
+      // A block gets a Run button only if it is a complete program. What that
+      // means depends on the language, but in every one of these it comes down
+      // to the same thing: does the block have a `main`?
+      //
+      // Mojo and Python are the two the Miji is about. The other five are here
+      // because the Miji compares Mojo to them, and because Compiler Explorer
+      // runs them all through the very same request. Adding one costs a line.
+      const RUNNABLE: Record<string, RegExp> = {
+        mojo: /^\s*(def|fn)\s+main\s*\(/m,
+        python: /^\s*def\s+main\s*\(/m,
+        c: /^\s*(int|void)\s+main\s*\(/m,
+        rust: /^\s*fn\s+main\s*\(/m,
+        go: /^\s*func\s+main\s*\(/m,
+        swift: /^\s*func\s+main\s*\(/m,
+        zig: /^\s*pub\s+fn\s+main\s*\(/m,
       }
 
-      // The block itself only gets a mark, so that the script can find it and
-      // so that the reader can click the code to edit it.
+      // Two markers in the fence line override the guess:
+      //   ```mojo run     -- always give this block a Run button
+      //   ```mojo norun   -- never give this block a Run button
+      // `norun` earns its keep more often than you would think. Godbolt has a
+      // bare compiler and no package manager, so a block that imports `decimo`
+      // cannot run there; and it stops a program after about twenty seconds,
+      // so a deliberately slow one cannot either.
+      const isRunnable = (token: any): boolean => {
+        const words = token.info.trim().split(/\s+/)
+        const rule = RUNNABLE[words[0]]
+        if (!rule) return false
+        const marked = words.slice(1)
+        if (marked.includes("norun")) return false
+        return marked.includes("run") || rule.test(token.content)
+      }
+
+      // The block itself only gets a mark, naming its language, so that the
+      // script knows which compiler to ask, and so that the reader can click
+      // the code to edit it.
       const fence = md.renderer.rules.fence!
       md.renderer.rules.fence = (tokens, idx, opts, env, self) => {
         const token = tokens[idx]
         const words = token.info.trim().split(/\s+/)
-        if (words[0] !== "mojo") return fence(tokens, idx, opts, env, self)
+        if (!(words[0] in RUNNABLE)) return fence(tokens, idx, opts, env, self)
 
         const runnable = isRunnable(token)
         // Keep the markers out of the fence line, so that the highlighter
@@ -94,17 +113,17 @@ export default defineConfig({
         if (!runnable) return html
         return html.replace(
           /^<div class="language-/,
-          '<div data-mojo-run class="language-',
+          `<div data-run="${words[0]}" class="language-`,
         )
       }
 
       // The button goes at the right end of the header line, and it belongs to
-      // whichever tab is open. In a `mojo` + `python` group it is there on the
-      // Mojo tab and gone on the Python one; the CSS does that, by looking at
-      // which block is showing.
+      // whichever tab is open. In a group whose Mojo tab can run and whose
+      // Rust tab cannot, it is there on the one and gone on the other; the CSS
+      // does that, by looking at which block is showing.
       const button =
         '<button class="mojo-run" type="button" ' +
-        'title="Compile and run this program">' +
+        'title="Run this program">' +
         '<span class="mojo-run-icon"></span>' +
         '<span class="mojo-btn-text">Run</span></button>'
 

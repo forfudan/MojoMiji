@@ -84,11 +84,11 @@
 /* A button in the bar belongs to the tab that is open. On a Python tab there
    is nothing to run, and nothing being edited, so neither button is there. */
 .vp-doc
-  .vp-code-group:not(:has(> .blocks > [data-mojo-run].active))
+  .vp-code-group:not(:has(> .blocks > [data-run].active))
   > .tabs
   > button.mojo-run,
 .vp-doc
-  .vp-code-group:not(:has(> .blocks > [data-mojo-run].mojo-editing.active))
+  .vp-code-group:not(:has(> .blocks > [data-run].mojo-editing.active))
   > .tabs
   > button.mojo-reset {
   display: none;
@@ -151,7 +151,7 @@
 
 /* --- welding the block to its output ------------------------------------- */
 
-.vp-doc [data-mojo-run].mojo-open {
+.vp-doc [data-run].mojo-open {
   margin-bottom: 0;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
@@ -291,15 +291,15 @@
    inside it: 20px above and below, 24px left and right.
    -------------------------------------------------------------------------- */
 
-.vp-doc [data-mojo-run].mojo-editing {
+.vp-doc [data-run].mojo-editing {
   box-shadow: inset 3px 0 0 var(--miji-run);
 }
 
-.vp-doc [data-mojo-run] > pre {
+.vp-doc [data-run] > pre {
   cursor: text;
 }
 
-.vp-doc [data-mojo-run] > textarea.mojo-editor {
+.vp-doc [data-run] > textarea.mojo-editor {
   display: block;
   position: relative;
   z-index: 1;
