@@ -1,13 +1,25 @@
 # Data types
 
-> If we were to have the same ancestor with horses instead of apes, we would have been able to invent computers much earlier.  
+> If we were to have the same ancestor with horses instead of apes, we would
+> have been able to invent computers much earlier.  
 > -- Yuhao Zhu, *Gate of Heaven*
 
-Types of data are the foundation of programming languages. They define how one and zeros in the memory are interpreted as human-readable values. Mojo's data types are similar to Python's, but with some differences due to Mojo's static compilation nature.
+Types of data are the foundation of programming languages. They define how one
+and zeros in the memory are interpreted as human-readable values. Mojo's data
+types are similar to Python's, but with some differences due to Mojo's static
+compilation nature.
 
-In the following four chapters, we will discuss the most common data types in Mojo. They can be categorized into several categories: scalar types (integer, floats), composite types (list, tuple, string, SIMD), text types (string), and others types (boolean, literal).
+In the following four chapters, we will discuss the most common data types in
+Mojo. They can be categorized into several categories: scalar types (integer,
+floats), composite types (list, tuple, string, SIMD), text types (string), and
+others types (boolean, literal).
 
-This chapter starts with the scalar types and the boolean type, which are the most basic and simplest data types in Mojo. They represent single values that are stored in the memory with a fixed and relatively small size. The [composite types](../basic/composite), the [string type](../basic/string), the [literal types](../basic/literal), and the Mojo-featured [SMID type](../advanced/simd) will be further discussed in separate chapters.
+This chapter starts with the scalar types and the boolean type, which are the
+most basic and simplest data types in Mojo. They represent single values that
+are stored in the memory with a fixed and relatively small size. The
+[composite types](../basic/composite), the [string type](../basic/string), the
+[literal types](../basic/literal), and the Mojo-featured
+[SMID type](../advanced/simd) will be further discussed in separate chapters.
 
 The following topics will be covered in this chapter:
 
@@ -19,7 +31,8 @@ The following topics will be covered in this chapter:
 
 ## Glance of data types in Mojo
 
-The following table summarizes the most common data types in Mojo and their corresponding types in Python:
+The following table summarizes the most common data types in Mojo and their
+corresponding types in Python:
 
 | Python type | Mojo type          | Description                                  | Be careful that                                                                |
 | ----------- | ------------------ | -------------------------------------------- | ------------------------------------------------------------------------------ |
@@ -32,28 +45,41 @@ The following table summarizes the most common data types in Mojo and their corr
 | `dict`      | `collections.Dict` | Dictionary (hashmap)                         | Keys and values in `Dict` in Mojo must be of the same data type, respectively. |
 | `str`       | `String`           | String (text)                                | Similar behaviors. Note that `String` in Mojo is rapidly evolving.             |
 
-The following table summarizes the behaviors of different types in Mojo when it comes to value assignment between variables.
+The following table summarizes the behaviors of different types in Mojo when it
+comes to value assignment between variables.
 
-| Type    | `b = a`           | `b = a.copy()` | `b = a^`         |
-| ------- | ----------------- | -------------- | ---------------- |
-| Int     | ✅ (Implicit) copy | ✅ Copy         | ⚠️ Copy (warning) |
-| Float64 | ✅ (Implicit) copy | ✅ Copy         | ⚠️ Copy (warning) |
-| Bool    | ✅ (Implicit) copy | ✅ Copy         | ⚠️ Copy (warning) |
-| SIMD    | ✅ (Implicit) copy | ✅ Copy         | ⚠️ Copy (warning) |
-| String  | ✅ (Implicit) copy | ✅ Copy         | ✅ Move           |
-| List    | ❌ Error           | ✅ Copy         | ✅ Move           |
-| Set     | ❌ Error           | ✅ Copy         | ✅ Move           |
-| Dict    | ❌ Error           | ✅ Copy         | ✅ Move           |
+| Type    | `b = a`            | `b = a.copy()` | `b = a^`          |
+| ------- | ------------------ | -------------- | ----------------- |
+| Int     | ✅ (Implicit) copy | ✅ Copy        | ⚠️ Copy (warning) |
+| Float64 | ✅ (Implicit) copy | ✅ Copy        | ⚠️ Copy (warning) |
+| Bool    | ✅ (Implicit) copy | ✅ Copy        | ⚠️ Copy (warning) |
+| SIMD    | ✅ (Implicit) copy | ✅ Copy        | ⚠️ Copy (warning) |
+| String  | ✅ (Implicit) copy | ✅ Copy        | ✅ Move           |
+| List    | ❌ Error           | ✅ Copy        | ✅ Move           |
+| Set     | ❌ Error           | ✅ Copy        | ✅ Move           |
+| Dict    | ❌ Error           | ✅ Copy        | ✅ Move           |
 
-`String` is somewhat special because it allows both implicit copy and move operations. This is because `String` is so common used while can both be allocated on the stack (small strings) or on the heap (large strings). Thus, it is designed to be both implicitly copyable and movable.
+`String` is somewhat special because it allows both implicit copy and move
+operations. This is because `String` is so common used while can both be
+allocated on the stack (small strings) or on the heap (large strings). Thus, it
+is designed to be both implicitly copyable and movable.
 
 ## Integers
 
-In Mojo, the most common integer type is `Int`, which is either a 32-bit or 64-bit signed integer depending on your system. It is ensured to cover the range of addresses on your system. It is similar to the `numpy.intp` type in Python and the `isize` type in Rust. Note that it is different from the `int` type in Python, which is an arbitrary-precision integer type.
+In Mojo, the most common integer type is `Int`, which is either a 32-bit or
+64-bit signed integer depending on your system. It is ensured to cover the range
+of addresses on your system. It is similar to the `numpy.intp` type in Python
+and the `isize` type in Rust. Note that it is different from the `int` type in
+Python, which is an arbitrary-precision integer type.
 
-Mojo also has other integer types with different sizes in bits, such as `Int8`, `Int16`, `Int32`, `Int64`, `Int128`, `Int256` and their unsigned counterparts `UInt8`, `UInt16`, `UInt32`, `UInt64`, `UInt128`, `UInt256`. The instance of each type will be stored on the stack with exactly the bits specified by the name of the type.
+Mojo also has other integer types with different sizes in bits, such as `Int8`,
+`Int16`, `Int32`, `Int64`, `Int128`, `Int256` and their unsigned counterparts
+`UInt8`, `UInt16`, `UInt32`, `UInt64`, `UInt128`, `UInt256`. The instance of
+each type will be stored on the stack with exactly the bits specified by the
+name of the type.
 
-The table below summarizes the integer types in Mojo and corresponding integer types in Python:
+The table below summarizes the integer types in Mojo and corresponding integer
+types in Python:
 
 | Mojo Type            | Python Type      | Description                                                 |
 | -------------------- | ---------------- | ----------------------------------------------------------- |
@@ -71,12 +97,26 @@ The table below summarizes the integer types in Mojo and corresponding integer t
 | `UInt64`             | `numpy.uint64`   | 64-bit unsigned integer. Range: 0 to 2^64-1.                |
 | `UInt128`            | `decimo.UInt128` | 128-bit unsigned integer. Range: 0 to 2^128-1.              |
 | `UInt256`            | `decimo.UInt256` | 256-bit unsigned integer. Range: 0 to 2^256-1.              |
-| `SIMD[DType.int, 1]` | `numpy.intp`     | 32-bit or 64-bit signed integer, depending on the system.   |
 | `decimo.BInt`        | `int`            | Arbitrary-precision. 9^10-based internal representation.    |
+
+::: details `Int` is an alias of `SIMD`
+
+Since **Mojo v1.0.0**, `Int` is not a type of its own any more: it is a name for
+`Scalar[DType.int]`, which is the same thing as `SIMD[DType.int, 1]`. You do not
+have to think about this most of the time, but it explains why the last two rows
+of the table below describe the same type, and why the compiler sometimes talks
+about `SIMD` when you thought you were writing an `Int`.
+
+:::
 
 ### Create an integer
 
-You can create a integer variable in decimal, binary, hexadecimal, or octal format. If we do not explicitly specify the type of the integer literal, the compiler will infer it as `Int` by default. If we explicitly specify the type of the integer, or we use the constructor of the integer type, the compiler will use that type. The following example shows how to create integer variables in different formats:
+You can create a integer variable in decimal, binary, hexadecimal, or octal
+format. If we do not explicitly specify the type of the integer literal, the
+compiler will infer it as `Int` by default. If we explicitly specify the type of
+the integer, or we use the constructor of the integer type, the compiler will
+use that type. The following example shows how to create integer variables in
+different formats:
 
 ```mojo
 # src/basic/types/integers.mojo
@@ -96,16 +136,25 @@ def main():
 
 ---
 
-To allow Mojo to **infer the type of an integer literal** without explicit type annotation, you can use the following rules:
+To allow Mojo to **infer the type of an integer literal** without explicit type
+annotation, you can use the following rules:
 
-1. If the integer literal is a decimal number without any prefix or decimal point, Mojo will infer it as `Int` by default.
-1. If the integer literal starts with `0x` without dot, Mojo will infer it as a hexadecimal number and use `Int` as the type.
-1. If the integer literal starts with `0b` without dot, Mojo will infer it as a binary number and use `Int` as the type.
-1. If the integer literal starts with `0o` without dot, Mojo will infer it as an octal number and use `Int` as the type.
+1. If the integer literal is a decimal number without any prefix or decimal
+   point, Mojo will infer it as `Int` by default.
+1. If the integer literal starts with `0x` without dot, Mojo will infer it as a
+   hexadecimal number and use `Int` as the type.
+1. If the integer literal starts with `0b` without dot, Mojo will infer it as a
+   binary number and use `Int` as the type.
+1. If the integer literal starts with `0o` without dot, Mojo will infer it as an
+   octal number and use `Int` as the type.
 
 ### Integer overflow
 
-Integral typIes in Mojo are of fixed size, meaning that they can only hold values within a specific range. If the value assigned to an integer variable exceeds the range of the specified type, you may encounter either an error or an overflow. For example, if you try to assign the value 256 to a variable of type `UInt8`, you will encounter an overflow.
+Integral typIes in Mojo are of fixed size, meaning that they can only hold
+values within a specific range. If the value assigned to an integer variable
+exceeds the range of the specified type, you may encounter either an error or an
+overflow. For example, if you try to assign the value 256 to a variable of type
+`UInt8`, you will encounter an overflow.
 
 ```mojo
 def main():
@@ -114,15 +163,28 @@ def main():
 # Output: 0
 ```
 
-This is because `UInt8` can only hold values from 0 to 255. When you assign 256 to it, it wraps around and becomes 0, which is the result of the overflow. This behavior is similar to that in most programming languages, except Python, which has arbitrary-precision integers.
+This is because `UInt8` can only hold values from 0 to 255. When you assign 256
+to it, it wraps around and becomes 0, which is the result of the overflow. This
+behavior is similar to that in most programming languages, except Python, which
+has arbitrary-precision integers.
 
-Note that there is no error message printed in this case. This is because Mojo does not perform runtime checks for integer overflows by default. We need to be very careful when using integer types in Mojo compared to Python. If you really need to work on big integers that are larger than the capacity of `Int`, you can consider using the `BigInt` type, which has the similar functionality as the `int` type in Python.
+Note that there is no error message printed in this case. This is because Mojo
+does not perform runtime checks for integer overflows by default. We need to be
+very careful when using integer types in Mojo compared to Python. If you really
+need to work on big integers that are larger than the capacity of `Int`, you can
+consider using the `BigInt` type, which has the similar functionality as the
+`int` type in Python.
 
-We will discuss about integer overflow and Big Integer type in detail in Chapter [Arbitrary-precision numbers](../extend/decimo.md).
+We will discuss about integer overflow and Big Integer type in detail in Chapter
+[Arbitrary-precision numbers](../extend/decimo.md).
 
 ### Integer conversion
 
-If you want to add up two `Int32` numbers, you can simply use the `+` operator. The resulting value will be `Int32` as well. However, in Mojo, you are not allowed to add up two integers of different types, such as `Int32` and `Int64`. In other words, Mojo does not support implicit conversion between integer types. The only exception is the `Int` type, which allows implicit conversion.
+If you want to add up two `Int32` numbers, you can simply use the `+` operator.
+The resulting value will be `Int32` as well. However, in Mojo, you are not
+allowed to add up two integers of different types, such as `Int32` and `Int64`.
+In other words,
+**Mojo does not support implicit conversion between integer types**.
 
 For example, the following code will raise an error:
 
@@ -153,7 +215,13 @@ note: failed to infer parameter #0, parameter inferred to two different values: 
                          ^
 ```
 
-To fix this, you need to explicitly convert the integer types to the same type before performing the operation. You can do this by using the **constructor**, which is a special method that initializes a new instance of a specific type. The constructors are usually of **the same as the name of the corresponding type**, e.g., `Int8()`, `UInt16()`, `Int128()`, etc. You can use the constructor to convert an integer to another type, like this:
+To fix this, you need to explicitly convert the integer types to the same type
+before performing the operation. You can do this by using the **constructor**,
+which is a special method that initializes a new instance of a specific type.
+The constructors are usually of
+**the same as the name of the corresponding type**, e.g., `Int8()`, `UInt16()`,
+`Int128()`, etc. You can use the constructor to convert an integer to another
+type, like this:
 
 ```mojo
 # src/basic/types/integer_operations_with_type_conversion.mojo
@@ -175,15 +243,45 @@ a - c = -1222
 b * c = 28382
 ```
 
+::: warning `Int` is no longer a free pass
+
+Until v1.0.0, `Int` was the one exception to the rule: it converted implicitly
+to any other integer type, so you could pass an `Int` to a function expecting an
+`Int64` and Mojo would sort it out. That is no longer true. Now that `Int` is
+simply `Scalar[DType.int]`, it plays by the same rules as every other integer
+type:
+
+```mojo
+def takes64(x: Int64) -> Int64:
+    return x
+
+def main():
+    var i: Int = 5
+    print(takes64(i))       # error: cannot be converted from 'Int' to 'Int64'
+    print(takes64(Int64(i)))  # Write the conversion yourself.
+```
+
+If you are porting code that used to compile, this is the change most likely to
+have broken it. The fix is always the same: wrap the value in the constructor of
+the type you need.
+
+:::
+
 ::: danger Downward conversion may lose precision
 
-In Mojo, you can convert an integer to a smaller integer type with narrower range, e.g., from `Int128` to `Int64` in the previous example. However, you should be careful when doing this, as it may lead to loss of precision or overflow. In some other programming languages, such downward conversion may raise an error or warning.
+In Mojo, you can convert an integer to a smaller integer type with narrower
+range, e.g., from `Int128` to `Int64` in the previous example. However, you
+should be careful when doing this, as it may lead to loss of precision or
+overflow. In some other programming languages, such downward conversion may
+raise an error or warning.
 
 :::
 
 ## Floating-point numbers
 
-Compared to integer types, floating-point numbers in Mojo share more similarities with Python. The table below summarizes the floating-point types in Mojo and corresponding types in Python:
+Compared to integer types, floating-point numbers in Mojo share more
+similarities with Python. The table below summarizes the floating-point types in
+Mojo and corresponding types in Python:
 
 | Mojo Type | Python Type     | Description                                                                     |
 | --------- | --------------- | ------------------------------------------------------------------------------- |
@@ -193,9 +291,14 @@ Compared to integer types, floating-point numbers in Mojo share more similaritie
 
 To construct a floating-point number in Mojo, you can do that in three ways:
 
-1. Simply assign a floating-point literal to a variable without type annotations. A floating-point literal is a number with a decimal point or in scientific notation, e.g, `3.14` or `1e-10`. Mojo will automatically use `Float64` as the default type.
-1. Use type annotations to specify the type of the floating-point number, e.g., `var a: Float32 = 3.14`.
-1. Use the corresponding constructor, e.g., `Float64(3.14)`, `Float32(2.718)`, or `Float16(1.414)`.
+1. Simply assign a floating-point literal to a variable without type
+   annotations. A floating-point literal is a number with a decimal point or in
+   scientific notation, e.g, `3.14` or `1e-10`. Mojo will automatically use
+   `Float64` as the default type.
+1. Use type annotations to specify the type of the floating-point number, e.g.,
+   `var a: Float32 = 3.14`.
+1. Use the corresponding constructor, e.g., `Float64(3.14)`, `Float32(2.718)`,
+   or `Float16(1.414)`.
 
 See the following examples.
 
@@ -234,28 +337,49 @@ main()
 
 ::: warning Floating-point values are inexact
 
-You may find that the output of `Float16(1.414)` is `1.4140625`, which is not exactly `1.414`. This is because floating-point numbers are inexact representations of real numbers. This is because floating-point numbers are internally represented in binary format, while it is printed in decimal format. Not all decimal numbers can be represented exactly in binary format, and vice versa. Thus, when you create a floating-point number, e.g., `Float16(1.414)`, it may be stored as the closest representable value in binary format, which is `1.4140625` in this case.
+You may find that the output of `Float16(1.414)` is `1.4140625`, which is not
+exactly `1.414`. This is because floating-point numbers are inexact
+representations of real numbers. This is because floating-point numbers are
+internally represented in binary format, while it is printed in decimal format.
+Not all decimal numbers can be represented exactly in binary format, and vice
+versa. Thus, when you create a floating-point number, e.g., `Float16(1.414)`, it
+may be stored as the closest representable value in binary format, which is
+`1.4140625` in this case.
 
-This is a common issue in many programming languages, including Python. You can have two methods to avoid or mitigate this issue:
+This is a common issue in many programming languages, including Python. You can
+have two methods to avoid or mitigate this issue:
 
-1. Use higher precision floating-point types, such as `Float64` or `Float32`, which can represent more decimal places and reduce the error. Note that the values are still inexact, but the error can be negligible.
-1. Use the big decimal type, which is internally presented in base 10. It can represent decimal numbers exactly, but it is slower than floating-point types.
+1. Use higher precision floating-point types, such as `Float64` or `Float32`,
+   which can represent more decimal places and reduce the error. Note that the
+   values are still inexact, but the error can be negligible.
+1. Use the big decimal type, which is internally presented in base 10. It can
+   represent decimal numbers exactly, but it is slower than floating-point
+   types.
 
-We will discuss more about the inexactness of floating-point numbers and big decimal types in the chapter [Arbitrary-precision numbers](../extend/decimo.md).
+We will discuss more about the inexactness of floating-point numbers and big
+decimal types in the chapter [Arbitrary-precision numbers](../extend/decimo.md).
 
 :::
 
 ## Boolean
 
-The boolean type is a simple data type that can only have two possible states: true and false (or, yes and no, 1 and 0...). These two states are mutually exclusive and exhaustive, meaning that a boolean value can only be either true or false, and there are no other possible values.
+The boolean type is a simple data type that can only have two possible states:
+true and false (or, yes and no, 1 and 0...). These two states are mutually
+exclusive and exhaustive, meaning that a boolean value can only be either true
+or false, and there are no other possible values.
 
-The mojo's boolean type is renamed as `Bool`. The two states are `True` and `False`. It is comparable to the `bool` type in Python, but with the first letter capitalized.
+The mojo's boolean type is renamed as `Bool`. The two states are `True` and
+`False`. It is comparable to the `bool` type in Python, but with the first
+letter capitalized.
 
 The `Bool` type is saved as a single byte in the memory.
 
 ### Implicit conversion
 
-Unlike Python, Mojo's Boolean values cannot be implicitly converted to integers for arithmetic operation, even though the bit representation of `True` is equivalent to `1` and `False` is equivalent to `0`. Thus, the following code will **not work** in Mojo:
+Unlike Python, Mojo's Boolean values cannot be implicitly converted to integers
+for arithmetic operation, even though the bit representation of `True` is
+equivalent to `1` and `False` is equivalent to `0`. Thus, the following code
+will **not work** in Mojo:
 
 ::: code-group
 
@@ -279,7 +403,10 @@ main()
 
 ### Exercises on integer types
 
-Now we want to calculate the $12345^5$. Since the result is big (around 20 digits), we use `Int128` to avoid overflow. Try to run the following code in Mojo and see what happens. Explain why the result is unexpected and how to fix it.
+Now we want to calculate the $12345^5$. Since the result is big (around 20
+digits), we use `Int128` to avoid overflow. Try to run the following code in
+Mojo and see what happens. Explain why the result is unexpected and how to fix
+it.
 
 ```mojo
 def main():
@@ -289,13 +416,24 @@ def main():
 
 ::: details Answer
 
-The result is `-8429566654717360231`. It is a negative number, which is unexpected. The correct answer should be `286718338524635465625`. Usually, when we see a negative value, we know that it is probably due to an overflow.
+The result is `-8429566654717360231`. It is a negative number, which is
+unexpected. The correct answer should be `286718338524635465625`. Usually, when
+we see a negative value, we know that it is probably due to an overflow.
 
-The reason is that, when we write `12345 ** 5` in the right-hand side of the assignment, we did not explicitly specify the type of the values. As mentioned above, if we do not explicitly specify the type of the integer literal, the compiler will infer it as `Int` by default. Thus, `12345` and `5` will be both saved as an `Int` type (64-bit signed integer on a 64-bit system).
+The reason is that, when we write `12345 ** 5` in the right-hand side of the
+assignment, we did not explicitly specify the type of the values. As mentioned
+above, if we do not explicitly specify the type of the integer literal, the
+compiler will infer it as `Int` by default. Thus, `12345` and `5` will be both
+saved as an `Int` type (64-bit signed integer on a 64-bit system).
 
-Since the result of `12345 ** 5` exceeds the maximum value of `Int` type (`2^63 - 1`), an overflow occurs. And value of `12345 ** 5` becomes `-8429566654717360231`. This wrong value is then assigned to the variable `a` of type `Int128`.
+Since the result of `12345 ** 5` exceeds the maximum value of `Int` type
+(`2^63 - 1`), an overflow occurs. And value of `12345 ** 5` becomes
+`-8429566654717360231`. This wrong value is then assigned to the variable `a` of
+type `Int128`.
 
-To fix this, we need to explicitly specify the type of the integer literals in the right-hand side of the assignment. We can do this by using the `Int128` constructor, like this:
+To fix this, we need to explicitly specify the type of the integer literals in
+the right-hand side of the assignment. We can do this by using the `Int128`
+constructor, like this:
 
 ```mojo
 def main():
@@ -307,7 +445,8 @@ Now the result will be `286718338524635465625`, which is the correct answer.
 
 :::
 
-Please fix the following code to make it work correctly, as well as to avoid potential overflow issues.
+Please fix the following code to make it work correctly, as well as to avoid
+potential overflow issues.
 
 ```mojo
 # src/basic/types/integer_exercise_fix_operations.mojo
@@ -359,3 +498,6 @@ def main():
 - 2025-06-26: Move the sections of list and literals to standalone chapters.
 - 2025-09-25: Update to accommodate the changes in Mojo v0.25.6.
 - 2026-02-28: Update to accommodate the changes in Mojo v0.26.1.
+- 2026-08-19: Update to accommodate the changes in Mojo v1.0.0. `Int` is now an
+  alias for `Scalar[DType.int]` and no longer converts implicitly to the other
+  integer types.
