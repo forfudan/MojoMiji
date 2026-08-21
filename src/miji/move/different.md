@@ -138,7 +138,11 @@ text at the moment it is actually needed:
 ```mojo
 def main():
     var name = "Mojo"
-    print(t"Hello, {name}!")  # Output: Hello, Mojo!
+    print(t"Hello, {name}!")
+```
+
+```output mojo
+Hello, Mojo!
 ```
 
 To iterate over the characters of a `String`, you write the same `for` loop as
@@ -153,7 +157,10 @@ def main():
     for c in s:
         print(c, end="")
 main()
-# Output: Hello, world! 你好，世界！
+```
+
+```output python
+Hello, world! 你好，世界！
 ```
 
 ```mojo
@@ -161,7 +168,10 @@ def main():
     var my_string = String("Hello, world! 你好，世界！")
     for char in my_string:
         print(char, end="")
-# Output: Hello, world! 你好，世界！
+```
+
+```output mojo
+Hello, world! 你好，世界！
 ```
 
 Indexing and slicing also work, but Mojo makes you say which unit you are
@@ -225,7 +235,7 @@ def main():
 
 Since Mojo v1.0.0, a bare list literal gives you an `Array`, which lives on the
 stack and cannot grow. To get a `List`, annotate the variable. See Section
-[List or Array?](../basic/composite#list-or-array) for the difference.
+[Arrays](../basic/composite#arrays) for the difference.
 
 We will discuss the list type in more detail in Chapter
 [Composite data types](../basic/composite#lists). Chapter

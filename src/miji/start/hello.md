@@ -55,7 +55,7 @@ pixi run mojo src/start/hello.mojo
 And you will see the output:
 
 ```console
-Hello, World!
+Hello, world!
 ```
 
 Congratulations! You have successfully run your first Mojo program. 🎉

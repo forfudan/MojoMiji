@@ -40,10 +40,7 @@ def main():
 main()
 ```
 
-Then we run the code with `python src/move/multiplication_table.py`. The output
-is:
-
-```console
+```output python
 Nine-nine Multiplication Table
 1 * 1 = 1       1 * 2 = 2       1 * 3 = 3       1 * 4 = 4       1 * 5 = 5       1 * 6 = 6       1 * 7 = 7       1 * 8 = 8       1 * 9 = 9
 2 * 2 = 4       2 * 3 = 6       2 * 4 = 8       2 * 5 = 10      2 * 6 = 12      2 * 7 = 14      2 * 8 = 16      2 * 9 = 18
@@ -55,6 +52,8 @@ Nine-nine Multiplication Table
 8 * 8 = 64      8 * 9 = 72
 9 * 9 = 81
 ```
+
+On your own machine, run it with `python src/move/multiplication_table.py`.
 
 ---
 
@@ -169,12 +168,11 @@ def main():
 main()
 ```
 
-Let's run the code with the command `python src/move/fibonacci.py`. The output
-is:
-
-```console
+```output python
 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181, 6765, 10946, 17711, 28657, 46368, 75025, 121393, 196418, 317811, 514229, 832040, 1346269, 2178309, 3524578, 5702887, 9227465, 14930352, 24157817, 39088169, 63245986,
 ```
+
+On your own machine, run it with `python src/move/fibonacci.py`.
 
 On my machine (Apple M4 Pro), it takes about ***24 seconds*** to run the code.
 This is because the recursive method is very inefficient. The time complexity is
@@ -521,12 +519,12 @@ def main():
 main()
 ```
 
-Then we run the code with `python src/move/sort.py`. The output is:
-
-```console
+```output python
 Input array: [64.1, 34.523, 25.1, -12.3, 22.0, -11.5, 90.49]
 After sorting: [-12.3, -11.5, 22.0, 25.1, 34.523, 64.1, 90.49]
 ```
+
+On your own machine, run it with `python src/move/sort.py`.
 
 We can visually verify that the array is correctly sorted in ascending order.
 
@@ -608,7 +606,7 @@ def main():
 ```
 
 We will come back to the difference between `Array` and `List` in Chapter
-[Composite data types](../basic/composite#list-or-array).
+[Composite data types](../basic/composite#arrays).
 
 After all changes, we have our final Mojo code as follows:
 
@@ -632,6 +630,11 @@ def main():
     print("After sorting:", array)
 ```
 
+```output mojo
+Input array: [64.1, 34.523, 25.1, -12.3, 22.0, -11.5, 90.49]
+After sorting: [-12.3, -11.5, 22.0, 25.1, 34.523, 64.1, 90.49]
+```
+
 ```python
 # src/move/sort.py
 def bubble_sort(array):
@@ -652,15 +655,15 @@ def main():
 main()
 ```
 
-:::
-
-Running the code with `pixi run mojo src/move/sort.mojo` gives you exactly the
-same output as Python, down to the last bracket:
-
-```console
+```output python
 Input array: [64.1, 34.523, 25.1, -12.3, 22.0, -11.5, 90.49]
 After sorting: [-12.3, -11.5, 22.0, 25.1, 34.523, 64.1, 90.49]
 ```
+
+:::
+
+Running the code with `pixi run mojo src/move/sort.mojo` gives you exactly the
+same output as Python, down to the last bracket.
 
 ::: details Printing a list used to need a helper function
 
@@ -829,9 +832,7 @@ def main():
 main()
 ```
 
-Now we run the code with `python src/move/triangle.py`. The output is:
-
-```console
+```output python
 Creating a valid triangle with sides 3, 4, and 5:
 Triangle(a=3, b=4, c=5)
 Area: 6.0
@@ -840,6 +841,8 @@ Perimeter: 12
 Creating an invalid triangle with sides 1, 2, and 3:
 Error: The lengths of sides do not form a valid triangle.
 ```
+
+On your own machine, run it with `python src/move/triangle.py`.
 
 It is as expected. The first triangle is a valid triangle with sides 3, 4, and
 5. The area is 6.0 and the perimeter is 12. The second triangle is not a valid
@@ -1238,6 +1241,16 @@ def main() raises:
         print("Error:", e)
 ```
 
+```output mojo
+Creating a valid triangle with sides 3, 4, and 5:
+Triangle(a=3.0, b=4.0, c=5.0)
+Area: 6.000000000120229
+Perimeter: 12.0
+
+Creating an invalid triangle with sides 1, 2, and 3:
+Error: The lengths of sides do not form a valid triangle.
+```
+
 ```python
 # src/move/triangle.py
 class Triangle:
@@ -1319,20 +1332,20 @@ def main():
 main()
 ```
 
-:::
-
-Compiling and running the code with `pixi run mojo src/move/triangle.mojo`
-generates no error messages and gives the expected output:
-
-```console
+```output python
 Creating a valid triangle with sides 3, 4, and 5:
-Triangle(a=3.0, b=4.0, c=5.0)
-Area: 6.000000000120229
-Perimeter: 12.0
+Triangle(a=3, b=4, c=5)
+Area: 6.0
+Perimeter: 12
 
 Creating an invalid triangle with sides 1, 2, and 3:
 Error: The lengths of sides do not form a valid triangle.
 ```
+
+:::
+
+Compiling and running the code with `pixi run mojo src/move/triangle.mojo`
+generates no error messages.
 
 This example is more complex than the previous ones, you may need some more time
 and effort to understand and adapt to the differences between Python and Mojo.

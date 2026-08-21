@@ -907,10 +907,11 @@ you:
   are now compile errors. They used to loop forever, because there is no
   sensible step to take. If you want to walk over floating-point values, use the
   three-argument form and say what the step is: `range(0.5, 3.0, 0.5)`.
-- Floating-point iteration no longer drifts. A step such as `0.1`, which cannot
-  be represented exactly, used to accumulate a small error and could yield one
-  extra element going forwards that `reversed()` then dropped. Forwards and
-  backwards now give the same sequence.
+- Floating-point iteration no longer drifts. A step such as `0.1` cannot be
+  stored exactly. The old implementation added this inexact step again and
+  again, so the error accumulated. The forward loop could then give you one
+  element more than the backward loop with `reversed()`. Now both directions
+  give the same sequence.
 - `reversed()` now works on typed ranges, so `reversed(range(Int16(1), 10, 2))`
   is fine.
 

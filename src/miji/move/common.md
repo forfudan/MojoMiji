@@ -278,7 +278,10 @@ def main():
         if i == 8:
             break
         print(i, end=" ")
-# Output: 1 2 4 5 6 7
+```
+
+```output mojo
+1 2 4 5 6 7
 ```
 
 The `for`-`else` and `while`-`else` statements are also valid in Mojo. The
@@ -291,7 +294,10 @@ def main():
         print(i, end=" ")
     else:
         print("Loop terminated normally")
-# Output: 0 1 2 3 4 Loop terminated normally
+```
+
+```output mojo
+0 1 2 3 4 Loop terminated normally
 ```
 
 #### Exception handling
@@ -400,9 +406,7 @@ def main():
 main()
 ```
 
-This prints:
-
-```console
+```output python
 Hello, world! I am Yuhao Zhu and I am 33 years old.
 ```
 
