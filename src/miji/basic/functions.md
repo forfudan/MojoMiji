@@ -731,15 +731,13 @@ def main() raises:
     )
 ```
 
-:::
-
-When you run the code, you will see the following output:
-
-```console
+```output mojo
 Before change:    variable `x` is of the value 5 and the address 0x16b6a8fb0
 In function call: argument `a` is of the value 10 and the address 0x16b6a8fb0
 Before change:    variable `x` is of the value 10 and the address 0x16b6a8fb0
 ```
+
+:::
 
 Let's use a diagram to illustrate what happens in the memory when you run the
 code.
@@ -923,17 +921,15 @@ def main() raises:
     )
 ```
 
-:::
-
-When you run the code, you will see the following output:
-
-```console
+```output mojo
 Before function call: variable `x` is of the value 5 and the address 0x16bb384f7
 Within function call: argument `a` is of the value 5 and the address 0x16bb38510
 Within function call: change value of a to 10 with `a = 10`
 Within function call: argument `a` is of the value 10 and the address 0x16bb38510
 After function call: variable `x` is of the value 5 and the address 0x16bb384f7
 ```
+
+:::
 
 You will see that:
 
@@ -1220,6 +1216,12 @@ def main():
     print(apply_twice(lambda (x: Int) -> Int: x + 1, 40))
 ```
 
+```output mojo
+42
+12
+42
+```
+
 ```python
 # src/basic/functions/lambda_expression.py
 def apply_twice(f, x: int) -> int:
@@ -1235,15 +1237,13 @@ def main():
 main()
 ```
 
-:::
-
-Running it gives:
-
-```console
+```output python
 42
 12
 42
 ```
+
+:::
 
 The function `apply_twice` takes in two arguments, the first one being a
 function and the second one being an integer. Note that, different from Python,

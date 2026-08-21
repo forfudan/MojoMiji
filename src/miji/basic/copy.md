@@ -1,15 +1,9 @@
-<!-- 
-
-This chapter needs to be updated.
-
-Note that the compiler no longer auto-rewrites repeated use of a variable into a copy followed by a move; you must call `.copy()` explicitly when both the source and the new variable need to remain valid.
-
-The `__copyinit__` and `__moveinit__` methods are deprecated.
- -->
-
 # Copy and move
 
-We have briefly touched the topic of value assignment between variables in Chapter [Variables](./variables). In this chapter, we will take a deeper look into how values are transferred between variables in Mojo. More advanced topics such as ownership and borrowing will be covered in later chapters.
+We have briefly touched the topic of value assignment between variables in
+Chapter [Variables](./variables). In this chapter, we will take a deeper look
+into how values are transferred between variables in Mojo. More advanced topics
+such as ownership and borrowing will be covered in later chapters.
 
 This chapter focuses on the following topics:
 
@@ -20,17 +14,26 @@ This chapter focuses on the following topics:
 
 ## Explicitly copy values
 
-In Mojo, you can explicitly copy the value of a variable to another variable using the `copy()` method. This applies to all types, including primitive types, composite types, and user-defined types. The syntax is as follows:
+In Mojo, you can explicitly copy the value of a variable to another variable
+using the `copy()` method. This applies to all types, including primitive types,
+composite types, and user-defined types. The syntax is as follows:
 
 ```mojo
 var b = a.copy()
 ```
 
-The `copy()` method in Mojo creates a new object in memory with the same value as the original object. This means that after copying, the two variables will refer to different memory locations (different objects), and changing one will not affect the other.
+The `copy()` method in Mojo creates a new object in memory with the same value
+as the original object. This means that after copying, the two variables will
+refer to different memory locations (different objects), and changing one will
+not affect the other.
 
-Mojo's `copy()` method is similar to Python's `copy.deepcopy()` function, `copy.copy()` function, or the `copy()` method for **composite** types. For primitive types like integers, floats, and booleans, Python does not necessarily create a new object.
+Mojo's `copy()` method is similar to Python's `copy.deepcopy()` function,
+`copy.copy()` function, or the `copy()` method for **composite** types. For
+primitive types like integers, floats, and booleans, Python does not necessarily
+create a new object.
 
-The following table summarizes the differences between Mojo's `copy()` method and Python's copying methods:
+The following table summarizes the differences between Mojo's `copy()` method
+and Python's copying methods:
 
 | Item                   | Mojo            | Python                                       |
 | ---------------------- | --------------- | -------------------------------------------- |
@@ -41,18 +44,24 @@ The following table summarizes the differences between Mojo's `copy()` method an
 
 ::: tip Copy behavior
 
-The copy behavior is defined in the `__copyinit__` method of the type, if it exists, or Mojo will provide a default implementation of copy for you.
+The copy behavior is defined in the **copy constructor** of the type, written
+`__init__(*, copy: Self)`, if it exists. Otherwise, Mojo will provide a default
+implementation of copy for you. Note that the argument name must be `copy` so as
+to be a legal copy constructor.
 
-The `copy()` method performs a deep copy for composite types (e.g., lists, structs). This means that the values on the heap, instead of pointers, will be recursively copied to the new object.
+The `copy()` method performs a deep copy for composite types (e.g., lists,
+structs). This means that the values on the heap, instead of pointers, will be
+recursively copied to the new object.
 
 :::
 
-The following code illustrates how to explicitly copy values between variables in Mojo and Python. Pay attention to the differences in syntax and behavior.
+The following code illustrates how to explicitly copy values between variables
+in Mojo and Python. Pay attention to the differences in syntax and behavior.
 
 ::: code-group
 
 ```mojo
-# src/basic/variables/explicit_copy_between_variables.mojo
+# src/basic/copy/explicit_copy_between_variables.mojo
 def main():
     var a = 1
     var b = a.copy()  # Explicitly copy the value of `a` into a new variable `b`
@@ -89,8 +98,20 @@ def main():
     )
 ```
 
+```output mojo
+a = 1
+b = 1
+a and b has the same address: False
+str1 = Hello
+str2 = Hello
+str1 and str2 has the same address: False
+lst1 = 1, 2, 3, 
+lst2 = 1, 2, 3, 
+lst1 and lst2 has the same address: False
+```
+
 ```python
-# src/basic/variables/explicit_copy_between_variables.py
+# src/basic/copy/explicit_copy_between_variables.py
 import copy
 
 
@@ -125,23 +146,22 @@ def main():
 main()
 ```
 
-:::
-
-This code will produce the following output for Mojo.
-
-```console
+```output python
 a = 1
 b = 1
-a and b has the same address: False
+a and b are the same object: True
 str1 = Hello
 str2 = Hello
-str1 and str2 has the same address: False
-lst1 = 1, 2, 3, 
-lst2 = 1, 2, 3, 
-lst1 and lst2 has the same address: False
+str1 and str2 are the same object: True
+lst1 = [1, 2, 3]
+lst2 = [1, 2, 3]
+lst1 and lst2 are the same object: False
 ```
 
-Note that Mojo always creates a new object in memory when using the `copy()` method, regardless of the type of the variable.
+:::
+
+Note that Mojo always creates a new object in memory when using the `copy()`
+method, regardless of the type of the variable.
 
 For Python, the output will be:
 
@@ -157,30 +177,54 @@ lst2 = [1, 2, 3]
 lst1 and lst2 are the same object: False
 ```
 
-Note that Python does not necessarily create a new object for primitive types like integers and strings. This is because Python caches small integers and short strings for performance reasons. However, for composite types like lists, Python always creates a new object when using the `copy()` method.
+Note that Python does not necessarily create a new object for primitive types
+like integers and strings. This is because Python caches small integers and
+short strings for performance reasons. However, for composite types like lists,
+Python always creates a new object when using the `copy()` method.
 
 ::: tip Before Mojo v0.25.6
 
-Before Mojo v0.25.6 (2025-09-22), the assignment operator `=` always performed a copy operation, regardless of the type of the variable. This means that `b = a` was equivalent to `b = a.copy()` and we do not need to call the `copy()` method for explicit copy.
+Before Mojo v0.25.6 (2025-09-22), the assignment operator `=` always performed a
+copy operation, regardless of the type of the variable. This means that `b = a`
+was equivalent to `b = a.copy()` and we do not need to call the `copy()` method
+for explicit copy.
 
-However, this behavior has been changed from Mojo v0.25.6 where explicit copy and implicit copy are distinguished. Now, you have to use the `copy()` method for explicit copy, and the assignment operator `=` only performs implicit copy for types that are "cheap" to copy. We will discuss implicit copy in the next section.
+However, this behavior has been changed from Mojo v0.25.6 where explicit copy
+and implicit copy are distinguished. Now, you have to use the `copy()` method
+for explicit copy, and the assignment operator `=` only performs implicit copy
+for types that are "cheap" to copy. We will discuss implicit copy in the next
+section.
 
 :::
 
 ## Implicitly copy values
 
-On the one hand, it would be tedious if you have to use the `copy()` method every time you want to copy a value between variables. On the other hand, if "copy" can always done implicitly, you may unknowingly create multiple copies of the same data, and this leads to performance issues, especially when dealing with large data structures. We need a balance between convenience and performance.
+On the one hand, it would be tedious if you have to use the `copy()` method
+every time you want to copy a value between variables. On the other hand, if
+"copy" can always done implicitly, you may unknowingly create multiple copies of
+the same data, and this leads to performance issues, especially when dealing
+with large data structures. We need a balance between convenience and
+performance.
 
-Mojo achieves this balance by providing a shortcut, an implicit copy mechanism, for types that "cheap" to copy. These types include primitive types (e.g., `Int`, `Float64`, `Bool`), SIMD types (e.g., `SIMD4[Int]`, `SIMD8[Float32]`), and some composite types (e.g., small structs). They are usually small in size and are stored on the stack. Copying these types does not involve heap allocation or deep copying, so it is efficient and does not lead to significant performance overhead.
+Mojo achieves this balance by providing a shortcut, an implicit copy mechanism,
+for types that "cheap" to copy. These types include primitive types (e.g.,
+`Int`, `Float64`, `Bool`), SIMD types (e.g., `SIMD4[Int]`, `SIMD8[Float32]`),
+and some composite types (e.g., small structs). They are usually small in size
+and are stored on the stack. Copying these types does not involve heap
+allocation or deep copying, so it is efficient and does not lead to significant
+performance overhead.
 
-To perform an implicit copy, you can simply assign the value of one variable to another with the assignment operator `=`, without calling the `copy()` method explicitly. For example:
+To perform an implicit copy, you can simply assign the value of one variable to
+another with the assignment operator `=`, without calling the `copy()` method
+explicitly. For example:
 
 ```mojo
 var b = a  # Implicitly copy the value of `a` into a new variable `b`
-# This is equivalent to `var b = a.copy()`
+# By default, this is the same as `var b = a.copy()`
 ```
 
-The following table summarizes the differences between Mojo and Python when it comes to the syntax `b = a`:
+The following table summarizes the differences between Mojo and Python when it
+comes to the syntax `b = a`:
 
 | Item                | Mojo                                   | Python                                             |
 | ------------------- | -------------------------------------- | -------------------------------------------------- |
@@ -191,18 +235,23 @@ The following table summarizes the differences between Mojo and Python when it c
 
 ::: tip `ImplicitlyCopyable` trait
 
-Whether a type is implicitly copyable is determined by the `ImplicitlyCopyable` trait. If a struct conforms to this trait, it means that the type is cheap to copy and can be copied implicitly. For your own user-defined types, you can make them implicitly copyable by implementing the `ImplicitlyCopyable` trait. We will discuss traits in Chapter [Generic and traits](../advanced/generic).
+Whether a type is implicitly copyable is determined by the `ImplicitlyCopyable`
+trait. If a struct conforms to this trait, it means that the type is cheap to
+copy and can be copied implicitly. For your own user-defined types, you can make
+them implicitly copyable by implementing the `ImplicitlyCopyable` trait. We will
+discuss traits in Chapter [Generic and traits](../advanced/generic).
 
 :::
 
-The following code illustrates how to implicitly copy values between variables in Mojo.
+The following code illustrates how to implicitly copy values between variables
+in Mojo.
 
 ```mojo
-# src/basic/variables/implicit_copy_between_variables.mojo
+# src/basic/copy/implicit_copy_between_variables.mojo
 def main():
     var a = 1
     var b = a  # Implicitly copy the value of `a` into a new variable `b`
-    # This is equivalent to `var b = a.copy()`
+    # By default, this is the same as `var b = a.copy()`
     print("a =", a)
     print("b =", b)
     print(
@@ -214,7 +263,7 @@ def main():
     var str2 = (
         str1  # Implicitly copy the value of `str1` into a new variable `str2`
     )
-    # This is equivalent to `var str2 = str1.copy()`
+    # By default, this is the same as `var str2 = str1.copy()`
     print("str1 =", str1)
     print("str2 =", str2)
     print(
@@ -224,7 +273,7 @@ def main():
 
     var bool1: Bool = True
     var bool2 = bool1  # Implicitly copy the value of `bool1` into a new variable `bool2`
-    # This is equivalent to `var bool2 = bool1.copy()`
+    # By default, this is the same as `var bool2 = bool1.copy()`
     print("bool1 =", bool1)
     print("bool2 =", bool2)
     print(
@@ -233,9 +282,7 @@ def main():
     )
 ```
 
-The code will produce the following output:
-
-```console
+```output mojo
 a = 1
 b = 1
 a and b has the same address: False
@@ -247,11 +294,14 @@ bool2 = True
 bool1 and bool2 has the same address: False
 ```
 
-For composite types like lists, dictionaries, or user-defined structs that are not implicitly copyable, you cannot use the assignment operator `=` to implicitly copy their values. Instead, you have to use the `copy()` method explicitly. For example, the following code will produce a compilation error:
+For composite types like lists, dictionaries, or user-defined structs that are
+not implicitly copyable, you cannot use the assignment operator `=` to
+implicitly copy their values. Instead, you have to use the `copy()` method
+explicitly. For example, the following code will produce a compilation error:
 
 ```mojo
-# src/basic/variables/implicit_copy_between_variables_errors.mojo
-# This will not compile from Mojo v0.25.6
+# src/basic/copy/implicit_copy_between_variables_errors.mojo
+# This does not compile since Mojo v1.0.0
 def main():
     var lst1: List[Int] = [1, 2, 3]
     var lst2 = lst1
@@ -266,22 +316,188 @@ def main():
 This code will produce the following compilation error:
 
 ```console
-warning: 'List' is no longer implicitly copyable, because it is O(n) expensive; this warning will be an error in the next release of Mojo
+error: value of type 'List[Int]' cannot be implicitly copied, it does not conform to 'ImplicitlyCopyable'
     var lst2 = lst1
                ^~~~
+note: consider transferring the value with '^'
+note: you can copy it explicitly with '.copy()'
 ```
+
+## Copy constructor and the `copy()` method
+
+In the previous two sections, we see that `var b = a` and `var b = a.copy()`
+always give the same result. You may then think that they are two ways to write
+the same thing. This is not true. They call two different functions of a type:
+
+- `var b = a` calls the **copy constructor** of the type, which is written as
+  `__init__(out self, *, copy: Self)`.
+- `var b = a.copy()` calls the **`copy()` method** of the type, which is
+  written as `copy(self) -> Self`.
+
+If you do not write these two functions yourself, Mojo will create them for
+you. The copy constructor copies the value of each field of the object, one by
+one. The `copy()` method simply calls the copy constructor. This is why the two
+ways always give the same result for the built-in types. It is also why a copy
+of a built-in type is always a deep copy: each field is copied in the same way,
+and this repeats for the fields of the fields, until every value on the heap
+has been copied.
+
+You can also write these two functions yourself. If you do so, you have to make
+sure that they behave in the same way. Mojo does not check this for you. The
+following code shows what happens when they do not match.
+
+```mojo
+# src/basic/copy/copy_constructor_and_copy_method.mojo
+struct Money(ImplicitlyCopyable, Movable):
+    var amount: Int
+
+    def __init__(out self, amount: Int):
+        self.amount = amount
+
+    # This is the copy constructor. `var b = a` calls this function.
+    def __init__(out self, *, copy: Self):
+        print("The copy constructor is called.")
+        self.amount = copy.amount
+
+    # This is the `copy()` method. `var c = a.copy()` calls this function.
+    # We make it different on purpose: it adds 1 to the amount.
+    def copy(self) -> Self:
+        print("The copy() method is called.")
+        return Self(self.amount + 1)
+
+
+def main():
+    var a = Money(100)
+    var b = a
+    var c = a.copy()
+    print("a =", a.amount)
+    print("b =", b.amount)
+    print("c =", c.amount)
+```
+
+```output mojo
+The copy constructor is called.
+The copy() method is called.
+a = 100
+b = 100
+c = 101
+```
+
+The copy constructor copies the amount as it is, but the `copy()` method adds 1
+to the amount. Thus, `b` is 100 while `c` is 101. The compiler does not give
+you any warning. Such a bug is difficult to find.
+
+Of course, this "bug" can also be a feature, if you intend to have different
+behaviors for them.
+
+Which function Mojo actually calls follows a fallback chain. The table below
+summarizes it:
+
+| Syntax             | Mojo first looks for                    | If not defined, fall back to                           | If still not defined                         |
+| ------------------ | --------------------------------------- | ------------------------------------------------------ | -------------------------------------------- |
+| `var b = a`        | `def __init__(out self, *, copy: Self)` | Auto field-by-field deep copy, if `ImplicitlyCopyable` | Compilation error                            |
+| `var b = a.copy()` | `def copy(self) -> Self`                | `def __init__(out self, *, copy: Self)`                | Auto field-by-field deep copy, if `Copyable` |
+
+Note that `var b = a` always requires the type to conform to the
+`ImplicitlyCopyable` trait. If a type is only `Copyable`, then `var b = a` does
+not compile, even if you write the copy constructor yourself. On the other
+hand, `var b = a.copy()` works whenever the `copy()` method exists, no matter
+which trait the type conforms to.
+
+::: details Can I make `var b = a` shallow and `var b = a.copy()` deep?
+
+Yes, you can. In Python, `b = a` binds a new name to the same object, while
+`copy.deepcopy(a)` creates a new object. You can build the same behavior in
+Mojo, but you have to put the data behind an `ArcPointer`.
+
+An `ArcPointer` is a pointer that counts how many variables are using the value
+it points to. When you copy an `ArcPointer`, this count increases by one, and
+no new value is created on the heap. When the last user is destroyed, the value
+is freed. This is why several variables can share the same list safely.
+
+```mojo
+# src/basic/copy/shallow_copy_and_deep_copy.mojo
+from std.memory import ArcPointer
+
+
+struct Buffer(ImplicitlyCopyable, Movable):
+    var data: ArcPointer[List[Int]]
+
+    def __init__(out self, var values: List[Int]):
+        self.data = ArcPointer(values^)
+
+    # Only this function is written by hand. It creates a new list.
+    def copy(self) -> Self:
+        return Self(self.data[].copy())
+
+
+def main():
+    var a = Buffer([1, 2, 3])
+    var b = a  # Shallow copy: `b` shares the list with `a`
+    var c = a.copy()  # Deep copy: `c` has its own list
+
+    b.data[][0] = 999
+    print("a[0] =", a.data[][0])
+    print("b[0] =", b.data[][0])
+    print("c[0] =", c.data[][0])
+```
+
+```output mojo
+a[0] = 999
+b[0] = 999
+c[0] = 1
+```
+
+`a` and `b` share the same list, so changing `b` also changes `a`. `c` has its
+own list, so changing `c` does not affect the other two.
+
+Note that only the `copy()` method is written by hand. The copy constructor is
+still created by Mojo, and it copies the `ArcPointer` field as it is. That is
+already the shallow copy we want.
+
+You have to use an `ArcPointer` here instead of a raw pointer. With a raw
+pointer, both `a` and `b` would free the same list when they are destroyed, and
+your program would crash.
+
+Finally, keep in mind that such a type behaves differently from all built-in
+types of Mojo, where `var b = a` and `var b = a.copy()` always give the same
+result. If you design your type in this way, write it down in the
+documentation of your type, so that users of your type are not surprised.
+
+:::
+
+::: tip Write the copy constructor only
+
+For your own types, the safest way is to write the copy constructor only, and
+let Mojo create the `copy()` method for you. In this way, `var b = a` and
+`var b = a.copy()` are always consistent.
+
+:::
 
 ## Move values
 
-As a Python user, you may be unfamiliar with the concept of "move" in programming. In Mojo, "move" means transferring the object (its value, type, and memory location) of a variable to another variable. After the move, the original variable becomes uninitialized and cannot be used anymore. This is different from copying, where both variables remain valid and independent of each other.
+As a Python user, you may be unfamiliar with the concept of "move" in
+programming. In Mojo, "move" means transferring the object (its value, type, and
+memory location) of a variable to another variable. After the move, the original
+variable becomes uninitialized and cannot be used anymore. This is different
+from copying, where both variables remain valid and independent of each other.
 
-Just like **implicit copy** only works on types that are "cheap" to copy, **move** operations in Mojo only work on types that are "expensive" to copy. These types include composite types (e.g., lists, dictionaries, structs) and certain user-defined types. They are usually large in size and are stored on the heap. Moving these types avoids the overhead of copying large amounts of data.
+Just like **implicit copy** only works on types that are "cheap" to copy,
+**move** operations in Mojo only work on types that are "expensive" to copy.
+These types include composite types (e.g., lists, dictionaries, structs) and
+certain user-defined types. They are usually large in size and are stored on the
+heap. Moving these types avoids the overhead of copying large amounts of data.
 
-After a move operation, the new variable name is referring to the same memory location as the original variable, no new memory allocation or copying of values is needed. This makes move operations very efficient, especially for large data structures.
+After a move operation, the new variable name is referring to the same memory
+location as the original variable, no new memory allocation or copying of values
+is needed. This makes move operations very efficient, especially for large data
+structures.
 
-Based on the effect of the move operation, at this stage, you can very well think that "move" is a way to **rename the object**.
+Based on the effect of the move operation, at this stage, you can very well
+think that "move" is a way to **rename the object**.
 
-To perform a move operation in Mojo, you can use the transfer operator `^` after the variable name. The syntax is as follows:
+To perform a move operation in Mojo, you can use the transfer operator `^` after
+the variable name. The syntax is as follows:
 
 ```mojo
 var b = a^  # Move the value of `a` into a new variable `b`
@@ -299,14 +515,52 @@ The following table summarizes the syntax `b = a^`:
 
 ::: tip Move behavior
 
-The move behavior is defined in the `__moveinit__` method of the type. If a struct does not have a `__moveinit__` method, `^` will not move the value but instead perform a copy.
+The move behavior is defined in the **move constructor** of the type, written
+`__init__(*, deinit move: Self)`. If a struct does not have one, `^` will not
+move the value but instead perform a copy. Note that the argument name must be
+`move` so as to be a legal move constructor.
+
+Since **Mojo v1.0.0**, every struct you write is `Movable` by default, so you
+rarely have to think about this. If you want a type that must *not* be moved,
+say so with `Movable where False` in its definition.
+
+:::
+
+::: warning The compiler no longer rewrites a copy for you
+
+There used to be a convenience here that has been taken away, and it is worth
+knowing about because it silently changes what old code does.
+
+If you moved a value with `^` and then used the original variable again, the
+compiler used to notice, and quietly rewrite the move into a copy followed by a
+move, so that both variables stayed valid. Since **Mojo v1.0.0**, it does not.
+Using a variable after you moved out of it is now simply an error. Try to run
+the following code:
+
+```mojo
+def main():
+    var a = [1,2,3]
+    var b = a^   # `a` is still yours afterwards
+    print(a)
+```
+
+The fix is to say what you meant. If you want both variables to stay alive,
+copy:
+
+```mojo
+def main():
+    var a = [1,2,3]
+    var b = a.copy()   # `a` is still yours afterwards
+    var c = a^         # `a` is gone from here on
+    print(b, c)
+```
 
 :::
 
 Let's see some examples of moving values between variables in Mojo.
 
 ```mojo
-# src/basic/variables/move_between_variables.mojo
+# src/basic/copy/move_between_variables.mojo
 def main():
     var lst1: List[Int] = [1, 2, 3]
     var lst2 = lst1^
@@ -321,14 +575,13 @@ def main():
     print("str2 =", str2)
 ```
 
-This code will produce the following output as expected:
-
-```console
+```output mojo
 lst2 = 1, 2, 3, 
 str2 = Hello
 ```
 
-However, if you try to access the original variable `lst1` after the move operation, you will get a compilation error:
+However, if you try to access the original variable `lst1` after the move
+operation, you will get a compilation error:
 
 ```mojo
     for i in lst1:
@@ -343,10 +596,13 @@ error: use of uninitialized value 'lst1'
 
 ---
 
-If you try to move a variable of a type that is not movable, Mojo will perform a copy instead, but it will also display a warning message to inform you that the type is not movable. For example:
+If you try to move a variable of a type that is not movable, Mojo will perform a
+copy instead, but it will also display a warning message to inform you that the
+type is not movable. For example:
 
 ```mojo
-# src/basic/variables/move_between_variables_errors.mojo
+# src/basic/copy/move_between_variables_errors.mojo
+# This code will compile but with warnings
 def main():
     var a = 1
     var b = a^  # Move the value of `a` into a new variable `b`
@@ -372,39 +628,61 @@ a and b has the same address: False
 
 ## Types and their behaviors
 
-Based on what we have learnt in the previous sections, a quick conclusion may immediately come to your mind: If a type is not implicitly copyable, then you must either explicitly copy it using the `copy()` method or move it using the move operator `^`. This is indeed the case. Let's summarize the behaviors of different types in Mojo when it comes to value assignment between variables.
+Based on what we have learnt in the previous sections, a quick conclusion may
+immediately come to your mind: If a type is not implicitly copyable, then you
+must either explicitly copy it using the `copy()` method or move it using the
+move operator `^`. This is indeed the case. Let's summarize the behaviors of
+different types in Mojo when it comes to value assignment between variables.
 
-| Type    | `b = a`           | `b = a.copy()` | `b = a^`         |
-| ------- | ----------------- | -------------- | ---------------- |
-| Int     | ✅ (Implicit) copy | ✅ Copy         | ⚠️ Copy (warning) |
-| Float64 | ✅ (Implicit) copy | ✅ Copy         | ⚠️ Copy (warning) |
-| Bool    | ✅ (Implicit) copy | ✅ Copy         | ⚠️ Copy (warning) |
-| SIMD    | ✅ (Implicit) copy | ✅ Copy         | ⚠️ Copy (warning) |
-| String  | ✅ (Implicit) copy | ✅ Copy         | ✅ Move           |
-| List    | ❌ Error           | ✅ Copy         | ✅ Move           |
-| Set     | ❌ Error           | ✅ Copy         | ✅ Move           |
-| Dict    | ❌ Error           | ✅ Copy         | ✅ Move           |
+| Type    | `b = a`            | `b = a.copy()` | `b = a^`          |
+| ------- | ------------------ | -------------- | ----------------- |
+| Int     | ✅ (Implicit) copy | ✅ Copy        | ⚠️ Copy (warning) |
+| Float64 | ✅ (Implicit) copy | ✅ Copy        | ⚠️ Copy (warning) |
+| Bool    | ✅ (Implicit) copy | ✅ Copy        | ⚠️ Copy (warning) |
+| SIMD    | ✅ (Implicit) copy | ✅ Copy        | ⚠️ Copy (warning) |
+| String  | ✅ (Implicit) copy | ✅ Copy        | ✅ Move           |
+| List    | ❌ Error           | ✅ Copy        | ✅ Move           |
+| Set     | ❌ Error           | ✅ Copy        | ✅ Move           |
+| Dict    | ❌ Error           | ✅ Copy        | ✅ Move           |
 
-`String` is somewhat special because it allows both implicit copy and move operations. This is because `String` is so common used while can both be allocated on the stack (small strings) or on the heap (large strings). Thus, it is designed to be both implicitly copyable and movable.
+Since **Mojo v1.0.0b2**, a collection no longer requires its elements to be
+copyable at all. `List`, `Dict`, `Set`, `Deque`, and `Array` ask only that the
+element type be movable. So a type of yours that models a unique resource, and
+deliberately cannot be copied, can now live in a `List`. Before, putting a value
+in a container forced that value, and everything inside it, to become copyable.
+
+`String` is somewhat special because it allows both implicit copy and move
+operations. This is because `String` is so common used while can both be
+allocated on the stack (small strings) or on the heap (large strings). Thus, it
+is designed to be both implicitly copyable and movable.
 
 ::: tip SIMD is implicitly copyable
 
-Small, stack-based data types in Mojo are always implicitly copied, including SIMD types. This can make Mojo faster than Rust in some computations (Pass-by-ref consumes more than direct copying, as detailed in this article: [Should Small Rust Structs be Passed by-copy or by-borrow?](https://www.forrestthewoods.com/blog/should-small-rust-structs-be-passed-by-copy-or-by-borrow/)).
+Small, stack-based data types in Mojo are always implicitly copied, including
+SIMD types. This can make Mojo faster than Rust in some computations
+(Pass-by-ref consumes more than direct copying, as detailed in this article:
+[Should Small Rust Structs be Passed by-copy or by-borrow?](https://www.forrestthewoods.com/blog/should-small-rust-structs-be-passed-by-copy-or-by-borrow/)).
 
-The topic of ownership will be further explained in Chapter [Ownership](../advanced/ownership#transfer-a-value).
+The topic of ownership will be further explained in Chapter
+[Ownership](../advanced/ownership#transfer-a-value).
 
 :::
 
 ## Copy or reference (Python vs Mojo)
 
-As discussed in Chapter [Variables](./variables), Python variables are **references to objects** but not directly linked with a space in the memory. When you create a variable, e.g., `a = 10.0`, Mojo actually does the following things:
+As discussed in Chapter [Variables](./variables), Python variables are
+**references to objects** but not directly linked with a space in the memory.
+When you create a variable, e.g., `a = 10.0`, Mojo actually does the following
+things:
 
-1. Create a new object in the memory with the value `10.0`, the type `Float64`, and a unique ID.
+1. Create a new object in the memory with the value `10.0`, the type `Float64`,
+   and a unique ID.
 1. Put a sticker with the name `a` onto the object.
 
 When you do `a = 20.0`, Python does the following things:
 
-1. Create a new object in the memory with the value `20.0`, the type `Float64`, and a unique ID.
+1. Create a new object in the memory with the value `20.0`, the type `Float64`,
+   and a unique ID.
 1. Remove the sticker with the name `a` from the old object.
 1. Put a sticker with the name `a` onto the new object.
 
@@ -413,9 +691,14 @@ When you do `b = a`, Python does the following things:
 1. Find the object with the name `a` in the memory.
 1. Put another sticker with the name `b` onto the same object.
 
-This means that, for simple or immutable data types, changing the value of a variable always **creates a new object**. Thus, if you change the value of `a` after `b = a`, `b` will not be affected because `b` is still pointing to the old object.
+This means that, for simple or immutable data types, changing the value of a
+variable always **creates a new object**. Thus, if you change the value of `a`
+after `b = a`, `b` will not be affected because `b` is still pointing to the old
+object.
 
-However, for some complex data types like lists, dictionaries, or custom classes, if you try to change the element, this can lead to some unexpected behaviors. For example,
+However, for some complex data types like lists, dictionaries, or custom
+classes, if you try to change the element, this can lead to some unexpected
+behaviors. For example,
 
 ```python
 # src/basic/copy/copy_values_or_references.py
@@ -432,9 +715,7 @@ def main():
 main()
 ```
 
-The code will produce the following output:
-
-```console
+```output python
 lst1 = [1, 2, 3]
 lst2 = [1, 2, 3]
 Changing lst1[0] to -1
@@ -442,26 +723,47 @@ lst1 = [-1, 2, 3]
 lst2 = [-1, 2, 3]
 ```
 
-We see that when we change the first element of `lst1`, `lst2` is also changed. This is because both `lst1` and `lst2` are referring to the same list object in the memory. Let's see what Python does when you run the code above:
+We see that when we change the first element of `lst1`, `lst2` is also changed.
+This is because both `lst1` and `lst2` are referring to the same list object in
+the memory. Let's see what Python does when you run the code above:
 
-1. `lst1 = [1, 2, 3]`: Create a new list object in the memory with the value `[1, 2, 3]` and type `list[int]`. Put a sticker with the name `lst1` onto the object.
-1. `lst2 = lst1`: Find the object with the name `lst1` in the memory. Put another sticker with the name `lst2` onto the same object.
-1. `lst1[0] = -1`: Find the object with the name `lst1` in the memory. Modify the first element of the object to `-1`.
+1. `lst1 = [1, 2, 3]`: Create a new list object in the memory with the value
+   `[1, 2, 3]` and type `list[int]`. Put a sticker with the name `lst1` onto the
+   object.
+1. `lst2 = lst1`: Find the object with the name `lst1` in the memory. Put
+   another sticker with the name `lst2` onto the same object.
+1. `lst1[0] = -1`: Find the object with the name `lst1` in the memory. Modify
+   the first element of the object to `-1`.
 
-Note that in the third step, Python does not create a new object. Instead, it just modifies the existing object that `lst1` is referring to, since the list type is mutable. Because `lst2` is also referring to the same object, it is also affected by the change.
+Note that in the third step, Python does not create a new object. Instead, it
+just modifies the existing object that `lst1` is referring to, since the list
+type is mutable. Because `lst2` is also referring to the same object, it is also
+affected by the change.
 
-The behavior introduced above is called **reference assignment**. It has advantages and disadvantages. The advantage is that it saves memory space, as you do not need to create a new object every time you change the value of a variable. The disadvantage is that it can lead to unexpected behaviors, as shown in the example above.
+The behavior introduced above is called **reference assignment**. It has
+advantages and disadvantages. The advantage is that it saves memory space, as
+you do not need to create a new object every time you change the value of a
+variable. The disadvantage is that it can lead to unexpected behaviors, as shown
+in the example above.
 
-If you want to copy the values of the list instead of the reference, you can use the `copy()` method, e.g., `lst3 = lst1.copy()`. This will create a new list object with the same values as `lst1` and put a sticker with the name `lst3` onto the new object. Now, if you change `lst1`, `lst3` will not be affected, as they are referring to different objects in the memory.
+If you want to copy the values of the list instead of the reference, you can use
+the `copy()` method, e.g., `lst3 = lst1.copy()`. This will create a new list
+object with the same values as `lst1` and put a sticker with the name `lst3`
+onto the new object. Now, if you change `lst1`, `lst3` will not be affected, as
+they are referring to different objects in the memory.
 
 ---
 
-Mojo, on the other hand, does not have this reference assignment behavior. When you do `var lst2: List[Int] = lst1.copy()`, Mojo will do the following things:
+Mojo, on the other hand, does not have this reference assignment behavior. When
+you do `var lst2: List[Int] = lst1.copy()`, Mojo will do the following things:
 
-1. Allocate a new memory space with the type `List[Int]` at a new address, and link it with the variable name `lst2`.
+1. Allocate a new memory space with the type `List[Int]` at a new address, and
+   link it with the variable name `lst2`.
 1. Copy the values of `lst1` into the new memory space for `lst2`.
 
-This means that `lst1` and `lst2` are now referring to completely different memory spaces. If you change the value of `lst1`, `lst2` will not be affected, and vice versa. The code below illustrates this:
+This means that `lst1` and `lst2` are now referring to completely different
+memory spaces. If you change the value of `lst1`, `lst2` will not be affected,
+and vice versa. The code below illustrates this:
 
 ```mojo
 # src/basic/copy/copy_values_or_references.mojo
@@ -489,9 +791,7 @@ def main():
         print(i, end=", ")
 ```
 
-The code will produce the following output:
-
-```console
+```output mojo
 lst1 = 1, 2, 3, 
 lst2 = 1, 2, 3, 
 Changing lst1[0] to -1
@@ -499,9 +799,14 @@ lst1 = -1, 2, 3,
 lst2 = 1, 2, 3,
 ```
 
-To summarize, in Mojo, when you assign a value from one variable to another, it always copies the value, not the reference. This means that an **isolated status** is created and the two variables are independent of each other, changing one will not affect the other.
+To summarize, in Mojo, when you assign a value from one variable to another, it
+always copies the value, not the reference. This means that an
+**isolated status** is created and the two variables are independent of each
+other, changing one will not affect the other.
 
-If you still want to create a reference to an existing variable, you can use the `ref` keyword. This is similar to Python's reference assignment. For example, the following code will create a reference to the variable `lst1`.
+If you still want to create a reference to an existing variable, you can use the
+`ref` keyword. This is similar to Python's reference assignment. For example,
+the following code will create a reference to the variable `lst1`.
 
 ```mojo
 # src/basic/copy/create_reference_of_a_variable.mojo
@@ -529,9 +834,7 @@ def main():
         print(i, end=", ")
 ```
 
-The code will produce the following output:
-
-```console
+```output mojo
 lst1 = 1, 2, 3, 
 lst2 = 1, 2, 3, 
 Changing lst1[0] to -1
@@ -539,14 +842,24 @@ lst1 = -1, 2, 3,
 lst2 = -1, 2, 3,
 ```
 
-We will discuss more about "copy at assignment" in Chapter [Ownership](../advanced/ownership#four-statuses-of-ownership), and we will also see how the reference system works in Mojo in Chapter [References](../advanced/references).
+We will discuss more about "copy at assignment" in Chapter
+[Ownership](../advanced/ownership#four-statuses-of-ownership), and we will also
+see how the reference system works in Mojo in Chapter
+[References](../advanced/references).
 
 ## Copy or move value (Rust vs Mojo)
 
-If you are familiar with Rust, you may notice immediately that the behavior of variable assignment with `b = a` in Mojo is different from that in Rust, when it comes to **complex data types** like lists (vectors in Rust), dictionaries (hash maps in Rust), and user-defined structs.
+If you are familiar with Rust, you may notice immediately that the behavior of
+variable assignment with `b = a` in Mojo is different from that in Rust, when it
+comes to **complex data types** like lists (vectors in Rust), dictionaries (hash
+maps in Rust), and user-defined structs.
 
-- In Mojo, `b = a` would lead to an error message during compilation. You have to either explicitly copy the value using `b = a.copy()` or move the value using `b = a^`.
-- In Rust, however, a move operation will be performed by default, and the original variable will become unusable. As an example, the following code in Rust will not compile:
+- In Mojo, `b = a` would lead to an error message during compilation. You have
+  to either explicitly copy the value using `b = a.copy()` or move the value
+  using `b = a^`.
+- In Rust, however, a move operation will be performed by default, and the
+  original variable will become unusable. As an example, the following code in
+  Rust will not compile:
 
 ```rust
 fn main() {
@@ -568,28 +881,46 @@ It will produce the following compilation error:
   |               ^^^ value borrowed here after move
 ```
 
-The compilation error occurs because the identifier `a` transfers its ownership of the string value to the identifier `b`, making a unusable.
+The compilation error occurs because the identifier `a` transfers its ownership
+of the string value to the identifier `b`, making a unusable.
 
-The following table summarizes the differences between common data types in Rust and Mojo when it comes to value assignment `b = a`:
+The following table summarizes the differences between common data types in Rust
+and Mojo when it comes to value assignment `b = a`:
 
 | Mojo type               | Rust type    | `b = a` behavior in Mojo | `b = a` behavior in Rust |
 | ----------------------- | ------------ | ------------------------ | ------------------------ |
-| `Int`, `Int32`, `Int64` | `i32`, `i64` | 🟢 Copy                   | 🟢 Copy                   |
-| `Float32`, `Float64`    | `f32`, `f64` | 🟢 Copy                   | 🟢 Copy                   |
-| `Bool`                  | `bool`       | 🟢 Copy                   | 🟢 Copy                   |
-| `String`                | `String`     | 🟢 Copy                   | 🟡 Move                   |
-| `List[...]`             | `Vec<...>`   | 🔴 Error                  | 🟡 Move                   |
+| `Int`, `Int32`, `Int64` | `i32`, `i64` | 🟢 Copy                  | 🟢 Copy                  |
+| `Float32`, `Float64`    | `f32`, `f64` | 🟢 Copy                  | 🟢 Copy                  |
+| `Bool`                  | `bool`       | 🟢 Copy                  | 🟢 Copy                  |
+| `String`                | `String`     | 🟢 Copy                  | 🟡 Move                  |
+| `List[...]`             | `Vec<...>`   | 🔴 Error                 | 🟡 Move                  |
 
 ::: info Is explicit copy and move better?
 
-In Rust, when it comes to `b = a`, whether a copy or move is performed depends on whether the type implements the `Copy` trait. It may be confusing to know whether a copy or move operation is performed, especially for beginners. This would cause extra mental burden during programming.
+In Rust, when it comes to `b = a`, whether a copy or move is performed depends
+on whether the type implements the `Copy` trait. It may be confusing to know
+whether a copy or move operation is performed, especially for beginners. This
+would cause extra mental burden during programming.
 
-Compared to Rust, the copy and move operations in Mojo are more explicit. If `b = a` is always a copy if it is allowed. Otherwise, you have to explicitly choose between copy and move. This makes the behavior of variable assignment more predictable and easier to understand.
+Compared to Rust, the copy and move operations in Mojo are more explicit. If
+`b = a` is always a copy if it is allowed. Otherwise, you have to explicitly
+choose between copy and move. This makes the behavior of variable assignment
+more predictable and easier to understand.
 
-The downside of Mojo's semantic is that you have to use an extra `^` sigil every time for move operations.
+The downside of Mojo's semantic is that you have to use an extra `^` sigil every
+time for move operations.
 
 :::
 
 ## Major changes in this chapter
 
 - 2025-09-25: Add this chapter to accommodate the changes in Mojo v0.25.6.
+- 2026-08-19: Update to accommodate the changes in Mojo v1.0.0. The compiler no
+  longer rewrites a use-after-move into a copy, so `.copy()` has to be written
+  by hand. Structs are `Movable` by default, and collections no longer require
+  their elements to be copyable.
+- 2026-08-21: Add the section "Copy constructor and the `copy()` method",
+  which explains that `var b = a` and `var b = a.copy()` call two different
+  functions of a type, with a fallback-chain table and a details block on how
+  to build a shallow copy with `ArcPointer`. Update the compilation error of
+  the implicit copy of a list.

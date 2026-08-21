@@ -935,9 +935,7 @@ def main():
 main()
 ```
 
-The code will produce the following output:
-
-```console
+```output python
 a = 1
 b = 1
 id(a) = id(b): True
@@ -984,9 +982,7 @@ def main():
     )
 ```
 
-The code will produce the following output:
-
-```console
+```output mojo
 a = 1
 b = 1
 a and b has the same address: False
@@ -1091,9 +1087,7 @@ def main():
     print("a =", a, " (after the if block)")
 ```
 
-This code will work and produce the following output:
-
-```console
+```output mojo
 a = 1  (before the if block)
 a = 3.1415926  (inside the if block)
 a = 1  (after the if block)
@@ -1151,7 +1145,7 @@ def main():
     print("b=", b)
 ```
 
-```console
+```output mojo
 a= 2
 b= 1
 ```

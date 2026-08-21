@@ -235,9 +235,9 @@ def main():
     print("b * c =", Int64(b) * Int64(c))  # Type conversion to Int64
 ```
 
-The code will now compile and run successfully, producing the expected output:
+It compiles now:
 
-```console
+```output mojo
 a + b = 35
 a - c = -1222
 b * c = 28382
