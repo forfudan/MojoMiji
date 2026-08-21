@@ -43,6 +43,134 @@ export default defineConfig({
         return false
       }
 
+      // --- output written into the page --------------------------------------
+      // An `output` fence holds what the program above it printed. It is not a
+      // language, so it must not become a tab of its own: VitePress builds the
+      // tab bar from the fences in a group, and it switches tabs by position.
+      //
+      // So the fences are lifted out of the group here, before any of that
+      // happens, each one remembering which fence it was sitting under. The
+      // renderer turns that into `data-prefill="<n>"`, and the script fills the
+      // panel of block number n. Outside a group there is nothing to lift and
+      // nothing to count: an output block simply belongs to the block above it.
+      //
+      // Outside a group there is nothing to lift, and the output belongs to the
+      // code block above it. A sentence is allowed to stand in between --
+      // "Running this gives:" -- so the search walks back over paragraphs and
+      // lists, and stops at anything else. The script walks the rendered page
+      // by the same rule.
+      //
+      // The language may be named, as in ```output python. That is for whoever
+      // reads the Markdown; the position is what decides. Naming the wrong one
+      // stops the build, which is the point of allowing the name at all.
+      const langOf = (token: any): string => token.info.trim().split(/\s+/)[0]
+
+      // What an output block may look back over on its way to its own code
+      // block. Prose, in other words, and the walls of a code group.
+      const passable = new Set([
+        "paragraph_open",
+        "paragraph_close",
+        "inline",
+        "bullet_list_open",
+        "bullet_list_close",
+        "ordered_list_open",
+        "ordered_list_close",
+        "list_item_open",
+        "list_item_close",
+      ])
+
+      md.core.ruler.push("miji-output", (state) => {
+        const tokens = state.tokens
+        const where = state.env?.relativePath ?? "a Markdown file"
+
+        for (let i = 0; i < tokens.length; i++) {
+          if (tokens[i].type !== "container_code-group_open") continue
+
+          const lifted: any[] = []
+          let blocks = 0 // code fences seen so far in this group
+          let above = "" // the language of the last one
+          let j = i + 1
+
+          for (; j < tokens.length; j++) {
+            const token = tokens[j]
+            if (token.type === "container_code-group_close") break
+            if (token.type !== "fence" || token.tag !== "code") continue
+
+            if (langOf(token) !== "output") {
+              blocks++
+              above = langOf(token)
+              continue
+            }
+
+            if (blocks === 0) {
+              throw new Error(
+                `In ${where}: an \`output\` block opens a code group. ` +
+                `It has to follow the block whose output it is.`,
+              )
+            }
+            const named = token.info.trim().split(/\s+/)[1]
+            if (named && named !== above) {
+              throw new Error(
+                `In ${where}: \`output ${named}\` follows a ${above} block. ` +
+                `An output block belongs to the block right above it.`,
+              )
+            }
+
+            token.meta = { ...(token.meta ?? {}), prefill: blocks - 1 }
+            lifted.push(token)
+            tokens.splice(j, 1)
+            j-- // the next token has slid into this place
+          }
+
+          // Back into the page, in order, just after the group.
+          tokens.splice(j + 1, 0, ...lifted)
+          i = j + lifted.length
+        }
+
+        // The blocks that were never in a group. Each one has to find the code
+        // block it belongs to, and the build stops if it cannot: an output
+        // block with nothing to fill would quietly turn back into an ordinary
+        // code block, which is the kind of failure you only notice much later.
+        for (let i = 0; i < tokens.length; i++) {
+          const token = tokens[i]
+          if (token.type !== "fence" || token.tag !== "code") continue
+          if (langOf(token) !== "output") continue
+          if (token.meta?.prefill !== undefined) continue // came out of a group
+
+          let j = i - 1
+          while (j >= 0 && passable.has(tokens[j].type)) j--
+
+          // A group ends here, so the output belongs to the tab that is open,
+          // which is the first one. Two tabs with one output between them is
+          // what the numbered form above is for.
+          let owner = tokens[j]
+          if (owner?.type === "container_code-group_close") {
+            for (let k = j - 1; k >= 0; k--) {
+              if (tokens[k].type === "container_code-group_open") break
+              if (tokens[k].type === "fence" && tokens[k].tag === "code") {
+                owner = tokens[k]
+              }
+            }
+          }
+
+          if (owner?.type !== "fence" || owner.tag !== "code") {
+            throw new Error(
+              `In ${where}: an \`output\` block on line ${(token.map?.[0] ?? -1) + 1} ` +
+              `has no code block above it. An output block belongs to the ` +
+              `block it came from, with nothing but prose in between.`,
+            )
+          }
+          const named = token.info.trim().split(/\s+/)[1]
+          if (named && named !== langOf(owner)) {
+            throw new Error(
+              `In ${where}: \`output ${named}\` on line ${(token.map?.[0] ?? -1) + 1} ` +
+              `follows a ${langOf(owner)} block. An output block belongs to ` +
+              `the block above it.`,
+            )
+          }
+        }
+      })
+
       md.core.ruler.push("miji-code-group", (state) => {
         const tokens = state.tokens
         for (let i = 0; i < tokens.length; i++) {
@@ -102,6 +230,29 @@ export default defineConfig({
       md.renderer.rules.fence = (tokens, idx, opts, env, self) => {
         const token = tokens[idx]
         const words = token.info.trim().split(/\s+/)
+
+        // --- output written into the page -----------------------------------
+        // A `console` block shows what a program printed, as a second code
+        // block under the first. Write `output` instead and the script lifts
+        // it into the output panel of the block above, so that the page looks
+        // the way it does once you have pressed Run. Pressing Run really does
+        // then replace it.
+        //
+        // It stays an ordinary code block in the HTML, so it is still there
+        // if the script never runs, and still there for a search engine.
+        if (words[0] === "output") {
+          token.info = "text"
+          // The number is the block of the group above that this output came
+          // from. Without one, the output belongs to the block above it.
+          const owner = token.meta?.prefill
+          const mark =
+            owner === undefined ? "data-prefill" : `data-prefill="${owner}"`
+          return fence(tokens, idx, opts, env, self).replace(
+            /^<div class="language-/,
+            `<div ${mark} class="language-`,
+          )
+        }
+
         if (!(words[0] in RUNNABLE)) return fence(tokens, idx, opts, env, self)
 
         const runnable = isRunnable(token)

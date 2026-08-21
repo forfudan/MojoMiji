@@ -16,7 +16,8 @@
  * flags, and whether the program needs a nudge to start.
  */
 
-import { inBrowser } from "vitepress"
+import { inBrowser, useRouter } from "vitepress"
+import { nextTick, onMounted, watch } from "vue"
 
 interface Runner {
   /** The compiler on godbolt. Bump these when the Miji moves on. */
@@ -391,6 +392,97 @@ function render(panel: HTMLElement, result: MojoRunResult, seconds: string): voi
   }
 }
 
+// ---------------------------------------------------------------------------
+// Output written into the page
+// ---------------------------------------------------------------------------
+// Most examples in this Miji are followed by what they print. Rather than
+// leaving that as a second code block under the first, we lift it into the
+// output panel of the block above, so that the page already looks the way it
+// does once you have pressed Run. The button still works, and running really
+// does replace what is on show.
+//
+// A block asks for this by being written as ```output instead of ```console.
+// It may sit inside a `::: code-group`, under the tab whose output it is, in
+// which case `config.mts` lifts it out of the group and marks it with the
+// number of that tab. Everything below is the filling.
+
+/** Read a printed-output block, ignoring the copy button VitePress adds. */
+function textOf(node: HTMLElement): string {
+  const pre = node.querySelector("pre")
+  if (!pre) return ""
+  const clone = pre.cloneNode(true) as HTMLElement
+  clone.querySelectorAll(".vp-copy-ignore").forEach((n) => n.remove())
+  return (clone.textContent ?? "").replace(/\n+$/, "")
+}
+
+/**
+ * Dress the text up as a result, so that it goes through the very same
+ * rendering as a program that has just been run.
+ */
+function asResult(stdout: string): MojoRunResult {
+  return {
+    built: true,
+    ran: true,
+    exitCode: 0,
+    stdout,
+    stderr: "",
+    buildStderr: "",
+    network: null,
+    killed: false,
+  }
+}
+
+/**
+ * Move every marked output block into the panel of the code above it. Runs
+ * once per page, and again after VitePress swaps the page for another one.
+ */
+function prefill(): void {
+  const written = [...document.querySelectorAll<HTMLElement>("[data-prefill]")]
+  const groups = new Set<HTMLElement>()
+
+  for (const node of written) {
+    if (node.style.display === "none") continue // already lifted
+
+    // Walk back to the group, past the output blocks of the tabs before this
+    // one and past any sentence that introduces the output. `config.mts` walks
+    // the Markdown by the same rule and stops the build if there is no group
+    // to find. Nothing is drawn during this loop: a panel goes between the
+    // group and whatever follows it, and would break the walk for the next
+    // block.
+    const prose = new Set(["P", "UL", "OL"])
+    let group = node.previousElementSibling as HTMLElement | null
+    while (group?.hasAttribute("data-prefill") || prose.has(group?.tagName!)) {
+      group = group!.previousElementSibling as HTMLElement | null
+    }
+    if (!group?.classList.contains("vp-code-group")) continue
+
+    // The number says which tab the output came from. A block written outside
+    // the group has no number, and belongs to the tab that is open.
+    const nth = node.getAttribute("data-prefill")
+    const block = nth
+      ? (group.querySelector(".blocks")?.children[Number(nth)] as
+          | HTMLElement
+          | undefined)
+      : group.querySelector<HTMLElement>(".blocks > [data-run].active") ??
+        group.querySelector<HTMLElement>(".blocks > [data-run]") ??
+        undefined
+    // A block whose code cannot be run has no panel to fill, so the output is
+    // left standing where the author put it.
+    if (!block?.hasAttribute("data-run")) continue
+
+    shown.set(block, { result: asResult(textOf(node)), seconds: "" })
+    groups.add(group)
+    // Hidden, not deleted. The block belongs to Vue, and taking it out of the
+    // page leaves Vue holding a node with no parent, which stops it from
+    // swapping the page when the reader clicks through to the next chapter.
+    node.style.display = "none"
+  }
+
+  // A group has one panel, and it shows the tab that is open. The other tabs
+  // wait in `shown` until the reader switches to them.
+  groups.forEach(restore)
+}
+
 async function handleRun(button: HTMLElement): Promise<void> {
   const block = blockOf(button)
   if (!block) return
@@ -632,6 +724,20 @@ function onKey(
 
 export function useMojoRunner(): void {
   if (!inBrowser) return
+  const router = useRouter()
+
+  // The panels are built from the page, so they have to be rebuilt whenever
+  // VitePress puts a new page there. `nextTick` waits for it to finish.
+  //
+  // The first one waits for `onMounted`, which is later than it looks. On the
+  // first page Vue is not drawing the page, it is *hydrating* it: matching the
+  // HTML the server sent, node by node, against what it would have drawn
+  // itself. A panel inserted while that is going on puts Vue one node out of
+  // step, and it drops one node off the end of the page for every panel. Nine
+  // panels on a chapter, nine paragraphs gone from the bottom.
+  const fill = () => nextTick(() => prefill())
+  onMounted(fill)
+  watch(() => router.route.path, fill)
 
   document.addEventListener("click", (event) => {
     const target = event.target as HTMLElement | null

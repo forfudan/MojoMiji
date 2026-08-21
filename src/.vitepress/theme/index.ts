@@ -16,7 +16,11 @@ export default {
   enhanceApp({ app, router, siteData }) {
     // 图片放大
     useMediumZoomProvider(app, router)
-    // Run buttons on Mojo code blocks
+  },
+
+  // Run buttons on Mojo code blocks. This one goes in `setup()` rather than
+  // `enhanceApp()`, because it needs to wait for the page to be mounted.
+  setup() {
     useMojoRunner()
   }
 } satisfies Theme
