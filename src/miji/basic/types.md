@@ -160,7 +160,10 @@ overflow. For example, if you try to assign the value 256 to a variable of type
 def main():
     var overflow: UInt8 = 256
     print(overflow)
-# Output: 0
+```
+
+```output mojo
+0
 ```
 
 This is because `UInt8` can only hold values from 0 to 255. When you assign 256
@@ -314,8 +317,10 @@ def main():
     var c = Float16(1.414)
     
     print(a, b, c)
+```
 
-# Output: 3.14 2.718 1.4140625
+```output mojo
+3.14 2.718 1.4140625
 ```
 
 ```python
@@ -330,7 +335,10 @@ def main():
     print(a, b, c)
 
 main()
-# Output: 3.14 2.718 1.414
+```
+
+```output python
+3.14 2.718 1.414
 ```
 
 :::
@@ -394,7 +402,10 @@ def main():
 def main():
     print(True + False)
 main()
-# Output: 1
+```
+
+```output python
+1
 ```
 
 :::

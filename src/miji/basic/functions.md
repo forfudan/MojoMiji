@@ -496,8 +496,10 @@ def sum_floats(*numbers: Float64) -> Float64:
 def main():
     var a = sum_floats(0.1, 0.2, 0.3)
     print(a)
+```
 
-# Output: 0.6000000000000001
+```output mojo
+0.6000000000000001
 ```
 
 :::
