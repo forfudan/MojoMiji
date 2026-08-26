@@ -504,6 +504,40 @@ def main():
 
 :::
 
+::: warning Arguments are evaluated before the function is called
+
+Mojo evaluates every argument first, and only then enters the function. Python
+does the same, so this is usually not surprising. There is one place where it
+does surprise Python users: assertions.
+
+In Python, `assert` is a **statement**. The message after the comma is built
+only when the condition fails, and the flag `-O` removes the whole line from
+your program:
+
+```python
+# The f-string is built only when `index >= size`
+assert index < size, f"index {index} is out of range"
+```
+
+In Mojo, `debug_assert()` is an ordinary **function**. The compiler flag
+`-D ASSERT=none` makes its body empty, but the message is still an argument, and
+arguments are evaluated before the function is called. The `format()` call below
+therefore runs in every iteration, builds a `String` on the heap, and throws it
+away:
+
+```mojo
+for _ in range(iterations):
+    debug_assert(False, "value is {}".format(n))  # A String is built every time
+    n = step(n)
+```
+
+On Mojo v1.0.0, this loop is around 48 times slower than the same loop with a
+plain message, even with `-D ASSERT=none`. Thus, in code that runs often, keep
+the message of `debug_assert()` a plain string literal. See
+[Issue #6439](https://github.com/modular/modular/issues/6439) for more details.
+
+:::
+
 ## Mutability of arguments
 
 If an argument is mutable, it means that the function can modify the value of
@@ -518,6 +552,37 @@ The mutability of the arguments is defined by several keywords, namely, `imm`,
 Let's discuss them here one by one. Later, after we have introduced the concept
 of ownership, **we will revisit these keywords** and discuss more about the
 references system of Mojo in Chapter [Reference](../advanced/references.md).
+
+::: info You may also see `ref` in other people's code
+
+Besides `imm`, `mut`, and `var`, Mojo has a fourth keyword, `ref`. You will meet
+it in the Mojo standard library and in other people's code, so it is good to
+recognize it.
+
+The keyword `ref` is mainly used in two other places: to create a reference in
+the local scope, as in `ref b = a`, and to return a reference from a function.
+It can also be used before an argument. If you write it on its own, the argument
+is a read-only reference, just like `imm`:
+
+```mojo
+def show(ref x: Int):
+    print(x)
+```
+
+To make the reference mutable, you have to tell Mojo where the value comes from,
+by giving the argument an **origin**:
+
+```mojo
+def bump[o: Origin[mut=True]](ref [o] x: Int):
+    x += 1
+```
+
+This is much more verbose than simply writing `mut x: Int`, and it is why `ref`
+is rarely used for arguments. We will come back to `ref` in Chapter
+[Reference system](../advanced/references.md) and to origins in Chapter
+[Lifetimes and origins](../advanced/lifetimes.md).
+
+:::
 
 ::: warning Arguments and reference - Mojo vs Rust
 
@@ -1278,3 +1343,10 @@ the reader. 😏
   details block, `raises` gets its own section because it is now always
   explicit, the `read` keyword is renamed to `imm`, and a section on lambda
   expressions is added.
+- 2026-08-21: Add a warning in Section [Arguments](#arguments) that arguments
+  are evaluated before the function is called, which makes the message of
+  `debug_assert()` expensive even when the assertions are turned off.
+  Add a note in Section
+  [Mutability of arguments](#mutability-of-arguments) on the keyword `ref`,
+  which can also be used before an argument, so that readers recognize it when
+  they see it in other people's code.
