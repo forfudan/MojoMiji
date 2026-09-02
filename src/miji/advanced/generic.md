@@ -1,8 +1,14 @@
 # Generic and traits
 
-Parametrization is about setting the value of a certain type to be fixed at run time. We can also extend this idea to set a **type with a certain feature** to be fixed at run time. This is about **generic**.
+Parametrization is about setting the value of a certain type to be fixed at run
+time. We can also extend this idea to set a **type with a certain feature** to
+be fixed at run time. This is about **generic**.
 
-**Generic** is a model that allows you to write code that can operate on different types, improving maintainability, readability, and extensibility of your code. This is particularly useful when you want to write functions or data structures that can work with any type that meets certain requirements, rather than being limited to a specific type.
+**Generic** is a model that allows you to write code that can operate on
+different types, improving maintainability, readability, and extensibility of
+your code. This is particularly useful when you want to write functions or data
+structures that can work with any type that meets certain requirements, rather
+than being limited to a specific type.
 
 This chapter will discuss the following topics:
 
@@ -16,11 +22,18 @@ This chapter will discuss the following topics:
 
 ## Generic
 
-What is generic? What is generic good for? Let's answer these questions with a simple example.
+What is generic? What is generic good for? Let's answer these questions with a
+simple example.
 
-In `src/advanced/generic/favorite_food.mojo`, we define three different types of animals: `Cat`, `Bird`, and `Human`. Each animal type has a `name` property,  a `food` property, a `get_name()` method that returns the name of the animal as a string, and a `speech()` method that returns a string representing what they have said about their favorite food (note that different animal has different way of greetings).
+In `src/advanced/generic/favorite_food.mojo`, we define three different types of
+animals: `Cat`, `Bird`, and `Human`. Each animal type has a `name` property, a
+`food` property, a `get_name()` method that returns the name of the animal as a
+string, and a `speech()` method that returns a string representing what they
+have said about their favorite food (note that different animal has different
+way of greetings).
 
-Then, we create three functions that print the name of the speaker and what they said on display.
+Then, we create three functions that print the name of the speaker and what they
+said on display.
 
 ```mojo
 # src/advanced/generic/favorite_food.mojo
@@ -35,7 +48,7 @@ struct Cat:
     def get_name(self) -> String:
         return self.name
 
-    def speech(self) -> String:
+    def speech(self) raises -> String:
         return String("Meow! I love {}.").format(self.food)
 
 
@@ -50,7 +63,7 @@ struct Bird:
     def get_name(self) -> String:
         return self.name
 
-    def speech(self) -> String:
+    def speech(self) raises -> String:
         return String("Bugubugu! I love {}.").format(self.food)
 
 
@@ -65,26 +78,26 @@ struct Human:
     def get_name(self) -> String:
         return self.name
 
-    def speech(self) -> String:
+    def speech(self) raises -> String:
         return String("Hi! I love {}.").format(self.food)
 
 
-def cat_says_what(animal: Cat):
+def cat_says_what(animal: Cat) raises:
     print(animal.get_name(), "says:", animal.speech())
 
 
-def bird_says_what(animal: Bird):
+def bird_says_what(animal: Bird) raises:
     print(animal.get_name(), "says:", animal.speech())
 
 
-def human_says_what(animal: Human):
+def human_says_what(animal: Human) raises:
     print(animal.get_name(), "says:", animal.speech())
 
 
-def main():
-    saku = Cat("Saku", "chicken")
-    bili = Bird("Bili", "worms")
-    yuhao = Human(
+def main() raises:
+    var saku = Cat("Saku", "chicken")
+    var bili = Bird("Bili", "worms")
+    var yuhao = Human(
         "Yuhao",
         (
             "生煎包 (sanci moedeu), a pan-fried baozi which is popular in Shanghai"
@@ -97,9 +110,7 @@ def main():
     human_says_what(yuhao)
 ```
 
-If we run this code, we will get the following output:
-
-```console
+```output mojo
 Saku says: Meow! I love chicken.
 Bili says: Bugubugu! I love worms.
 Yuhao says: Hi! I love 生煎包 (sanci moedeu), a pan-fried baozi which is popular in Shanghai and Suzhou.
@@ -132,15 +143,26 @@ def dog_says_what(dog: Dog):
     print(dog.get_name(), "says:", dog.speech())
 ```
 
-Here comes a problem. If we constantly add new animals, we will need to write a new function `who_says_what()` for each animal. But the code within the body of the functions `cat_says_what()`, `bird_says_what()`, and `human_says_what()` are **completely identical**!
+Here comes a problem. If we constantly add new animals, we will need to write a
+new function `who_says_what()` for each animal. But the code within the body of
+the functions `cat_says_what()`, `bird_says_what()`, and `human_says_what()` are
+**completely identical**!
 
 Why can't we just re-use the same code for all animal types?
 
-It seems not possible, using what we have learned so far. Because Mojo is a statically typed language, the type of the input argument of a function must be known at compile time. We cannot write a function without specifying a concrete type for the input argument.
+It seems not possible, using what we have learned so far. Because Mojo is a
+statically typed language, the type of the input argument of a function must be
+known at compile time. We cannot write a function without specifying a concrete
+type for the input argument.
 
-In order to solve this problem, Mojo introduces the powerful tool, "**generic**".
+In order to solve this problem, Mojo introduces the powerful tool,
+"**generic**".
 
-The core idea behind generic is to allow you pass any type into a function, as long as the types meet certain requirements. In our example, the types should at least have (1) a `get_name()` method that returns a string and (2) a `speech()` method that returns a string. The generic function can be written in the following format:
+The core idea behind generic is to allow you pass any type into a function, as
+long as the types meet certain requirements. In our example, the types should at
+least have (1) a `get_name()` method that returns a string and (2) a `speech()`
+method that returns a string. The generic function can be written in the
+following format:
 
 ```mojo
 # Pseudo code
@@ -148,19 +170,31 @@ def who_say_what(animal: CertainType):  where the CertainType must have a `name`
     print(animal.name, "says:", animal.speech())
 ```
 
-Then you can call this function with any type that meets the requirements: `who_say_what(cat)`, `who_say_what(bird)`, `who_say_what(human)`, and `who_say_what(dog)`.
+Then you can call this function with any type that meets the requirements:
+`who_say_what(cat)`, `who_say_what(bird)`, `who_say_what(human)`, and
+`who_say_what(dog)`.
 
-But in the code above, the requirements are specified in **English**, which is not understandable by the compiler. We have to use a more formal way to do this, which is called **traits**.
+But in the code above, the requirements are specified in **English**, which is
+not understandable by the compiler. We have to use a more formal way to do this,
+which is called **traits**.
 
 ## Traits
 
-**Traits** to types are just like types to values. They are a way to specify and regulate the behavior of types, e.g., what fields are required and what methods are needed. If a type meets the requirements of a trait, we say that the type **conforms** to the trait.
+**Traits** to types are just like types to values. They are a way to specify and
+regulate the behavior of types, e.g., what fields are required and what methods
+are needed. If a type meets the requirements of a trait, we say that the type
+**conforms** to the trait.
 
 ::: warning
 
-Until Mojo version 25.3, fields in traits are not supported yet. Thus, you cannot define a field in a trait. You can only define methods in a trait. In the future, fields will be supported in traits, and you will be able to define a field in a trait.
+Until Mojo version 25.3, fields in traits are not supported yet. Thus, you
+cannot define a field in a trait. You can only define methods in a trait. In the
+future, fields will be supported in traits, and you will be able to define a
+field in a trait.
 
-That explains why, in our example, we have to define a method `get_name()` in the trait in all structs. It is because we cannot use `animal.name` directly in the generic function.
+That explains why, in our example, we have to define a method `get_name()` in
+the trait in all structs. It is because we cannot use `animal.name` directly in
+the generic function.
 
 :::
 
@@ -168,42 +202,11 @@ Defining a trait is similar to defining a struct. We use the keyword `trait`:
 
 ```mojo
 # src/advanced/generic/favorite_food_with_trait.mojo
-trait Animal():
-    def get_name(self) -> String:
-        ...
-
-    def speech(self) -> String:
-        ...
-```
-
-It looks very similar to a struct. The main difference is that:
-
-- We do not need to define any fields but only methods.
-- We do not need to provide an implementation for the methods. We only need to define the method signature, including the method name, the input arguments, and the return type.
-- We use `...` to indicate that we do not provide a concrete implementation for the method. It is just a **placeholder**. The code will be provided by the types that implement the trait.
-
-Thus, you can think of **a trait as a prototype, a template, or a placeholder for types** that implement the trait.
-
-Now, we can re-write our pseudo code above into a valid generic function `who_says_what()` that takes any type that meets the requirements in the `Animal` trait (in other words, any type that implements the `Animal` trait).
-
-```mojo
-def who_says_what[CertainType: Animal](animal: CertainType):
-    print(animal.get_name(), "says:", animal.speech())
-```
-
-To read this, we should say: The argument `animal` is of type `CertainType`, where the `CertainType` must implement (all the methods defined in) the `Animal` trait.
-
-Yep, it is just like the English sentence in the pseudo code we wrote above, but now it is not a natural language, but a formal language that the Mojo compiler can understand. Note that the trait must be specified in the square brackets `[]` after the function name.
-
-Finally, we can re-write the `main()` function to use the generic function `who_says_what()`. The complete code is as follows:
-
-```mojo
-# src/advanced/generic/favorite_food_with_trait.mojo
 trait Animal:
     def get_name(self) -> String:
         ...
 
-    def speech(self) -> String:
+    def speech(self) raises -> String:
         ...
 
 
@@ -218,7 +221,7 @@ struct Cat(Animal):  # Explicitly specify that Cat implements the Animal trait
     def get_name(self) -> String:
         return self.name
 
-    def speech(self) -> String:
+    def speech(self) raises -> String:
         return String("Meow! I love {}.").format(self.food)
 
 
@@ -233,7 +236,7 @@ struct Bird(Animal):  # Explicitly specify that Bird implements the Animal trait
     def get_name(self) -> String:
         return self.name
 
-    def speech(self) -> String:
+    def speech(self) raises -> String:
         return String("Bugubugu! I love {}.").format(self.food)
 
 
@@ -250,18 +253,130 @@ struct Human(
     def get_name(self) -> String:
         return self.name
 
-    def speech(self) -> String:
+    def speech(self) raises -> String:
         return String("Hi! I love {}.").format(self.food)
 
 
-def who_says_what[CertainType: Animal](animal: CertainType):
+def who_says_what[CertainType: Animal](animal: CertainType) raises:
     print(animal.get_name(), "says:", animal.speech())
 
 
-def main():
-    saku = Cat("Saku", "chicken")
-    bili = Bird("Bili", "worms")
-    yuhao = Human(
+def main() raises:
+    var saku = Cat("Saku", "chicken")
+    var bili = Bird("Bili", "worms")
+    var yuhao = Human(
+        "Yuhao",
+        (
+            "生煎包 (sanci moedeu), a pan-fried baozi which is popular in Shanghai"
+            " and Suzhou"
+        ),
+    )
+
+    who_says_what(saku)
+    who_says_what(bili)
+    who_says_what(yuhao)
+```
+
+It looks very similar to a struct. The main difference is that:
+
+- We do not need to define any fields but only methods.
+- We do not need to provide an implementation for the methods. We only need to
+  define the method signature, including the method name, the input arguments,
+  and the return type.
+- We use `...` to indicate that we do not provide a concrete implementation for
+  the method. It is just a **placeholder**. The code will be provided by the
+  types that implement the trait.
+
+Thus, you can think of
+**a trait as a prototype, a template, or a placeholder for types** that
+implement the trait.
+
+Now, we can re-write our pseudo code above into a valid generic function
+`who_says_what()` that takes any type that meets the requirements in the
+`Animal` trait (in other words, any type that implements the `Animal` trait).
+
+```mojo
+def who_says_what[CertainType: Animal](animal: CertainType):
+    print(animal.get_name(), "says:", animal.speech())
+```
+
+To read this, we should say: The argument `animal` is of type `CertainType`,
+where the `CertainType` must implement (all the methods defined in) the `Animal`
+trait.
+
+Yep, it is just like the English sentence in the pseudo code we wrote above, but
+now it is not a natural language, but a formal language that the Mojo compiler
+can understand. Note that the trait must be specified in the square brackets
+`[]` after the function name.
+
+Finally, we can re-write the `main()` function to use the generic function
+`who_says_what()`. The complete code is as follows:
+
+```mojo
+# src/advanced/generic/favorite_food_with_trait.mojo
+trait Animal:
+    def get_name(self) -> String:
+        ...
+
+    def speech(self) raises -> String:
+        ...
+
+
+struct Cat(Animal):  # Explicitly specify that Cat implements the Animal trait
+    var name: String
+    var food: String
+
+    def __init__(out self, name: String, food: String):
+        self.name = name
+        self.food = food
+
+    def get_name(self) -> String:
+        return self.name
+
+    def speech(self) raises -> String:
+        return String("Meow! I love {}.").format(self.food)
+
+
+struct Bird(Animal):  # Explicitly specify that Bird implements the Animal trait
+    var name: String
+    var food: String
+
+    def __init__(out self, name: String, food: String):
+        self.name = name
+        self.food = food
+
+    def get_name(self) -> String:
+        return self.name
+
+    def speech(self) raises -> String:
+        return String("Bugubugu! I love {}.").format(self.food)
+
+
+struct Human(
+    Animal
+):  # Explicitly specify that Human implements the Animal trait
+    var name: String
+    var food: String
+
+    def __init__(out self, name: String, food: String):
+        self.name = name
+        self.food = food
+
+    def get_name(self) -> String:
+        return self.name
+
+    def speech(self) raises -> String:
+        return String("Hi! I love {}.").format(self.food)
+
+
+def who_says_what[CertainType: Animal](animal: CertainType) raises:
+    print(animal.get_name(), "says:", animal.speech())
+
+
+def main() raises:
+    var saku = Cat("Saku", "chicken")
+    var bili = Bird("Bili", "worms")
+    var yuhao = Human(
         "Yuhao",
         (
             "生煎包 (sanci moedeu), a pan-fried baozi which is popular in Shanghai"
@@ -278,9 +393,14 @@ If we run this code, we will get the same output as before.
 
 ::: tip Name of the generic type
 
-In the code above, I use `CertainType` as the name of the generic type. It is just a placeholder, and you can use any valid identifier you like. During compilation, the Mojo compiler will automatically replace this placeholder with the actual type names.
+In the code above, I use `CertainType` as the name of the generic type. It is
+just a placeholder, and you can use any valid identifier you like. During
+compilation, the Mojo compiler will automatically replace this placeholder with
+the actual type names.
 
-In practice, you probably will never see such a long name as `CertainType`. Instead, you will see shorter names like `T`, `U`, or `V`. For example, you can write the function as:
+In practice, you probably will never see such a long name as `CertainType`.
+Instead, you will see shorter names like `T`, `U`, or `V`. For example, you can
+write the function as:
 
 ```mojo
 def who_says_what[T: Animal](animal: T):
@@ -289,15 +409,17 @@ def who_says_what[T: Animal](animal: T):
 
 :::
 
-By using generic, we can now easily add new animal types without having to write new functions, as long as the new type implements the `Animal` trait. For example,
+By using generic, we can now easily add new animal types without having to write
+new functions, as long as the new type implements the `Animal` trait. For
+example,
 
 ```mojo
 def main():
-    saku = Cat("Saku", "chicken")
-    bili = Bird("Bili", "worms")
-    yuhao = Human("Yuhao", "生煎包 (sanci moedeu), a pan-fried baozi which is popular in Shanghai and Suzhou")
-    jimi = Dog("Jimi", "bones")
-    wia = Wolf("Wia", "meat")
+    var saku = Cat("Saku", "chicken")
+    var bili = Bird("Bili", "worms")
+    var yuhao = Human("Yuhao", "生煎包 (sanci moedeu), a pan-fried baozi which is popular in Shanghai and Suzhou")
+    var jimi = Dog("Jimi", "bones")
+    var wia = Wolf("Wia", "meat")
 
     who_says_what(saku)
     who_says_what(bili)
@@ -308,17 +430,31 @@ def main():
 
 ::: tip Implicitly implementing traits before Mojo v25.4
 
-In the code in `src/advanced/generic/favorite_food_with_trait.mojo`, we explicitly put the trait name `Animal` in the parentheses after the struct name, like `struct Cat(Animal):`, `struct Bird(Animal):`, `struct Human(Animal):`. This is called **explicit trait declaration**. It means that the `Cat` struct explicitly declares that it implements the `Animal` trait.
+In the code in `src/advanced/generic/favorite_food_with_trait.mojo`, we
+explicitly put the trait name `Animal` in the parentheses after the struct name,
+like `struct Cat(Animal):`, `struct Bird(Animal):`, `struct Human(Animal):`.
+This is called **explicit trait declaration**. It means that the `Cat` struct
+explicitly declares that it implements the `Animal` trait.
 
-In historical Mojo versions before v25.4, explicit trait declaration was **optional**. You can also write the struct without explicitly declaring the trait, like `struct Cat():`, `struct Bird():`, and `struct Human():`. If the a struct implements all the methods defined in the `Animal` trait, the Mojo compiler will **automatically** add the trait information to the struct for you. This is called **conforming to a trait implicitly**.
+In historical Mojo versions before v25.4, explicit trait declaration was
+**optional**. You can also write the struct without explicitly declaring the
+trait, like `struct Cat():`, `struct Bird():`, and `struct Human():`. If the a
+struct implements all the methods defined in the `Animal` trait, the Mojo
+compiler will **automatically** add the trait information to the struct for you.
+This is called **conforming to a trait implicitly**.
 
-From Mojo v25.4, this implicit trait declaration was deprecated. If you do so, you will receive an error message.
+From Mojo v25.4, this implicit trait declaration was deprecated. If you do so,
+you will receive an error message.
 
 :::
 
 ## What compiler does with generic
 
-When the Mojo compiler sees a generic function, it will automatically generate a specialized version of the function for each type that is used as an argument. It is similar to what we have done in the first example, `src/advanced/generic/favorite_food.mojo`, where we wrote a function for each type of animal. But now, it is done automatically by the compiler. So,
+When the Mojo compiler sees a generic function, it will automatically generate a
+specialized version of the function for each type that is used as an argument.
+It is similar to what we have done in the first example,
+`src/advanced/generic/favorite_food.mojo`, where we wrote a function for each
+type of animal. But now, it is done automatically by the compiler. So,
 
 ```mojo
 def who_says_what[CertainType: Animal](animal: CertainType):
@@ -340,7 +476,10 @@ def who_says_what_Bird(animal: Bird):
 
 ## Use multiple traits in one struct
 
-Sometimes, you may want to specify multiple traits for a generic type. You can do this by separating the trait names with a comma in the square brackets. For example, if we have another trait `Measurable` that requires a `length()` method, we can write:
+Sometimes, you may want to specify multiple traits for a generic type. You can
+do this by separating the trait names with a comma in the square brackets. For
+example, if we have another trait `Measurable` that requires a `length()`
+method, we can write:
 
 ```mojo
 # src/advanced/generic/favorite_food_with_multiple_traits.mojo
@@ -348,7 +487,7 @@ trait Animal:
     def get_name(self) -> String:
         ...
 
-    def speech(self) -> String:
+    def speech(self) raises -> String:
         ...
 
 
@@ -368,11 +507,11 @@ struct Cat(Animal, Measurable):
     def get_name(self) -> String:
         return self.name
 
-    def speech(self) -> String:
+    def speech(self) raises -> String:
         return String("Meow! I love {}.").format(self.food)
 
     def length(self) -> Int:
-        return len(self.name)
+        return self.name.byte_length()
 
 
 struct Bird(Animal, Measurable):
@@ -386,11 +525,11 @@ struct Bird(Animal, Measurable):
     def get_name(self) -> String:
         return self.name
 
-    def speech(self) -> String:
+    def speech(self) raises -> String:
         return String("Bugubugu! I love {}.").format(self.food)
 
     def length(self) -> Int:
-        return len(self.food)
+        return self.food.byte_length()
 
 
 struct Human(Animal, Measurable):
@@ -404,14 +543,14 @@ struct Human(Animal, Measurable):
     def get_name(self) -> String:
         return self.name
 
-    def speech(self) -> String:
+    def speech(self) raises -> String:
         return String("Hi! I love {}.").format(self.food)
 
     def length(self) -> Int:
-        return len(self.name) + len(self.food)
+        return self.name.byte_length() + self.food.byte_length()
 
 
-def who_says_what[T: Animal](animal: T):
+def who_says_what[T: Animal](animal: T) raises:
     print(animal.get_name(), "says:", animal.speech())
 
 
@@ -419,10 +558,10 @@ def mysterious_number[U: Measurable](animal: U):
     print("The mysterious number of me is:", animal.length())
 
 
-def main():
-    saku = Cat("Saku", "chicken")
-    bili = Bird("Bili", "worms")
-    yuhao = Human(
+def main() raises:
+    var saku = Cat("Saku", "chicken")
+    var bili = Bird("Bili", "worms")
+    var yuhao = Human(
         "Yuhao",
         (
             "生煎包 (sanci moedeu), a pan-fried baozi which is popular in Shanghai"
@@ -438,11 +577,7 @@ def main():
     mysterious_number(yuhao)
 ```
 
-In this example, each struct implements both the `Animal` trait and the `Measurable` trait. The generic function `who_says_what()` requires the type to implement the `Animal` trait, while the function `mysterious_number()` requires the type to implement the `Measurable` trait.
-
-When we run this code, we will get the following output:
-
-```console
+```output mojo
 Saku says: Meow! I love chicken.
 The mysterious number of me is: 4
 Bili says: Bugubugu! I love worms.
@@ -451,9 +586,15 @@ Yuhao says: Hi! I love 生煎包 (sanci moedeu), a pan-fried baozi which is popu
 The mysterious number of me is: 88
 ```
 
+In this example, each struct implements both the `Animal` trait and the
+`Measurable` trait. The generic function `who_says_what()` requires the type to
+implement the `Animal` trait, while the function `mysterious_number()` requires
+the type to implement the `Measurable` trait.
+
 ## Use multiple traits for one type in functions
 
-In the previous example, we defined two functions, `who_says_what()` and `mysterious_number()`, to print some information about the animal.
+In the previous example, we defined two functions, `who_says_what()` and
+`mysterious_number()`, to print some information about the animal.
 
 ```mojo
 def who_says_what[T: Animal](animal: T):
@@ -463,7 +604,11 @@ def mysterious_number[U: Measurable](animal: U):
     print("The mysterious number of me is:", animal.length())
 ```
 
-You may wonder if we can combine these two functions into one. Yes, we can. In this case, the type `T` must simultaneously implement both the `Animal` trait and the `Measurable` trait. This is allowed in Mojo. You just need to use the `&` operator to combine the two traits in the type parameter declaration, like this:
+You may wonder if we can combine these two functions into one. Yes, we can. In
+this case, the type `T` must simultaneously implement both the `Animal` trait
+and the `Measurable` trait. This is allowed in Mojo. You just need to use the
+`&` operator to combine the two traits in the type parameter declaration, like
+this:
 
 ```mojo
 def who_says_what[T: Animal & Measurable](animal: T):
@@ -471,7 +616,10 @@ def who_says_what[T: Animal & Measurable](animal: T):
     print("The mysterious number of me is: ", animal.length())
 ```
 
-In the code, we use `T: Animal & Measurable` to indicate that the type `T` must conform to both the `Animal` trait and the `Measurable` trait. In other words, the type `T` must implement all the methods defined in both traits, *i.e.*, `get_name()`, `speech()`, and `length()`.
+In the code, we use `T: Animal & Measurable` to indicate that the type `T` must
+conform to both the `Animal` trait and the `Measurable` trait. In other words,
+the type `T` must implement all the methods defined in both traits, *i.e.*,
+`get_name()`, `speech()`, and `length()`.
 
 The complete code is as follows:
 
@@ -481,7 +629,7 @@ trait Animal:
     def get_name(self) -> String:
         ...
 
-    def speech(self) -> String:
+    def speech(self) raises -> String:
         ...
 
 
@@ -501,11 +649,11 @@ struct Cat(Animal, Measurable):
     def get_name(self) -> String:
         return self.name
 
-    def speech(self) -> String:
+    def speech(self) raises -> String:
         return String("Meow! I love {}.").format(self.food)
 
     def length(self) -> Int:
-        return len(self.name)
+        return self.name.byte_length()
 
 
 struct Bird(Animal, Measurable):
@@ -519,11 +667,11 @@ struct Bird(Animal, Measurable):
     def get_name(self) -> String:
         return self.name
 
-    def speech(self) -> String:
+    def speech(self) raises -> String:
         return String("Bugubugu! I love {}.").format(self.food)
 
     def length(self) -> Int:
-        return len(self.food)
+        return self.food.byte_length()
 
 
 struct Human(Animal, Measurable):
@@ -537,22 +685,22 @@ struct Human(Animal, Measurable):
     def get_name(self) -> String:
         return self.name
 
-    def speech(self) -> String:
+    def speech(self) raises -> String:
         return String("Hi! I love {}.").format(self.food)
 
     def length(self) -> Int:
-        return len(self.name) + len(self.food)
+        return self.name.byte_length() + self.food.byte_length()
 
 
-def who_says_what[T: Animal & Measurable](animal: T):
+def who_says_what[T: Animal & Measurable](animal: T) raises:
     print(animal.get_name(), "says:", animal.speech())
     print("The mysterious number of me is: ", animal.length())
 
 
-def main():
-    saku = Cat("Saku", "chicken")
-    bili = Bird("Bili", "worms")
-    yuhao = Human(
+def main() raises:
+    var saku = Cat("Saku", "chicken")
+    var bili = Bird("Bili", "worms")
+    var yuhao = Human(
         "Yuhao",
         (
             "生煎包 (sanci moedeu), a pan-fried baozi which is popular in Shanghai"
@@ -565,9 +713,7 @@ def main():
     who_says_what(yuhao)
 ```
 
-Note that we do not need to define the `mysterious_number()` function anymore, because it is now combined into the `who_says_what()` function. The output is identical to the previous example:
-
-```console
+```output mojo
 Saku says: Meow! I love chicken.
 The mysterious number of me is:  4
 Bili says: Bugubugu! I love worms.
@@ -576,9 +722,16 @@ Yuhao says: Hi! I love 生煎包 (sanci moedeu), a pan-fried baozi which is popu
 The mysterious number of me is:  88
 ```
 
+Note that we do not need to define the `mysterious_number()` function anymore,
+because it is now combined into the `who_says_what()` function. The output is
+identical to the previous example.
+
 ::: tip Combining traits before Mojo v25.4
 
-Before Mojo v25.4, combining multiple traits *ad hoc* in a type parameter declaration was not possible. You had to first declare a new trait that combines all the required methods from the other traits. For example, the built-in `Comparable` trait **was** defined as:
+Before Mojo v25.4, combining multiple traits *ad hoc* in a type parameter
+declaration was not possible. You had to first declare a new trait that combines
+all the required methods from the other traits. For example, the built-in
+`Comparable` trait **was** defined as:
 
 ```mojo
 # Mojo v25.3 standard library
@@ -593,22 +746,25 @@ trait Comparable(
     """A type which can be compared with other instances of itself."""
 ```
 
-From Mojo v25.4, you can use the `&` operator to combine multiple traits in a type parameter declaration, which is more concise and readable.
+From Mojo v25.4, you can use the `&` operator to combine multiple traits in a
+type parameter declaration, which is more concise and readable.
 
-Due to this change, from Mojo v25.4, the built-in `Comparable` trait became a trait alias of the combined traits:
+Due to this change, from Mojo v25.4, the built-in `Comparable` trait became a
+trait alias of the combined traits:
 
 ```mojo
 # Mojo v25.4 standard library
-# mojo/stdlib/stdlib/builtin/comparable.mojo
+# mojo/stdlib/std/builtin/comparable.mojo
 alias Comparable = EqualityComparable & LessThanComparable & GreaterThanComparable & LessThanOrEqualComparable & GreaterThanOrEqualComparable
 """A type which can be compared with other instances of itself."""
 ```
 
-Note that, from Mojo v0.25.7, `Comparable` is no longer a trait alias of the combined traits, but a standalone, regular trait.
+Note that, from Mojo v0.25.7, `Comparable` is no longer a trait alias of the
+combined traits, but a standalone, regular trait.
 
 ```mojo
 # Mojo v0.25.7 standard library
-# mojo/stdlib/stdlib/builtin/comparable.mojo
+# mojo/stdlib/std/builtin/comparable.mojo
 trait Comparable(EqualityComparable):
     """A type which can be compared for order with other instances of itself.
 
@@ -619,19 +775,19 @@ trait Comparable(EqualityComparable):
     types, it is recommended to override all the default implementations.
     """
 
-    fn __lt__(self, rhs: Self) -> Bool:
+    def __lt__(self, rhs: Self) -> Bool:
         ...
 
     @always_inline
-    fn __gt__(self, rhs: Self) -> Bool:
+    def __gt__(self, rhs: Self) -> Bool:
         ...
 
     @always_inline
-    fn __le__(self, rhs: Self) -> Bool:
+    def __le__(self, rhs: Self) -> Bool:
         ...
 
     @always_inline
-    fn __ge__(self, rhs: Self) -> Bool:
+    def __ge__(self, rhs: Self) -> Bool:
         ...
 ```
 
@@ -639,7 +795,8 @@ trait Comparable(EqualityComparable):
 
 ## Default implementation for methods in traits
 
-In the examples above, we defined the methods in the traits without providing any implementation, but just using `...` as a placeholder:
+In the examples above, we defined the methods in the traits without providing
+any implementation, but just using `...` as a placeholder:
 
 ```mojo
 trait Animal:
@@ -669,9 +826,15 @@ struct Human(Animal, Measurable):
     # Some code omitted for brevity
 ```
 
-You may notice that the implementation of the `get_name()` method is identical in all structs. It is a bit redundant to write the same code again and again. Luckily, Mojo allows you to provide a **default implementation** for methods in traits. This means that you can define the method in the trait (already) with a concrete implementation, and the types that conform to the trait can choose to use the default implementation or override it with their own implementation.
+You may notice that the implementation of the `get_name()` method is identical
+in all structs. It is a bit redundant to write the same code again and again.
+Luckily, Mojo allows you to provide a **default implementation** for methods in
+traits. This means that you can define the method in the trait (already) with a
+concrete implementation, and the types that conform to the trait can choose to
+use the default implementation or override it with their own implementation.
 
-To demonstrate, let's amend the previous example with a new trait `Talkative` that has a method `greet()` with a default implementation:
+To demonstrate, let's amend the previous example with a new trait `Talkative`
+that has a method `greet()` with a default implementation:
 
 ```mojo
 # src/advanced/generic/default_implementation_of_methods.mojo
@@ -719,9 +882,9 @@ struct Human(Talkative):
 
 
 def main():
-    saku = Cat("Saku", "chicken")
-    bili = Bird("Bili", "worms")
-    yuhao = Human(
+    var saku = Cat("Saku", "chicken")
+    var bili = Bird("Bili", "worms")
+    var yuhao = Human(
         "Yuhao",
         "生煎包 (sanci moedeu)",
     )
@@ -731,9 +894,7 @@ def main():
     yuhao.greet()
 ```
 
-If we run this code, we will get the following output:
-
-```console
+```output mojo
 Hello!
 Hello! Bugu, bugu, bugu, bugu, bugu!
 Hello! I am Yuhao, I am a talkative person. I can say more than just hello and I love talking about food and weather. My favorite food is 生煎包 (sanci moedeu), a pan-fried baozi which is popular in Shanghai and Suzhou.
@@ -741,88 +902,148 @@ Hello! I am Yuhao, I am a talkative person. I can say more than just hello and I
 
 Let's analyze the code above carefully.
 
-1. We define a trait `Talkative` with a method `greet()` that has a default implementation. The default implementation simply prints "Hello!".
-1. We define a struct `Cat` that conforms to the `Talkative` trait but **does not** provide its own implementation of the `greet()` method. Thus, when we call `saku.greet()`, it uses the default implementation from the `Talkative` trait and simply prints "Hello!".
-1. We define a struct `Bird` that conforms to the `Talkative` trait and **overrides** the default implementation of the `greet()` method with its own implementation. Thus, when we call `bili.greet()`, it uses the implementation from the `Bird` struct and prints "Hello! Bugu, bugu, bugu, bugu, bugu!".
-1. We define a struct `Human` that conforms to the `Talkative` trait and **overrides** the default implementation of the `greet()` method with its own implementation. This time, the `greet()` method prints a more detailed greeting message that includes both the **name** field and the **food** field of the human type. Thus, when we call `yuhao.greet()`, it uses the implementation from the `Human` struct and prints the detailed greeting message.
+1. We define a trait `Talkative` with a method `greet()` that has a default
+   implementation. The default implementation simply prints "Hello!".
+1. We define a struct `Cat` that conforms to the `Talkative` trait but
+   **does not** provide its own implementation of the `greet()` method. Thus,
+   when we call `saku.greet()`, it uses the default implementation from the
+   `Talkative` trait and simply prints "Hello!".
+1. We define a struct `Bird` that conforms to the `Talkative` trait and
+   **overrides** the default implementation of the `greet()` method with its own
+   implementation. Thus, when we call `bili.greet()`, it uses the implementation
+   from the `Bird` struct and prints "Hello! Bugu, bugu, bugu, bugu, bugu!".
+1. We define a struct `Human` that conforms to the `Talkative` trait and
+   **overrides** the default implementation of the `greet()` method with its own
+   implementation. This time, the `greet()` method prints a more detailed
+   greeting message that includes both the **name** field and the **food** field
+   of the human type. Thus, when we call `yuhao.greet()`, it uses the
+   implementation from the `Human` struct and prints the detailed greeting
+   message.
 
 ---
 
-This feature is straitforward but powerful. When you write your own structs, for some common functionalities, e.g., life cycle management, copy and move operations, etc, you can just declare the corresponding built-in traits at the top of the struct. Then Mojo will automatically provide the default implementation for you.
+This feature is straitforward but powerful. When you write your own structs, for
+some common functionalities, e.g., life cycle management, copy and move
+operations, etc, you can just declare the corresponding built-in traits at the
+top of the struct. Then Mojo will automatically provide the default
+implementation for you.
 
 ::: tip Before Mojo v0.25.6
 
-Before Mojo v0.25.6 (2025-09-22), default methods in traits were not supported. Thus, you have to implement all the methods defined in a trait in each struct that conforms to the trait, even if the implementation is identical.
+Before Mojo v0.25.6 (2025-09-22), default methods in traits were not supported.
+Thus, you have to implement all the methods defined in a trait in each struct
+that conforms to the trait, even if the implementation is identical.
 
-From Mojo v0.25.6, default methods in traits are supported. You can provide a default implementation for a method in a trait, and the types that conform to the trait can choose to use the default implementation or override it with their own implementation.
+From Mojo v0.25.6, default methods in traits are supported. You can provide a
+default implementation for a method in a trait, and the types that conform to
+the trait can choose to use the default implementation or override it with their
+own implementation.
 
-This change significantly reduces the amount of boilerplate code you need to write, especially when many types share the same implementation for certain methods. It also improves code maintainability and has some spirit of "inheritance". You may think that the trait is like a **base class**, and the structs that conform to the trait are like **derived classes**.
+This change significantly reduces the amount of boilerplate code you need to
+write, especially when many types share the same implementation for certain
+methods. It also improves code maintainability and has some spirit of
+"inheritance". You may think that the trait is like a **base class**, and the
+structs that conform to the trait are like **derived classes**.
 
 :::
 
 ## Python vs Mojo in generic
 
-As a Pythonista, you may have heard about a concept called "duck typing", which means that:
+As a Pythonista, you may have heard about a concept called "duck typing", which
+means that:
 
-It is the methods that an object owns that determines whether it is of a certain type, but not how the object is defined in the `class` block or whether several objects are inherited from the same parent.
+It is the methods that an object owns that determines whether it is of a certain
+type, but not how the object is defined in the `class` block or whether several
+objects are inherited from the same parent.
 
-For example, if an object has a method `eat()`, a method `walk()`, a method `speak()`, and a method `think()`, then it is considered to be of the type "human", even though it is not defined in a class called `Human`. If the `print()` function can be applied on several objects, then these objects all belong to the same type "printable", even though they are not belonging to the same class or inherited from the same parent class.
+For example, if an object has a method `eat()`, a method `walk()`, a method
+`speak()`, and a method `think()`, then it is considered to be of the type
+"human", even though it is not defined in a class called `Human`. If the
+`print()` function can be applied on several objects, then these objects all
+belong to the same type "printable", even though they are not belonging to the
+same class or inherited from the same parent class.
 
-You may still use the idea of duck typing in Mojo, but replace it by **traits**: If several types implement the same methods, they can be considered to be of the same trait. You can use the trait to write generic functions that can operate on all these types.
+You may still use the idea of duck typing in Mojo, but replace it by **traits**:
+If several types implement the same methods, they can be considered to be of the
+same trait. You can use the trait to write generic functions that can operate on
+all these types.
 
 ## Built-in traits in Mojo
 
-Mojo provides quite a lot of built-in traits that you can use in your code. Sometimes, you may even not aware that you are using them. For example, many dunder methods, such as `__str__()`, `__repr__()`, `__absable__()`, `__gt__()`, etc., are actually implementing the built-in traits. Some non-dunder methods, such as `write_to()`, also implement the built-in traits.
+Mojo provides quite a lot of built-in traits that you can use in your code.
+Sometimes, you may even not aware that you are using them. For example, many
+dunder methods, such as `__str__()`, `__repr__()`, `__absable__()`, `__gt__()`,
+etc., are actually implementing the built-in traits. Some non-dunder methods,
+such as `write_to()`, also implement the built-in traits.
 
-Let's look at one of these built-in traits, `Absable`, which is used to take the absolute value of a number. Types that conform to the `Absable` trait can be used with the built-in function `abs()` to get the absolute value of the number. See the following example:
+Let's look at one of these built-in traits, `Absable`, which is used to take the
+absolute value of a number. Types that conform to the `Absable` trait can be
+used with the built-in function `abs()` to get the absolute value of the number.
+See the following example:
 
 ```mojo
 # src/advanced/generic/absable_trait.mojo
 def main():
     var a = -1
     var b = -0.5
-    print(abs(a))  # Output: 1
-    print(abs(b))  # Output: 0.5
+    print(abs(a))
+    print(abs(b))
 ```
 
-The Mojo developer cannot write `abs()` function for every type of number, such as `Int`, `Float`, `Complex`, etc. It is not practical and not extensible. Instead, Mojo internal does the following:
+```output mojo
+1
+0.5
+```
 
-First, it provides a built-in trait called `Absable`, which requires the type to implement the dunder method `__abs__()` that returns the absolute value (or magnitude, distance from zero) of the number. A simple illustration of the `Absable` trait is as follows:
+The Mojo developer cannot write `abs()` function for every type of number, such
+as `Int`, `Float`, `Complex`, etc. It is not practical and not extensible.
+Instead, Mojo internal does the following:
+
+First, it provides a built-in trait called `Absable`, which requires the type to
+implement the dunder method `__abs__()` that returns the absolute value (or
+magnitude, distance from zero) of the number. A simple illustration of the
+`Absable` trait is as follows:
 
 ```mojo
 # Mojo v0.25.6 Standard Library
-# mojo/stdlib/stdlib/builtin/math.mojo
+# mojo/stdlib/std/builtin/math.mojo
 # Some code omitted for brevity
 trait Absable():
-    fn __abs__(self) -> Self:
+    def __abs__(self) -> Self:
         ...
 ```
 
-Then, it provides a built-in function `abs()` that takes any type that implements the `Absable` trait and calls the `__abs__()` method to get the absolute value. A simple illustration of the `abs()` function is as follows:
+Then, it provides a built-in function `abs()` that takes any type that
+implements the `Absable` trait and calls the `__abs__()` method to get the
+absolute value. A simple illustration of the `abs()` function is as follows:
 
 ```mojo
 # Mojo v0.25.6 Standard Library
-# mojo/stdlib/stdlib/builtin/math.mojo
+# mojo/stdlib/std/builtin/math.mojo
 # Some code omitted for brevity
-fn abs[T: Absable](value: T) -> T:
+def abs[T: Absable](value: T) -> T:
     return value.__abs__()
 ```
 
-Finally, define the dunder method `__abs__()` in each type that support a model of absolute value, such as `Int`, `Float`, `Complex`, etc. For example, the `Int` type implements the `Absable` trait as follows:
+Finally, define the dunder method `__abs__()` in each type that support a model
+of absolute value, such as `Int`, `Float`, `Complex`, etc. For example, the
+`Int` type implements the `Absable` trait as follows:
 
 ```mojo
 # Mojo v0.25.6 standard library
-# mojo/stdlib/stdlib/builtin/int.mojo
+# mojo/stdlib/std/builtin/int.mojo
 # Some code omitted for brevity
 struct Int(
     Absable,
     ...
 ):
-    fn __abs__(self) -> Self:
+    def __abs__(self) -> Self:
         return select(self < 0, -self, self)
 ```
 
-If a type does not implement the `Absable` trait, it cannot be used with the `abs()` function. For example, if we try to take the absolute value of a string, we will get a compilation error:
+If a type does not implement the `Absable` trait, it cannot be used with the
+`abs()` function. For example, if we try to take the absolute value of a string,
+we will get a compilation error:
 
 ```mojo
 def main():
@@ -841,7 +1062,12 @@ note: failed to infer parameter 'T', argument type 'String' does not conform to 
 
 ::: tip Dunders in Python
 
-You may be familiar these dunder methods and built-in functions. You may also once defined these dunders to allow other users to apply the built-in functions on your custom types. Yes, your knowledge of Python's dunder methods and built-in functions can be directly applied to Mojo. Although Mojo will do some checks on the types and traits during compile time, while Python checks the methods at run time, the final coding style is identical.
+You may be familiar these dunder methods and built-in functions. You may also
+once defined these dunders to allow other users to apply the built-in functions
+on your custom types. Yes, your knowledge of Python's dunder methods and
+built-in functions can be directly applied to Mojo. Although Mojo will do some
+checks on the types and traits during compile time, while Python checks the
+methods at run time, the final coding style is identical.
 
 This is another reason why Mojo is so Pythonic.
 
@@ -849,22 +1075,50 @@ This is another reason why Mojo is so Pythonic.
 
 ## Dunder methods and built-in functions
 
-The examples above show that you can utilize the built-in functions by defining your own dunder methods. The dunder methods are entry points for universal built-in functions, which are provided by the Mojo, to work on your custom types. This feature is very powerful, as it allows users to use their familiar built-in functions on any new types of values they encounter.
+The examples above show that you can utilize the built-in functions by defining
+your own dunder methods. The dunder methods are entry points for universal
+built-in functions, which are provided by the Mojo, to work on your custom
+types. This feature is very powerful, as it allows users to use their familiar
+built-in functions on any new types of values they encounter.
 
-For example, when you see a variable `v` of the `Vector` type. Even though you have never learnt about the details of the `Vector` type, you can still, naturally, use the built-in functions like `print(v)` to display it on your screen, `len(v)` to get the number of item, and `for i in v:` to iterate over the items in the vector.
+For example, when you see a variable `v` of the `Vector` type. Even though you
+have never learnt about the details of the `Vector` type, you can still,
+naturally, use the built-in functions like `print(v)` to display it on your
+screen, `len(v)` to get the number of item, and `for i in v:` to iterate over
+the items in the vector.
 
-On the other hand, if you want the other users to access your custom type with the built-in functions, you need to implement the corresponding dunder methods in your type. For example, if you want others to use the `len()` function to get the length of your type, you need to implement the `__len__()` method in your type, which conforms to the built-in trait `Sizable`. The same applies to other built-in functions and even operators, such as `str()`, `repr()`, `int()`, `float()`, `+`, `>=`, etc. To emphasize,
+On the other hand, if you want the other users to access your custom type with
+the built-in functions, you need to implement the corresponding dunder methods
+in your type. For example, if you want others to use the `len()` function to get
+the length of your type, you need to implement the `__len__()` method in your
+type, which conforms to the built-in trait `Sizable`. The same applies to other
+built-in functions and even operators, such as `str()`, `repr()`, `int()`,
+`float()`, `+`, `>=`, etc. To emphasize,
 
-**Defining dunder methods in your structs is a way to conform to the built-in traits and to make use of the built-in functions.**
+**Defining dunder methods in your structs is a way to conform to the built-in
+traits and to make use of the built-in functions.**
 
-You may remember that we have already discussed this topic in Section [Basic methods](../basic/structs#basic-methods) of Chapter [Structs](../basic/structs.md). But let's rewind a bit and take a look at another example.
+You may remember that we have already discussed this topic in Section
+[Basic methods](../basic/structs#basic-methods) of Chapter
+[Structs](../basic/structs.md). But let's rewind a bit and take a look at
+another example.
 
-In the following example, we define a custom type `Pixel` that represents a pixel in a 2D space with `x` and `y` coordinates. In order to display the pixel in a human-readable format, we want to (1) define the string representation of the pixel, (2) call the built-in `String()` constructor to convert the pixel to its string representation, and (3) print the string representation of the pixel.
+In the following example, we define a custom type `Pixel` that represents a
+pixel in a 2D space with `x` and `y` coordinates. In order to display the pixel
+in a human-readable format, we want to (1) define the string representation of
+the pixel, (2) call the built-in `String()` constructor to convert the pixel to
+its string representation, and (3) print the string representation of the pixel.
 
-To use `String()` constructor on a custom type, the type must conform to the `Writable` trait, which requires the type to implement the dunder method `write_to[T: Writer](self, mut writer: T)`. The `String()` constructor and `print()` function both use this method to obtain a textual representation of the object. The code is as follows:
+To use `String()` constructor on a custom type, the type must conform to the
+`Writable` trait, which requires the type to implement the dunder method
+`write_to[T: Writer](self, mut writer: T)`. The `String()` constructor and
+`print()` function both use this method to obtain a textual representation of
+the object. The code is as follows:
 
 ```mojo
 # src/advanced/generic/pixel.mojo
+
+
 struct Pixel(Writable):
     var x: Int
     var y: Int
@@ -876,29 +1130,42 @@ struct Pixel(Writable):
     def write_to[T: Writer](self, mut writer: T):
         writer.write("Pixel(", self.x, ", ", self.y, ")")
 
+    def __add__(self, other: Pixel) -> Pixel:
+        return Pixel(self.x**2 + other.x**2, self.y**2 + other.y**2)
+
+
 def main():
     var point1 = Pixel(212, 149)
     var point2 = Pixel(-12, 391)
     print(String(point1))
     print(String(point2))
+
+    var point3 = point1 + point2  # point1.__add__(point2)
+    print(String(point3))
 ```
 
-In the code, the `write_to()` method writes a textual representation of the pixel into the given writer. When we use `String(point1)` and `String(point2)`, the Mojo compiler will automatically call `write_to()` to assemble the string, then print it to the console.
-
-::: tip `Stringable` and `Representable` are removed in Mojo v1.0.0b1
-
-Earlier versions of Mojo provided the `Stringable` trait (with `__str__()`) and the `Representable` trait (with `__repr__()`). Both traits have been removed in Mojo v1.0.0b1. Use the `Writable` trait with `write_to()` for printing and string conversion, while use the `Writable` trait with `write_repr_to()` for built-in function `repr()`.
-
-:::
-
-The output of the code is as follows:
-
-```console
+```output mojo
 Pixel(212, 149)
 Pixel(-12, 391)
 ```
 
-Below is a summary of the most common dunder methods, the built-in traits they conform to, and the built-in functions they enable.
+In the code, the `write_to()` method writes a textual representation of the
+pixel into the given writer. When we use `String(point1)` and `String(point2)`,
+the Mojo compiler will automatically call `write_to()` to assemble the string,
+then print it to the console.
+
+::: tip `Stringable` and `Representable` are removed in Mojo v1.0.0b1
+
+Earlier versions of Mojo provided the `Stringable` trait (with `__str__()`) and
+the `Representable` trait (with `__repr__()`). Both traits have been removed in
+Mojo v1.0.0b1. Use the `Writable` trait with `write_to()` for printing and
+string conversion, while use the `Writable` trait with `write_repr_to()` for
+built-in function `repr()`.
+
+:::
+
+Below is a summary of the most common dunder methods, the built-in traits they
+conform to, and the built-in functions they enable.
 
 | Dunder method     | Built-in trait | Built-in function     | Description                                                                    |
 | ----------------- | -------------- | --------------------- | ------------------------------------------------------------------------------ |
@@ -912,39 +1179,65 @@ Below is a summary of the most common dunder methods, the built-in traits they c
 
 ## Dunder methods and operators overloading
 
-Not only are the behaviors of built-in functions impacted by the dunder methods, but also the behaviors of operators. However, **not all dunder methods that overload operators conform to a trait**. We will summarize this at the end of this section.
+Not only are the behaviors of built-in functions impacted by the dunder methods,
+but also the behaviors of operators. However,
+**not all dunder methods that overload operators conform to a trait**. We will
+summarize this at the end of this section.
 
-For example, we want to add two `Pixel` objects together using our own rules, let's say, the sum of two pixels being the summed squares of each coordinate:
+For example, we want to add two `Pixel` objects together using our own rules,
+let's say, the sum of two pixels being the summed squares of each coordinate:
 
 $$
 (x_1, y_1) + (x_2, y_2) = (x_1^2 + x_2^2, y_1^2 + y_2^2)
 $$
 
-We can do this by defining a method, e.g., `pixel1.add(pixel2)`. But it is not very intuitive.
+We can do this by defining a method, e.g., `pixel1.add(pixel2)`. But it is not
+very intuitive.
 
-A more intuitive way is to use the `+` operator to add two `Pixel` objects together. However, Mojo won't do this automatically for you. You need to define the behavior of the `+` operator for the `Pixel` type yourself. This is called **operator overloading**.
+A more intuitive way is to use the `+` operator to add two `Pixel` objects
+together. However, Mojo won't do this automatically for you. You need to define
+the behavior of the `+` operator for the `Pixel` type yourself. This is called
+**operator overloading**.
 
-You may remember that we have already discussed this topic in Section [Arithmetic operators](../basic/structs#arithmetic-operators) of Chapter [Structs](../basic/structs.md). Let's quickly recap it here.
+You may remember that we have already discussed this topic in Section
+[Arithmetic operators](../basic/structs#arithmetic-operators) of Chapter
+[Structs](../basic/structs.md). Let's quickly recap it here.
 
-To overload an operator, you need to define the corresponding dunder method in your type. For the `+` operator, the dunder method is `__add__()`. When you use the `+` operator on two `Pixel` objects, Mojo will automatically call the `__add__()` method of the first `Pixel` object and pass the second `Pixel` object as an argument. That is to say, the following transformation will happen:
+To overload an operator, you need to define the corresponding dunder method in
+your type. For the `+` operator, the dunder method is `__add__()`. When you use
+the `+` operator on two `Pixel` objects, Mojo will automatically call the
+`__add__()` method of the first `Pixel` object and pass the second `Pixel`
+object as an argument. That is to say, the following transformation will happen:
 
 ```mojo
 pixel1 + pixel2 -> pixel1.__add__(pixel2)
 ```
 
-Let's try to implement this and update the `Pixel` type in `src/advanced/generic/pixel.mojo`:
+Let's try to implement this and update the `Pixel` type in
+`src/advanced/generic/pixel.mojo`:
 
 ```mojo
 # src/advanced/generic/pixel.mojo
-struct Pixel(Stringable):
-    ...
 
-    fn __add__(self, other: Pixel) -> Pixel:
+
+struct Pixel(Writable):
+    var x: Int
+    var y: Int
+
+    def __init__(out self, x: Int, y: Int):
+        self.x = x
+        self.y = y
+
+    def write_to[T: Writer](self, mut writer: T):
+        writer.write("Pixel(", self.x, ", ", self.y, ")")
+
+    def __add__(self, other: Pixel) -> Pixel:
         return Pixel(self.x**2 + other.x**2, self.y**2 + other.y**2)
 
+
 def main():
-    var point1 = Pixel(212,149)
-    var point2 = Pixel(-12,391)
+    var point1 = Pixel(212, 149)
+    var point2 = Pixel(-12, 391)
     print(String(point1))
     print(String(point2))
 
@@ -952,39 +1245,43 @@ def main():
     print(String(point3))
 ```
 
-When we run this code, we will get the following output as expected:
-
-```console
+```output mojo
 Pixel(212, 149)
 Pixel(-12, 391)
 Pixel(45088, 175082)
 ```
 
-Below is a table summarizing the most common dunder methods, the operators they overload, and the built-in traits they conform to.
+Below is a table summarizing the most common dunder methods, the operators they
+overload, and the built-in traits they conform to.
 
-| Dunder method    | Built-in trait | Built-in operator       | Description                        |
-| ---------------- | -------------- | ----------------------- | ---------------------------------- |
-| `__add__()`      |                | `+`                     | Addition                           |
-| `__sub__()`      |                | `-`                     | Subtraction                        |
-| `__mul__()`      |                | `*`                     | Multiplication                     |
-| `__truediv__()`  |                | `/`                     | Division                           |
-| `__floordiv__()` |                | `//`                    | Floor division                     |
-| `__mod__()`      |                | `%`                     | Modulus                            |
-| `__pow__()`      | `Powable`      | `**`                    | Power                              |
-| `__gt__()`       | `Comparable`   | `>`                     | Greater than                       |
-| `__ge__()`       | `Comparable`   | `>=`                    | Greater than or equal to           |
-| `__lt__()`       | `Comparable`   | `<`                     | Less than                          |
-| `__le__()`       | `Comparable`   | `<=`                    | Less than or equal to              |
-| `__eq__()`       | `Comparable`   | `==`                    | Equal                              |
-| `__ne__()`       | `Comparable`   | `!=`                    | Not equal                          |
-| `__getitem__()`  |                | `a[]`                   | Indexing and slicing               |
-| `__setitem__()`  |                | `a[] = b`               | Assignment by index or slice       |
-| `__copyinit__()` | `Copyable`     | `y = x`, `y = x.copy()` | Copy the value to another variable |
-| `__moveinit__()` | `Movable`      | `y = x^`                | Move the value to another variable |
+| Dunder method                    | Built-in trait | Built-in operator       | Description                        |
+| -------------------------------- | -------------- | ----------------------- | ---------------------------------- |
+| `__add__()`                      |                | `+`                     | Addition                           |
+| `__sub__()`                      |                | `-`                     | Subtraction                        |
+| `__mul__()`                      |                | `*`                     | Multiplication                     |
+| `__truediv__()`                  |                | `/`                     | Division                           |
+| `__floordiv__()`                 |                | `//`                    | Floor division                     |
+| `__mod__()`                      |                | `%`                     | Modulus                            |
+| `__pow__()`                      | `Powable`      | `**`                    | Power                              |
+| `__gt__()`                       | `Comparable`   | `>`                     | Greater than                       |
+| `__ge__()`                       | `Comparable`   | `>=`                    | Greater than or equal to           |
+| `__lt__()`                       | `Comparable`   | `<`                     | Less than                          |
+| `__le__()`                       | `Comparable`   | `<=`                    | Less than or equal to              |
+| `__eq__()`                       | `Comparable`   | `==`                    | Equal                              |
+| `__ne__()`                       | `Comparable`   | `!=`                    | Not equal                          |
+| `__getitem__()`                  |                | `a[]`                   | Indexing and slicing               |
+| `__setitem__()`                  |                | `a[] = b`               | Assignment by index or slice       |
+| `__init__(*, copy: Self)`        | `Copyable`     | `y = x`, `y = x.copy()` | Copy the value to another variable |
+| `__init__(*, deinit move: Self)` | `Movable`      | `y = x^`                | Move the value to another variable |
 
 ## Major changes in this chapter
 
 - 2025-06-23: Update to accommodate the changes in Mojo v25.4.
-- 2025-09-25: Include a section on default implementation of methods to accommodate the changes in Mojo v0.25.6.
+- 2025-09-25: Include a section on default implementation of methods to
+  accommodate the changes in Mojo v0.25.6.
 - 2026-02-28: Update to accommodate the changes in Mojo v0.26.1.
 - 2026-06-02: Update to accommodate the changes in Mojo v1.0.0b1.
+- 2026-08-19: Update to accommodate the changes in Mojo v1.0.0. The
+  `__copyinit__()` and `__moveinit__()` entries of the dunder-method table are
+  replaced by the unified `__init__()` constructors, and the `fn` keyword is
+  replaced by `def` throughout.
