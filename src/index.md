@@ -14,6 +14,9 @@ hero:
       text: Mojo Miji
       link: miji/
     - theme: brand
+      text: decimo
+      link: decimo/
+    - theme: brand
       text: Official Manual
       link: https://docs.modular.com/mojo/manual/
 

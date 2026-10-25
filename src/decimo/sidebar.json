@@ -1,0 +1,84 @@
+[
+  {
+    "text": "User manual",
+    "link": "/decimo/",
+    "collapsed": false,
+    "items": [
+      {
+        "text": "Installation",
+        "link": "/decimo/#installation"
+      },
+      {
+        "text": "Quick Start",
+        "link": "/decimo/#quick-start"
+      },
+      {
+        "text": "Part I — BigInt (BInt)",
+        "link": "/decimo/#part-i--bigint-bint"
+      },
+      {
+        "text": "Part II — Decimal",
+        "link": "/decimo/#part-ii--decimal"
+      },
+      {
+        "text": "Part III — BigFloat (BFlt)",
+        "link": "/decimo/#part-iii--bigfloat-bflt"
+      },
+      {
+        "text": "Part IV — Rational",
+        "link": "/decimo/#part-iv--rational"
+      }
+    ]
+  },
+  {
+    "text": "CLI calculator",
+    "link": "/decimo/cli",
+    "collapsed": false,
+    "items": [
+      {
+        "text": "Overview",
+        "link": "/decimo/cli#overview"
+      },
+      {
+        "text": "Installation",
+        "link": "/decimo/cli#installation"
+      },
+      {
+        "text": "Quick Start",
+        "link": "/decimo/cli#quick-start"
+      },
+      {
+        "text": "Expression Syntax",
+        "link": "/decimo/cli#expression-syntax"
+      },
+      {
+        "text": "CLI Options",
+        "link": "/decimo/cli#cli-options"
+      },
+      {
+        "text": "Input Modes",
+        "link": "/decimo/cli#input-modes"
+      },
+      {
+        "text": "Shell Integration",
+        "link": "/decimo/cli#shell-integration"
+      },
+      {
+        "text": "Performance",
+        "link": "/decimo/cli#performance"
+      },
+      {
+        "text": "Examples",
+        "link": "/decimo/cli#examples"
+      },
+      {
+        "text": "Error Messages",
+        "link": "/decimo/cli#error-messages"
+      },
+      {
+        "text": "Full --help Reference",
+        "link": "/decimo/cli#full---help-reference"
+      }
+    ]
+  }
+]

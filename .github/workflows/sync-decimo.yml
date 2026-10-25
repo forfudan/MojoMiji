@@ -1,0 +1,69 @@
+# Copy the decimo manuals into src/decimo and open a pull request when they
+# changed. It runs every Monday against the latest decimo release, and by hand
+# from the Actions tab against any tag or branch.
+#
+# Needs "Allow GitHub Actions to create and approve pull requests" turned on
+# under Settings > Actions > General.
+
+name: Sync decimo manual
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "decimo tag or branch to copy (empty: the latest release)"
+        required: false
+  schedule:
+    - cron: "0 6 * * 1"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pick the decimo ref
+        id: ref
+        env:
+          GH_TOKEN: ${{ github.token }}
+          INPUT: ${{ inputs.ref }}
+        run: |
+          ref="$INPUT"
+          if [ -z "$ref" ]; then
+            ref=$(gh release view -R forfudan/decimo --json tagName -q .tagName)
+          fi
+          echo "ref=$ref" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v4
+        with:
+          repository: forfudan/decimo
+          ref: ${{ steps.ref.outputs.ref }}
+          path: .decimo
+          sparse-checkout: docs
+
+      - name: Copy the manuals
+        run: python3 tools/sync_decimo.py --src .decimo --ref "${{ steps.ref.outputs.ref }}"
+
+      # The site is built here as well, so that a manual VitePress cannot
+      # render never reaches a pull request.
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+      - uses: peter-evans/create-pull-request@v7
+        with:
+          branch: sync-decimo
+          add-paths: src/decimo
+          commit-message: Sync the decimo manual to ${{ steps.ref.outputs.ref }}
+          title: Sync the decimo manual to ${{ steps.ref.outputs.ref }}
+          body: Copies `docs/user_manual.md` and `docs/user_manual_cli.md` from forfudan/decimo at ${{ steps.ref.outputs.ref }} with `tools/sync_decimo.py`.

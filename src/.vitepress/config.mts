@@ -5,6 +5,8 @@ import path from "node:path"
 import tailwind from "tailwindcss"
 import autoprefixer from "autoprefixer"
 import { groupIconMdPlugin, groupIconVitePlugin } from 'vitepress-plugin-group-icons'
+// Written by tools/sync_decimo.py, together with the pages under src/decimo.
+import decimoSidebar from '../decimo/sidebar.json'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -364,6 +366,7 @@ export default defineConfig({
   themeConfig: {
     logo: '/icon.png',
     nav: [
+      { text: 'decimo', link: '/decimo/', activeMatch: '^/decimo/' },
       { text: 'Repo of example programs in this Miji', link: 'https://github.com/forfudan/my-first-mojo-project' },
     ],
     logoLink: {
@@ -536,6 +539,7 @@ export default defineConfig({
           ]
         },
       ],
+      '/decimo': decimoSidebar,
       '/numojo': [
         { items: [{ text: 'Introduction', link: '/numojo/intro' }] },
         {
