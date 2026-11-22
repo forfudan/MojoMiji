@@ -1,25 +1,13 @@
 # Data types
 
-> If we were to have the same ancestor with horses instead of apes, we would
-> have been able to invent computers much earlier.  
+> If we were to have the same ancestor with horses instead of apes, we would > have been able to invent computers much earlier.  
 > -- Yuhao Zhu, *Gate of Heaven*
 
-Types of data are the foundation of programming languages. They define how one
-and zeros in the memory are interpreted as human-readable values. Mojo's data
-types are similar to Python's, but with some differences due to Mojo's static
-compilation nature.
+Types of data are the foundation of programming languages. They define how one and zeros in the memory are interpreted as human-readable values. Mojo's data types are similar to Python's, but with some differences due to Mojo's static compilation nature.
 
-In the following four chapters, we will discuss the most common data types in
-Mojo. They can be categorized into several categories: scalar types (integer,
-floats), composite types (list, tuple, string, SIMD), text types (string), and
-others types (boolean, literal).
+In the following four chapters, we will discuss the most common data types in Mojo. They can be categorized into several categories: scalar types (integer, floats), composite types (list, tuple, string, SIMD), text types (string), and others types (boolean, literal).
 
-This chapter starts with the scalar types and the boolean type, which are the
-most basic and simplest data types in Mojo. They represent single values that
-are stored in the memory with a fixed and relatively small size. The
-[composite types](../basic/composite), the [string type](../basic/string), the
-[literal types](../basic/literal), and the Mojo-featured
-[SMID type](../advanced/simd) will be further discussed in separate chapters.
+This chapter starts with the scalar types and the boolean type, which are the most basic and simplest data types in Mojo. They represent single values that are stored in the memory with a fixed and relatively small size. The [composite types](../basic/composite), the [string type](../basic/string), the [literal types](../basic/literal), and the Mojo-featured [SMID type](../advanced/simd) will be further discussed in separate chapters.
 
 The following topics will be covered in this chapter:
 
@@ -97,7 +85,7 @@ types in Python:
 | `UInt64`             | `numpy.uint64`   | 64-bit unsigned integer. Range: 0 to 2^64-1.                |
 | `UInt128`            | `decimo.UInt128` | 128-bit unsigned integer. Range: 0 to 2^128-1.              |
 | `UInt256`            | `decimo.UInt256` | 256-bit unsigned integer. Range: 0 to 2^256-1.              |
-| `decimo.BInt`        | `int`            | Arbitrary-precision. 9^10-based internal representation.    |
+| `decimo.BInt`        | `int`            | Arbitrary-precision. Binary (base 2^64) representation.     |
 
 ::: details `Int` is an alias of `SIMD`
 
@@ -509,6 +497,5 @@ def main():
 - 2025-06-26: Move the sections of list and literals to standalone chapters.
 - 2025-09-25: Update to accommodate the changes in Mojo v0.25.6.
 - 2026-02-28: Update to accommodate the changes in Mojo v0.26.1.
-- 2026-08-19: Update to accommodate the changes in Mojo v1.0.0. `Int` is now an
-  alias for `Scalar[DType.int]` and no longer converts implicitly to the other
-  integer types.
+- 2026-08-19: Update to accommodate the changes in Mojo v1.0.0. `Int` is now an alias for `Scalar[DType.int]` and no longer converts implicitly to the other integer types.
+- 2026-11-22: Update to Mojo v1.2.0. `decimo.BInt` now stores its digits in base 2^64.
