@@ -520,9 +520,7 @@ The move behavior is defined in the **move constructor** of the type, written
 move the value but instead perform a copy. Note that the argument name must be
 `move` so as to be a legal move constructor.
 
-Since **Mojo v1.0.0**, every struct you write is `Movable` by default, so you
-rarely have to think about this. If you want a type that must *not* be moved,
-say so with `not Movable` in its definition, e.g., `struct Lock(not Movable):`.
+Since **Mojo v1.0.0**, every struct you write is `Movable` by default, so you rarely have to think about this. If you want a type that must *not* be moved, say so with `not Movable` in its definition, e.g., `struct Lock(not Movable):`.
 
 :::
 
@@ -626,8 +624,7 @@ b = 1
 a and b has the same address: False
 ```
 
-`^` also has no effect on an argument that only borrows the value; see
-[Functions](../basic/functions#keyword-imm).
+`^` also has no effect on an argument that only borrows the value; see [Functions](../basic/functions#keyword-imm).
 
 ## Types and their behaviors
 
@@ -918,14 +915,6 @@ time for move operations.
 ## Major changes in this chapter
 
 - 2025-09-25: Add this chapter to accommodate the changes in Mojo v0.25.6.
-- 2026-08-19: Update to accommodate the changes in Mojo v1.0.0. The compiler no
-  longer rewrites a use-after-move into a copy, so `.copy()` has to be written
-  by hand. Structs are `Movable` by default, and collections no longer require
-  their elements to be copyable.
-- 2026-08-21: Add the section "Copy constructor and the `copy()` method",
-  which explains that `var b = a` and `var b = a.copy()` call two different
-  functions of a type, with a fallback-chain table and a details block on how
-  to build a shallow copy with `ArcPointer`. Update the compilation error of
-  the implicit copy of a list.
-- 2026-11-22: Update to Mojo v1.2.0. Opt out of moving with `not Movable`, and
-  link to the note on `^` with borrowed arguments.
+- 2026-08-19: Update to accommodate the changes in Mojo v1.0.0. The compiler no longer rewrites a use-after-move into a copy, so `.copy()` has to be written by hand. Structs are `Movable` by default, and collections no longer require their elements to be copyable.
+- 2026-08-21: Add the section "Copy constructor and the `copy()` method", which explains that `var b = a` and `var b = a.copy()` call two different functions of a type, with a fallback-chain table and a details block on how to build a shallow copy with `ArcPointer`. Update the compilation error of the implicit copy of a list.
+- 2026-11-22: Update to Mojo v1.2.0. Opt out of moving with `not Movable`, and link to the note on `^` with borrowed arguments.
