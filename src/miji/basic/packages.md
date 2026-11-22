@@ -172,9 +172,7 @@ and Mojo. This is because has several drawbacks:
 
 ## Rules of the import system
 
-Mojo v1.0.0 rewrote how the compiler resolves an import. The result is a system
-that says out loud what it used to guess. There are four rules worth knowing,
-and only the first one will affect you every day.
+Mojo v1.0.0 rewrote how the compiler resolves an import, and v1.1.0 made it stricter. The result is a system that says out loud what it used to guess. There are five rules worth knowing, and only the first one will affect you every day.
 
 ### 1. Standard library imports need the `std.` prefix
 
@@ -217,9 +215,17 @@ from . import point       # Correct
 import .point             # No longer works
 ```
 
-Related: a module inside a package must now import what it uses from its own
-package explicitly. Reaching for a sibling's names without an `import` still
-works, but is deprecated.
+If you write the old form, the compiler tells you what to write instead:
+
+```console
+error: relative imports must use 'from'; did you mean 'from . import point'?
+```
+
+Related: a module inside a package must import its siblings explicitly. Using a sibling module by its bare name, e.g., `m1.a()` without `from . import m1`, gave a warning in v1.0.0. Since v1.1.0, it is an error:
+
+```console
+error: use of unknown declaration 'm1'
+```
 
 ### 4. `import a.b` also binds `a`
 
@@ -227,6 +233,17 @@ Writing `import std.math` puts both `std` and `std.math` into scope. Previously
 only the full path was available, which meant `import std` followed by
 `import std.math` was an error. Both now work, and dotted imports inside a
 function body work too.
+
+### 5. Two imports cannot share a name
+
+Since v1.1.0, you cannot import two functions with the same name from different modules into one file. Mojo does not merge them into one overloaded function, but stops with an error:
+
+```mojo
+from pkg.m1 import a
+from pkg.m3 import a      # error: import of 'a' is ambiguous
+```
+
+Import the modules instead, and call `m1.a()` and `m3.a()`, or rename one of them with `as`.
 
 ## Namespace
 
@@ -326,7 +343,13 @@ for this change is that the `comptime` keyword more accurately reflects the fact
 that these aliases are evaluated at compile time, rather than being simple
 aliases that can be changed at runtime.
 
-You receive a warning if you use the `alias` keyword from Mojo v0.26.1.
+You receive a warning if you use the `alias` keyword from Mojo v0.26.1. The keyword was removed in v1.1.0. Old code that uses it now fails with a confusing error, because the compiler no longer knows the word `alias` at all:
+
+```console
+error: expressions must not appear at file scope; move this into a function body
+alias PI = 3.14159
+^
+```
 
 :::
 
@@ -650,8 +673,7 @@ extension is `.mojoc`. The old command still runs, with a warning:
 warning: 'package' is deprecated; use 'precompile' instead
 ```
 
-When a directory contains both forms, the compiler prefers, in order: a source
-package, a `.mojoc` file, a source module, and finally a legacy `.mojopkg` file.
+Both commands now insist on the new extension. `-o point.mojopkg` gives `error: output path must have a '.mojoc' extension`. Support for `.mojopkg` files was removed in v1.1.0, so the compiler no longer finds them.
 
 :::
 
@@ -671,3 +693,4 @@ The answer is that we can use either relative imports or absolute imports.
   imports now need the `std.` prefix, a package's `__init__.mojo` has to
   re-export its submodules, and `mojo package` became `mojo precompile`. A
   section "Rules of the import system" is added.
+- 2026-11-22: Update to Mojo v1.2.0. v1.1.0 removed `alias`, `.mojopkg` files, and access to a sibling module without an import. Add rule 5 on imports with the same name.

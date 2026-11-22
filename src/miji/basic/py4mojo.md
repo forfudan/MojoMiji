@@ -574,7 +574,7 @@ above example, is very convenient and straightforward. The only difference is
 that you need to use
 
 ```mojo
-decimal = Python.import_module("decimal")
+var decimal = Python.import_module("decimal")
 ```
 
 in Mojo, instead of
