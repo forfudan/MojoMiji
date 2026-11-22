@@ -3,21 +3,9 @@
 > There are a thousand string types in a thousand people's eyes.  
 > -- Yuhao Zhu, _Gate of Heaven_
 
-String is one of the most important concepts in programming languages, but also
-one of the most controversial ones. On the one hand, the "string" is able to
-store or represent the texts of almost all human languages. On the other hand,
-it is also a source of confusion and frustration for many programmers,
-especially when it comes to how to encode, decode, and manipulate strings. In a
-thousand people's eyes, there are a thousand different ways to implement a
-string type as well as its functionalities. Thus, some people even think that
-the string type should not be a built-in type in programming languages, but
-rather be in third-party libraries that can be implemented in different ways.
+String is one of the most important concepts in programming languages, but also one of the most controversial ones. On the one hand, the "string" is able to store or represent the texts of almost all human languages. On the other hand, it is also a source of confusion and frustration for many programmers, especially when it comes to how to encode, decode, and manipulate strings. In a thousand people's eyes, there are a thousand different ways to implement a string type as well as its functionalities. Thus, some people even think that the string type should not be a built-in type in programming languages, but rather be in third-party libraries that can be implemented in different ways.
 
-Nevertheless, most programming languages do have a built-in string type. Mojo is
-no exception. Its `String` took a long time to settle, and, for the reasons
-above, it was argued over even within the development team. It has been stable
-since Mojo v1.0.0, but it carries enough ideas that it deserves this standalone
-chapter.
+Nevertheless, most programming languages do have a built-in string type. Mojo is no exception. Its `String` took a long time to settle, and, for the reasons above, it was argued over even within the development team. It has been stable since Mojo v1.0.0, but it carries enough ideas that it deserves this standalone chapter.
 
 This chapter will cover the following topics:
 
@@ -373,13 +361,7 @@ The following table summarizes the three types:
 | `StringSpan`   | No                   | No                  | As long as the text it looks at  | 16 bytes                 |
 | `StaticString` | No                   | No                  | The whole run of the program     | 16 bytes                 |
 
-The "can grow or shrink" column is the one that matters in practice. A `String`
-can be appended to with `+=`, because it is allowed to go and find itself a
-bigger piece of memory. A `StringSpan` cannot, because the memory belongs to
-somebody else. (A span over a `String` that you are allowed to modify can still
-change the characters in place, one for another, but never the number of them. A
-`StaticString` cannot even do that, because the text lives in a read-only part
-of your program.)
+The "can grow or shrink" column is the one that matters in practice. A `String` can be appended to with `+=`, because it is allowed to go and find itself a bigger piece of memory. A `StringSpan` cannot, because the memory belongs to somebody else. (A `StringSpan` is always read-only: since v1.2.0 there is no mutable string span. To change the text, change the `String` itself.)
 
 Let's see them side by side. Note the function `shout()`, which accepts a
 `StringSpan`, and yet we are able to pass a `String`, a `StringSpan`, a
@@ -1059,6 +1041,14 @@ To get the last byte of a string, write `s[byte=s.byte_length() - 1]`.
 
 :::
 
+::: tip String methods that you know from Python
+
+Many methods of Python's `str` work the same way in Mojo, such as `upper()`, `strip()`, `split()`, `startswith()` and `endswith()`. Since v1.2.0, the edge cases of `startswith()` and `endswith()` also match Python's, e.g., an empty prefix or a negative start position. A tuple of prefixes is still not accepted.
+
+Python's `isspace()` is called `is_ascii_whitespace()` in Mojo. The old name still works, but it gives a deprecation warning.
+
+:::
+
 ## Internal representation of String
 
 ::: tip You can skip this section on your first read
@@ -1427,11 +1417,7 @@ walks through the layout byte by byte.
 
 ::: details How `String` got to this shape
 
-Earlier editions of this chapter opened with a warning that everything you were
-about to read might change next month. That warning has been retired: the Mojo
-API has been stable since **v1.0.0**, and `String` is not expected to move again
-in the near term. What follows is the trail it left, in case you meet older code
-or older writing about Mojo.
+Earlier editions of this chapter opened with a warning that everything you were about to read might change next month. That warning has been retired: the Mojo API has been stable since **v1.0.0**. Later releases only made small changes to `String` (v1.2.0 made `StringSpan` read-only and renamed `isspace()`). What follows is the trail it left, in case you meet older code or older writing about Mojo.
 
 For years `String` was the most argued-over type in the language. Should a
 string be a sequence of bytes, of code points, or of grapheme clusters? Should
@@ -1455,16 +1441,7 @@ is the first of them:
 - 2025-06-21: Update to accommodate the changes in Mojo v25.4.
 - 2025-08-18: Update to accommodate the changes in Mojo v25.5.
 - 2026-02-28: Update to accommodate the changes in Mojo v0.26.1.
-- 2026-08-10: Update to accommodate the changes in Mojo v1.0.0. Add a section on
-  `StringSpan` and `StaticString`. Add a section on template strings
-  (t-strings). Add a section on string length. Rewrite the sections on string
-  iteration and on string indexing and slicing, both of which are now supported.
-- 2026-08-19: Correct the source-file paths of the code listings so that they
-  match `my-first-mojo-project`.
-- 2026-08-21: Remove the warning that `String` is still changing. The API has
-  been stable since Mojo v1.0.0, so the warning and its references are kept as a
-  history note under Section
-  [Where a String keeps its bytes](#where-a-string-keeps-its-bytes). Add a
-  notice under Section
-  [Internal representation of String](#internal-representation-of-string) that
-  this section is background knowledge and can be skipped on a first read.
+- 2026-08-10: Update to accommodate the changes in Mojo v1.0.0. Add a section on `StringSpan` and `StaticString`. Add a section on template strings (t-strings). Add a section on string length. Rewrite the sections on string iteration and on string indexing and slicing, both of which are now supported.
+- 2026-08-19: Correct the source-file paths of the code listings so that they match `my-first-mojo-project`.
+- 2026-08-21: Remove the warning that `String` is still changing. The API has been stable since Mojo v1.0.0, so the warning and its references are kept as a history note under Section [Where a String keeps its bytes](#where-a-string-keeps-its-bytes). Add a notice under Section [Internal representation of String](#internal-representation-of-string) that this section is background knowledge and can be skipped on a first read.
+- 2026-11-22: Update to Mojo v1.2.0. `StringSpan` is always read-only. Add a tip on `startswith()`, `endswith()` and `is_ascii_whitespace()`.
