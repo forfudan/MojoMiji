@@ -147,8 +147,26 @@ detail in Section
 ["copyinit" vs "moveinit"](../advanced/ownership#copyinit-vs-moveinit) of
 Chapter [Ownership](../advanced/ownership.md).
 
+::: tip The walrus operator `:=`
+
+Python's walrus operator `:=` assigns a value inside an expression, and it creates the name if it does not exist yet. Mojo also has `:=`, but it only assigns to a variable that already exists. So you need to declare it with `var` first:
+
+```mojo
+def main():
+    var n: Int
+    if (n := 5) > 3:
+        print("n =", n)
+```
+
+```output mojo
+n = 5
+```
+
+:::
+
 ## Main changes in this chapter
 
 - 2026-08-19: Update to accommodate the changes in Mojo v1.0.0. The
   `__copyinit__()` and `__moveinit__()` entries are replaced by the unified
   `__init__()` constructors.
+- 2026-11-22: Update to Mojo v1.2.0. Add a tip on the walrus operator `:=`, which only assigns to an existing variable.
