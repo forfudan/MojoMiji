@@ -522,7 +522,7 @@ move the value but instead perform a copy. Note that the argument name must be
 
 Since **Mojo v1.0.0**, every struct you write is `Movable` by default, so you
 rarely have to think about this. If you want a type that must *not* be moved,
-say so with `Movable where False` in its definition.
+say so with `not Movable` in its definition, e.g., `struct Lock(not Movable):`.
 
 :::
 
@@ -625,6 +625,9 @@ a = 1
 b = 1
 a and b has the same address: False
 ```
+
+`^` also has no effect on an argument that only borrows the value; see
+[Functions](../basic/functions#keyword-imm).
 
 ## Types and their behaviors
 
@@ -924,3 +927,5 @@ time for move operations.
   functions of a type, with a fallback-chain table and a details block on how
   to build a shallow copy with `ArcPointer`. Update the compilation error of
   the implicit copy of a list.
+- 2026-11-22: Update to Mojo v1.2.0. Opt out of moving with `not Movable`, and
+  link to the note on `^` with borrowed arguments.
