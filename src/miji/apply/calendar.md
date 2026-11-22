@@ -38,7 +38,7 @@ The second layer is the **core** of the calendar app, which contains the main lo
 
 Ideally, these two layers should be separated, so that we can easily modify the interface without affecting the core logic, and vice versa. For example, we can call directly the core logic in another program or we can later implement a graphical user interface (GUI) for the calendar app without changing the core logic.
 
-Reading command-line arguments is a common task in many applications but it can be a bit tricky to implement it from scratch. Fortunately, we have [ArgMojo](https://github.com/forfudan/argmojo), a library that provides a simple and efficient way to parse command-line arguments in pure Mojo. We will use ArgMojo to handle the command-line arguments in our calendar app, which enables us to focus on the core logic of the calendar app without worrying about the details of parsing command-line arguments.
+Reading command-line arguments is a common task in many applications but it can be a bit tricky to implement it from scratch. Fortunately, we have [ArgMojo](https://argmojo.mojo-lang.com), a library that provides a simple and efficient way to parse command-line arguments in pure Mojo. We will use ArgMojo to handle the command-line arguments in our calendar app, which enables us to focus on the core logic of the calendar app without worrying about the details of parsing command-line arguments.
 
 The project structure of the calendar app will be as follows:
 

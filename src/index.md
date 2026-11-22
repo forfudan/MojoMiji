@@ -15,7 +15,7 @@ hero:
       link: miji/
     - theme: brand
       text: decimo
-      link: decimo/
+      link: https://decimo.mojo-lang.com
     - theme: brand
       text: Official Manual
       link: https://docs.modular.com/mojo/manual/
@@ -98,14 +98,15 @@ Python's standard library that Mojo does not yet have.
 
 1. [NuMojo](https://github.com/Mojo-Numerics-and-Algorithms-group/NuMojo):
    N-dimensional array type and numerical algorithms, similar to NumPy.
-1. [Decimo](https://github.com/forfudan/decimo): Arbitrary precision integer and
+1. [Decimo](https://decimo.mojo-lang.com): Arbitrary precision integer and
    decimal library for Mojo, similar to Python's `int` and `decimal.Decimal`
-   types.
+   types. ([GitHub](https://github.com/forfudan/decimo))
 
 **Command-line** libraries:
 
-1. [ArgMojo](https://github.com/forfudan/argmojo): A command-line argument
+1. [ArgMojo](https://argmojo.mojo-lang.com): A command-line argument
    parsing library for Mojo, similar to Python's `argparse`.
+   ([GitHub](https://github.com/forfudan/argmojo))
 1. [Mist](https://github.com/thatstoasty/mist): An terminal toolkit providing
    text styling, terminal control, event reading, etc.
 

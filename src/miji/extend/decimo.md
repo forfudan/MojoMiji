@@ -248,7 +248,7 @@ errors.
 
 ## Decimo library
 
-[Decimo](https://github.com/forfudan/decimo) provides an arbitrary-precision
+[Decimo](https://decimo.mojo-lang.com) provides an arbitrary-precision
 decimal and integer mathematics library for Mojo, delivering exact calculations
 for financial modeling, scientific computing, and applications where
 floating-point approximation errors are unacceptable. Beyond basic arithmetic,
@@ -459,6 +459,9 @@ def main() raises:
     print(a.number_of_significant_digits())            # 5
     print(Decimal128("12.34").to_string(scientific=True))  # 1.234E+1
 ```
+
+This chapter shows only a small part of the library. See the
+[decimo user manual](https://decimo.mojo-lang.com) for the full API.
 
 ## Main changes in this chapter
 
