@@ -611,10 +611,7 @@ explicit constructors of types, such as `var l: List[Int] = [1, 2, 3]`,
 `var s = String("Hello")`, or `var i = Int128(100)`. In this case, the Mojo
 compiler can infer the type of the variable from the constructor.
 
-If you still want to chill a bit, luckily, Mojo is more than "clever" to allow
-you to omit the `var` keyword as well as the type annotation and use a
-**simplified** syntax: `name = value`, just like Python. This will be discussed
-in details in a later section.
+Note that you cannot leave out `var` itself. A new name always needs `var`.
 
 :::
 
@@ -696,7 +693,7 @@ variable.
 
 ::::::
 
-### Omitting `var` is deprecated
+### Omitting `var` is an error
 
 In Python, you never write `var`. You just assign, and the variable comes into
 being:
@@ -705,11 +702,11 @@ being:
 a = 1
 ```
 
-Mojo used to allow this too. Since **Mojo v1.0.0**, it still compiles, but the
-compiler warns you and offers to insert the `var` for you:
+Mojo used to allow this. Since **Mojo v1.1.0**, it is a compile error, and the
+compiler offers to insert the `var` for you:
 
 ```console
-warning: implicit declaration of 'a' is deprecated; add 'var' before the name
+error: implicit declaration of 'a' is not allowed; add 'var' to declare a new name
     a = 1
     ^
     var
@@ -741,14 +738,15 @@ the reason you will see in Section
 when declaration and re-assignment share one syntax, the compiler cannot tell
 which one you meant, and neither can the reader.
 
-From v1.0.0 (2026-08-11), Mojo agreed and put `var` back. Omitting it is
-deprecated, and it will become an error in a future release.
+From v1.0.0 (2026-08-11), Mojo agreed and put `var` back, first with a
+warning. Since v1.1.0 (2026-09-17), omitting it is an error.
 
-If you read older Mojo code, or older versions of this Miji, you will meet both
-of the following forms. Both of them now produce a warning:
+If you read older Mojo code, or older versions of this Miji, you will meet the
+following form. It no longer compiles:
 
 ```mojo
 # src/basic/variables/variable_creation_without_var.mojo
+# This code will not compile. Since Mojo v1.1.0, a new variable needs `var`.
 def main():
     a = 1
     b = 2.5
@@ -756,19 +754,8 @@ def main():
     d = [1, 2, 3]
 ```
 
-```mojo
-# src/basic/variables/variable_creation_without_var_but_with_types.mojo
-# This code will not compile
-def main():
-    a: Int = 1
-    b: Float64 = 2.5
-    c: String = "Hello, world!"
-    d: List[Int] = [1, 2, 3]
-```
-
-The second form used to be an error: type annotations were part of the
-declaration, so you could not have one without `var`. Since v1.0.0 it compiles,
-with the same "add `var` before the name" warning as the first form.
+Adding a type annotation does not help: `d: List[Int] = [1, 2, 3]` gives the
+same error.
 
 ::::
 
@@ -1118,14 +1105,12 @@ example, the variable `a` in the `if` block has a different internal name
 (identifier) from the variable `a` in the `main` function. The compiler will
 never mix them up.
 
-:::danger Why you should always use `var`?
+:::danger Why does Mojo require `var`?
 
-Because variable declaration and variable assignment shares the same syntax in
-Mojo, the compiler may not be able to distinguish your intention. If you always
-omit the `var` keyword when declaring a variable. This habit will lead to
-confusion and bugs, especially when you are working with nested scopes. See the
-following example, which would run without any error, but may produce unexpected
-results:
+Variable declaration (`var b = 2`) and variable assignment (`b = 2`) look almost
+the same, but they do different things in a child scope. Since a new name always
+needs `var`, writing `b = 2` in a child scope always changes the outer `b`; it
+never creates a new one. See the following example:
 
 ```mojo
 # src/basic/variables/unintended_reassignment_in_nested_scopes.mojo
@@ -1163,15 +1148,12 @@ the outer variable `b`, and Mojo compiler allocates a new memory space for it.
 Therefore, when we print `b` in the inner scope, it is `2`. However, when we
 print `b` in the outer scope, it shows `1`.
 
-If you always omit the `var` keyword when declaring a variable, this habit will
-bring trouble to you. Let's say, you intend to create a new variable in the
-child scope, you use `b = 2`, and you think this is the correct way to create a
-new variable while keep the variable `b` in the parent scope unchanged. When you
-run the code, you will be surprised that the value `b` in the parent scope is
-changed to `2`.
+So, if you want a new variable in the child scope and keep the outer `b`
+unchanged, you must write `var b = 2`. If you write `b = 2`, the value of `b` in
+the parent scope is changed to `2`.
 
-So, based on Yuhao's experience, it is always good to use the `var` keyword when
-declaring a variable. There are two main reasons:
+This is why Mojo requires `var` for every new variable. There are two main
+reasons:
 
 1. **Explicitness**: Using `var` makes it clear that you are declaring a new
    variable. It is particularly helpful when you are working on a large codebase
@@ -1246,3 +1228,6 @@ def main():
   `var` keyword is now deprecated, so the section "Skip definition with `var`"
   is rewritten as "Omitting `var` is deprecated" and the history of the optional
   `var` is moved into a details block.
+- 2026-11-22: Update to Mojo v1.2.0. Omitting `var` is an error since v1.1.0,
+  so the section is renamed "Omitting `var` is an error" and the danger box on
+  nested scopes is reworded.
