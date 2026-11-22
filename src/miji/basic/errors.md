@@ -103,6 +103,12 @@ Running the above code will produce the following output:
 Unhandled exception caught during execution: Cannot divide by zero
 ```
 
+::: tip Where the error message goes
+
+Since v1.1.0, the message of an uncaught error goes to standard error (stderr), not standard output (stdout). If you redirect the output to a file with `> out.txt`, the file only holds the normal output, here `10 // 2 = 5`. The error message still appears in the terminal.
+
+:::
+
 The outcome of the above code shows the two scenarios:
 
 1. **Scenario 1**: The first call to `divide()` works as expected and returns
@@ -709,5 +715,5 @@ issue.
 
 ## Main changes in this chapter
 
-- 2026-08-19: Update to accommodate the changes in Mojo v1.0.0. The `fn` keyword
-  is replaced by `def`, since `fn` is deprecated.
+- 2026-08-19: Update to accommodate the changes in Mojo v1.0.0. The `fn` keyword is replaced by `def`, since `fn` is deprecated.
+- 2026-11-22: Update to Mojo v1.2.0. Uncaught errors are printed to stderr since v1.1.0.
