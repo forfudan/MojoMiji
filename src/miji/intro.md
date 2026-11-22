@@ -153,6 +153,10 @@ aim to open that door by the end of 2026.
 That said, Mojo is still a young language. Parts of it outside the stable core,
 such as the standard library and the tooling, will keep changing.
 
+Two releases have followed v1.0. v1.1.0 (17 September 2026) removed old syntax
+that v1.0 had deprecated, such as `alias` and the `read` keyword. v1.2.0 (22
+October 2026) added pattern matching. This Miji follows v1.2.0.
+
 Therefore, this Miji is expected to be updated continuously over a long period
 (around five years). Many of the examples and explanations in this Miji may
 become outdated as Mojo evolves. Thank you in advance for your understanding and

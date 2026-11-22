@@ -135,7 +135,7 @@ do this, add the following line to the `[dependencies]` section:
 
 ```toml
 [dependencies]
-mojo = "==1.0.0"
+mojo = "==1.2.0"
 ```
 
 :::
@@ -147,18 +147,18 @@ This also includes the Mojo compiler.
 The word on the right side of the `=` is the version of the package you want to
 install. Here are some examples:
 
-- `mojo = "==1.0.0"`: This means to install a specific version of the package,
-  e.g., version 1.0.0[^versioning].
-- `mojo = ">=1.0.0"`: This means to install any version from 1.0.0 and later.
-- `mojo = ">=1.0.0, <1.1.0"`: This means to install version 1.0.0 or later, but
-  less than 1.1.0.
+- `mojo = "==1.2.0"`: This means to install a specific version of the package,
+  e.g., version 1.2.0[^versioning].
+- `mojo = ">=1.2.0"`: This means to install any version from 1.2.0 and later.
+- `mojo = ">=1.2.0, <1.3.0"`: This means to install version 1.2.0 or later, but
+  less than 1.3.0.
 - `mojo = "*"`: This means to install the latest version of the package (as
   available in the channels specified in the "channels" field).
 
 ## Install Mojo compiler
 
-After we put `mojo = "==1.0.0"` in the dependencies field, pixi knows that we
-want to install the latest version of the `mojo` package. To finish the
+After we put `mojo = "==1.2.0"` in the dependencies field, pixi knows that we
+want to install version 1.2.0 of the `mojo` package. To finish the
 installation, we need to run the following command in your terminal (Use
 `Cmd + J` to open the terminal in VS Code):
 
@@ -209,4 +209,5 @@ For more information about pixi, you can refer to the
     2025. From v0.25.6, an extra `0.` was added in front of the
     version number. Mojo reached v1.0.0 on 2026-08-11; the two
     releases before it, v1.0.0b1 and v1.0.0b2, carried a `b` to mark
-    them as beta versions.
+    them as beta versions. v1.1.0 followed on 2026-09-17 and v1.2.0
+    on 2026-10-22.

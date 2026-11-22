@@ -18,7 +18,7 @@ hero:
       link: https://decimo.mojo-lang.com
     - theme: brand
       text: Official Manual
-      link: https://docs.modular.com/mojo/manual/
+      link: https://mojolang.org/docs/manual/
 
 ---
 <!--
@@ -49,10 +49,10 @@ change it, so you can try your own ideas without leaving the page.
 
 ```mojo
 def main():
-   a = "Hello, world!"
+   var a = "Hello, world!"
    print(a)
 
-   b = 0
+   var b = 0
    for i in range(10):
       b = b + i
    print(b)
@@ -77,7 +77,7 @@ print(b)
 
 Here are some official resources for Mojo that you may find useful:
 
-1. [Mojo official manual](https://docs.modular.com/mojo/): Comprehensive
+1. [Mojo official manual](https://mojolang.org/docs/manual/): Comprehensive
    information about the language, its features, and change log.
 1. [Mojo standard library Github repository](https://github.com/modular/modular):
    The official repository for the Mojo standard library.

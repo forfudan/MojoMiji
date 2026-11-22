@@ -131,13 +131,13 @@ On the contrary, in Mojo, the process is a bit different:
 commands. You can try yourself:
 
 ```bash
-pixi run mojo build src/hello.mojo  # Compile the Mojo file
-./hello                             # Run the compiled binary file
+pixi run mojo build src/start/hello.mojo  # Compile the Mojo file
+./hello                                   # Run the compiled binary file
 ```
 
-The first command complies the `hello.mojo` file into a binary executable file
+The first command compiles the `hello.mojo` file into a binary executable file
 called `hello` in the root directory. The second command runs the `hello` file
-to get the output "hello, world!". You can test it in your terminal.
+to get the output "Hello, world!". You can test it in your terminal.
 
 You can copy this "hello" file to another computer (same OS) and run it without
 installing Mojo. This is a feature that Python does not have.
