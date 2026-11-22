@@ -756,7 +756,7 @@ sequentially taken out from an iterable. You can also add an optional
 comprehension is the shortened version (a syntax sugar) of the following code:
 
 ```mojo
-lst = List[Type]()
+var lst = List[Type]()
 for item in iterable:
     if condition:
         lst.append(expression(item))
@@ -877,20 +877,12 @@ the same thing more honestly, in both languages.
 
 ### Memory layout of List type
 
-A Mojo `List` is actually a structure that contains three fields:
+A Mojo `List` is actually a structure that contains two fields:
 
-- A pointer type `_data` that points to a continuous block of memory on the heap
-  that stores the elements of the list contiguously.
-- A integer type `_len` which stores the number of elements in the list.
-- A integer type `capacity` which represents the maximum number of elements that
-  can be stored in the list without reallocating memory. When `capacity` is
-  larger than `_len`, it means that the memory space is allocated but is not
-  fully used. This enable you to append a few new elements to the list without
-  reallocating memory. If you append more elements than the current capacity,
-  the list will request another block of memory on the heap with a larger
-  capacity, copy the existing elements to the new block, and then append the new
-  elements. Since Mojo v1.0.0 you read it with the method `capacity()` rather
-  than the field `capacity`.
+- A field `_storage`, which describes the block of memory on the heap that stores the elements of the list contiguously. It holds two things:
+  - A **pointer** to the first element of that block.
+  - The **capacity**, the maximum number of elements that can be stored in the block without reallocating memory. When the capacity is larger than the length, the memory space is allocated but is not fully used. This enables you to append a few new elements to the list without reallocating memory. If you append more elements than the current capacity, the list will request another block of memory on the heap with a larger capacity, copy the existing elements to the new block, and then append the new elements. You read it with the method `capacity()`.
+- An integer field `_len`, which stores the number of elements in the list.
 
 Let's take a closer look at how a Mojo `List` is stored in the memory with a
 simple example: The code below creates a `List` of `UInt8` numbers representing
@@ -910,39 +902,28 @@ def main():
 Yuhao
 ```
 
-When you create a `List` with `List[UInt8]([89, 117, 104, 97, 111])`, Mojo will
-first allocate a continuous block of memory on **stack** to store the three
-fields (`_data: Pointer`, `_len: Int` and `capacity: Int`, each of which is 8
-bytes long on a 64-bit system. Because we passed 5 elements to the `List`
-constructor, the `_len` field will be set to 5, and the `capacity` field will
-also be set to 5 (default setting, `capacity = _len`).
+When you create a `List` with `List[UInt8]([89, 117, 104, 97, 111])`, Mojo will first allocate a continuous block of memory on **stack** to store three words: the pointer and the capacity in `_storage`, and the length in `_len`. Each of them is 8 bytes long on a 64-bit system, so the list takes 24 bytes on the stack. Because we passed 5 elements to the `List` constructor, the length will be set to 5, and the capacity will also be set to 5 (by default, the capacity equals the length).
 
-Then Mojo will allocate a continuous block of memory on **heap** to store the
-actual values of the elements of the list, which is 1 bytes (8 bits) for each
-`UInt8` element, equaling to 5 bytes in total for 5 elements. The `_data` field
-will then store the address of the first byte in this block of memory.
+Then Mojo will allocate a continuous block of memory on **heap** to store the actual values of the elements of the list, which is 1 bytes (8 bits) for each `UInt8` element, equaling to 5 bytes in total for 5 elements. The pointer in `_storage` will then store the address of the first byte in this block of memory.
 
-The following figure illustrates how the `List` is stored in the memory. You can
-see that a continuous block of memory on the heap (from the address `17ca81f8`
-to `17ca81a2`) stores the actual values of the elements of the list. Each
-element is a `UInt8` value, and thus is of 1 byte long. The data field on the
-stack store the address of the first byte of the block of memory on the heap,
-which is `17ca81f8`.
+The following figure illustrates how the `List` is stored in the memory. You can see that a continuous block of memory on the heap (from the address `17ca81f8` to `17ca81fc`) stores the actual values of the elements of the list. Each element is a `UInt8` value, and thus is of 1 byte long. The pointer on the stack stores the address of the first byte of the block of memory on the heap, which is `17ca81f8`.
 
 ```console
 # Mojo Miji - Data types - List in memory
 
         local variable `me: List[UInt8] = [89, 117, 104, 97, 111]`
             ↓  (meta data on stack)
-        ┌────────────────┬────────────┬────────────┐
-Field   │ _data          │ _len       │ capacity   │
-        ├────────────────┼────────────┼────────────┤
-Type    │ Pointer[UInt8] │  Int       │     Int    │
-        ├────────────────┼────────────┼────────────┤
-Value   │   17ca81f8     │     5      │     5      │
-        ├────────────────┼────────────┼────────────┤
-Address │   26c6a89a     │  26c6a8a2  │  26c6a8aa  │
-        └────────────────┴────────────┴────────────┘
+        ┌─────────────────────────────────┬────────────┐
+Field   │ _storage                        │ _len       │
+        ├────────────────┬────────────────┼────────────┤
+Part    │ pointer        │ capacity       │            │
+        ├────────────────┼────────────────┼────────────┤
+Type    │ Pointer[UInt8] │      Int       │     Int    │
+        ├────────────────┼────────────────┼────────────┤
+Value   │   17ca81f8     │       5        │      5     │
+        ├────────────────┼────────────────┼────────────┤
+Address │   26c6a89a     │   26c6a8a2     │  26c6a8aa  │
+        └────────────────┴────────────────┴────────────┘
             │
             ↓ (points to a continuous memory block on heap that stores the list elements)
         ┌────────┬────────┬────────┬────────┬────────┐
@@ -952,23 +933,13 @@ Type    │ UInt8  │ UInt8  │ UInt8  │ UInt8  │ UInt8  │
         ├────────┼────────┼────────┼────────┼────────┤
 Value   │01011001│01110101│01101000│01100001│01101111│
         ├────────┼────────┼────────┼────────┼────────┤
-Address │17ca81f8│17ca81f9│17ca81a0│17ca81a1│17ca81a2│
+Address │17ca81f8│17ca81f9│17ca81fa│17ca81fb│17ca81fc│
         └────────┴────────┴────────┴────────┴────────┘
 ```
 
-Now we try to see what happens when we use list indexing to get a specific
-element from the list, for example, `me[0]`. Mojo will first check the `_len`
-field to see if the index is valid (i.e., `0 <= index < me._len`). If it is
-valid, Mojo will then calculate the address of the element by adding the index
-to the address stored in the `_data` field. In this case, it will return the
-address of the first byte of the block of memory on the heap, which is
-`17ca81f8`. Then Mojo will de-reference this address to get the value of the
-element, which is `89` in this case.
+Now we try to see what happens when we use list indexing to get a specific element from the list, for example, `me[0]`. Mojo will first check the `_len` field to see if the index is valid (i.e., `0 <= index < me._len`). If it is valid, Mojo will then calculate the address of the element by adding the index to the address stored in the pointer. In this case, it will return the address of the first byte of the block of memory on the heap, which is `17ca81f8`. Then Mojo will de-reference this address to get the value of the element, which is `89` in this case.
 
-If we try `me[2]`, Mojo will calculate address by adding `2` to the address
-stored in the `_data` field, which is `17ca81f8 + 2 = 17ca81fa`. Then Mojo will
-de-reference this address to get the value of the element, which is `104` in
-this case.
+If we try `me[2]`, Mojo will calculate address by adding `2` to the address stored in the pointer, which is `17ca81f8 + 2 = 17ca81fa`. Then Mojo will de-reference this address to get the value of the element, which is `104` in this case.
 
 ::: info Index or offset?
 
@@ -1033,6 +1004,8 @@ change its type halfway through a program.
 | Cost to create             | Free                  | One heap allocation |
 | What `[1, 2, 3]` gives you | This one              | Only if you ask     |
 
+Like a list, an array can be indexed with `arr[i]`. Since v1.2.0, it can also be sliced: `arr[1:3]` gives a `Span`, a view of the elements, not a new array.
+
 ### Construct an array
 
 You get an `Array` by writing a list literal and saying nothing about the type.
@@ -1093,21 +1066,13 @@ features of `List`, you add a type annotation to force a list constructor.
 
 ::: details `InlineArray` was renamed to `Array`
 
-The `Array` type is not new. Until v1.0.0 it was called `InlineArray`, its
-element-type parameter was `ElementType` rather than `T`, and its length
-parameter was `size` rather than `length`. So
-`InlineArray[ElementType=Int, size=3]` is today's `Array[T=Int, length=3]`. The
-old name still works for now, as a `comptime` alias.
+The `Array` type is not new. Until v1.0.0 it was called `InlineArray`, its element-type parameter was `ElementType` rather than `T`, and its length parameter was `size` rather than `length`. So `InlineArray[ElementType=Int, size=3]` is today's `Array[T=Int, length=3]`. The old name was kept as an alias in v1.0.0 and removed in v1.1.0.
 
 :::
 
 ### Memory layout of Array type
 
-In the previous section, we saw that a `List` is a three-field structure on the
-stack (`_data`, `_len`, and `capacity`) that points to a block of memory on the
-heap. An `Array` is simpler than that: it has no fields at all besides the
-elements themselves. The elements are stored **inline**, one after another,
-right where the variable lives. Hence its former name, `InlineArray`.
+In the previous section, we saw that a `List` is a structure of three words on the stack (a pointer, the capacity, and the length) that points to a block of memory on the heap. An `Array` is simpler than that: it has no fields at all besides the elements themselves. The elements are stored **inline**, one after another, right where the variable lives. Hence its former name, `InlineArray`.
 
 Let's use the same five letters as before, but this time in an `Array`:
 
@@ -1146,14 +1111,9 @@ Address │26c6a89a│26c6a89b│26c6a89c│26c6a89d│26c6a89e│
 Compare this with the figure of the `List` in the previous section and you will
 see three differences:
 
-1. There is no metadata. The `List` spends 24 bytes on stack on its three
-   fields, before storing a single element. The `Array` spends nothing.
-2. There is no heap block, and thus no allocation when the value is created and
-   no de-allocation when it goes out of scope.
-3. There is one fewer hop to reach an element. Indexing a `List` means reading
-   the `_data` field and then de-referencing it. Indexing an `Array` means going
-   straight to the address of the value plus the offset, because the elements
-   are the value.
+1. There is no metadata. The `List` spends 24 bytes on stack on its pointer, capacity, and length, before storing a single element. The `Array` spends nothing.
+2. There is no heap block, and thus no allocation when the value is created and no de-allocation when it goes out of scope.
+3. There is one fewer hop to reach an element. Indexing a `List` means reading the pointer and then de-referencing it. Indexing an `Array` means going straight to the address of the value plus the offset, because the elements are the value.
 
 This is what "costs nothing to create" means in the table above. It is also what
 you give up: the length is baked into the type, so the array can never grow, and
@@ -1215,23 +1175,9 @@ The table below compares Mojo's `Dict` with Python's `dict`:
 
 - 2025-09-25: Update to accommodate the changes in Mojo v0.25.6.
 - 2026-02-28: Update to accommodate the changes in Mojo v0.26.1.
-- 2026-08-19: Update to accommodate the changes in Mojo v1.0.0. A list literal
-  now builds an `Array` instead of a `List`, so a section "List or Array?" is
-  added and every example spells out its `List` annotation. Negative indices are
-  gone, an out-of-range slice now aborts, `capacity` became a method, and list
-  comprehension with `print()` now works.
-- 2026-08-21: Remove the warning that lists are unchecked. Since Mojo v1.0.0 an
-  out-of-range index stops the program, so the old warning is kept as a history
-  note under Section [Index or slice a list](#index-or-slice-a-list).
-- 2026-08-21: Move the printed output of nine examples out of separate `console`
-  blocks and into the output panel of the code above them, so that the page
-  already looks the way it does after you press Run.
-- 2026-08-21: Give each tab of a code group its own output. The Python tabs of
-  Section [Print a list](#print-a-list),
-  [List comprehension](#list-comprehension) now show what Python prints, next to
-  what Mojo prints.
-- 2026-08-21: Promote `Array` to its own section, [Arrays](#arrays), which now
-  sits between the lists and the dictionaries and carries the comparison with
-  `List`, the ways to construct an array, and a memory-layout figure of its own.
-  The subsection "List or Array?" is replaced by a short pointer under Section
-  [Construct a list](#construct-a-list).
+- 2026-08-19: Update to accommodate the changes in Mojo v1.0.0. A list literal now builds an `Array` instead of a `List`, so a section "List or Array?" is added and every example spells out its `List` annotation. Negative indices are gone, an out-of-range slice now aborts, `capacity` became a method, and list comprehension with `print()` now works.
+- 2026-08-21: Remove the warning that lists are unchecked. Since Mojo v1.0.0 an out-of-range index stops the program, so the old warning is kept as a history note under Section [Index or slice a list](#index-or-slice-a-list).
+- 2026-08-21: Move the printed output of nine examples out of separate `console` blocks and into the output panel of the code above them, so that the page already looks the way it does after you press Run.
+- 2026-08-21: Give each tab of a code group its own output. The Python tabs of Section [Print a list](#print-a-list), [List comprehension](#list-comprehension) now show what Python prints, next to what Mojo prints.
+- 2026-08-21: Promote `Array` to its own section, [Arrays](#arrays), which now sits between the lists and the dictionaries and carries the comparison with `List`, the ways to construct an array, and a memory-layout figure of its own. The subsection "List or Array?" is replaced by a short pointer under Section [Construct a list](#construct-a-list).
+- 2026-11-22: Update to Mojo v1.2.0. The memory layout of `List` is redrawn: the pointer and the capacity now sit together in the field `_storage`. Arrays can be sliced. `InlineArray` was removed in v1.1.0.
