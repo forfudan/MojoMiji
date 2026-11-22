@@ -717,17 +717,39 @@ error: expression must be mutable in assignment
     ~~~~^~~
 ```
 
+::: tip `^` has no effect on an `imm` argument
+
+The transfer operator `^` (see Chapter [Copy and move](../basic/copy)) only helps when the argument takes ownership, i.e., when it is a `var` argument. If the argument only borrows the value (`imm`), there is nothing to transfer, and Mojo warns you about this:
+
+```mojo
+def show(lst: List[Int]):
+    print(lst)
+
+
+def main():
+    var a: List[Int] = [1, 2, 3]
+    show(a^)
+```
+
+```console
+warning: this value is borrowed here, so the transfer has no effect and can be removed
+    show(a^)
+          ^
+```
+
+:::
+
 ::: details The names this keyword has had
 
 This keyword has been renamed twice. It was `borrowed` before Mojo v24.6, then
 `read`, and since **Mojo v1.0.0** it is `imm`. There were other proposals along
 the way, such as `immut`.
 
-`read` still compiles today, but it is deprecated and the compiler will tell you
-so:
+`read` was deprecated in v1.0.0 and removed in v1.1.0. Old code that uses it
+fails with:
 
 ```console
-warning: 'read' is deprecated; use 'imm'
+error: 'read' was removed; use 'imm'
 ```
 
 :::
@@ -1338,15 +1360,6 @@ the reader. 😏
 
 - 2025-06-20: Update to accommodate the changes in Mojo v25.4.
 - 2025-09-04: Update to accommodate the changes in Mojo v25.5.
-- 2026-08-19: Update to accommodate the changes in Mojo v1.0.0. The chapter is
-  rewritten around `def`: the `fn` keyword is deprecated and moves into a
-  details block, `raises` gets its own section because it is now always
-  explicit, the `read` keyword is renamed to `imm`, and a section on lambda
-  expressions is added.
-- 2026-08-21: Add a warning in Section [Arguments](#arguments) that arguments
-  are evaluated before the function is called, which makes the message of
-  `debug_assert()` expensive even when the assertions are turned off.
-  Add a note in Section
-  [Mutability of arguments](#mutability-of-arguments) on the keyword `ref`,
-  which can also be used before an argument, so that readers recognize it when
-  they see it in other people's code.
+- 2026-08-19: Update to accommodate the changes in Mojo v1.0.0. The chapter is rewritten around `def`: the `fn` keyword is deprecated and moves into a details block, `raises` gets its own section because it is now always explicit, the `read` keyword is renamed to `imm`, and a section on lambda expressions is added.
+- 2026-08-21: Add a warning in Section [Arguments](#arguments) that arguments are evaluated before the function is called, which makes the message of `debug_assert()` expensive even when the assertions are turned off. Add a note in Section [Mutability of arguments](#mutability-of-arguments) on the keyword `ref`, which can also be used before an argument, so that readers recognize it when they see it in other people's code.
+- 2026-11-22: Update to Mojo v1.2.0. The keyword `read` was removed in v1.1.0. Add a tip that `^` has no effect on an `imm` argument.
