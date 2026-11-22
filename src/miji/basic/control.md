@@ -23,6 +23,7 @@ colors, which indicate the differences between Mojo and Python.
 This chapter covers the following topics:
 
 - The conditionals: `if`-`else` statement
+- Pattern matching: `match`-`case` statement
 - The `for` loops
 - The `while` loops
 - Other keywords: `break`, `continue`, etc
@@ -479,6 +480,235 @@ Moreover, we also use a one-liner conditional expression to print a message
 based on the value of the variable `c`. This is because the `print()` function
 implicitly returns the `None` value, and thus it is a valid expression to be
 used in a one-liner conditional.
+
+### match-case statement
+
+Since v1.2.0, Mojo has a `match` statement, like Python 3.10. It compares one value against a list of "patterns", and runs the block of the first pattern that matches. It is a cleaner way to write a long `if`-`elif` chain that compares the same value again and again.
+
+Below is an example in both Mojo and Python. The function `respond()` takes a command and returns a reply.
+
+::: code-group
+
+```mojo
+# src/basic/control/match_commands.mojo
+def respond(command: String) -> String:
+    match command:
+        case "hi":
+            return "Hello, master!"
+        case "who":
+            return "I am Mojo, your loyal assistant!"
+        case "when":
+            return "I was born in the 2020s, and I am still growing!"
+        case "bye" | "farewell":
+            return "Goodbye!"
+        case _:
+            return "I don't understand your command."
+
+
+def main():
+    print(respond("hi"))
+    print(respond("when"))
+    print(respond("farewell"))
+    print(respond("dance"))
+```
+
+```output mojo
+Hello, master!
+I was born in the 2020s, and I am still growing!
+Goodbye!
+I don't understand your command.
+```
+
+```python
+# src/basic/control/match_commands.py
+def respond(command: str) -> str:
+    match command:
+        case "hi":
+            return "Hello, master!"
+        case "who":
+            return "I am Mojo, your loyal assistant!"
+        case "when":
+            return "I was born in the 2020s, and I am still growing!"
+        case "bye" | "farewell":
+            return "Goodbye!"
+        case _:
+            return "I don't understand your command."
+
+
+def main():
+    print(respond("hi"))
+    print(respond("when"))
+    print(respond("farewell"))
+    print(respond("dance"))
+
+
+main()
+```
+
+```output python
+Hello, master!
+I was born in the 2020s, and I am still growing!
+Goodbye!
+I don't understand your command.
+```
+
+:::
+
+The syntax is the same as in Python:
+
+- Each `case` is followed by a **pattern**. Here the patterns are string literals.
+- `|` means "or". The case `"bye" | "farewell"` matches either of the two strings.
+- `_` is the **wildcard**. It matches anything, so it works like the `else` of an `if`-`elif` chain. Put it last.
+- Only the first matching case runs. There is no "fall through" to the next case.
+
+Note that `respond()` returns a `String`, so every possible input must lead to a `return`. Without the `case _`, the compiler stops with the error `return expected at end of function with results`, just as with the non-exhaustive `if`-`elif` chain in Section [Non-exhaustive conditionals](#non-exhaustive-conditionals).
+
+---
+
+So far, every pattern has been a fixed value, such as `"hi"` or `"bye"`. A pattern can also contain **names**. Before we use names in a `match` statement, let's look at something that you already know from Python.
+
+A **tuple** is a fixed group of values in parentheses, such as `(10, 2)`. You can unpack a tuple into several variables in one line:
+
+::: code-group
+
+```mojo
+# src/basic/control/tuple_unpacking.mojo
+def main():
+    var (x, y) = (10, 2)
+    print(x, y)
+```
+
+```output mojo
+10 2
+```
+
+```python
+# src/basic/control/tuple_unpacking.py
+def main():
+    (x, y) = (10, 2)
+    print(x, y)
+
+
+main()
+```
+
+```output python
+10 2
+```
+
+:::
+
+This is called **tuple unpacking**. The names `x` and `y` are bound to the first and second parts of the value `(10, 2)`, so you can use `x` and `y` afterwards.
+
+This one line actually does two things:
+
+1. **Matching**: The shape `(x, y)` on the left is compared with the value `(10, 2)` on the right. Both have two parts, so they match: `x` goes with the first part, and `y` goes with the second part. If the shapes do not match, for example `(x, y) = (10, 2, 1)`, it does not work. Python stops with an error when the line runs (`ValueError: too many values to unpack`). Mojo refuses to compile it.
+1. **Initialization**: New variables `x` and `y` are created, and they get the values `10` and `2`.
+
+The `match` statement extends this idea. A name in a pattern matches anything, and it **binds** that part of the value to the name, so that you can use it in the block of the case. The only difference from `var` is that the name is read-only. For example, `case (0, y):` matches any tuple of two values whose first value is `0`, and it binds the second value to `y`.
+
+You can also add an `if` condition after a pattern. This is called a **guard**: the case only matches if the condition is also true.
+
+The next example matches a pair of coordinates `(px, py)`:
+
+::: code-group
+
+```mojo
+# src/basic/control/match_tuples_and_guards.mojo
+def where_is(px: Int, py: Int) -> String:
+    match (px, py):
+        case (0, 0):
+            return "at the origin"
+        case (0, y):
+            return String("on the y-axis at y=", y)
+        case (x, 0):
+            return String("on the x-axis at x=", x)
+        case (x, y) if x == y:
+            return "on the diagonal"
+        case _:
+            return "somewhere else"
+
+
+def main():
+    print(where_is(0, 0))
+    print(where_is(0, 5))
+    print(where_is(3, 0))
+    print(where_is(2, 2))
+    print(where_is(1, 7))
+```
+
+```output mojo
+at the origin
+on the y-axis at y=5
+on the x-axis at x=3
+on the diagonal
+somewhere else
+```
+
+```python
+# src/basic/control/match_tuples_and_guards.py
+def where_is(px: int, py: int) -> str:
+    match (px, py):
+        case (0, 0):
+            return "at the origin"
+        case (0, y):
+            return f"on the y-axis at y={y}"
+        case (x, 0):
+            return f"on the x-axis at x={x}"
+        case (x, y) if x == y:
+            return "on the diagonal"
+        case _:
+            return "somewhere else"
+
+
+def main():
+    print(where_is(0, 0))
+    print(where_is(0, 5))
+    print(where_is(3, 0))
+    print(where_is(2, 2))
+    print(where_is(1, 7))
+
+
+main()
+```
+
+```output python
+at the origin
+on the y-axis at y=5
+on the x-axis at x=3
+on the diagonal
+somewhere else
+```
+
+:::
+
+In the case `(0, y)`, the first value must be `0`, and the second value can be anything; it is bound to the name `y`. In the case `(x, y) if x == y`, both values are bound, and the guard checks that they are equal.
+
+Note that a tuple pattern must have as many parts as the value. In Python, `case (x, y):` simply does not match a tuple of three values, and Python goes on to the next case. In Mojo, the length of a tuple is part of its type, so this is a compile error: `cannot match value of 'Tuple[Int, Int, Int]' of 3 elements against a pattern with 2 elements`.
+
+::: warning Negative numbers and variables in a pattern
+
+Two things work differently from what you may expect.
+
+A negative number is not accepted as a pattern. `case -2:` gives `error: expression is not a valid match pattern; use '==' to compare against its value`. Write `case == -2:` instead. (Python accepts `case -2:`.)
+
+A plain name is always a new binding, never a comparison with an existing variable. In the code below, `case limit:` does not compare `n` with `limit`. It matches every value and binds it to a new name `limit`. To compare with a variable, write `case == limit:`.
+
+```mojo
+var limit = 10
+var n = 3
+match n:
+    case limit:  # Matches anything! `limit` is now 3.
+        print("n is", limit)
+    case _:
+        print("other")
+```
+
+Python rejects this code with a syntax error. Mojo only warns that the cases after it are unreachable: `warning: case is unreachable; previous cases cover every value of the match subject`.
+
+:::
+
+There are more kinds of patterns, for example for optional values, structs, and lists. They are covered in Chapter Pattern matching, after we learn about structs.
 
 ## For loops
 
@@ -1279,6 +1509,36 @@ commands until they decide to exit the program.
 
 :::
 
+The `if`-`elif` chain in this program compares the same variable `input` again and again. This is where the `match` statement from Section [match-case statement](#match-case-statement) shines. The program below works in the same way:
+
+```mojo
+# src/basic/control/give_commands_with_match.mojo
+def main() raises:
+    while True:
+        var input = input(
+            "Please enter one of the following commands:\n(1) hi\n(2) who\n(3)"
+            " when\nIf you want to quit the program, enter 'bye' or"
+            " 'farewell'\nWaiting for your order: "
+        )
+        print()
+        match input:
+            case "hi":
+                print("Hello, master!")
+            case "who":
+                print("I am Mojo, your loyal assistant!")
+            case "when":
+                print("I was born in the 2020s, and I am still growing!")
+            case "bye" | "farewell":
+                print("Goodbye!")
+                break
+            case _:
+                print("I don't understand your command. Please try again.")
+
+        print()
+```
+
+Note that the `break` inside a `case` block exits the `while` loop, not only the `match` statement.
+
 ### Avoid infinite loop with a counter
 
 Sometimes, finding a proper condition to stop a `while` loop can be tricky,
@@ -1780,7 +2040,7 @@ the input number is greater than 93. For example, you can modify the
 ::: code-group
 
 ```mojo
-def print_fibonacci(n: int) -> None:
+def print_fibonacci(n: Int) -> None:
     """Prints the first n Fibonacci numbers."""
     if n > 93:
         print(
@@ -1789,8 +2049,8 @@ def print_fibonacci(n: int) -> None:
         )
         return
 
-    prev = 0
-    curr = 1
+    var prev = 0
+    var curr = 1
     for _ in range(n):
         print(prev)
         prev, curr = curr, prev + curr
@@ -2510,13 +2770,6 @@ Enter a year (after 1582) to print its calendar: 2025
 
 ## Major changes in this chapter
 
-- 2026-06-02: Update to accommodate the changes in Mojo v1.0.0b1. The iterator
-  protocol was changed: `__has_next__()` was removed, and `__next__()` now
-  raises a `StopIteration` error to signal the end of the iteration. The
-  `loop_over_iterators_with_while.mojo` and `loop_over_list_with_while.mojo`
-  examples have been rewritten to use the new `try / except StopIteration`
-  pattern inside `while True`.
-- 2026-08-19: Update to accommodate the changes in Mojo v1.0.0. `range()` was
-  reworked: the one- and two-argument float forms are now errors, floating-point
-  iteration no longer drifts, and `reversed()` works on typed ranges. A bare
-  list literal is now an `Array`.
+- 2026-06-02: Update to accommodate the changes in Mojo v1.0.0b1. The iterator protocol was changed: `__has_next__()` was removed, and `__next__()` now raises a `StopIteration` error to signal the end of the iteration. The `loop_over_iterators_with_while.mojo` and `loop_over_list_with_while.mojo` examples have been rewritten to use the new `try / except StopIteration` pattern inside `while True`.
+- 2026-08-19: Update to accommodate the changes in Mojo v1.0.0. `range()` was reworked: the one- and two-argument float forms are now errors, floating-point iteration no longer drifts, and `reversed()` works on typed ranges. A bare list literal is now an `Array`.
+- 2026-11-22: Update to Mojo v1.2.0. Add Section [match-case statement](#match-case-statement) and a `match` version of the command program. Declare `prev` and `curr` with `var` in the Fibonacci exercise.
