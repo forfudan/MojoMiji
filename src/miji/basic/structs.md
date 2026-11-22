@@ -336,6 +336,14 @@ built-in asks for it any more.
 
 :::
 
+::: tip Printing a struct without `write_to()`
+
+If a struct conforms to `Writable` but does not define `write_to()`, it can still be printed. Mojo writes the name of the struct and its fields, like `Complex(real=1.0, imag=2.0)`. This is handy for debugging. Define your own `write_to()` when you want a nicer output, such as `1.0+2.0i`.
+
+If you know Rust, listing `Writable` works like `#[derive(Debug)]`: every field of the struct must also be `Writable`, otherwise the compiler stops with an error.
+
+:::
+
 ### Arithmetic operators
 
 Now we have finished the basic IO functionality of the `Complex` struct. The
@@ -745,20 +753,11 @@ Mojo always remembers the first address of the struct of `human` in memory, whic
 
 ::: danger Verify the memory layout of a struct
 
-You can easily (but not safely) verify whether the above memory layout is
-correct by casting the values in the memory block to a sequence of bytes or
-other types. Users of C language may be familiar with this approach. In Mojo, we
-could use the `unsafe_bitcast()` method of a `Pointer` to achieve this.
+You can easily (but not safely) verify whether the above memory layout is correct by casting the values in the memory block to a sequence of bytes or other types. Users of C language may be familiar with this approach. In Mojo, we could use the `unsafe_bitcast()` method of a `Pointer` to achieve this.
 
-Note how many times the word "unsafe" appears in the code below. Since
-**Mojo v1.0.0**, `Pointer` and `UnsafePointer` are one and the same type, and it
-is the individual *operations* that are marked unsafe, not the type. Reading
-through a pointer at an offset you calculated yourself is exactly the kind of
-thing the compiler cannot check for you, so it makes you spell it out. We will
-look at this properly in Chapter [Unsafe pointers](../advanced/unsafe.md).
+Note how many times the word "unsafe" appears in the code below. `UnsafePointer` is deprecated in favor of `Pointer`. It is the individual *operations* that are marked unsafe, not the type. Reading through a pointer at an offset you calculated yourself is exactly the kind of thing the compiler cannot check for you, so it makes you spell it out. We will look at this properly in Chapter [Unsafe pointers](../advanced/unsafe.md).
 
-But be warned that this is an unsafe operation! You should not touch this unless
-you are sure about what you are doing.
+Neverthelss, be warned that these are unsafe operations! You should not touch them unless you are sure about what you are doing.
 
 ```mojo
 # src/basic/structs/human.mojo
@@ -871,3 +870,4 @@ name(s), my art name, and my family name.
   so the reader saw every method already in the first block. Each block now
   shows only the step that its section explains, and matches the Python block
   next to it.
+- 2026-11-22: Update to Mojo v1.2.0. Add a tip on printing a struct without `write_to()`. `UnsafePointer` is deprecated.
