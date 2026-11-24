@@ -453,10 +453,13 @@ export default defineConfig({
               text: '17 Structs', link: '/miji/basic/structs',
             },
             {
-              text: "18 Modules and packages", link: '/miji/basic/packages',
+              text: '18 Pattern matching', link: '/miji/basic/matching',
             },
             {
-              text: '19 Use Python in Mojo', link: '/miji/basic/py4mojo',
+              text: "19 Modules and packages", link: '/miji/basic/packages',
+            },
+            {
+              text: '20 Use Python in Mojo', link: '/miji/basic/py4mojo',
             }
           ],
         },
@@ -464,24 +467,24 @@ export default defineConfig({
           text: 'PART IV: ADVANCED MOJO', link: '/miji/advanced/advanced',
           items: [
             {
-              text: '20 Data type - SIMD', link: '/miji/advanced/simd',
+              text: '21 Data type - SIMD', link: '/miji/advanced/simd',
             },
             {
-              text: '21 Parameterization', link: '/miji/advanced/parameterization',
+              text: '22 Parameterization', link: '/miji/advanced/parameterization',
             },
             {
-              text: '22 Generic and traits', link: '/miji/advanced/generic',
+              text: '23 Generic and traits', link: '/miji/advanced/generic',
             },
             {
-              text: '23 Ownership',
+              text: '24 Ownership',
               link: '/miji/advanced/ownership'
             },
             {
-              text: '24 References and pointers',
+              text: '25 References and pointers',
               link: '/miji/advanced/references'
             },
             {
-              text: '25 Lifetimes and origins',
+              text: '26 Lifetimes and origins',
               link: '/miji/advanced/lifetimes'
             }
           ]
@@ -490,11 +493,11 @@ export default defineConfig({
           text: 'PART V: APPLY MOJO', link: '/miji/apply/apply',
           items: [
             {
-              text: '26 Calendar app in Mojo',
+              text: '27 Calendar app in Mojo',
               link: '/miji/apply/calendar'
             },
             {
-              text: '27 Matrix library in Mojo',
+              text: '28 Matrix library in Mojo',
               link: '/miji/apply/matrix'
             },
           ]
@@ -503,11 +506,11 @@ export default defineConfig({
           text: 'PART VI: EXTEND MOJO', link: '/miji/extend/extend',
           items: [
             {
-              text: '28 Arbitrary-precision numbers',
+              text: '29 Arbitrary-precision numbers',
               link: '/miji/extend/decimo'
             },
             {
-              text: '29 Multi-dimensional arrays',
+              text: '30 Multi-dimensional arrays',
               link: '/miji/extend/numojo'
             },
           ]

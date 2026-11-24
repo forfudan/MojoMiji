@@ -708,7 +708,7 @@ Python rejects this code with a syntax error. Mojo only warns that the cases aft
 
 :::
 
-There are more kinds of patterns, for example for optional values, structs, and lists. They are covered in Chapter Pattern matching, after we learn about structs.
+There are more kinds of patterns, for example for optional values, structs, and lists. They are covered in Chapter [Pattern matching](../basic/matching), after we learn about structs.
 
 ## For loops
 

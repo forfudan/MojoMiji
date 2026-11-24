@@ -619,6 +619,12 @@ you have been convinced that Mojo's struct is not difficult. That is great! You
 can begin to write your own Mojo structs if case you want to try it out
 yourself.
 
+::: tip Take a struct apart
+
+We build a complex number with `Complex(real=0.0, imag=2.0)`. Since v1.2.0, you can also write something similar in a `case` statement to take a complex number apart, e.g., `case Complex(real=0.0, imag=b):` matches every purely imaginary number and binds its imaginary part to `b`. See Section [Struct patterns](../basic/matching#struct-patterns) in the next chapter.
+
+:::
+
 ## Memory layout of struct
 
 You may wonder how Mojo stores the struct in memory. In short, Mojo stores the

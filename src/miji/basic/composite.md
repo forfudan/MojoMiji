@@ -435,6 +435,8 @@ var all_but_last = lst[: max(len(lst) - 1, 0)]
 
 :::
 
+Since v1.2.0, you can also unpack a list into variables, e.g., `var [first, *rest] = values`. See Section [Unpacking a list](../basic/matching#unpacking-a-list).
+
 ### Extend or concat a list
 
 You can **append** elements to the end of a `List` in Mojo using the `append()`

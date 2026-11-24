@@ -41,29 +41,30 @@ For the example programs featured in this Miji, you can find them in the
   - [15 Control flows](./basic/control) (Loops and conditionals)
   - [16 Error handling and raises](./basic/errors) (Exceptions)
   - [17 Structs](./basic/structs) (Similar to classes in Python)
-  - [18 Modules and packages](./basic/packages) (Modular programming)
-  <!-- [19 Docstrings](./basic/docstrings) (Documenting your code) -->
-  - [19 Use Python in Mojo](./basic/py4mojo) (Your Python code can still be
+  - [18 Pattern matching](./basic/matching) (`match` and `case`)
+  - [19 Modules and packages](./basic/packages) (Modular programming)
+  <!-- [20 Docstrings](./basic/docstrings) (Documenting your code) -->
+  - [20 Use Python in Mojo](./basic/py4mojo) (Your Python code can still be
     used!)
 - [PART IV: ADVANCED MOJO](./advanced/advanced)
-  - [20 Data type - SIMD](./advanced/simd) (The first-class `SIMD` type)
-  - [21 Parameterization](./advanced/parameterization)
+  - [21 Data type - SIMD](./advanced/simd) (The first-class `SIMD` type)
+  - [22 Parameterization](./advanced/parameterization)
   <!-- - [Closures and higher-order functions](./advanced/closure) -->
-  - [22 Generic and traits](./advanced/generic)
+  - [23 Generic and traits](./advanced/generic)
   <!-- - [Metaprogramming more](./advanced/metaprogramming) -->
-  - [23 Ownership](./advanced/ownership) (The ownership system)
-  - [24 References and pointers](./advanced/references) (The borrowing system)
-  - [25 Lifetimes and origins](./advanced/lifetimes) (The lifetime system)
+  - [24 Ownership](./advanced/ownership) (The ownership system)
+  - [25 References and pointers](./advanced/references) (The borrowing system)
+  - [26 Lifetimes and origins](./advanced/lifetimes) (The lifetime system)
   <!-- - [Unsafe Mojo](./advanced/unsafe) -->
   <!-- - [GPU programming](./advanced/gpu) -->
 - [PART V: APPLY MOJO](./apply/apply.md) (Let's use Mojo to program something
   useful)
-  - [26 Calendar app in Mojo](./apply/calendar.md) (A command-line calendar app)
-  - [27 Matrix library in Mojo](./apply/matrix.md) (A simple matrix library)
+  - [27 Calendar app in Mojo](./apply/calendar.md) (A command-line calendar app)
+  - [28 Matrix library in Mojo](./apply/matrix.md) (A simple matrix library)
 - [PART VI: EXTEND MOJO](./extend/extend)
-  - [28 Arbitrary-precision numbers](./extend/decimo) (A library for
+  - [29 Arbitrary-precision numbers](./extend/decimo) (A library for
     arbitrary-precision integers and decimals)
-  - [29 Multi-dimensional arrays](./extend/numojo) (A library for numerical
+  - [30 Multi-dimensional arrays](./extend/numojo) (A library for numerical
     computing and NDArray)
 <!-- - [PART VII: INTEROPERABLE MOJO](./under/under) -->
   <!-- - [Use Mojo in Python](./interop/Mojo4python) -->
